@@ -1,0 +1,42 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyTube</title>
+</head>
+<body>
+  <h1>MyTube</h1>
+  <button id="loginBtn">Login with Google</button>
+  <div id="userInfo"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
+      authDomain: "my-tube-e526b.firebaseapp.com",
+      projectId: "my-tube-e526b",
+      storageBucket: "my-tube-e526b.firebasestorage.app",
+      messagingSenderId: "948348267378",
+      appId: "1:948348267378:web:2dd25f59a9f510a8694beb"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      document.getElementById("userInfo").innerHTML = `Welcome ${user.displayName}!`;
+    });
+  </script>
+</body>
+</html>
+```
+
