@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MyTube Pro | Fx Sports</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f0f0f; color: white; margin: 0; padding-bottom: 80px; }
+        .glass-header { background: rgba(15, 15, 15, 0.98); border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; }
+        .active-nav { color: #ff0000 !important; }
+        .video-card { background: #1a1a1a; border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+
+    <header class="flex items-center justify-between px-4 py-3 glass-header">
+        <div class="flex items-center gap-1">
+            <i class="fa-brands fa-youtube text-3xl text-red-600"></i>
+            <span class="text-xl font-bold tracking-tighter">MyTube</span>
+        </div>
+        <div id="authSection">
+            <button id="loginBtn" class="bg-white text-black px-4 py-1 rounded-full text-sm font-bold">Sign In</button>
+            <div id="userProfile" class="hidden items-center gap-2">
+                <img id="userAvatar" src="" class="w-8 h-8 rounded-full border border-white/20">
+            </div>
+        </div>
+    </header>
+
+    <main id="app" class="p-4">
+        </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 z-[100] grid grid-cols-4 bg-[#0f0f0f] border-t border-white/10 py-3">
+        <button onclick="switchView('home')" id="nav-home" class="flex flex-col items-center gap-1 active-nav">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px]">Home</span>
+        </button>
+        <button onclick="switchView('shorts')" id="nav-shorts" class="flex flex-col items-center gap-1 text-gray-400">
+            <i class="fa-solid fa-bolt text-lg"></i>
+            <span class="text-[10px]">Shorts</span>
+        </button>
+        <button onclick="switchView('upload')" id="nav-upload" class="flex flex-col items-center gap-1 text-gray-400">
+            <i class="fa-solid fa-plus-square text-2xl"></i>
+            <span class="text-[10px]">Upload</span>
+        </button>
+        <button onclick="switchView('profile')" id="nav-profile" class="flex flex-col items-center gap-1 text-gray-400">
+            <i class="fa-solid fa-user-circle text-lg"></i>
+            <span class="text-[10px]">You</span>
+        </button>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
+            authDomain: "my-tube-e526b.firebaseapp.com",
+            projectId: "my-tube-e526b",
+            storageBucket: "my-tube-e526b.firebasestorage.app",
+            messagingSenderId: "948348267378",
+            appId: "1:948348267378:web:2dd25f59a9f510a8694beb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        const appMount = document.getElementById('app');
+
+        window.switchView = (view) => {
+            document.querySelectorAll('nav button').forEach(b => {
+                b.classList.remove('active-nav');
+                b.classList.add('text-gray-400');
+            });
+            const activeBtn = document.getElementById(`nav-${view}`);
+            if(activeBtn) {
+                activeBtn.classList.add('active-nav');
+                activeBtn.classList.remove('text-gray-400');
+            }
+            
+            if(view === 'home') {
+                appMount.innerHTML = `
+                    <div class="video-card">
+                        <img src="https://picsum.photos/seed/sports/640/360" class="w-full aspect-video object-cover">
+                        <div class="p-3">
+                            <p class="font-bold">Fx Sports: Today's Match Preview</p>
+                            <p class="text-xs text-gray-400">1.2M views • 2 hours ago</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                appMount.innerHTML = `<div class="flex items-center justify-center h-[50vh] text-zinc-500 font-medium">${view.toUpperCase()} Coming Soon</div>`;
+            }
+        };
+
+        document.getElementById('loginBtn').onclick = () => signInWithPopup(auth, provider);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('loginBtn').classList.add('hidden');
+                document.getElementById('userProfile').classList.replace('hidden', 'flex');
+                document.getElementById('userAvatar').src = user.photoURL;
+            }
+            switchView('home');
+        });
+
+        switchView('home');
+    </script>
+</body>
+</html>
