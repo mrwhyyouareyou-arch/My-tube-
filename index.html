@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MyTube Pro | Fx Sports</title>
+    <title>MyTube Pro | Live Database</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -32,7 +32,10 @@
     </header>
 
     <main id="app" class="p-4">
-        </main>
+        <div id="video-list" class="flex flex-col gap-4">
+            <p class="text-center text-gray-500">Loading videos...</p>
+        </div>
+    </main>
 
     <nav class="fixed bottom-0 left-0 right-0 z-[100] grid grid-cols-4 bg-[#0f0f0f] border-t border-white/10 py-3">
         <button onclick="switchView('home')" id="nav-home" class="flex flex-col items-center gap-1 active-nav">
@@ -54,22 +57,63 @@
     </nav>
 
     <script type="module">
+        // Firebase Libraries
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Aapki Asli Config
         const firebaseConfig = {
             apiKey: "AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
             authDomain: "my-tube-e526b.firebaseapp.com",
             projectId: "my-tube-e526b",
             storageBucket: "my-tube-e526b.firebasestorage.app",
             messagingSenderId: "948348267378",
-            appId: "1:948348267378:web:2dd25f59a9f510a8694beb"
+            appId: "1:948348267378:web:2dd25f59a9f510a8694beb",
+            measurementId: "G-EQ91748HD1"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth();
+        const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
         const appMount = document.getElementById('app');
+
+        // Function: Firestore se videos load karna
+        async function fetchVideos() {
+            const videoList = document.getElementById('video-list');
+            if(!videoList) return;
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, "videos"));
+                videoList.innerHTML = ''; // Loading text khatam
+                
+                if (querySnapshot.empty) {
+                    videoList.innerHTML = '<p class="text-center text-gray-500">No videos found in Database.</p>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const card = `
+                        <div class="video-card">
+                            <video controls class="w-full aspect-video object-cover" poster="https://picsum.photos/seed/${doc.id}/640/360">
+                                <source src="${data.videoUrl}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="p-3">
+                                <p class="font-bold text-lg">${data.title || 'No Title'}</p>
+                                <p class="text-xs text-gray-400">Database Video • Just now</p>
+                            </div>
+                        </div>
+                    `;
+                    videoList.innerHTML += card;
+                });
+            } catch (error) {
+                console.error("Error:", error);
+                videoList.innerHTML = `<p class="text-red-500">Error loading videos: ${error.message}</p>`;
+            }
+        }
 
         window.switchView = (view) => {
             document.querySelectorAll('nav button').forEach(b => {
@@ -83,15 +127,8 @@
             }
             
             if(view === 'home') {
-                appMount.innerHTML = `
-                    <div class="video-card">
-                        <img src="https://picsum.photos/seed/sports/640/360" class="w-full aspect-video object-cover">
-                        <div class="p-3">
-                            <p class="font-bold">Fx Sports: Today's Match Preview</p>
-                            <p class="text-xs text-gray-400">1.2M views • 2 hours ago</p>
-                        </div>
-                    </div>
-                `;
+                appMount.innerHTML = `<div id="video-list" class="flex flex-col gap-4"><p class="text-center text-gray-500">Loading...</p></div>`;
+                fetchVideos(); // Firestore se data lao
             } else {
                 appMount.innerHTML = `<div class="flex items-center justify-center h-[50vh] text-zinc-500 font-medium">${view.toUpperCase()} Coming Soon</div>`;
             }
@@ -107,8 +144,6 @@
             }
             switchView('home');
         });
-
-        switchView('home');
     </script>
 </body>
 </html>
