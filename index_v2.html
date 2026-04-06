@@ -1,243 +1,276 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <title>MyTube Pro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #0f0f0f;
-      color: white;
-    }
-
-    header {
-      padding: 15px;
-      text-align: center;
-      font-size: 22px;
-      background: #202020;
-    }
-
-    .container {
-      padding: 15px;
-    }
-
-    button {
-      padding: 10px;
-      margin-top: 10px;
-      width: 100%;
-      border: none;
-      background: red;
-      color: white;
-      border-radius: 5px;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 5px;
-    }
-
-    .options {
-      display: none;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .options button {
-      flex: 1;
-      background: #333;
-    }
-
-    .feed, .shorts {
-      margin-top: 20px;
-    }
-
-    .card {
-      background: #1c1c1c;
-      margin-bottom: 15px;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .card img, .card video {
-      width: 100%;
-    }
-
-    .info {
-      padding: 10px;
-    }
-
-    .actions {
-      display: flex;
-      justify-content: space-around;
-      padding: 10px;
-      border-top: 1px solid #333;
-    }
-
-    .shorts video {
-      height: 400px;
-      object-fit: cover;
-    }
-
+    body{margin:0;font-family:Arial;background:#0f0f0f;color:white;}
+    header{display:flex;gap:10px;padding:10px;background:#202020;}
+    .search{flex:1;padding:8px;background:#222;color:white;border:none;border-radius:5px}
+    .nav{display:flex;justify-content:space-around;background:#202020;padding:10px;}
+    .nav button{background:none;color:white;border:none}
+    .container{padding:10px;}
+    .card{background:#1c1c1c;margin-bottom:15px;border-radius:10px;overflow:hidden;}
+    .card img,.card video{width:100%;}
+    .actions{display:flex;justify-content:space-around;padding:10px;}
+    input,textarea{width:100%;padding:10px;margin-top:10px;background:#222;color:white;border:none}
+    button{padding:10px;width:100%;margin-top:10px;background:red;color:white;border:none}
+    .tab{display:none;}
+    .comment{padding:5px;border-bottom:1px solid #444;}
   </style>
 </head>
 
 <body>
 
-<header>🔥 MyTube Pro</header>
+<header>
+  <input class="search" placeholder="Search..." oninput="search(this.value)">
+</header>
+
+<div id="loginBox" class="container">
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <button onclick="signup()">Signup</button>
+</div>
+
+<div id="app" style="display:none;">
+
+<div class="nav">
+  <button onclick="showTab('home')">🏠</button>
+  <button onclick="showTab('shorts')">🎬</button>
+  <button onclick="showTab('upload')">➕</button>
+  <button onclick="showTab('dashboard')">📊</button>
+  <button onclick="showTab('profile')">👤</button>
+</div>
 
 <div class="container">
 
-  <!-- Upload Button -->
-  <button onclick="toggleOptions()">Create</button>
+<div id="home" class="tab"><div id="feed"></div></div>
+<div id="shorts" class="tab"><div id="shortsContainer"></div></div>
 
-  <!-- Options -->
-  <div class="options" id="options">
-    <button onclick="selectType('image')">Image</button>
-    <button onclick="selectType('video')">Video</button>
-    <button onclick="selectType('post')">Post</button>
-  </div>
+<div id="upload" class="tab">
+  <button onclick="type='image'">Image</button>
+  <button onclick="type='video'">Video</button>
+  <button onclick="type='post'">Post</button>
 
-  <!-- Upload Box -->
-  <div id="uploadBox" style="display:none;">
-    <input type="file" id="fileInput" />
-    <input type="text" id="title" placeholder="Title" />
-    <textarea id="desc" placeholder="Description"></textarea>
+  <input type="file" id="fileInput">
+  <input id="title" placeholder="Title">
+  <textarea id="desc"></textarea>
 
-    <button onclick="upload()">Upload</button>
-  </div>
+  <button onclick="upload()">Upload</button>
+</div>
 
-  <!-- Feed -->
-  <div class="feed" id="feed"></div>
+<div id="dashboard" class="tab">
+  <p>Posts: <span id="p">0</span></p>
+  <p>Videos: <span id="v">0</span></p>
+  <p>Likes: <span id="l">0</span></p>
+</div>
 
-  <!-- Shorts -->
-  <h3>🔥 Shorts</h3>
-  <div class="shorts" id="shorts"></div>
+<div id="profile" class="tab">
+  <p id="userEmail"></p>
+  <p>Subscribers: <span id="subCount">0</span></p>
+  <button onclick="subscribe()">Subscribe</button>
+  <button onclick="logout()">Logout</button>
+</div>
 
+</div>
 </div>
 
 <script>
 
-const CLOUD = "dyrjyet9o";
-const PRESET = "mytube_upload";
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
+  authDomain: "my-tube-e526b.firebaseapp.com",
+  projectId: "my-tube-e526b",
+  storageBucket: "my-tube-e526b.firebasestorage.app",
+  messagingSenderId: "948348267378",
+  appId: "1:948348267378:web:2dd25f59a9f510a8694beb"
+};
 
-let currentType = "";
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-function toggleOptions() {
-  const opt = document.getElementById("options");
-  opt.style.display = opt.style.display === "flex" ? "none" : "flex";
+auth.onAuthStateChanged(user=>{
+  if(user){
+    loginBox.style.display="none";
+    app.style.display="block";
+    userEmail.innerText=user.email;
+    showTab("home");
+  }
+});
+
+// AUTH
+function signup(){auth.createUserWithEmailAndPassword(email.value,password.value)}
+function login(){auth.signInWithEmailAndPassword(email.value,password.value)}
+function logout(){auth.signOut()}
+
+// TABS
+function showTab(t){
+  document.querySelectorAll(".tab").forEach(x=>x.style.display="none");
+  document.getElementById(t).style.display="block";
 }
 
-function selectType(type) {
-  currentType = type;
-  document.getElementById("uploadBox").style.display = "block";
+// UPLOAD
+let type="image",posts=0,videos=0,likes=0;
 
-  const fileInput = document.getElementById("fileInput");
+async function upload(){
+  let file=fileInput.files[0];
+  let url="";
 
-  if (type === "image") fileInput.accept = "image/*";
-  if (type === "video") fileInput.accept = "video/*";
-  if (type === "post") fileInput.style.display = "none";
-  else fileInput.style.display = "block";
-}
+  if(type!=="post"){
+    let fd=new FormData();
+    fd.append("file",file);
+    fd.append("upload_preset","mytube_upload");
 
-async function upload() {
+    let endpoint= type==="video"
+      ? "https://api.cloudinary.com/v1_1/dyrjyet9o/video/upload"
+      : "https://api.cloudinary.com/v1_1/dyrjyet9o/image/upload";
 
-  const file = document.getElementById("fileInput").files[0];
-  const title = document.getElementById("title").value;
-  const desc = document.getElementById("desc").value;
-
-  if (currentType !== "post" && !file) {
-    return alert("Select file");
+    let res=await fetch(endpoint,{method:"POST",body:fd});
+    let data=await res.json();
+    url=data.secure_url;
   }
 
-  let url = "";
+  let doc = await db.collection("posts").add({
+    url,title:title.value,desc:desc.value,type,time:Date.now()
+  });
 
-  if (currentType !== "post") {
+  add(doc.id,url,title.value,desc.value,type);
+}
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", PRESET);
-
-    const endpoint = currentType === "video"
-      ? `https://api.cloudinary.com/v1_1/${CLOUD}/video/upload`
-      : `https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`;
-
-    const res = await fetch(endpoint, {
-      method: "POST",
-      body: formData
+// LOAD POSTS
+window.onload = ()=>{
+  db.collection("posts").orderBy("time","desc").onSnapshot(snap=>{
+    feed.innerHTML="";
+    shortsContainer.innerHTML="";
+    snap.forEach(doc=>{
+      let d=doc.data();
+      add(doc.id,d.url,d.title,d.desc,d.type);
     });
+  });
 
-    const data = await res.json();
+  db.collection("subs").onSnapshot(s=>{
+    subCount.innerText=s.size;
+  });
+};
 
-    if (!res.ok) {
-      alert("Upload failed");
-      console.log(data);
-      return;
-    }
+// ADD POST
+function add(id,url,title,desc,type){
 
-    url = data.secure_url;
-  }
+  posts++; if(type==="video") videos++;
+  p.innerText=posts; v.innerText=videos;
 
-  addToFeed(url, title, desc, currentType);
-}
+  let media="";
+  if(type==="image") media=`<img src="${url}">`;
+  if(type==="video") media=`<video controls src="${url}"></video>`;
+  if(type==="post") media=`<div>${desc}</div>`;
 
-function addToFeed(url, title, desc, type) {
+  let d=document.createElement("div");
+  d.className="card";
 
-  const feed = document.getElementById("feed");
+  d.innerHTML=`
+  ${media}
+  <div>${title}</div>
+  <div class="actions">
+    <span onclick="like('${id}',this)">👍 0</span>
+    <span onclick="share('${url}')">🔗</span>
+  </div>
 
-  let media = "";
-
-  if (type === "image") media = `<img src="${url}" />`;
-  if (type === "video") media = `<video controls src="${url}"></video>`;
-  if (type === "post") media = `<div style="padding:20px;">${desc}</div>`;
-
-  const time = new Date().toLocaleTimeString();
-
-  const card = document.createElement("div");
-  card.className = "card";
-
-  card.innerHTML = `
-    ${media}
-    <div class="info">
-      <h4>${title || "No Title"}</h4>
-      <p>${desc || ""}</p>
-      <small>${time}</small>
-    </div>
-    <div class="actions">
-      <span onclick="like(this)">👍 0</span>
-      <span onclick="share('${url}')">🔗</span>
-    </div>
+  <div id="c-${id}"></div>
+  <input id="i-${id}" placeholder="Comment...">
+  <button onclick="comment('${id}')">Comment</button>
   `;
 
-  feed.prepend(card);
+  feed.prepend(d);
 
-  // Shorts auto add (video only)
-  if (type === "video") {
-    const shorts = document.getElementById("shorts");
-
-    const vid = document.createElement("video");
-    vid.src = url;
-    vid.controls = true;
-
-    shorts.prepend(vid);
+  if(type==="video"){
+    let v=document.createElement("video");
+    v.src=url; v.controls=true;
+    shortsContainer.prepend(v);
   }
 
+  // REAL-TIME COMMENTS
+  db.collection("comments").where("postId","==",id)
+  .onSnapshot(s=>{
+    let box=document.getElementById("c-"+id);
+    box.innerHTML="";
+    s.forEach(doc=>{
+      let div=document.createElement("div");
+      div.className="comment";
+      div.innerText=doc.data().text;
+      box.appendChild(div);
+    });
+  });
 }
 
-function like(el) {
-  let n = parseInt(el.innerText.split(" ")[1]);
-  el.innerText = `👍 ${n + 1}`;
+// COMMENT
+async function comment(id){
+  let input=document.getElementById("i-"+id);
+  if(!input.value.trim()) return;
+
+  await db.collection("comments").add({
+    postId:id,
+    text:input.value,
+    time:Date.now()
+  });
+
+  input.value="";
 }
 
-function share(url) {
+// LIKE SAVE
+async function like(id,el){
+  let n=parseInt(el.innerText.split(" ")[1])+1;
+  el.innerText="👍 "+n;
+  likes++; l.innerText=likes;
+
+  await db.collection("likes").add({postId:id});
+}
+
+// SHARE
+function share(url){
   navigator.clipboard.writeText(url);
-  alert("Link copied");
+  alert("Copied");
 }
+
+// SUBSCRIBE
+async function subscribe(){
+  await db.collection("subs").add({
+    user:auth.currentUser.email
+  });
+}
+
+// SEARCH
+function search(q){
+  document.querySelectorAll(".card").forEach(card=>{
+    card.style.display = card.innerText.toLowerCase().includes(q.toLowerCase()) ? "block":"none";
+  });
+}
+
+// SHORTS SWIPE
+let current=0;
+document.addEventListener("wheel",(e)=>{
+  let vids=document.querySelectorAll("#shortsContainer video");
+  if(e.deltaY>0) current++; else current--;
+  vids.forEach(v=>v.style.display="none");
+  if(vids[current]) vids[current].style.display="block";
+});
+
+// AUTOPLAY
+document.addEventListener("scroll",()=>{
+  document.querySelectorAll("video").forEach(v=>{
+    let r=v.getBoundingClientRect();
+    if(r.top>=0 && r.bottom<=window.innerHeight) v.play();
+    else v.pause();
+  });
+});
 
 </script>
 
