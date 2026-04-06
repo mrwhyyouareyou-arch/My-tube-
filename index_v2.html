@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,587 +10,330 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
-:root {
-  --bg:#0f0f0f;--bg2:#181818;--bg3:#222;--card:#1a1a1a;
-  --red:#ff0000;--red2:#cc0000;--text:#fff;--text2:#aaa;--text3:#666;
-  --border:#2a2a2a;--radius:12px;--font:'Outfit',sans-serif;
-}
+:root{--bg:#0f0f0f;--bg2:#181818;--bg3:#222;--card:#1a1a1a;--red:#ff0000;--red2:#cc0000;--text:#fff;--text2:#aaa;--text3:#666;--border:#2a2a2a;--radius:12px;--font:'Outfit',sans-serif;}
 [data-theme="light"]{--bg:#f9f9f9;--bg2:#fff;--bg3:#f0f0f0;--card:#fff;--text:#0f0f0f;--text2:#606060;--text3:#999;--border:#e0e0e0;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
 
 /* HEADER */
-.header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);backdrop-filter:blur(10px);}
-.logo{display:flex;align-items:center;gap:6px;font-size:20px;font-weight:800;color:var(--text);text-decoration:none;flex-shrink:0;}
+.header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--border);backdrop-filter:blur(10px);}
+.logo{font-size:20px;font-weight:800;color:var(--text);flex-shrink:0;}
 .logo span{color:var(--red);}
 .search-bar{flex:1;display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:25px;overflow:hidden;}
-.search-bar input{flex:1;padding:9px 14px;background:none;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:14px;}
-.search-bar button{padding:9px 14px;background:none;border:none;color:var(--text2);cursor:pointer;font-size:14px;}
-.header-actions{display:flex;gap:8px;align-items:center;}
-.icon-btn{width:36px;height:36px;background:none;border:none;color:var(--text);cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .2s;position:relative;}
-.icon-btn:hover{background:var(--bg3);}
-.avatar-btn{width:32px;height:32px;border-radius:50%;background:var(--red);border:none;cursor:pointer;color:white;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.search-bar input{flex:1;padding:8px 12px;background:none;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:13px;}
+.search-bar button{padding:8px 12px;background:none;border:none;color:var(--text2);cursor:pointer;}
+.header-actions{display:flex;gap:6px;align-items:center;}
+.icon-btn{width:34px;height:34px;background:none;border:none;color:var(--text);cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;position:relative;}
+.notif-dot{position:absolute;top:5px;right:5px;width:8px;height:8px;background:var(--red);border-radius:50%;}
+.avatar-btn{width:32px;height:32px;border-radius:50%;background:var(--red);border:none;cursor:pointer;color:white;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
 .avatar-btn img{width:100%;height:100%;object-fit:cover;}
 
 /* BOTTOM NAV */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;background:var(--bg);border-top:1px solid var(--border);padding:6px 0 10px;}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--text2);cursor:pointer;font-size:10px;font-family:var(--font);transition:color .2s;padding:4px 0;}
-.nav-item i{font-size:20px;}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;background:var(--bg);border-top:1px solid var(--border);padding:5px 0 10px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--text2);cursor:pointer;font-size:9px;font-family:var(--font);padding:3px 0;}
+.nav-item i{font-size:19px;}
 .nav-item.active{color:var(--text);}
-.nav-plus{width:44px;height:44px;background:var(--red);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-top:-4px;}
-.nav-plus i{font-size:20px;color:white;}
+.nav-plus{width:42px;height:42px;background:var(--red);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-top:-5px;}
 
 /* MAIN */
-.main{padding-top:62px;padding-bottom:75px;min-height:100vh;}
-.screen{display:none;}
-.screen.active{display:block;}
+.main{padding-top:60px;padding-bottom:72px;min-height:100vh;}
+.screen{display:none;}.screen.active{display:block;}
 
 /* SPINNER */
-.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
+.spinner{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loader{display:flex;justify-content:center;padding:30px;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text2);}
+.empty-state i{font-size:44px;margin-bottom:12px;display:block;opacity:.4;}
 
 /* AUTH */
 .auth-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--bg);}
-.auth-logo{font-size:36px;font-weight:800;margin-bottom:8px;}
+.auth-logo{font-size:34px;font-weight:800;margin-bottom:6px;}
 .auth-logo span{color:var(--red);}
-.auth-tagline{color:var(--text2);font-size:14px;margin-bottom:36px;}
-.auth-card{width:100%;max-width:360px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 24px;}
-.auth-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:24px;}
+.auth-tagline{color:var(--text2);font-size:14px;margin-bottom:32px;}
+.auth-card{width:100%;max-width:360px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:26px 22px;}
+.auth-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:22px;}
 .auth-tab{flex:1;padding:8px;background:none;border:none;color:var(--text2);font-family:var(--font);font-size:14px;font-weight:500;border-radius:8px;cursor:pointer;transition:all .2s;}
 .auth-tab.active{background:var(--bg2);color:var(--text);}
-.inp{width:100%;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;margin-bottom:12px;transition:border-color .2s;}
+.inp{width:100%;padding:11px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;margin-bottom:11px;transition:border-color .2s;}
 .inp:focus{border-color:var(--red);}
-.btn-red{width:100%;padding:13px;background:var(--red);color:white;border:none;border-radius:10px;font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;transition:background .2s;margin-bottom:10px;}
-.btn-red:hover{background:var(--red2);}
+.btn-red{width:100%;padding:12px;background:var(--red);color:white;border:none;border-radius:10px;font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;}
 .btn-red:disabled{background:#555;cursor:not-allowed;}
-.btn-outline{width:100%;padding:12px;background:none;border:1px solid var(--border);color:var(--text);border-radius:10px;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s;}
-.btn-outline:hover{background:var(--bg3);}
+.btn-outline{width:100%;padding:11px;background:none;border:1px solid var(--border);color:var(--text);border-radius:10px;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
 .auth-err{color:#ff4444;font-size:13px;text-align:center;margin-top:8px;min-height:18px;}
 
 /* CHIPS */
-.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 0;}
+.chips{display:flex;gap:7px;overflow-x:auto;padding:10px 14px 0;}
 .chips::-webkit-scrollbar{display:none;}
-.chip{padding:6px 14px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:20px;font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;white-space:nowrap;transition:all .2s;}
+.chip{padding:5px 13px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:20px;font-size:12px;font-weight:500;font-family:var(--font);cursor:pointer;white-space:nowrap;transition:all .2s;}
 .chip.active,.chip:hover{background:var(--text);color:var(--bg);}
 
-/* VIDEO FEED */
-.feed{padding:12px 16px;}
-.video-card{margin-bottom:20px;cursor:pointer;animation:fadeIn .4s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* FEED */
+.feed{padding:10px 14px;}
+.video-card{margin-bottom:18px;cursor:pointer;animation:fadeIn .4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .thumb-wrap{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--bg3);aspect-ratio:16/9;}
-.thumb-wrap img,.thumb-wrap video{width:100%;height:100%;object-fit:cover;display:block;}
-.thumb-duration{position:absolute;bottom:6px;right:8px;background:rgba(0,0,0,.85);color:white;font-size:11px;font-weight:600;padding:2px 6px;border-radius:4px;}
-.thumb-live{position:absolute;top:8px;left:8px;background:var(--red);color:white;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;}
-.video-info{display:flex;gap:10px;padding:10px 0 0;}
-.channel-avatar{width:36px;height:36px;border-radius:50%;background:var(--red);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:14px;overflow:hidden;}
-.channel-avatar img{width:100%;height:100%;object-fit:cover;}
-.video-meta{flex:1;}
-.video-title{font-size:14px;font-weight:600;line-height:1.4;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.video-sub{font-size:12px;color:var(--text2);margin-top:4px;}
+.thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.thumb-badge{position:absolute;top:7px;left:7px;background:var(--red);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;}
+.thumb-dur{position:absolute;bottom:5px;right:7px;background:rgba(0,0,0,.85);color:white;font-size:10px;font-weight:600;padding:2px 5px;border-radius:3px;}
+.video-info{display:flex;gap:9px;padding:9px 0 0;}
+.ch-av{width:34px;height:34px;border-radius:50%;background:var(--red);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:13px;overflow:hidden;}
+.ch-av img{width:100%;height:100%;object-fit:cover;}
+.v-meta{flex:1;}
+.v-title{font-size:13px;font-weight:600;line-height:1.4;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.v-sub{font-size:11px;color:var(--text2);margin-top:3px;}
+
+/* POST CARD */
+.post-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden;animation:fadeIn .4s ease;cursor:pointer;}
+.post-header{display:flex;align-items:center;gap:10px;padding:12px 14px 8px;}
+.post-avatar{width:38px;height:38px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px;overflow:hidden;flex-shrink:0;}
+.post-avatar img{width:100%;height:100%;object-fit:cover;}
+.post-author{font-size:13px;font-weight:600;}
+.post-time{font-size:11px;color:var(--text2);}
+.post-text{padding:0 14px 10px;font-size:14px;line-height:1.6;color:var(--text2);}
+.post-imgs{display:grid;gap:2px;}
+.post-imgs.one img{width:100%;max-height:280px;object-fit:cover;}
+.post-imgs.two{grid-template-columns:1fr 1fr;}
+.post-imgs.two img{height:150px;object-fit:cover;}
+.post-imgs.three{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;}
+.post-imgs.three img:first-child{grid-column:1/-1;height:160px;object-fit:cover;}
+.post-imgs.three img{height:100px;object-fit:cover;}
+.post-actions{display:flex;padding:8px 14px;gap:0;border-top:1px solid var(--border);}
+.post-action{flex:1;background:none;border:none;color:var(--text2);cursor:pointer;font-family:var(--font);font-size:12px;display:flex;align-items:center;justify-content:center;gap:5px;padding:6px;}
+.post-action.liked{color:var(--red);}
+.post-emoji-row{display:flex;gap:6px;padding:6px 14px;flex-wrap:wrap;}
+.emoji-btn{background:var(--bg3);border:none;border-radius:20px;padding:4px 10px;font-size:14px;cursor:pointer;transition:transform .2s;}
+.emoji-btn:hover{transform:scale(1.2);}
 
 /* SHORTS */
-.shorts-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:12px 16px;}
+.shorts-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:10px 14px;}
 .short-card{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:9/16;background:var(--bg3);cursor:pointer;}
 .short-card img{width:100%;height:100%;object-fit:cover;display:block;}
 .short-overlay{position:absolute;bottom:0;left:0;right:0;padding:8px;background:linear-gradient(transparent,rgba(0,0,0,.8));}
-.short-title{font-size:12px;font-weight:500;color:white;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.short-title{font-size:11px;font-weight:500;color:white;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.short-views{font-size:10px;color:rgba(255,255,255,.7);margin-top:2px;}
 
 /* FULLSCREEN SHORT */
-.short-fullscreen{position:fixed;inset:0;z-index:999;background:#000;display:none;flex-direction:column;}
-.short-fullscreen.open{display:flex;}
-.sf-video-wrap{flex:1;position:relative;display:flex;align-items:center;}
-.sf-video-wrap video{width:100%;height:100%;object-fit:cover;}
+.short-fs{position:fixed;inset:0;z-index:999;background:#000;display:none;flex-direction:column;}
+.short-fs.open{display:flex;}
+.sf-wrap{flex:1;position:relative;}
+.sf-wrap video{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
 .sf-close{position:absolute;top:16px;left:16px;background:rgba(0,0,0,.5);border:none;color:white;cursor:pointer;width:36px;height:36px;border-radius:50%;font-size:18px;display:flex;align-items:center;justify-content:center;z-index:10;}
-.sf-actions{position:absolute;right:12px;bottom:80px;display:flex;flex-direction:column;gap:18px;align-items:center;}
-.sf-action{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:white;cursor:pointer;}
-.sf-action i{font-size:26px;}
-.sf-action span{font-size:12px;font-weight:500;}
-.sf-info{position:absolute;bottom:20px;left:12px;right:60px;}
-.sf-channel{font-size:14px;font-weight:700;color:white;margin-bottom:4px;}
-.sf-title{font-size:13px;color:rgba(255,255,255,.85);}
+.sf-actions{position:absolute;right:12px;bottom:100px;display:flex;flex-direction:column;gap:20px;align-items:center;z-index:10;}
+.sf-act{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:white;cursor:pointer;}
+.sf-act i{font-size:26px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5));}
+.sf-act span{font-size:11px;font-weight:600;}
+.sf-info{position:absolute;bottom:20px;left:12px;right:70px;z-index:10;}
+.sf-ch{font-size:14px;font-weight:700;color:white;margin-bottom:3px;}
+.sf-ttl{font-size:12px;color:rgba(255,255,255,.85);}
+.sf-nav{position:absolute;top:50%;transform:translateY(-50%);width:100%;display:flex;justify-content:space-between;padding:0 8px;z-index:10;pointer-events:none;}
+.sf-nav button{background:rgba(0,0,0,.4);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;pointer-events:all;}
 
 /* UPLOAD */
-.upload-screen{padding:20px 16px;}
-.upload-screen h2{font-size:20px;font-weight:700;margin-bottom:20px;}
-.type-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;}
-.type-card{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:16px 10px;text-align:center;cursor:pointer;transition:all .2s;}
+.upload-screen{padding:18px 14px;}
+.upload-screen h2{font-size:19px;font-weight:700;margin-bottom:18px;}
+.type-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:18px;}
+.type-card{background:var(--card);border:2px solid var(--border);border-radius:13px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s;}
 .type-card.selected{border-color:var(--red);background:rgba(255,0,0,.08);}
-.type-card i{font-size:26px;margin-bottom:8px;display:block;}
-.type-card span{font-size:13px;font-weight:500;}
-.upload-form{display:none;}
-.upload-form.show{display:block;}
-.file-drop{border:2px dashed var(--border);border-radius:14px;padding:30px;text-align:center;cursor:pointer;margin-bottom:14px;transition:border-color .2s;}
-.file-drop:hover,.file-drop.dragover{border-color:var(--red);}
-.file-drop i{font-size:32px;color:var(--text2);margin-bottom:10px;}
-.file-drop p{color:var(--text2);font-size:14px;}
+.type-card i{font-size:24px;margin-bottom:7px;display:block;}
+.type-card span{font-size:12px;font-weight:500;}
+.upload-form{display:none;}.upload-form.show{display:block;}
+.file-drop{border:2px dashed var(--border);border-radius:13px;padding:28px;text-align:center;cursor:pointer;margin-bottom:12px;}
+.file-drop i{font-size:30px;color:var(--text2);margin-bottom:8px;}
+.file-drop p{color:var(--text2);font-size:13px;}
 .file-drop input{display:none;}
-.upload-preview{width:100%;border-radius:10px;margin-bottom:14px;display:none;max-height:200px;object-fit:cover;}
-.progress-bar{width:100%;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-bottom:14px;display:none;}
+.upload-preview-img,.upload-preview-vid{width:100%;border-radius:9px;margin-bottom:12px;display:none;max-height:180px;object-fit:cover;}
+.progress-bar{width:100%;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-bottom:12px;display:none;}
 .progress-fill{height:100%;background:var(--red);border-radius:3px;width:0%;transition:width .3s;}
-
-/* THUMBNAIL UPLOAD */
-.thumb-upload-wrap{margin-bottom:14px;}
-.thumb-upload-label{font-size:13px;color:var(--text2);margin-bottom:6px;display:block;}
-.thumb-upload-box{border:2px dashed var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;position:relative;}
-.thumb-upload-box:hover{border-color:var(--red);}
+.thumb-upload{margin-bottom:12px;}
+.thumb-upload-box{border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;}
 .thumb-upload-box input{display:none;}
-.thumb-preview-img{width:100%;border-radius:8px;max-height:120px;object-fit:cover;display:none;margin-top:8px;}
+.thumb-upload-box i{font-size:22px;color:var(--text2);margin-bottom:5px;}
+.thumb-upload-box p{font-size:12px;color:var(--text2);}
+.thumb-preview{width:100%;border-radius:8px;max-height:100px;object-fit:cover;display:none;margin-top:8px;}
+/* Post with images */
+.post-img-grid{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.post-img-item{position:relative;width:80px;height:80px;border-radius:8px;overflow:hidden;}
+.post-img-item img{width:100%;height:100%;object-fit:cover;}
+.post-img-rm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.7);border:none;color:white;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.add-img-btn{width:80px;height:80px;border:2px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:22px;}
+.add-img-btn input{display:none;}
 
 /* DASHBOARD */
-.dashboard-screen{padding:20px 16px;}
-.dash-header{margin-bottom:20px;}
-.dash-header h2{font-size:22px;font-weight:700;}
-.dash-header p{color:var(--text2);font-size:13px;}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;}
-.stat-card .stat-icon{width:36px;height:36px;border-radius:10px;background:rgba(255,0,0,.1);display:flex;align-items:center;justify-content:center;color:var(--red);font-size:16px;margin-bottom:10px;}
-.stat-num{font-size:24px;font-weight:800;}
-.stat-label{color:var(--text2);font-size:12px;margin-top:2px;}
-.my-videos-title{font-size:16px;font-weight:700;margin-bottom:12px;}
-.my-video-item{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
-.my-video-thumb{width:80px;height:50px;border-radius:8px;background:var(--bg3);overflow:hidden;flex-shrink:0;}
-.my-video-thumb img{width:100%;height:100%;object-fit:cover;}
-.my-video-info{flex:1;}
-.my-video-title{font-size:13px;font-weight:600;}
-.my-video-stats{font-size:12px;color:var(--text2);margin-top:3px;}
-.my-video-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px;}
-.my-video-del:hover{color:var(--red);}
+.dashboard-screen{padding:18px 14px;}
+.dash-hdr h2{font-size:21px;font-weight:700;}
+.dash-hdr p{color:var(--text2);font-size:12px;margin-bottom:18px;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;}
+.stat-icon{width:34px;height:34px;border-radius:9px;background:rgba(255,0,0,.1);display:flex;align-items:center;justify-content:center;color:var(--red);font-size:15px;margin-bottom:9px;}
+.stat-num{font-size:22px;font-weight:800;}
+.stat-lbl{color:var(--text2);font-size:11px;margin-top:2px;}
+/* CTR / Analytics */
+.analytics-section{margin-bottom:18px;}
+.analytics-title{font-size:15px;font-weight:700;margin-bottom:12px;}
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.an-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;}
+.an-num{font-size:18px;font-weight:800;color:var(--red);}
+.an-lbl{font-size:10px;color:var(--text2);margin-top:2px;}
+/* My content */
+.my-vids-title{font-size:15px;font-weight:700;margin-bottom:10px;}
+.my-vid-item{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
+.my-vid-thumb{width:76px;height:48px;border-radius:7px;background:var(--bg3);overflow:hidden;flex-shrink:0;}
+.my-vid-thumb img{width:100%;height:100%;object-fit:cover;}
+.my-vid-info{flex:1;}
+.my-vid-title{font-size:12px;font-weight:600;}
+.my-vid-stats{font-size:11px;color:var(--text2);margin-top:2px;}
+.my-vid-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;padding:3px;}
+/* Subscribers list */
+.subs-list-title{font-size:15px;font-weight:700;margin:16px 0 10px;}
+.sub-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.sub-av{width:38px;height:38px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:13px;overflow:hidden;flex-shrink:0;}
+.sub-av img{width:100%;height:100%;object-fit:cover;}
+.sub-name{font-size:13px;font-weight:600;}
+.sub-handle{font-size:11px;color:var(--text2);}
 
-/* SUBSCRIBERS LIST in dashboard */
-.subs-list-section{margin-top:20px;}
-.sub-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
-.sub-avatar{width:40px;height:40px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px;overflow:hidden;flex-shrink:0;}
-.sub-avatar img{width:100%;height:100%;object-fit:cover;}
-.sub-name{font-size:14px;font-weight:600;}
-.sub-handle{font-size:12px;color:var(--text2);}
-
-/* OWNER DASHBOARD */
-.owner-dashboard{padding:20px 16px;}
-.owner-dash-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
-.owner-dash-header h2{font-size:22px;font-weight:800;}
-.owner-badge{background:var(--red);color:white;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;}
-.owner-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
-.owner-stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;}
-.owner-stat-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px;}
-.owner-stat-num{font-size:28px;font-weight:800;}
-.owner-stat-label{color:var(--text2);font-size:12px;margin-top:2px;}
-.owner-section-title{font-size:16px;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-.owner-user-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
-.owner-user-avatar{width:42px;height:42px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:15px;overflow:hidden;flex-shrink:0;}
-.owner-user-avatar img{width:100%;height:100%;object-fit:cover;}
-.owner-user-info{flex:1;}
-.owner-user-name{font-size:14px;font-weight:600;}
-.owner-user-meta{font-size:12px;color:var(--text2);margin-top:2px;}
-.owner-user-badge{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:600;}
+/* OWNER / ADMIN DASHBOARD */
+.owner-screen{padding:18px 14px;}
+.owner-badge-hdr{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
+.owner-badge-hdr h2{font-size:21px;font-weight:800;}
+.owner-badge{background:var(--red);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;}
+.owner-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.ow-stat{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;}
+.ow-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:9px;}
+.ow-num{font-size:24px;font-weight:800;}
+.ow-lbl{color:var(--text2);font-size:11px;}
+.owner-sec-title{font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.owner-user-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);}
+.ou-av{width:40px;height:40px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;overflow:hidden;flex-shrink:0;}
+.ou-av img{width:100%;height:100%;object-fit:cover;}
+.ou-info{flex:1;}
+.ou-name{font-size:13px;font-weight:600;}
+.ou-meta{font-size:11px;color:var(--text2);margin-top:2px;}
+.ou-badge{font-size:10px;padding:2px 7px;border-radius:5px;font-weight:600;}
 .badge-active{background:rgba(0,200,100,.15);color:#00c864;}
-.badge-inactive{background:rgba(100,100,100,.15);color:var(--text3);}
-.badge-channel{background:rgba(255,0,0,.1);color:var(--red);}
+.badge-ch{background:rgba(255,0,0,.1);color:var(--red);}
+
+/* LIVE */
+.live-screen{padding:18px 14px;}
+.live-locked{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;}
+.live-locked h3{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.live-locked p{font-size:13px;color:var(--text2);margin-bottom:14px;}
+.live-req-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.live-req-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.req-done{background:rgba(0,200,100,.15);color:#00c864;}
+.req-pend{background:rgba(255,0,0,.1);color:var(--red);}
+.live-req-text{flex:1;font-size:13px;}
+.live-req-prog{font-size:12px;color:var(--text2);}
+.live-setup{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;}
+.live-setup h3{font-size:16px;font-weight:700;margin-bottom:14px;}
+.live-indicator{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,0,0,.1);border-radius:10px;margin-bottom:14px;}
+.live-dot{width:10px;height:10px;background:var(--red);border-radius:50%;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.live-badge{background:var(--red);color:white;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;}
 
 /* PROFILE */
 .profile-screen{padding:0 0 20px;}
-.profile-cover{height:120px;background:linear-gradient(135deg,#1a0000,#330000,#1a0000);position:relative;}
-.profile-cover-btn{position:absolute;bottom:8px;right:12px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.2);color:white;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;}
-.profile-info{padding:0 16px;display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:-36px;margin-bottom:20px;}
-.profile-pic-wrap{position:relative;margin-bottom:12px;}
-.profile-pic{width:80px;height:80px;border-radius:50%;background:var(--red);border:3px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:white;overflow:hidden;}
-.profile-pic img{width:100%;height:100%;object-fit:cover;}
-.profile-pic-edit{position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid var(--bg);color:white;font-size:11px;}
+.prof-cover{height:110px;background:linear-gradient(135deg,#1a0000,#330000,#660000);position:relative;}
+.prof-cover-btn{position:absolute;bottom:8px;right:12px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.2);color:white;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;}
+.prof-info{padding:0 14px;display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:-34px;margin-bottom:18px;}
+.prof-pic-wrap{position:relative;margin-bottom:10px;}
+.prof-pic{width:76px;height:76px;border-radius:50%;background:var(--red);border:3px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:white;overflow:hidden;}
+.prof-pic img{width:100%;height:100%;object-fit:cover;}
+.prof-pic-edit{position:absolute;bottom:0;right:0;width:24px;height:24px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid var(--bg);color:white;font-size:10px;}
 #profilePicInput{display:none;}
-.profile-name{font-size:20px;font-weight:700;}
-.profile-handle{color:var(--text2);font-size:13px;margin-top:2px;}
-.profile-stats{display:flex;gap:24px;margin-top:14px;}
-.pstat{text-align:center;}
-.pstat-num{font-size:18px;font-weight:700;}
-.pstat-label{font-size:11px;color:var(--text2);}
-.profile-actions{display:flex;gap:8px;margin-top:16px;width:100%;}
-.btn-sm{flex:1;padding:9px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;}
-.profile-section{padding:0 16px;}
-.section-title{font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.prof-name{font-size:19px;font-weight:700;}
+.prof-handle{color:var(--text2);font-size:12px;margin-top:2px;}
+.prof-stats{display:flex;gap:22px;margin-top:12px;}
+.pst{text-align:center;}
+.pst-num{font-size:17px;font-weight:700;}
+.pst-lbl{font-size:10px;color:var(--text2);}
+.prof-actions{display:flex;gap:7px;margin-top:14px;width:100%;}
+.btn-sm{flex:1;padding:8px;border-radius:9px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;}
+.prof-section{padding:0 14px;margin-bottom:16px;}
+.sec-title{font-size:14px;font-weight:700;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+.channel-section{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin:0 14px 14px;}
+.channel-section h3{font-size:14px;font-weight:600;margin-bottom:12px;}
 
-/* EDIT PROFILE MODAL */
-.edit-profile-modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);display:none;align-items:flex-end;}
-.edit-profile-modal.open{display:flex;}
-.edit-profile-sheet{width:100%;background:var(--bg2);border-radius:20px 20px 0 0;padding:24px 20px;animation:slideUp .3s ease;max-height:90vh;overflow-y:auto;}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
-.sheet-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
-.sheet-title{font-size:18px;font-weight:700;margin-bottom:20px;}
-
-/* CHANNEL */
-.channel-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin:0 16px 16px;}
-.channel-section h3{font-size:15px;font-weight:600;margin-bottom:14px;}
-
-/* VIDEO PLAYER */
-.video-player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;}
-.video-player-screen.open{display:flex;}
-.player-back{position:absolute;top:10px;left:10px;z-index:10;width:36px;height:36px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;}
-.player-video-wrap{background:#000;width:100%;aspect-ratio:16/9;position:relative;flex-shrink:0;}
-.player-video-wrap video{width:100%;height:100%;object-fit:contain;}
-.player-info{padding:14px 16px;}
-.player-title{font-size:16px;font-weight:700;line-height:1.4;}
-.player-meta{font-size:13px;color:var(--text2);margin-top:6px;}
-.player-actions{display:flex;gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:0 0 14px;}
-.player-action{flex:1;padding:12px 6px;background:none;border:none;color:var(--text2);cursor:pointer;font-family:var(--font);font-size:12px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:4px;transition:color .2s;}
-.player-action i{font-size:20px;}
-.player-action.liked{color:var(--red);}
-.channel-row{display:flex;align-items:center;gap:12px;padding:0 16px 14px;}
-.channel-row-info{flex:1;}
-.channel-row-name{font-size:14px;font-weight:600;}
-.channel-row-subs{font-size:12px;color:var(--text2);}
-.sub-btn{padding:8px 16px;background:var(--text);color:var(--bg);border:none;border-radius:20px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;}
-.sub-btn.subscribed{background:var(--bg3);color:var(--text);}
-
-/* COMMENTS */
-.comments-section{padding:0 16px;}
-.comments-title{font-size:15px;font-weight:700;margin-bottom:14px;}
-.comment-input-row{display:flex;gap:10px;align-items:center;margin-bottom:16px;}
-.comment-input{flex:1;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;}
-.comment-send{width:36px;height:36px;background:var(--red);border:none;border-radius:50%;color:white;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
-.comment-item{display:flex;gap:10px;margin-bottom:14px;animation:fadeIn .3s ease;}
-.comment-avatar{width:32px;height:32px;border-radius:50%;background:var(--red);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;overflow:hidden;}
-.comment-avatar img{width:100%;height:100%;object-fit:cover;}
-.comment-body{flex:1;}
-.comment-author{font-size:13px;font-weight:600;}
-.comment-text{font-size:13px;color:var(--text2);margin-top:3px;line-height:1.5;}
-.comment-time{font-size:11px;color:var(--text3);margin-top:4px;}
-
-/* NOTIFICATIONS */
-.notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--red);border-radius:50%;}
-.notif-screen{padding:20px 16px;}
-.notif-screen h2{font-size:20px;font-weight:700;margin-bottom:16px;}
-.notif-item{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);animation:fadeIn .3s ease;}
-.notif-item.unread{background:rgba(255,0,0,.04);margin:0 -16px;padding:14px 16px;border-radius:10px;}
-.notif-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.notif-icon.red{background:rgba(255,0,0,.1);color:var(--red);}
-.notif-icon.blue{background:rgba(0,100,255,.1);color:#4080ff;}
-.notif-icon.green{background:rgba(0,200,100,.1);color:#00c864;}
-.notif-body{flex:1;}
-.notif-text{font-size:13px;line-height:1.5;}
-.notif-time{font-size:11px;color:var(--text3);margin-top:4px;}
-.notif-empty{text-align:center;padding:60px 20px;color:var(--text2);}
-.notif-empty i{font-size:48px;margin-bottom:12px;display:block;color:var(--text3);}
-
-/* LIVE STREAM */
-.live-screen{padding:20px 16px;}
-.live-screen h2{font-size:20px;font-weight:700;margin-bottom:20px;}
-.live-setup-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;}
-.live-setup-card h3{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.live-preview{width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;position:relative;margin-bottom:14px;}
-.live-preview video{width:100%;height:100%;object-fit:cover;}
-.live-badge{position:absolute;top:10px;left:10px;background:var(--red);color:white;font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;display:none;animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
-.live-viewers{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);color:white;font-size:12px;padding:4px 10px;border-radius:6px;display:none;}
-.live-chat{background:var(--bg3);border-radius:12px;padding:12px;height:180px;overflow-y:auto;margin-bottom:12px;}
-.live-chat-msg{font-size:12px;margin-bottom:8px;line-height:1.4;}
-.live-chat-msg strong{color:var(--red);}
-.live-chat-input-row{display:flex;gap:8px;}
-.live-requirements{background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);border-radius:12px;padding:16px;margin-bottom:16px;}
-.live-requirements h4{font-size:14px;font-weight:600;color:#ffa500;margin-bottom:10px;}
-.req-item{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:8px;}
-.req-item i{width:20px;text-align:center;}
-.req-met{color:#00c864;}
-.req-unmet{color:#ff4444;}
-
-/* SEARCH */
-.search-screen{padding:16px;}
-.search-empty{text-align:center;padding:60px 20px;color:var(--text2);}
-.search-empty i{font-size:48px;margin-bottom:12px;display:block;color:var(--text3);}
-
-/* SUBS SCREEN */
-.subs-screen{padding:20px 16px;}
-.subs-screen h2{font-size:20px;font-weight:700;margin-bottom:16px;}
-
-/* TOAST */
-.toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:opacity .3s;white-space:nowrap;}
-.toast.show{opacity:1;}
-
-/* MODAL GENERIC */
+/* EDIT MODAL */
 .modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);display:none;align-items:flex-end;}
 .modal-overlay.open{display:flex;}
-.modal-sheet{width:100%;background:var(--bg2);border-radius:20px 20px 0 0;padding:24px 20px;animation:slideUp .3s ease;max-height:85vh;overflow-y:auto;}
+.modal-sheet{width:100%;background:var(--bg2);border-radius:20px 20px 0 0;padding:22px 18px;animation:slideUp .3s ease;max-height:92vh;overflow-y:auto;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+.sheet-handle{width:34px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px;}
+.sheet-title{font-size:17px;font-weight:700;margin-bottom:18px;}
 
-/* EMPTY STATE */
-.empty-state{text-align:center;padding:60px 20px;color:var(--text2);}
-.empty-state i{font-size:48px;margin-bottom:12px;display:block;color:var(--text3);}
-.empty-state p{font-size:14px;}
+/* VIDEO PLAYER */
+.player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;}
+.player-screen.open{display:flex;}
+.player-back{position:absolute;top:10px;left:10px;z-index:10;width:34px;height:34px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.player-vid-wrap{background:#000;width:100%;aspect-ratio:16/9;position:relative;flex-shrink:0;}
+.player-vid-wrap video{width:100%;height:100%;object-fit:contain;}
+.player-vid-wrap img{width:100%;height:100%;object-fit:contain;}
+.player-info{padding:12px 14px;}
+.player-title{font-size:15px;font-weight:700;line-height:1.4;}
+.player-meta{font-size:12px;color:var(--text2);margin-top:5px;}
+.player-actions{display:flex;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:0 0 12px;}
+.pl-act{flex:1;padding:11px 4px;background:none;border:none;color:var(--text2);cursor:pointer;font-family:var(--font);font-size:11px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.pl-act i{font-size:19px;}
+.pl-act.liked{color:var(--red);}
+.ch-row{display:flex;align-items:center;gap:10px;padding:0 14px 12px;}
+.ch-row-info{flex:1;}
+.ch-row-name{font-size:13px;font-weight:600;}
+.ch-row-subs{font-size:11px;color:var(--text2);}
+.sub-btn{padding:7px 14px;background:var(--text);color:var(--bg);border:none;border-radius:20px;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;}
+.sub-btn.subscribed{background:var(--bg3);color:var(--text);}
+/* EMOJI REACTIONS on player */
+.emoji-reactions{display:flex;gap:8px;padding:0 14px 12px;flex-wrap:wrap;}
+.emoji-react-btn{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:15px;cursor:pointer;display:flex;align-items:center;gap:5px;}
+.emoji-react-btn span{font-size:12px;color:var(--text2);}
+.emoji-react-btn.reacted{border-color:var(--red);background:rgba(255,0,0,.08);}
 
-/* SECTION DIVIDER */
-.section-divider{font-size:15px;font-weight:700;margin:16px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+/* COMMENTS */
+.comments-sec{padding:0 14px;}
+.comm-title{font-size:14px;font-weight:700;margin-bottom:12px;}
+.comm-input-row{display:flex;gap:9px;align-items:center;margin-bottom:14px;}
+.comm-input{flex:1;padding:9px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;}
+.comm-send{width:34px;height:34px;background:var(--red);border:none;border-radius:50%;color:white;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.comm-item{display:flex;gap:9px;margin-bottom:12px;animation:fadeIn .3s ease;}
+.comm-av{width:30px;height:30px;border-radius:50%;background:var(--red);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;overflow:hidden;}
+.comm-av img{width:100%;height:100%;object-fit:cover;}
+.comm-body{flex:1;}
+.comm-author{font-size:12px;font-weight:600;}
+.comm-text{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.5;}
+.comm-time{font-size:10px;color:var(--text3);margin-top:3px;}
 
-/* VIDEO EDITOR */
-.editor-screen{padding:20px 16px;}
-.editor-screen h2{font-size:20px;font-weight:700;margin-bottom:16px;}
-.editor-preview{width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;margin-bottom:16px;}
-.editor-preview video{width:100%;height:100%;object-fit:contain;}
-.trim-bar{margin-bottom:16px;}
-.trim-label{font-size:13px;color:var(--text2);margin-bottom:6px;}
-.trim-range{width:100%;accent-color:var(--red);}
-.sound-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;}
-.sound-section h4{font-size:14px;font-weight:600;margin-bottom:10px;}
-.sound-option{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;}
-.sound-option:last-child{border-bottom:none;}
-.sound-option i{width:32px;height:32px;background:rgba(255,0,0,.1);color:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+/* NOTIFICATIONS */
+.notif-screen{padding:18px 14px;}
+.notif-screen h2{font-size:19px;font-weight:700;margin-bottom:14px;}
+.notif-item{display:flex;gap:11px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border);animation:fadeIn .3s ease;}
+.notif-item.unread{background:rgba(255,0,0,.04);margin:0 -14px;padding:12px 14px;border-radius:9px;}
+.notif-ic{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.notif-ic.like{background:rgba(255,0,0,.15);color:var(--red);}
+.notif-ic.comment{background:rgba(0,150,255,.15);color:#0096ff;}
+.notif-ic.sub{background:rgba(0,200,100,.15);color:#00c864;}
+.notif-ic.system{background:rgba(255,150,0,.15);color:#ff9600;}
+.notif-body{flex:1;}
+.notif-text{font-size:13px;line-height:1.5;}
+.notif-time{font-size:11px;color:var(--text3);margin-top:3px;}
+
+/* SEARCH */
+.search-screen{padding:10px 14px;}
+
+/* SUBS SCREEN */
+.subs-screen{padding:14px;}
+.subs-screen h2{font-size:18px;font-weight:700;margin-bottom:14px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s;white-space:nowrap;}
+.toast.show{opacity:1;}
 </style>
 </head>
 <body>
 
-<!-- ═══ HEADER ═══ -->
-<header class="header" id="mainHeader">
-  <div class="logo">My<span>Tube</span></div>
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search..." oninput="handleSearch(this.value)">
-    <button onclick="doSearch()"><i class="fas fa-search"></i></button>
-  </div>
-  <div class="header-actions">
-    <button class="icon-btn" onclick="showNotifications()" style="position:relative;">
-      <i class="fas fa-bell"></i>
-      <span class="notif-dot" id="notifDot" style="display:none;"></span>
-    </button>
-    <button class="icon-btn" onclick="toggleTheme()" id="themeBtn"><i class="fas fa-moon"></i></button>
-    <button class="avatar-btn" id="headerAvatar" onclick="showScreen('profile')">?</button>
-  </div>
-</header>
-
-<!-- ═══ MAIN ═══ -->
-<div class="main">
-
-<!-- HOME -->
-<div id="homeScreen" class="screen active">
-  <div class="chips" id="categoryChips">
-    <button class="chip active" onclick="filterFeed('all',this)">All</button>
-    <button class="chip" onclick="filterFeed('gaming',this)">Gaming</button>
-    <button class="chip" onclick="filterFeed('music',this)">Music</button>
-    <button class="chip" onclick="filterFeed('sports',this)">Sports</button>
-    <button class="chip" onclick="filterFeed('news',this)">News</button>
-    <button class="chip" onclick="filterFeed('education',this)">Education</button>
-    <button class="chip" onclick="filterFeed('tech',this)">Tech</button>
-  </div>
-  <div class="feed" id="homeFeed"><div class="loader"><div class="spinner"></div></div></div>
-</div>
-
-<!-- SHORTS -->
-<div id="shortsScreen" class="screen">
-  <div style="padding:14px 16px 8px;font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;">
-    <i class="fas fa-film" style="color:var(--red);"></i> Shorts
-  </div>
-  <div class="shorts-grid" id="shortsGrid"><div class="loader" style="grid-column:1/-1;"><div class="spinner"></div></div></div>
-</div>
-
-<!-- UPLOAD -->
-<div id="uploadScreen" class="screen">
-  <div class="upload-screen">
-    <h2>Create</h2>
-    <div class="type-grid">
-      <div class="type-card" onclick="selectUploadType('video',this)"><i class="fas fa-video" style="color:#ff4444;"></i><span>Video</span></div>
-      <div class="type-card" onclick="selectUploadType('short',this)"><i class="fas fa-film" style="color:#ff8c00;"></i><span>Short</span></div>
-      <div class="type-card" onclick="selectUploadType('live',this)"><i class="fas fa-broadcast-tower" style="color:#ff0000;"></i><span>Go Live</span></div>
-    </div>
-    <div class="upload-form" id="uploadForm">
-      <!-- Thumbnail Upload -->
-      <div class="thumb-upload-wrap">
-        <span class="thumb-upload-label"><i class="fas fa-image"></i> Custom Thumbnail (optional)</span>
-        <div class="thumb-upload-box" onclick="document.getElementById('thumbInput').click()">
-          <i class="fas fa-plus" style="font-size:20px;color:var(--text3);"></i>
-          <p style="font-size:12px;color:var(--text2);margin-top:4px;">Add thumbnail</p>
-          <input type="file" id="thumbInput" accept="image/*" onchange="previewThumb(this)">
-          <img id="thumbPreviewImg" class="thumb-preview-img">
-        </div>
-      </div>
-      <!-- File Drop -->
-      <div class="file-drop" id="fileDrop" onclick="document.getElementById('uploadFile').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
-        <input type="file" id="uploadFile" accept="video/*,image/*" onchange="handleFile(this.files[0])">
-        <i class="fas fa-cloud-upload-alt"></i>
-        <p>Tap to select video / image</p>
-      </div>
-      <img id="uploadImgPreview" class="upload-preview">
-      <video id="uploadVidPreview" class="upload-preview" controls></video>
-      <div class="progress-bar" id="uploadProgressBar"><div class="progress-fill" id="uploadProgressFill"></div></div>
-      <input class="inp" id="uploadTitle" placeholder="Title *">
-      <input class="inp" id="uploadDesc" placeholder="Description">
-      <input class="inp" id="uploadCategory" placeholder="Category (gaming, music, tech...)">
-      <button class="btn-red" id="uploadBtn" onclick="doUpload()"><i class="fas fa-upload"></i> Upload</button>
-    </div>
-  </div>
-</div>
-
-<!-- DASHBOARD (Creator Studio) -->
-<div id="dashboardScreen" class="screen">
-  <div class="dashboard-screen">
-    <div class="dash-header">
-      <h2>Studio <i class="fas fa-chart-bar" style="font-size:18px;color:var(--red);"></i></h2>
-      <p id="dashWelcome">Your Creator Dashboard</p>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-video"></i></div><div class="stat-num" id="dashVideos">0</div><div class="stat-label">Total Videos</div></div>
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-num" id="dashSubs">0</div><div class="stat-label">Subscribers</div></div>
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-heart"></i></div><div class="stat-num" id="dashLikes">0</div><div class="stat-label">Total Likes</div></div>
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-eye"></i></div><div class="stat-num" id="dashViews">0</div><div class="stat-label">Total Views</div></div>
-    </div>
-    <!-- Subscribers List -->
-    <div class="subs-list-section">
-      <div class="section-divider">👥 Subscribers</div>
-      <div id="subsList"><div class="loader"><div class="spinner"></div></div></div>
-    </div>
-    <!-- My Content -->
-    <div style="margin-top:20px;">
-      <div class="my-videos-title">My Content</div>
-      <div id="myContentList"><div class="loader"><div class="spinner"></div></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- PROFILE -->
-<div id="profileScreen" class="screen">
-  <div class="profile-screen">
-    <div class="profile-cover" id="profileCover"></div>
-    <div class="profile-info">
-      <div class="profile-pic-wrap">
-        <div class="profile-pic" id="profilePicEl">?</div>
-        <div class="profile-pic-edit" onclick="document.getElementById('profilePicInput').click()"><i class="fas fa-camera"></i></div>
-        <input type="file" id="profilePicInput" accept="image/*" onchange="uploadProfilePic(this)">
-      </div>
-      <div class="profile-name" id="profileName">Loading...</div>
-      <div class="profile-handle" id="profileHandle">@user</div>
-      <div class="profile-stats">
-        <div class="pstat"><div class="pstat-num" id="profileVideos">0</div><div class="pstat-label">Videos</div></div>
-        <div class="pstat"><div class="pstat-num" id="profileSubs">0</div><div class="pstat-label">Subscribers</div></div>
-        <div class="pstat"><div class="pstat-num" id="profileLikes">0</div><div class="pstat-label">Likes</div></div>
-      </div>
-      <div class="profile-actions">
-        <button class="btn-sm" onclick="openEditProfile()"><i class="fas fa-edit"></i> Edit Profile</button>
-        <button class="btn-sm" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
-      </div>
-    </div>
-    <!-- Channel Section -->
-    <div class="channel-section">
-      <h3><i class="fas fa-tv" style="color:var(--red);margin-right:6px;"></i> My Channel</h3>
-      <div id="channelInfo">
-        <input class="inp" id="channelName" placeholder="Channel Name">
-        <input class="inp" id="channelHandle" placeholder="@handle">
-        <input class="inp" id="channelAbout" placeholder="Channel description...">
-        <button class="btn-red" onclick="saveChannel()">Save Channel</button>
-      </div>
-    </div>
-    <!-- About -->
-    <div class="profile-section" style="margin-top:16px;">
-      <div class="section-title">About</div>
-      <div id="profileAboutText" style="font-size:14px;color:var(--text2);line-height:1.6;">No bio yet.</div>
-    </div>
-  </div>
-</div>
-
-<!-- SEARCH -->
-<div id="searchScreen" class="screen">
-  <div class="search-screen">
-    <div id="searchResults">
-      <div class="search-empty"><i class="fas fa-search"></i><p>Search for videos, channels...</p></div>
-    </div>
-  </div>
-</div>
-
-<!-- SUBSCRIPTIONS -->
-<div id="subsScreen" class="screen">
-  <div class="subs-screen">
-    <h2>Subscriptions</h2>
-    <div id="subsFeed"><div class="loader"><div class="spinner"></div></div></div>
-  </div>
-</div>
-
-<!-- NOTIFICATIONS -->
-<div id="notifScreen" class="screen">
-  <div class="notif-screen">
-    <h2><i class="fas fa-bell" style="color:var(--red);margin-right:8px;"></i>Notifications</h2>
-    <div id="notifList"><div class="loader"><div class="spinner"></div></div></div>
-  </div>
-</div>
-
-<!-- OWNER DASHBOARD -->
-<div id="ownerScreen" class="screen">
-  <div class="owner-dashboard">
-    <div class="owner-dash-header">
-      <h2>Admin Panel</h2>
-      <span class="owner-badge">OWNER</span>
-    </div>
-    <div class="owner-stats-grid">
-      <div class="owner-stat"><div class="owner-stat-icon" style="background:rgba(255,0,0,.1);color:var(--red);"><i class="fas fa-users"></i></div><div class="owner-stat-num" id="ownerTotalUsers">0</div><div class="owner-stat-label">Total Users</div></div>
-      <div class="owner-stat"><div class="owner-stat-icon" style="background:rgba(255,165,0,.1);color:#ffa500;"><i class="fas fa-tv"></i></div><div class="owner-stat-num" id="ownerTotalChannels">0</div><div class="owner-stat-label">Channels</div></div>
-      <div class="owner-stat"><div class="owner-stat-icon" style="background:rgba(0,200,100,.1);color:#00c864;"><i class="fas fa-circle"></i></div><div class="owner-stat-num" id="ownerActiveUsers">0</div><div class="owner-stat-label">Active (7d)</div></div>
-      <div class="owner-stat"><div class="owner-stat-icon" style="background:rgba(0,100,255,.1);color:#4080ff;"><i class="fas fa-video"></i></div><div class="owner-stat-num" id="ownerTotalVideos">0</div><div class="owner-stat-label">Total Videos</div></div>
-    </div>
-    <div class="owner-section-title">All Users</div>
-    <div id="ownerUsersList"><div class="loader"><div class="spinner"></div></div></div>
-  </div>
-</div>
-
-<!-- LIVE STREAM -->
-<div id="liveScreen" class="screen">
-  <div class="live-screen">
-    <h2><i class="fas fa-broadcast-tower" style="color:var(--red);margin-right:8px;"></i>Go Live</h2>
-    <div class="live-requirements" id="liveRequirements">
-      <h4><i class="fas fa-exclamation-circle"></i> Requirements to Go Live</h4>
-      <div class="req-item"><i class="fas fa-video req-unmet" id="reqVideos"></i><span id="reqVideosText">40 videos uploaded (0/40)</span></div>
-      <div class="req-item"><i class="fas fa-film req-unmet" id="reqShorts"></i><span id="reqShortsText">50 shorts uploaded (0/50)</span></div>
-      <div class="req-item"><i class="fas fa-heart req-unmet" id="reqLikes"></i><span id="reqLikesText">100 likes on 1 video (0/100)</span></div>
-      <div class="req-item"><i class="fas fa-users req-unmet" id="reqSubs"></i><span id="reqSubsText">100 subscribers (0/100)</span></div>
-    </div>
-    <div class="live-setup-card">
-      <h3><i class="fas fa-cog" style="color:var(--text2);"></i> Stream Setup</h3>
-      <input class="inp" id="liveTitle" placeholder="Stream title *">
-      <input class="inp" id="liveDesc" placeholder="Stream description">
-      <div class="live-preview">
-        <video id="livePreviewVideo" autoplay muted playsinline></video>
-        <div class="live-badge" id="liveBadge">🔴 LIVE</div>
-        <div class="live-viewers" id="liveViewers"><i class="fas fa-eye"></i> <span id="liveViewCount">0</span></div>
-      </div>
-      <button class="btn-red" id="liveBtn" onclick="toggleLive()"><i class="fas fa-broadcast-tower"></i> Start Live Stream</button>
-    </div>
-    <div class="live-setup-card" id="liveChatSection" style="display:none;">
-      <h3><i class="fas fa-comments" style="color:var(--text2);"></i> Live Chat</h3>
-      <div class="live-chat" id="liveChat"></div>
-      <div class="live-chat-input-row">
-        <input class="inp" id="liveChatInput" placeholder="Say something..." style="margin-bottom:0;flex:1;">
-        <button class="comment-send" onclick="sendLiveChat()"><i class="fas fa-paper-plane"></i></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- VIDEO EDITOR -->
-<div id="editorScreen" class="screen">
-  <div class="editor-screen">
-    <h2><i class="fas fa-cut" style="color:var(--red);margin-right:8px;"></i>Video Editor</h2>
-    <div class="editor-preview"><video id="editorVideo" controls></video></div>
-    <div class="trim-bar">
-      <div class="trim-label">Trim Start: <span id="trimStartVal">0s</span></div>
-      <input type="range" class="trim-range" id="trimStart" min="0" max="100" value="0" oninput="updateTrim()">
-      <div class="trim-label" style="margin-top:8px;">Trim End: <span id="trimEndVal">100%</span></div>
-      <input type="range" class="trim-range" id="trimEnd" min="0" max="100" value="100" oninput="updateTrim()">
-    </div>
-    <div class="sound-section">
-      <h4><i class="fas fa-music" style="color:var(--red);margin-right:6px;"></i>Add Sound</h4>
-      <div class="sound-option" onclick="addSound('none')"><i class="fas fa-volume-mute"></i><span>Original Audio</span></div>
-      <div class="sound-option" onclick="addSound('mute')"><i class="fas fa-volume-off"></i><span>Mute Audio</span></div>
-      <div class="sound-option" onclick="addSound('music')"><i class="fas fa-music"></i><span>Add Background Music</span></div>
-    </div>
-    <button class="btn-red" onclick="saveEdit()"><i class="fas fa-save"></i> Save & Upload</button>
-  </div>
-</div>
-
-</div><!-- end .main -->
-
-<!-- ═══ BOTTOM NAV ═══ -->
-<nav class="bottom-nav" id="mainNav">
-  <button class="nav-item active" id="nav-home" onclick="showScreen('home')"><i class="fas fa-home"></i><span>Home</span></button>
-  <button class="nav-item" id="nav-shorts" onclick="showScreen('shorts')"><i class="fas fa-film"></i><span>Shorts</span></button>
-  <button class="nav-item" id="nav-upload" onclick="showScreen('upload')"><div class="nav-plus"><i class="fas fa-plus"></i></div></button>
-  <button class="nav-item" id="nav-subs" onclick="showScreen('subs')"><i class="fas fa-th-large"></i><span>Subs</span></button>
-  <button class="nav-item" id="nav-profile" onclick="showScreen('profile')"><i class="fas fa-user"></i><span>You</span></button>
-</nav>
-
-<!-- ═══ AUTH SCREEN ═══ -->
-<div class="auth-screen" id="authScreen">
-  <div class="auth-logo">My<span>Tube</span></div>
-  <p class="auth-tagline">Watch. Create. Connect.</p>
+<!-- ═══ AUTH ═══ -->
+<div id="authScreen" class="auth-screen">
+  <div class="auth-logo">▶ My<span>Tube</span></div>
+  <div class="auth-tagline">Pakistan ka apna video platform 🇵🇰</div>
   <div class="auth-card">
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthTab('login',this)">Login</button>
@@ -600,1273 +342,1347 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div id="loginForm">
       <input class="inp" id="loginEmail" type="email" placeholder="Email">
       <input class="inp" id="loginPass" type="password" placeholder="Password">
-      <button class="btn-red" onclick="doLogin()">Login</button>
+      <button class="btn-red" id="loginBtn" onclick="doLogin()">Login</button>
     </div>
     <div id="signupForm" style="display:none;">
       <input class="inp" id="signupName" placeholder="Full Name">
       <input class="inp" id="signupEmail" type="email" placeholder="Email">
-      <input class="inp" id="signupPass" type="password" placeholder="Password (6+ chars)">
-      <button class="btn-red" onclick="doSignup()">Create Account</button>
+      <input class="inp" id="signupPass" type="password" placeholder="Password (min 6)">
+      <button class="btn-red" id="signupBtn" onclick="doSignup()">Create Account</button>
     </div>
+    <div style="display:flex;align-items:center;gap:10px;margin:12px 0;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <span style="color:var(--text2);font-size:12px;">OR</span>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+    <button class="btn-outline" onclick="doGoogle()">
+      <i class="fab fa-google" style="color:#4285f4;"></i> Continue with Google
+    </button>
     <div class="auth-err" id="authErr"></div>
   </div>
 </div>
 
+<!-- ═══ MAIN APP ═══ -->
+<div id="mainApp" style="display:none;">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">▶ My<span>Tube</span></div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search..." oninput="onSearchInput(this.value)">
+      <button onclick="doSearch()"><i class="fas fa-search"></i></button>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn"><i class="fas fa-moon"></i></button>
+      <button class="icon-btn" onclick="showScreen('notif')">
+        <i class="fas fa-bell"></i>
+        <div class="notif-dot" id="notifDot" style="display:none;"></div>
+      </button>
+      <button class="avatar-btn" id="headerAvatar" onclick="showScreen('profile')">?</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- HOME -->
+    <div id="homeScreen" class="screen active">
+      <div class="chips" id="chipsRow">
+        <button class="chip active" onclick="filterFeed(this,'all')">All</button>
+        <button class="chip" onclick="filterFeed(this,'video')">Videos</button>
+        <button class="chip" onclick="filterFeed(this,'post')">Posts</button>
+        <button class="chip" onclick="filterFeed(this,'image')">Photos</button>
+        <button class="chip" onclick="filterFeed(this,'gaming')">Gaming</button>
+        <button class="chip" onclick="filterFeed(this,'music')">Music</button>
+        <button class="chip" onclick="filterFeed(this,'cricket')">Cricket</button>
+        <button class="chip" onclick="filterFeed(this,'news')">News</button>
+      </div>
+      <div class="feed" id="homeFeed"><div class="loader"><div class="spinner"></div></div></div>
+    </div>
+
+    <!-- SHORTS -->
+    <div id="shortsScreen" class="screen">
+      <div style="padding:12px 14px 6px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:7px;">
+        <i class="fas fa-film" style="color:var(--red);"></i> Shorts
+      </div>
+      <div class="shorts-grid" id="shortsGrid"><div class="loader" style="grid-column:1/-1;"><div class="spinner"></div></div></div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div id="uploadScreen" class="screen">
+      <div class="upload-screen">
+        <h2>Create</h2>
+        <div class="type-grid">
+          <div class="type-card" onclick="selectType('video',this)"><i class="fas fa-video" style="color:#ff4d4d;"></i><span>Video</span></div>
+          <div class="type-card" onclick="selectType('short',this)"><i class="fas fa-film" style="color:#ff4d4d;"></i><span>Short</span></div>
+          <div class="type-card" onclick="selectType('image',this)"><i class="fas fa-image" style="color:#ff4d4d;"></i><span>Image</span></div>
+          <div class="type-card" onclick="selectType('post',this)"><i class="fas fa-pen" style="color:#ff4d4d;"></i><span>Post</span></div>
+          <div class="type-card" onclick="selectType('gaming',this)"><i class="fas fa-gamepad" style="color:#ff4d4d;"></i><span>Gaming</span></div>
+          <div class="type-card" onclick="selectType('music',this)"><i class="fas fa-music" style="color:#ff4d4d;"></i><span>Music</span></div>
+        </div>
+        <div class="upload-form" id="uploadForm">
+          <!-- File drop (hidden for post) -->
+          <div id="fileDrop" class="file-drop" onclick="document.getElementById('uploadFile').click()">
+            <input type="file" id="uploadFile" onchange="onFileSelect(this)">
+            <i class="fas fa-cloud-upload-alt" id="fileIcon"></i>
+            <p id="fileText">Tap to select file</p>
+          </div>
+          <img id="uploadImgPrev" class="upload-preview-img">
+          <video id="uploadVidPrev" class="upload-preview-vid" controls></video>
+          <!-- Thumbnail -->
+          <div class="thumb-upload" id="thumbUploadWrap" style="display:none;">
+            <div class="thumb-upload-box" onclick="document.getElementById('thumbFile').click()">
+              <input type="file" id="thumbFile" accept="image/*" onchange="onThumbSelect(this)">
+              <i class="fas fa-image"></i>
+              <p>Custom Thumbnail (optional)</p>
+            </div>
+            <img id="thumbPrev" class="thumb-preview">
+          </div>
+          <!-- Post images -->
+          <div id="postImgsWrap" style="display:none;">
+            <div class="post-img-grid" id="postImgGrid">
+              <div class="add-img-btn" onclick="document.getElementById('postImgFile').click()">
+                <i class="fas fa-plus"></i>
+                <input type="file" id="postImgFile" accept="image/*" multiple onchange="addPostImages(this)">
+              </div>
+            </div>
+          </div>
+          <div class="progress-bar" id="progBar"><div class="progress-fill" id="progFill"></div></div>
+          <input class="inp" id="uploadTitle" placeholder="Title *">
+          <input class="inp" id="uploadDesc" placeholder="Description">
+          <input class="inp" id="uploadCat" placeholder="Category (gaming, music, cricket...)">
+          <button class="btn-red" id="uploadBtn" onclick="doUpload()"><i class="fas fa-upload"></i> Upload</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboardScreen" class="screen">
+      <div class="dashboard-screen">
+        <div class="dash-hdr">
+          <h2>📊 Studio</h2>
+          <p id="dashWelcome">Your Creator Dashboard</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon"><i class="fas fa-video"></i></div><div class="stat-num" id="dVideos">0</div><div class="stat-lbl">Videos</div></div>
+          <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-num" id="dSubs">0</div><div class="stat-lbl">Subscribers</div></div>
+          <div class="stat-card"><div class="stat-icon"><i class="fas fa-heart"></i></div><div class="stat-num" id="dLikes">0</div><div class="stat-lbl">Likes</div></div>
+          <div class="stat-card"><div class="stat-icon"><i class="fas fa-eye"></i></div><div class="stat-num" id="dViews">0</div><div class="stat-lbl">Views</div></div>
+        </div>
+        <!-- Analytics / CTR -->
+        <div class="analytics-section">
+          <div class="analytics-title">📈 Analytics</div>
+          <div class="analytics-grid">
+            <div class="an-card"><div class="an-num" id="aCTR">0%</div><div class="an-lbl">CTR</div></div>
+            <div class="an-card"><div class="an-num" id="aAvgViews">0</div><div class="an-lbl">Avg Views</div></div>
+            <div class="an-card"><div class="an-num" id="aEngagement">0%</div><div class="an-lbl">Engagement</div></div>
+          </div>
+        </div>
+        <!-- Subscribers list -->
+        <div class="subs-list-title">👥 Subscribers</div>
+        <div id="subsList"><div style="color:var(--text2);font-size:13px;">No subscribers yet</div></div>
+        <!-- My content -->
+        <div class="my-vids-title" style="margin-top:16px;">🎬 My Content</div>
+        <div id="myContentList"><div class="loader"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="profileScreen" class="screen">
+      <div class="profile-screen">
+        <div class="prof-cover" id="profCover"></div>
+        <div class="prof-info">
+          <div class="prof-pic-wrap">
+            <div class="prof-pic" id="profPicEl">?</div>
+            <div class="prof-pic-edit" onclick="document.getElementById('profilePicInput').click()"><i class="fas fa-camera"></i></div>
+            <input type="file" id="profilePicInput" accept="image/*" onchange="uploadProfilePic(this)">
+          </div>
+          <div class="prof-name" id="profName">Loading...</div>
+          <div class="prof-handle" id="profHandle">@user</div>
+          <div class="prof-stats">
+            <div class="pst"><div class="pst-num" id="profVideos">0</div><div class="pst-lbl">Videos</div></div>
+            <div class="pst"><div class="pst-num" id="profSubs">0</div><div class="pst-lbl">Subscribers</div></div>
+            <div class="pst"><div class="pst-num" id="profLikes">0</div><div class="pst-lbl">Likes</div></div>
+          </div>
+          <div class="prof-actions">
+            <button class="btn-sm" onclick="openEditModal()"><i class="fas fa-edit"></i> Edit Profile</button>
+            <button class="btn-sm" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          </div>
+        </div>
+        <!-- Channel -->
+        <div class="channel-section">
+          <h3><i class="fas fa-tv" style="color:var(--red);margin-right:6px;"></i>My Channel</h3>
+          <input class="inp" id="channelName" placeholder="Channel Name">
+          <input class="inp" id="channelHandle" placeholder="@handle">
+          <input class="inp" id="channelAbout" placeholder="Channel description">
+          <button class="btn-red" onclick="saveChannel()">Save Channel</button>
+        </div>
+        <!-- About -->
+        <div class="prof-section">
+          <div class="sec-title">About</div>
+          <div id="profAboutText" style="font-size:13px;color:var(--text2);line-height:1.6;">No bio yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div id="notifScreen" class="screen">
+      <div class="notif-screen">
+        <h2>🔔 Notifications</h2>
+        <div id="notifList"><div class="loader"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div id="searchScreen" class="screen">
+      <div class="search-screen">
+        <div id="searchResults">
+          <div class="empty-state"><i class="fas fa-search"></i><p>Search for videos...</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBSCRIPTIONS -->
+    <div id="subsScreen" class="screen">
+      <div class="subs-screen">
+        <h2>Subscriptions</h2>
+        <div id="subsFeed"><div class="loader"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+
+    <!-- OWNER DASHBOARD -->
+    <div id="ownerScreen" class="screen">
+      <div class="owner-screen">
+        <div class="owner-badge-hdr">
+          <h2>Admin Panel</h2>
+          <span class="owner-badge">OWNER</span>
+        </div>
+        <div class="owner-stats" id="ownerStats">
+          <div class="ow-stat"><div class="ow-icon" style="background:rgba(0,150,255,.15);color:#0096ff;"><i class="fas fa-users"></i></div><div class="ow-num" id="owUsers">0</div><div class="ow-lbl">Total Users</div></div>
+          <div class="ow-stat"><div class="ow-icon" style="background:rgba(255,0,0,.1);color:var(--red);"><i class="fas fa-tv"></i></div><div class="ow-num" id="owChannels">0</div><div class="ow-lbl">Channels</div></div>
+          <div class="ow-stat"><div class="ow-icon" style="background:rgba(0,200,100,.15);color:#00c864;"><i class="fas fa-video"></i></div><div class="ow-num" id="owVideos">0</div><div class="ow-lbl">Total Videos</div></div>
+          <div class="ow-stat"><div class="ow-icon" style="background:rgba(255,150,0,.15);color:#ff9600;"><i class="fas fa-heart"></i></div><div class="ow-num" id="owLikes">0</div><div class="ow-lbl">Total Likes</div></div>
+        </div>
+        <div class="owner-sec-title">All Users</div>
+        <div id="ownerUsersList"><div class="loader"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+
+    <!-- LIVE -->
+    <div id="liveScreen" class="screen">
+      <div class="live-screen">
+        <h2 style="font-size:20px;font-weight:700;margin-bottom:16px;">🔴 Go Live</h2>
+        <div class="live-locked" id="liveLocked">
+          <h3><i class="fas fa-lock" style="color:var(--red);"></i> Requirements to Go Live</h3>
+          <p>Reach these milestones to unlock live streaming</p>
+          <div id="liveReqList"></div>
+        </div>
+        <div class="live-setup" id="liveSetup" style="display:none;">
+          <h3>Stream Setup</h3>
+          <div class="live-indicator">
+            <div class="live-dot"></div>
+            <span class="live-badge">LIVE</span>
+            <span style="font-size:13px;color:var(--text2);margin-left:4px;">Ready to stream</span>
+          </div>
+          <input class="inp" id="liveTitle" placeholder="Stream Title">
+          <input class="inp" id="liveCategory" placeholder="Category">
+          <button class="btn-red" onclick="startLive()"><i class="fas fa-circle" style="color:white;"></i> Start Live Stream</button>
+          <p style="font-size:12px;color:var(--text2);margin-top:10px;text-align:center;">Live streaming via RTMP — use OBS or similar app</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <button class="nav-item active" id="nav-home" onclick="showScreen('home')"><i class="fas fa-home"></i><span>Home</span></button>
+    <button class="nav-item" id="nav-shorts" onclick="showScreen('shorts')"><i class="fas fa-film"></i><span>Shorts</span></button>
+    <button class="nav-item" id="nav-upload" onclick="showScreen('upload')"><div class="nav-plus"><i class="fas fa-plus" style="color:white;font-size:19px;"></i></div></button>
+    <button class="nav-item" id="nav-subs" onclick="showScreen('subs')"><i class="fas fa-th-large"></i><span>Subs</span></button>
+    <button class="nav-item" id="nav-profile" onclick="showScreen('profile')"><i class="fas fa-user"></i><span>You</span></button>
+  </div>
+</div>
+
 <!-- ═══ VIDEO PLAYER ═══ -->
-<div class="video-player-screen" id="videoPlayerScreen">
+<div class="player-screen" id="playerScreen">
   <button class="player-back" onclick="closePlayer()"><i class="fas fa-arrow-left"></i></button>
-  <div class="player-video-wrap">
-    <video id="playerVideo" controls playsinline></video>
+  <div class="player-vid-wrap" id="playerVidWrap">
+    <video id="playerVid" controls playsinline></video>
   </div>
   <div class="player-info">
-    <div class="player-title" id="playerTitle"></div>
+    <div class="player-title" id="playerTitle">Loading...</div>
     <div class="player-meta" id="playerMeta"></div>
   </div>
   <div class="player-actions">
-    <button class="player-action" id="likeBtn" onclick="toggleLike()"><i class="fas fa-thumbs-up"></i><span id="likeCount">0</span></button>
-    <button class="player-action" onclick="shareVideo()"><i class="fas fa-share"></i><span>Share</span></button>
-    <button class="player-action" onclick="showToast('Saved!')"><i class="fas fa-bookmark"></i><span>Save</span></button>
-    <button class="player-action" onclick="showToast('Reported')"><i class="fas fa-flag"></i><span>Report</span></button>
+    <button class="pl-act" id="likeBtn" onclick="toggleLike()"><i class="fas fa-thumbs-up"></i><span id="likeCount">0</span></button>
+    <button class="pl-act" onclick="shareVideo()"><i class="fas fa-share"></i><span>Share</span></button>
+    <button class="pl-act" onclick="showToast('Saved! ✅')"><i class="fas fa-bookmark"></i><span>Save</span></button>
+    <button class="pl-act" onclick="showToast('Reported')"><i class="fas fa-flag"></i><span>Report</span></button>
   </div>
-  <div class="channel-row" id="playerChannelRow">
-    <div class="channel-avatar" id="playerChannelAvatar"></div>
-    <div class="channel-row-info">
-      <div class="channel-row-name" id="playerChannelName"></div>
-      <div class="channel-row-subs" id="playerChannelSubs"></div>
+  <!-- Emoji reactions -->
+  <div class="emoji-reactions" id="emojiReactions">
+    <button class="emoji-react-btn" onclick="reactEmoji('❤️',this)">❤️ <span id="e1">0</span></button>
+    <button class="emoji-react-btn" onclick="reactEmoji('😂',this)">😂 <span id="e2">0</span></button>
+    <button class="emoji-react-btn" onclick="reactEmoji('🔥',this)">🔥 <span id="e3">0</span></button>
+    <button class="emoji-react-btn" onclick="reactEmoji('😮',this)">😮 <span id="e4">0</span></button>
+    <button class="emoji-react-btn" onclick="reactEmoji('👏',this)">👏 <span id="e5">0</span></button>
+  </div>
+  <div class="ch-row" id="playerChRow">
+    <div class="ch-av" id="playerChAv">?</div>
+    <div class="ch-row-info">
+      <div class="ch-row-name" id="playerChName"></div>
+      <div class="ch-row-subs" id="playerChSubs">0 subscribers</div>
     </div>
     <button class="sub-btn" id="playerSubBtn" onclick="toggleSubscribe()">Subscribe</button>
   </div>
-  <div class="comments-section">
-    <div class="comments-title" id="commentsTitle">Comments</div>
-    <div class="comment-input-row">
-      <div class="channel-avatar" id="commentMyAvatar"></div>
-      <input class="comment-input" id="commentInput" placeholder="Add a comment...">
-      <button class="comment-send" onclick="postComment()"><i class="fas fa-paper-plane"></i></button>
+  <div class="comments-sec">
+    <div class="comm-title" id="commTitle">Comments</div>
+    <div class="comm-input-row">
+      <div class="comm-av" id="myCommAv">?</div>
+      <input class="comm-input" id="commInput" placeholder="Add a comment...">
+      <button class="comm-send" onclick="postComment()"><i class="fas fa-paper-plane"></i></button>
     </div>
-    <div id="commentsList"></div>
+    <div id="commList"></div>
   </div>
 </div>
 
 <!-- ═══ FULLSCREEN SHORT ═══ -->
-<div class="short-fullscreen" id="shortFullscreen">
-  <div class="sf-video-wrap">
-    <button class="sf-close" onclick="closeShort()"><i class="fas fa-times"></i></button>
-    <video id="sfVideo" loop playsinline></video>
+<div class="short-fs" id="shortFS">
+  <div class="sf-wrap" id="sfWrap">
+    <button class="sf-close" onclick="closeShortFS()"><i class="fas fa-times"></i></button>
+    <video id="sfVid" loop playsinline></video>
+    <div class="sf-nav">
+      <button onclick="prevShort()"><i class="fas fa-chevron-left"></i></button>
+      <button onclick="nextShort()"><i class="fas fa-chevron-right"></i></button>
+    </div>
     <div class="sf-actions">
-      <button class="sf-action" id="sfLikeBtn" onclick="likeShort()"><i class="fas fa-heart"></i><span id="sfLikeCount">0</span></button>
-      <button class="sf-action" onclick="showToast('Comment coming soon')"><i class="fas fa-comment"></i><span>Comment</span></button>
-      <button class="sf-action" onclick="shareVideo()"><i class="fas fa-share"></i><span>Share</span></button>
+      <button class="sf-act" id="sfLikeBtn" onclick="sfLike()"><i class="fas fa-heart"></i><span id="sfLikeCount">0</span></button>
+      <button class="sf-act" onclick="sfCommentOpen()"><i class="fas fa-comment"></i><span>Comment</span></button>
+      <button class="sf-act" onclick="sfShare()"><i class="fas fa-share"></i><span>Share</span></button>
     </div>
     <div class="sf-info">
-      <div class="sf-channel" id="sfChannel"></div>
-      <div class="sf-title" id="sfTitle"></div>
+      <div class="sf-ch" id="sfCh"></div>
+      <div class="sf-ttl" id="sfTtl"></div>
     </div>
   </div>
 </div>
 
 <!-- ═══ EDIT PROFILE MODAL ═══ -->
-<div class="edit-profile-modal" id="editProfileModal">
-  <div class="edit-profile-sheet">
+<div class="modal-overlay" id="editModal" onclick="closeModalIfOut(event,'editModal')">
+  <div class="modal-sheet">
     <div class="sheet-handle"></div>
     <div class="sheet-title">Edit Profile</div>
     <input class="inp" id="editName" placeholder="Display Name">
     <input class="inp" id="editHandle" placeholder="@username">
-    <textarea class="inp" id="editBio" placeholder="Bio / About..." rows="3" style="resize:none;"></textarea>
-    <button class="btn-red" onclick="saveProfile()">Save Changes</button>
-    <button class="btn-outline" onclick="closeEditProfile()" style="margin-top:8px;">Cancel</button>
+    <input class="inp" id="editAbout" placeholder="Bio">
+    <button class="btn-red" onclick="saveEditProfile()">Save Changes</button>
+    <button class="btn-outline" style="margin-top:8px;" onclick="closeModal('editModal')">Cancel</button>
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+<!-- Toast -->
+<div class="toast" id="toastEl"></div>
 
 <script>
-// ═══════════════════════════════════════════
-// FIREBASE CONFIG
-// ═══════════════════════════════════════════
-const firebaseConfig = {
-  apiKey: "AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
-  authDomain: "my-tube-e526b.firebaseapp.com",
-  projectId: "my-tube-e526b",
-  storageBucket: "my-tube-e526b.firebasestorage.app",
-  messagingSenderId: "948348267378",
-  appId: "1:948348267378:web:2dd25f59a9f510a8694beb",
-  measurementId: "G-EQ91748HD1"
+// ═══════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════
+const FIREBASE_CONFIG = {
+  apiKey:"AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
+  authDomain:"my-tube-e526b.firebaseapp.com",
+  projectId:"my-tube-e526b",
+  storageBucket:"my-tube-e526b.firebasestorage.app",
+  messagingSenderId:"948348267378",
+  appId:"1:948348267378:web:2dd25f59a9f510a8694beb"
 };
-firebase.initializeApp(firebaseConfig);
+const CLOUD = "dyrjyet9o";
+const PRESET = "mytube_upload";
+// ⚠️ OWNER EMAIL — Sirf apna email daalo
+const OWNER_EMAIL = "mrwhyyouareyou@gmail.com";
+
+// Live requirements
+const LIVE_REQS = {videos:40, shorts:50, likesOnOneVideo:100, subscribers:100};
+
+firebase.initializeApp(FIREBASE_CONFIG);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// Cloudinary
-const CLOUD_NAME = "dyrjyet9o";
-const UPLOAD_PRESET = "mytube_upload";
-
-// OWNER EMAIL - change this to your email
-const OWNER_EMAIL = "owner@mytube.com";
-
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // STATE
-// ═══════════════════════════════════════════
-let currentUser = null;
-let currentUserData = null;
-let currentPostId = null;
-let currentPostData = null;
-let currentShortId = null;
-let currentShortData = null;
-let allPosts = [];
-let uploadType = '';
-let selectedFile = null;
-let selectedThumbFile = null;
-let isLive = false;
-let liveStream = null;
-let notifListener = null;
+// ═══════════════════════════════════════════════════
+let cUser = null, cUserData = null;
+let currentPostId = null, currentPostData = null;
+let allPosts = [], uploadType = '', selectedFile = null, thumbFile = null;
+let postImgFiles = [];
+let sfCurrentId = null, sfPosts = [];
+let sfCurrentIdx = 0;
 
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // THEME
-// ═══════════════════════════════════════════
-function initTheme() {
-  const saved = localStorage.getItem('mytube_theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (saved === 'light' || (!saved && !prefersDark)) {
+// ═══════════════════════════════════════════════════
+function initTheme(){
+  const s = localStorage.getItem('mt_theme');
+  const pd = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if(s==='light'||(!s&&!pd)){
     document.documentElement.setAttribute('data-theme','light');
-    document.getElementById('themeBtn').innerHTML = '<i class="fas fa-sun"></i>';
+    document.getElementById('themeBtn').innerHTML='<i class="fas fa-sun"></i>';
   }
 }
-function toggleTheme() {
-  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  if (isLight) {
-    document.documentElement.removeAttribute('data-theme');
-    localStorage.setItem('mytube_theme','dark');
-    document.getElementById('themeBtn').innerHTML = '<i class="fas fa-moon"></i>';
-  } else {
-    document.documentElement.setAttribute('data-theme','light');
-    localStorage.setItem('mytube_theme','light');
-    document.getElementById('themeBtn').innerHTML = '<i class="fas fa-sun"></i>';
-  }
+function toggleTheme(){
+  const isL = document.documentElement.getAttribute('data-theme')==='light';
+  if(isL){document.documentElement.removeAttribute('data-theme');localStorage.setItem('mt_theme','dark');document.getElementById('themeBtn').innerHTML='<i class="fas fa-moon"></i>';}
+  else{document.documentElement.setAttribute('data-theme','light');localStorage.setItem('mt_theme','light');document.getElementById('themeBtn').innerHTML='<i class="fas fa-sun"></i>';}
 }
 initTheme();
 
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // TOAST
-// ═══════════════════════════════════════════
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+// ═══════════════════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toastEl');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2600);
 }
 
-// ═══════════════════════════════════════════
-// SCREEN NAVIGATION
-// ═══════════════════════════════════════════
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const scr = document.getElementById(name + 'Screen');
-  if (scr) scr.classList.add('active');
-  const nav = document.getElementById('nav-' + name);
-  if (nav) nav.classList.add('active');
-
-  if (name === 'home') loadFeed();
-  if (name === 'shorts') loadShorts();
-  if (name === 'dashboard') loadDashboard();
-  if (name === 'profile') loadProfile();
-  if (name === 'subs') loadSubsFeed();
-  if (name === 'notif') loadNotifications();
-  if (name === 'owner') loadOwnerDashboard();
-  if (name === 'live') checkLiveRequirements();
-}
-
-function showNotifications() {
-  showScreen('notif');
-  document.getElementById('notifDot').style.display = 'none';
-}
-
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // AUTH
-// ═══════════════════════════════════════════
-function switchAuthTab(tab, el) {
-  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('signupForm').style.display = tab === 'signup' ? 'block' : 'none';
-  document.getElementById('authErr').textContent = '';
-}
-
-async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPass').value;
-  if (!email || !pass) return showToast('Fill all fields');
-  try {
-    await auth.signInWithEmailAndPassword(email, pass);
-  } catch(e) {
-    document.getElementById('authErr').textContent = e.message;
-  }
-}
-
-async function doSignup() {
-  const name = document.getElementById('signupName').value.trim();
-  const email = document.getElementById('signupEmail').value.trim();
-  const pass = document.getElementById('signupPass').value;
-  if (!name || !email || !pass) return showToast('Fill all fields');
-  if (pass.length < 6) return showToast('Password min 6 chars');
-  try {
-    const cred = await auth.createUserWithEmailAndPassword(email, pass);
-    await db.collection('users').doc(cred.user.uid).set({
-      name, email, handle: '@' + name.toLowerCase().replace(/\s/g,''),
-      bio: '', photoURL: '', subscribers: 0, likes: 0, views: 0,
-      videos: 0, shorts: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      lastActive: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  } catch(e) {
-    document.getElementById('authErr').textContent = e.message;
-  }
-}
-
-function doLogout() {
-  auth.signOut();
-}
-
-// ═══════════════════════════════════════════
-// AUTH STATE
-// ═══════════════════════════════════════════
-auth.onAuthStateChanged(async user => {
-  if (user) {
-    currentUser = user;
-    document.getElementById('authScreen').style.display = 'none';
-    document.getElementById('mainHeader').style.display = 'flex';
-    document.getElementById('mainNav').style.display = 'flex';
-    document.querySelector('.main').style.display = 'block';
-    // Load user data
+// ═══════════════════════════════════════════════════
+auth.onAuthStateChanged(async user=>{
+  if(user){
+    cUser=user;
+    document.getElementById('authScreen').style.display='none';
+    document.getElementById('mainApp').style.display='block';
     await loadUserData();
-    // Setup real-time notifications
-    setupNotificationListener();
-    // Show home
-    showScreen('home');
-    // Update last active
-    db.collection('users').doc(currentUser.uid).update({
-      lastActive: firebase.firestore.FieldValue.serverTimestamp()
-    }).catch(()=>{});
-    // Show owner button if owner
-    if (currentUser.email === OWNER_EMAIL) {
-      addOwnerNavBtn();
-    }
-  } else {
-    currentUser = null;
-    currentUserData = null;
-    document.getElementById('authScreen').style.display = 'flex';
-    document.getElementById('mainHeader').style.display = 'none';
-    document.getElementById('mainNav').style.display = 'none';
-    document.querySelector('.main').style.display = 'none';
-    if (notifListener) { notifListener(); notifListener = null; }
+    updateHeaderAv();
+    checkOwner();
+    loadHome();
+    loadNotifs();
+  }else{
+    cUser=null;
+    document.getElementById('authScreen').style.display='flex';
+    document.getElementById('mainApp').style.display='none';
   }
 });
 
-async function loadUserData() {
-  if (!currentUser) return;
-  try {
-    const doc = await db.collection('users').doc(currentUser.uid).get();
-    if (doc.exists) {
-      currentUserData = doc.data();
-      updateHeaderAvatar();
-    }
-  } catch(e) { console.log(e); }
-}
-
-function updateHeaderAvatar() {
-  const btn = document.getElementById('headerAvatar');
-  if (currentUserData?.photoURL) {
-    btn.innerHTML = `<img src="${currentUserData.photoURL}">`;
-  } else {
-    btn.textContent = (currentUserData?.name || '?')[0].toUpperCase();
-  }
-}
-
-function addOwnerNavBtn() {
-  // Add owner panel access via profile page button
-  const profileActions = document.querySelector('.profile-actions');
-  if (profileActions && !document.getElementById('ownerBtn')) {
-    const btn = document.createElement('button');
-    btn.className = 'btn-sm';
-    btn.id = 'ownerBtn';
-    btn.style.background = 'rgba(255,0,0,0.1)';
-    btn.style.borderColor = 'var(--red)';
-    btn.style.color = 'var(--red)';
-    btn.innerHTML = '<i class="fas fa-crown"></i> Admin';
-    btn.onclick = () => showScreen('owner');
-    profileActions.appendChild(btn);
-  }
-}
-
-// ═══════════════════════════════════════════
-// PROFILE PIC UPLOAD — BUG FIXED
-// ═══════════════════════════════════════════
-async function uploadProfilePic(input) {
-  const file = input.files[0];
-  if (!file || !currentUser) return;
-  showToast('Uploading photo...');
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', UPLOAD_PRESET);
-    formData.append('folder', 'profiles');
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {method:'POST', body:formData});
-    const data = await res.json();
-    if (data.secure_url) {
-      await db.collection('users').doc(currentUser.uid).update({ photoURL: data.secure_url });
-      currentUserData.photoURL = data.secure_url;
-      // Update profile pic display
-      const pic = document.getElementById('profilePicEl');
-      pic.innerHTML = `<img src="${data.secure_url}">`;
-      updateHeaderAvatar();
-      showToast('Profile photo updated!');
-    }
-  } catch(e) {
-    showToast('Upload failed: ' + e.message);
-  }
-}
-
-// ═══════════════════════════════════════════
-// EDIT PROFILE — BUG FIXED (bio save)
-// ═══════════════════════════════════════════
-function openEditProfile() {
-  document.getElementById('editName').value = currentUserData?.name || '';
-  document.getElementById('editHandle').value = currentUserData?.handle || '';
-  document.getElementById('editBio').value = currentUserData?.bio || '';
-  document.getElementById('editProfileModal').classList.add('open');
-}
-
-function closeEditProfile() {
-  document.getElementById('editProfileModal').classList.remove('open');
-}
-
-async function saveProfile() {
-  const name = document.getElementById('editName').value.trim();
-  const handle = document.getElementById('editHandle').value.trim();
-  const bio = document.getElementById('editBio').value.trim();
-  if (!name) return showToast('Name is required');
-  try {
-    await db.collection('users').doc(currentUser.uid).update({ name, handle, bio });
-    currentUserData.name = name;
-    currentUserData.handle = handle;
-    currentUserData.bio = bio;
-    closeEditProfile();
-    loadProfile();
-    showToast('Profile saved!');
-  } catch(e) {
-    showToast('Error: ' + e.message);
-  }
-}
-
-// ═══════════════════════════════════════════
-// LOAD PROFILE
-// ═══════════════════════════════════════════
-async function loadProfile() {
-  if (!currentUser) return;
-  await loadUserData();
-  const d = currentUserData;
-  if (!d) return;
-  document.getElementById('profileName').textContent = d.name || 'No name';
-  document.getElementById('profileHandle').textContent = d.handle || '@user';
-  document.getElementById('profileAboutText').textContent = d.bio || 'No bio yet.';
-  const pic = document.getElementById('profilePicEl');
-  if (d.photoURL) pic.innerHTML = `<img src="${d.photoURL}">`;
-  else pic.textContent = (d.name||'?')[0].toUpperCase();
-  // Load stats
-  const vids = await db.collection('posts').where('userId','==',currentUser.uid).get();
-  document.getElementById('profileVideos').textContent = vids.size;
-  document.getElementById('profileSubs').textContent = d.subscribers || 0;
-  document.getElementById('profileLikes').textContent = d.likes || 0;
-  updateHeaderAvatar();
-  // Check if channel exists
-  const ch = await db.collection('channels').doc(currentUser.uid).get();
-  if (ch.exists) {
-    const cd = ch.data();
-    document.getElementById('channelName').value = cd.name || '';
-    document.getElementById('channelHandle').value = cd.handle || '';
-    document.getElementById('channelAbout').value = cd.about || '';
-  }
-  // Add owner button if owner
-  if (currentUser.email === OWNER_EMAIL) addOwnerNavBtn();
-}
-
-// ═══════════════════════════════════════════
-// SAVE CHANNEL — BUG FIXED
-// ═══════════════════════════════════════════
-async function saveChannel() {
-  const name = document.getElementById('channelName').value.trim();
-  const handle = document.getElementById('channelHandle').value.trim();
-  const about = document.getElementById('channelAbout').value.trim();
-  if (!name) return showToast('Channel name required');
-  if (!currentUser) return showToast('Please login first');
-  try {
-    await db.collection('channels').doc(currentUser.uid).set({
-      name, handle, about,
-      userId: currentUser.uid,
-      ownerName: currentUserData?.name || '',
-      ownerPhoto: currentUserData?.photoURL || '',
-      subscribers: currentUserData?.subscribers || 0,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-    // Also update user doc
-    await db.collection('users').doc(currentUser.uid).update({
-      channelName: name, channelHandle: handle, hasChannel: true
-    });
-    currentUserData.channelName = name;
-    currentUserData.hasChannel = true;
-    showToast('Channel saved!');
-  } catch(e) {
-    showToast('Error: ' + e.message);
-  }
-}
-
-// ═══════════════════════════════════════════
-// THUMBNAIL PREVIEW
-// ═══════════════════════════════════════════
-function previewThumb(input) {
-  const file = input.files[0];
-  if (!file) return;
-  selectedThumbFile = file;
-  const img = document.getElementById('thumbPreviewImg');
-  img.src = URL.createObjectURL(file);
-  img.style.display = 'block';
-}
-
-// ═══════════════════════════════════════════
-// UPLOAD
-// ═══════════════════════════════════════════
-function selectUploadType(type, el) {
-  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  uploadType = type;
-  if (type === 'live') {
-    showScreen('live');
-    return;
-  }
-  document.getElementById('uploadForm').classList.add('show');
-}
-
-function handleFile(file) {
-  if (!file) return;
-  selectedFile = file;
-  const isVideo = file.type.startsWith('video/');
-  const imgPrev = document.getElementById('uploadImgPreview');
-  const vidPrev = document.getElementById('uploadVidPreview');
-  imgPrev.style.display = 'none';
-  vidPrev.style.display = 'none';
-  if (isVideo) {
-    vidPrev.src = URL.createObjectURL(file);
-    vidPrev.style.display = 'block';
-  } else {
-    imgPrev.src = URL.createObjectURL(file);
-    imgPrev.style.display = 'block';
-  }
-}
-
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('fileDrop').classList.remove('dragover');
-  const file = e.dataTransfer.files[0];
-  if (file) handleFile(file);
-}
-
-async function doUpload() {
-  if (!selectedFile) return showToast('Select a file first');
-  const title = document.getElementById('uploadTitle').value.trim();
-  if (!title) return showToast('Title is required');
-  if (!currentUser) return showToast('Please login');
-
-  const btn = document.getElementById('uploadBtn');
-  btn.disabled = true;
-  btn.textContent = 'Uploading...';
-  const progBar = document.getElementById('uploadProgressBar');
-  const progFill = document.getElementById('uploadProgressFill');
-  progBar.style.display = 'block';
-
-  try {
-    // Upload main file
-    const isVideo = selectedFile.type.startsWith('video/');
-    const resType = isVideo ? 'video' : 'image';
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-    formData.append('upload_preset', UPLOAD_PRESET);
-    formData.append('folder', uploadType === 'short' ? 'shorts' : 'videos');
-
-    // Simulate progress
-    let prog = 0;
-    const progInterval = setInterval(() => {
-      prog = Math.min(prog + 5, 85);
-      progFill.style.width = prog + '%';
-    }, 300);
-
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resType}/upload`, {method:'POST', body:formData});
-    const data = await res.json();
-    clearInterval(progInterval);
-
-    if (!data.secure_url) throw new Error('Upload failed');
-    progFill.style.width = '90%';
-
-    // Upload thumbnail if selected
-    let thumbUrl = '';
-    if (selectedThumbFile) {
-      const tForm = new FormData();
-      tForm.append('file', selectedThumbFile);
-      tForm.append('upload_preset', UPLOAD_PRESET);
-      tForm.append('folder', 'thumbnails');
-      const tRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {method:'POST', body:tForm});
-      const tData = await tRes.json();
-      thumbUrl = tData.secure_url || '';
-    }
-
-    // Save to Firestore
-    const postData = {
-      title,
-      desc: document.getElementById('uploadDesc').value.trim(),
-      category: document.getElementById('uploadCategory').value.trim().toLowerCase() || 'general',
-      type: uploadType || (isVideo ? 'video' : 'image'),
-      mediaUrl: data.secure_url,
-      thumbnailUrl: thumbUrl || (isVideo ? '' : data.secure_url),
-      userId: currentUser.uid,
-      userName: currentUserData?.name || 'Unknown',
-      userPhoto: currentUserData?.photoURL || '',
-      channelName: currentUserData?.channelName || currentUserData?.name || 'Unknown',
-      likes: 0, views: 0, comments: 0,
-      duration: data.duration || 0,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-    await db.collection('posts').add(postData);
-
-    // Update user video/short count
-    const updateField = uploadType === 'short' ? {shorts: firebase.firestore.FieldValue.increment(1)} : {videos: firebase.firestore.FieldValue.increment(1)};
-    await db.collection('users').doc(currentUser.uid).update(updateField);
-
-    // Send notification to subscribers
-    await sendUploadNotification(title, uploadType);
-
-    progFill.style.width = '100%';
-    showToast('Uploaded successfully!');
-    // Reset
-    setTimeout(() => {
-      progBar.style.display = 'none';
-      progFill.style.width = '0%';
-      document.getElementById('uploadTitle').value = '';
-      document.getElementById('uploadDesc').value = '';
-      document.getElementById('uploadCategory').value = '';
-      document.getElementById('uploadImgPreview').style.display = 'none';
-      document.getElementById('uploadVidPreview').style.display = 'none';
-      document.getElementById('uploadForm').classList.remove('show');
-      document.getElementById('thumbPreviewImg').style.display = 'none';
-      selectedFile = null; selectedThumbFile = null;
-      document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
-      uploadType = '';
-      showScreen('home');
-    }, 800);
-  } catch(e) {
-    showToast('Error: ' + e.message);
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-upload"></i> Upload';
-  }
-}
-
-// ═══════════════════════════════════════════
-// NOTIFICATIONS — REAL-TIME
-// ═══════════════════════════════════════════
-function setupNotificationListener() {
-  if (!currentUser) return;
-  notifListener = db.collection('notifications')
-    .where('toUserId','==',currentUser.uid)
-    .orderBy('createdAt','desc')
-    .limit(50)
-    .onSnapshot(snap => {
-      const unread = snap.docs.filter(d => !d.data().read).length;
-      document.getElementById('notifDot').style.display = unread > 0 ? 'block' : 'none';
-    });
-}
-
-async function loadNotifications() {
-  if (!currentUser) return;
-  const list = document.getElementById('notifList');
-  list.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-  try {
-    const snap = await db.collection('notifications')
-      .where('toUserId','==',currentUser.uid)
-      .orderBy('createdAt','desc')
-      .limit(30)
-      .get();
-    if (snap.empty) {
-      list.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>';
-      return;
-    }
-    list.innerHTML = '';
-    snap.forEach(doc => {
-      const n = doc.data();
-      const icon = n.type === 'subscribe' ? 'fa-user-plus' : n.type === 'like' ? 'fa-heart' : n.type === 'comment' ? 'fa-comment' : n.type === 'live' ? 'fa-broadcast-tower' : 'fa-bell';
-      const color = n.type === 'like' ? 'red' : n.type === 'subscribe' ? 'blue' : n.type === 'live' ? 'red' : 'green';
-      const time = n.createdAt ? timeAgo(n.createdAt.toDate()) : 'just now';
-      list.innerHTML += `
-        <div class="notif-item ${n.read ? '' : 'unread'}">
-          <div class="notif-icon ${color}"><i class="fas ${icon}"></i></div>
-          <div class="notif-body">
-            <div class="notif-text">${n.message}</div>
-            <div class="notif-time">${time}</div>
-          </div>
-        </div>`;
-      // Mark as read
-      if (!n.read) doc.ref.update({read: true}).catch(()=>{});
-    });
-  } catch(e) {
-    list.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>Could not load notifications</p></div>';
-  }
-}
-
-async function sendNotification(toUserId, message, type, fromName) {
-  if (!toUserId || toUserId === currentUser?.uid) return;
-  await db.collection('notifications').add({
-    toUserId, message, type,
-    fromUserId: currentUser?.uid || '',
-    fromName: fromName || currentUserData?.name || 'Someone',
-    read: false,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
-}
-
-async function sendUploadNotification(title, type) {
-  // Notify all subscribers
-  if (!currentUser) return;
-  const subs = await db.collection('subscriptions').where('channelId','==',currentUser.uid).get();
-  const msg = `${currentUserData?.name || 'Someone'} uploaded a new ${type}: "${title}"`;
-  subs.forEach(sub => {
-    sendNotification(sub.data().userId, msg, 'upload', currentUserData?.name);
-  });
-}
-
-async function sendLiveNotification(title) {
-  if (!currentUser) return;
-  const subs = await db.collection('subscriptions').where('channelId','==',currentUser.uid).get();
-  const msg = `🔴 ${currentUserData?.name || 'Someone'} is LIVE now: "${title}"`;
-  subs.forEach(sub => {
-    sendNotification(sub.data().userId, msg, 'live', currentUserData?.name);
-  });
-}
-
-// ═══════════════════════════════════════════
-// FEED
-// ═══════════════════════════════════════════
-async function loadFeed(category = 'all') {
-  const feed = document.getElementById('homeFeed');
-  feed.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-  try {
-    let query = db.collection('posts').orderBy('createdAt','desc').limit(20);
-    const snap = await query.get();
-    allPosts = snap.docs.map(d => ({id:d.id,...d.data()}));
-    renderFeed(category === 'all' ? allPosts : allPosts.filter(p => p.category === category));
-  } catch(e) {
-    feed.innerHTML = '<div class="empty-state"><i class="fas fa-video-slash"></i><p>Could not load videos</p></div>';
-  }
-}
-
-function renderFeed(posts) {
-  const feed = document.getElementById('homeFeed');
-  if (!posts.length) {
-    feed.innerHTML = '<div class="empty-state"><i class="fas fa-video-slash"></i><p>No videos yet. Be the first to upload!</p></div>';
-    return;
-  }
-  feed.innerHTML = posts.map(p => {
-    const thumb = p.thumbnailUrl || p.mediaUrl || '';
-    const isVideo = p.type === 'video' || p.type === 'short';
-    const dur = p.duration ? formatDur(p.duration) : '';
-    const time = p.createdAt ? timeAgo(p.createdAt.toDate()) : '';
-    const avatarContent = p.userPhoto ? `<img src="${p.userPhoto}">` : (p.userName||'?')[0].toUpperCase();
-    return `
-      <div class="video-card" onclick="openVideo('${p.id}')">
-        <div class="thumb-wrap">
-          ${thumb ? `<img src="${thumb}" loading="lazy">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);"><i class="fas fa-video" style="font-size:32px;"></i></div>`}
-          ${dur ? `<div class="thumb-duration">${dur}</div>` : ''}
-          ${p.isLive ? `<div class="thumb-live">🔴 LIVE</div>` : ''}
-        </div>
-        <div class="video-info">
-          <div class="channel-avatar">${avatarContent}</div>
-          <div class="video-meta">
-            <div class="video-title">${p.title || 'Untitled'}</div>
-            <div class="video-sub">${p.channelName || p.userName || 'Unknown'} · ${fmtNum(p.views||0)} views · ${time}</div>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
-}
-
-function filterFeed(cat, el) {
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+function switchAuthTab(tab,el){
+  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  renderFeed(cat === 'all' ? allPosts : allPosts.filter(p => p.category === cat));
+  document.getElementById('loginForm').style.display=tab==='login'?'block':'none';
+  document.getElementById('signupForm').style.display=tab==='signup'?'block':'none';
+  document.getElementById('authErr').textContent='';
 }
 
-// ═══════════════════════════════════════════
-// SHORTS
-// ═══════════════════════════════════════════
-async function loadShorts() {
-  const grid = document.getElementById('shortsGrid');
-  grid.innerHTML = '<div class="loader" style="grid-column:1/-1;"><div class="spinner"></div></div>';
-  try {
-    const snap = await db.collection('posts').where('type','==','short').orderBy('createdAt','desc').limit(20).get();
-    if (snap.empty) {
-      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-film"></i><p>No shorts yet</p></div>';
-      return;
+async function doLogin(){
+  const e=document.getElementById('loginEmail').value.trim();
+  const p=document.getElementById('loginPass').value;
+  const btn=document.getElementById('loginBtn');
+  if(!e||!p) return setAuthErr('Fill all fields');
+  btn.disabled=true;btn.textContent='Logging in...';
+  try{await auth.signInWithEmailAndPassword(e,p);}
+  catch(err){setAuthErr(fErr(err.code));btn.disabled=false;btn.textContent='Login';}
+}
+
+async function doSignup(){
+  const n=document.getElementById('signupName').value.trim();
+  const e=document.getElementById('signupEmail').value.trim();
+  const p=document.getElementById('signupPass').value;
+  const btn=document.getElementById('signupBtn');
+  if(!n||!e||!p) return setAuthErr('Fill all fields');
+  if(p.length<6) return setAuthErr('Password min 6 chars');
+  btn.disabled=true;btn.textContent='Creating...';
+  try{
+    const c=await auth.createUserWithEmailAndPassword(e,p);
+    await db.collection('users').doc(c.user.uid).set({
+      name:n,email:e,handle:'@'+n.toLowerCase().replace(/\s/g,''),
+      about:'',photoURL:'',subscribers:0,createdAt:Date.now()
+    });
+  }catch(err){setAuthErr(fErr(err.code));btn.disabled=false;btn.textContent='Create Account';}
+}
+
+async function doGoogle(){
+  try{
+    const res=await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    const u=res.user;
+    const doc=await db.collection('users').doc(u.uid).get();
+    if(!doc.exists){
+      await db.collection('users').doc(u.uid).set({
+        name:u.displayName||'User',email:u.email,
+        handle:'@'+(u.displayName||'user').toLowerCase().replace(/\s/g,''),
+        about:'',photoURL:u.photoURL||'',subscribers:0,createdAt:Date.now()
+      });
     }
-    grid.innerHTML = '';
-    snap.forEach(doc => {
-      const p = {id:doc.id,...doc.data()};
-      const thumb = p.thumbnailUrl || p.mediaUrl || '';
-      grid.innerHTML += `
-        <div class="short-card" onclick="openShort('${p.id}')">
-          ${thumb ? `<img src="${thumb}" loading="lazy">` : `<div style="width:100%;height:100%;background:var(--bg3);display:flex;align-items:center;justify-content:center;"><i class="fas fa-film" style="font-size:32px;color:var(--text3);"></i></div>`}
-          <div class="short-overlay">
-            <div class="short-title">${p.title||'Short'}</div>
-          </div>
-        </div>`;
-    });
-  } catch(e) {
-    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-film"></i><p>Could not load shorts</p></div>';
+  }catch(err){setAuthErr(fErr(err.code));}
+}
+
+function doLogout(){auth.signOut();showToast('Logged out');}
+function setAuthErr(m){document.getElementById('authErr').textContent=m;}
+function fErr(c){
+  const m={'auth/user-not-found':'User not found','auth/wrong-password':'Wrong password',
+  'auth/email-already-in-use':'Email already registered','auth/invalid-email':'Invalid email',
+  'auth/too-many-requests':'Too many attempts','auth/popup-closed-by-user':'Popup closed'};
+  return m[c]||'Something went wrong';
+}
+
+// ═══════════════════════════════════════════════════
+// USER DATA
+// ═══════════════════════════════════════════════════
+async function loadUserData(){
+  if(!cUser) return;
+  try{
+    const doc=await db.collection('users').doc(cUser.uid).get();
+    cUserData=doc.exists?doc.data():{name:cUser.displayName||'User',handle:'@user',about:'',photoURL:'',subscribers:0};
+    updateProfileUI();
+  }catch(e){console.error(e);}
+}
+
+function updateHeaderAv(){
+  const el=document.getElementById('headerAvatar');
+  if(cUserData?.photoURL){el.innerHTML=`<img src="${cUserData.photoURL}">`;}
+  else{el.textContent=(cUserData?.name||cUser?.email||'U')[0].toUpperCase();}
+}
+
+function updateProfileUI(){
+  if(!cUserData) return;
+  document.getElementById('profName').textContent=cUserData.name||'User';
+  document.getElementById('profHandle').textContent=cUserData.handle||'@user';
+  document.getElementById('profAboutText').textContent=cUserData.about||'No bio yet.';
+  const pic=document.getElementById('profPicEl');
+  if(cUserData.photoURL){pic.innerHTML=`<img src="${cUserData.photoURL}">`;}
+  else{pic.textContent=(cUserData.name||'U')[0].toUpperCase();}
+  if(cUserData.channelName){
+    document.getElementById('channelName').value=cUserData.channelName||'';
+    document.getElementById('channelHandle').value=cUserData.channelHandle||'';
+    document.getElementById('channelAbout').value=cUserData.channelAbout||'';
+  }
+  const ca=document.getElementById('myCommAv');
+  if(cUserData.photoURL){ca.innerHTML=`<img src="${cUserData.photoURL}">`;}
+  else{ca.textContent=(cUserData.name||'U')[0].toUpperCase();}
+}
+
+function checkOwner(){
+  if(cUser?.email===OWNER_EMAIL){
+    // Add owner nav button
+    const nav=document.querySelector('.bottom-nav');
+    if(!document.getElementById('nav-owner')){
+      nav.innerHTML=`
+        <button class="nav-item" id="nav-home" onclick="showScreen('home')"><i class="fas fa-home"></i><span>Home</span></button>
+        <button class="nav-item" id="nav-shorts" onclick="showScreen('shorts')"><i class="fas fa-film"></i><span>Shorts</span></button>
+        <button class="nav-item" id="nav-upload" onclick="showScreen('upload')"><div class="nav-plus"><i class="fas fa-plus" style="color:white;font-size:19px;"></i></div></button>
+        <button class="nav-item" id="nav-owner" onclick="showScreen('owner')"><i class="fas fa-shield-alt"></i><span>Admin</span></button>
+        <button class="nav-item" id="nav-profile" onclick="showScreen('profile')"><i class="fas fa-user"></i><span>You</span></button>`;
+    }
   }
 }
 
-async function openShort(id) {
-  const doc = await db.collection('posts').doc(id).get();
-  if (!doc.exists) return;
-  currentShortId = id;
-  currentShortData = doc.data();
-  const sf = document.getElementById('shortFullscreen');
-  const vid = document.getElementById('sfVideo');
-  vid.src = currentShortData.mediaUrl || '';
-  document.getElementById('sfChannel').textContent = currentShortData.channelName || currentShortData.userName || '';
-  document.getElementById('sfTitle').textContent = currentShortData.title || '';
-  document.getElementById('sfLikeCount').textContent = fmtNum(currentShortData.likes || 0);
-  sf.classList.add('open');
-  vid.play().catch(()=>{});
-  // Increment views
-  db.collection('posts').doc(id).update({views: firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+const screens={home:'homeScreen',shorts:'shortsScreen',upload:'uploadScreen',
+  dashboard:'dashboardScreen',profile:'profileScreen',notif:'notifScreen',
+  search:'searchScreen',subs:'subsScreen',owner:'ownerScreen',live:'liveScreen'};
+const navIds={home:'nav-home',shorts:'nav-shorts',upload:'nav-upload',
+  subs:'nav-subs',profile:'nav-profile',owner:'nav-owner'};
+
+function showScreen(name){
+  Object.values(screens).forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+  const el=document.getElementById(screens[name]);if(el)el.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(navIds[name]){const n=document.getElementById(navIds[name]);if(n)n.classList.add('active');}
+  if(name==='home')loadHome();
+  if(name==='shorts')loadShorts();
+  if(name==='dashboard'){loadDashboard();}
+  if(name==='profile'){loadUserData();loadDashboard();}
+  if(name==='notif')loadNotifs();
+  if(name==='subs')loadSubsFeed();
+  if(name==='owner')loadOwnerDash();
+  if(name==='live')loadLiveScreen();
 }
 
-function closeShort() {
-  document.getElementById('shortFullscreen').classList.remove('open');
-  document.getElementById('sfVideo').pause();
-  document.getElementById('sfVideo').src = '';
+// ═══════════════════════════════════════════════════
+// HOME FEED
+// ═══════════════════════════════════════════════════
+async function loadHome(){
+  const feed=document.getElementById('homeFeed');
+  feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('posts').orderBy('time','desc').limit(40).get();
+    allPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderFeed(allPosts);
+  }catch(e){feed.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Could not load feed</p></div>';}
 }
 
-async function likeShort() {
-  if (!currentUser || !currentShortId) return;
-  const btn = document.getElementById('sfLikeBtn');
-  const liked = btn.style.color === 'var(--red)' || btn.querySelector('i').style.color === 'red';
-  const delta = liked ? -1 : 1;
-  await db.collection('posts').doc(currentShortId).update({likes: firebase.firestore.FieldValue.increment(delta)});
-  btn.querySelector('i').style.color = liked ? '' : 'var(--red)';
-  const newCount = (currentShortData.likes || 0) + delta;
-  document.getElementById('sfLikeCount').textContent = fmtNum(newCount);
-  currentShortData.likes = newCount;
+function filterFeed(btn,filter){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  const f=filter==='all'?allPosts:allPosts.filter(p=>p.type===filter||p.category===filter);
+  renderFeed(f);
 }
 
-// ═══════════════════════════════════════════
-// VIDEO PLAYER
-// ═══════════════════════════════════════════
-async function openVideo(id) {
-  const doc = await db.collection('posts').doc(id).get();
-  if (!doc.exists) return;
-  currentPostId = id;
-  currentPostData = doc.data();
-  const screen = document.getElementById('videoPlayerScreen');
-  screen.classList.add('open');
-  document.getElementById('playerVideo').src = currentPostData.mediaUrl || '';
-  document.getElementById('playerTitle').textContent = currentPostData.title || '';
-  document.getElementById('playerMeta').textContent = `${fmtNum(currentPostData.views||0)} views · ${currentPostData.createdAt ? timeAgo(currentPostData.createdAt.toDate()) : ''}`;
-  document.getElementById('likeCount').textContent = fmtNum(currentPostData.likes||0);
-  // Channel info
-  const channelDoc = await db.collection('users').doc(currentPostData.userId).get();
-  const ch = channelDoc.data() || {};
-  document.getElementById('playerChannelName').textContent = ch.name || currentPostData.userName || 'Unknown';
-  document.getElementById('playerChannelSubs').textContent = fmtNum(ch.subscribers||0) + ' subscribers';
-  const chAv = document.getElementById('playerChannelAvatar');
-  chAv.innerHTML = ch.photoURL ? `<img src="${ch.photoURL}">` : (ch.name||'?')[0].toUpperCase();
-  // Check if subscribed
-  checkSubscription(currentPostData.userId);
-  // Load comments
-  loadComments(id);
-  // Set comment avatar
-  const myAv = document.getElementById('commentMyAvatar');
-  myAv.innerHTML = currentUserData?.photoURL ? `<img src="${currentUserData.photoURL}">` : (currentUserData?.name||'?')[0].toUpperCase();
-  // Increment views
-  db.collection('posts').doc(id).update({views: firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
+function renderFeed(posts){
+  const feed=document.getElementById('homeFeed');
+  if(!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet. Be the first!</p></div>';return;}
+  feed.innerHTML=posts.map(p=>buildCard(p)).join('');
 }
 
-function closePlayer() {
-  document.getElementById('videoPlayerScreen').classList.remove('open');
-  document.getElementById('playerVideo').pause();
-  document.getElementById('playerVideo').src = '';
-}
-
-async function toggleLike() {
-  if (!currentUser || !currentPostId) return;
-  const btn = document.getElementById('likeBtn');
-  const isLiked = btn.classList.contains('liked');
-  btn.classList.toggle('liked');
-  const delta = isLiked ? -1 : 1;
-  await db.collection('posts').doc(currentPostId).update({likes: firebase.firestore.FieldValue.increment(delta)});
-  const newLikes = (currentPostData.likes||0) + delta;
-  currentPostData.likes = newLikes;
-  document.getElementById('likeCount').textContent = fmtNum(newLikes);
-  // Notify video owner
-  if (!isLiked && currentPostData.userId !== currentUser.uid) {
-    sendNotification(currentPostData.userId, `${currentUserData?.name||'Someone'} liked your video "${currentPostData.title}"`, 'like');
+function buildCard(p){
+  if(p.type==='post') return buildPostCard(p);
+  // Video/image card
+  let thumb='';
+  if(p.type==='image'){
+    thumb=`<img src="${p.url||p.thumbURL||''}" loading="lazy">`;
+  }else{
+    const tUrl=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_600/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+    thumb=tUrl?`<img src="${tUrl}" loading="lazy" onerror="this.style.display='none'">`:`<div style="width:100%;height:100%;background:var(--bg3);display:flex;align-items:center;justify-content:center;"><i class="fas fa-video" style="font-size:32px;color:var(--text3);"></i></div>`;
   }
-  // Update user total likes
-  db.collection('users').doc(currentPostData.userId).update({likes: firebase.firestore.FieldValue.increment(delta)}).catch(()=>{});
-}
-
-async function checkSubscription(channelId) {
-  if (!currentUser) return;
-  const btn = document.getElementById('playerSubBtn');
-  if (channelId === currentUser.uid) { btn.style.display = 'none'; return; }
-  btn.style.display = 'block';
-  const subDoc = await db.collection('subscriptions').doc(currentUser.uid + '_' + channelId).get();
-  btn.textContent = subDoc.exists ? 'Subscribed' : 'Subscribe';
-  btn.className = 'sub-btn' + (subDoc.exists ? ' subscribed' : '');
-}
-
-async function toggleSubscribe() {
-  if (!currentUser || !currentPostData) return;
-  const channelId = currentPostData.userId;
-  const subId = currentUser.uid + '_' + channelId;
-  const subDoc = await db.collection('subscriptions').doc(subId).get();
-  const btn = document.getElementById('playerSubBtn');
-  if (subDoc.exists) {
-    await db.collection('subscriptions').doc(subId).delete();
-    await db.collection('users').doc(channelId).update({subscribers: firebase.firestore.FieldValue.increment(-1)});
-    btn.textContent = 'Subscribe';
-    btn.className = 'sub-btn';
-    showToast('Unsubscribed');
-  } else {
-    await db.collection('subscriptions').doc(subId).set({
-      userId: currentUser.uid, channelId,
-      userName: currentUserData?.name || '',
-      userPhoto: currentUserData?.photoURL || '',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    await db.collection('users').doc(channelId).update({subscribers: firebase.firestore.FieldValue.increment(1)});
-    btn.textContent = 'Subscribed';
-    btn.className = 'sub-btn subscribed';
-    showToast('Subscribed!');
-    // Send notification
-    sendNotification(channelId, `${currentUserData?.name||'Someone'} subscribed to your channel`, 'subscribe');
-  }
-}
-
-// ═══════════════════════════════════════════
-// COMMENTS
-// ═══════════════════════════════════════════
-async function loadComments(postId) {
-  const list = document.getElementById('commentsList');
-  list.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-  const snap = await db.collection('posts').doc(postId).collection('comments').orderBy('createdAt','desc').limit(20).get();
-  document.getElementById('commentsTitle').textContent = `Comments (${snap.size})`;
-  if (snap.empty) { list.innerHTML = '<p style="font-size:13px;color:var(--text2);padding:8px 0;">No comments yet. Be first!</p>'; return; }
-  list.innerHTML = snap.docs.map(d => {
-    const c = d.data();
-    const av = c.userPhoto ? `<img src="${c.userPhoto}">` : (c.userName||'?')[0].toUpperCase();
-    const time = c.createdAt ? timeAgo(c.createdAt.toDate()) : '';
-    return `<div class="comment-item">
-      <div class="comment-avatar">${av}</div>
-      <div class="comment-body">
-        <div class="comment-author">${c.userName||'Unknown'}</div>
-        <div class="comment-text">${c.text}</div>
-        <div class="comment-time">${time}</div>
+  const avHtml=p.authorPhoto?`<img src="${p.authorPhoto}">`:(p.authorName||'U')[0].toUpperCase();
+  return `<div class="video-card" onclick="openPost('${p.id}')">
+    <div class="thumb-wrap">${thumb}
+      ${p.type==='short'?'<div class="thumb-badge">SHORT</div>':''}
+      ${p.isLive?'<div class="thumb-badge">🔴 LIVE</div>':''}
+    </div>
+    <div class="video-info">
+      <div class="ch-av">${avHtml}</div>
+      <div class="v-meta">
+        <div class="v-title">${p.title||'Untitled'}</div>
+        <div class="v-sub">${p.authorName||'Unknown'} • ❤️${p.likes||0} • 👁️${p.views||0} • ${getTimeAgo(p.time)}</div>
       </div>
-    </div>`;
-  }).join('');
+    </div></div>`;
 }
 
-async function postComment() {
-  const input = document.getElementById('commentInput');
-  const text = input.value.trim();
-  if (!text || !currentUser || !currentPostId) return;
-  input.value = '';
-  await db.collection('posts').doc(currentPostId).collection('comments').add({
-    text, userId: currentUser.uid,
-    userName: currentUserData?.name || 'Unknown',
-    userPhoto: currentUserData?.photoURL || '',
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
-  await db.collection('posts').doc(currentPostId).update({comments: firebase.firestore.FieldValue.increment(1)});
-  // Notify post owner
-  if (currentPostData.userId !== currentUser.uid) {
-    sendNotification(currentPostData.userId, `${currentUserData?.name||'Someone'} commented on your video: "${text.substring(0,50)}"`, 'comment');
+function buildPostCard(p){
+  const avHtml=p.authorPhoto?`<img src="${p.authorPhoto}">`:(p.authorName||'U')[0].toUpperCase();
+  let imgs='';
+  if(p.images&&p.images.length){
+    const cls=['','one','two','three'][Math.min(p.images.length,3)];
+    imgs=`<div class="post-imgs ${cls}">${p.images.slice(0,3).map(u=>`<img src="${u}" loading="lazy">`).join('')}</div>`;
   }
-  loadComments(currentPostId);
+  return `<div class="post-card" onclick="openPost('${p.id}')">
+    <div class="post-header">
+      <div class="post-avatar">${avHtml}</div>
+      <div><div class="post-author">${p.authorName||'User'}</div><div class="post-time">${getTimeAgo(p.time)}</div></div>
+    </div>
+    ${p.title||p.desc?`<div class="post-text">${p.title||''}${p.desc?'<br>'+p.desc:''}</div>`:''}
+    ${imgs}
+    <div class="post-actions">
+      <button class="post-action" onclick="quickLike('${p.id}',this,event)"><i class="fas fa-heart"></i> ${p.likes||0}</button>
+      <button class="post-action" onclick="openPost('${p.id}');event.stopPropagation()"><i class="fas fa-comment"></i> ${p.comments||0}</button>
+      <button class="post-action" onclick="sharePost('${p.url||''}');event.stopPropagation()"><i class="fas fa-share"></i> Share</button>
+    </div>
+  </div>`;
 }
 
-// ═══════════════════════════════════════════
-// DASHBOARD
-// ═══════════════════════════════════════════
-async function loadDashboard() {
-  if (!currentUser) return;
-  await loadUserData();
-  const d = currentUserData;
-  document.getElementById('dashWelcome').textContent = `Welcome, ${d?.name||'Creator'}!`;
-  // Load stats
-  const postsSnap = await db.collection('posts').where('userId','==',currentUser.uid).get();
-  let totalViews = 0, totalLikes = 0;
-  postsSnap.forEach(doc => {
-    const p = doc.data();
-    totalViews += p.views || 0;
-    totalLikes += p.likes || 0;
-  });
-  document.getElementById('dashVideos').textContent = fmtNum(postsSnap.size);
-  document.getElementById('dashSubs').textContent = fmtNum(d?.subscribers||0);
-  document.getElementById('dashLikes').textContent = fmtNum(totalLikes);
-  document.getElementById('dashViews').textContent = fmtNum(totalViews);
-  // Load subscribers list
-  loadSubscribersList();
-  // Load my content
-  const list = document.getElementById('myContentList');
-  if (postsSnap.empty) { list.innerHTML = '<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet</p></div>'; return; }
-  list.innerHTML = postsSnap.docs.map(doc => {
-    const p = {id:doc.id,...doc.data()};
-    const thumb = p.thumbnailUrl || p.mediaUrl || '';
-    return `<div class="my-video-item">
-      <div class="my-video-thumb">${thumb ? `<img src="${thumb}">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);"><i class="fas fa-video"></i></div>`}</div>
-      <div class="my-video-info">
-        <div class="my-video-title">${p.title||'Untitled'}</div>
-        <div class="my-video-stats"><i class="fas fa-eye"></i> ${fmtNum(p.views||0)} · <i class="fas fa-heart"></i> ${fmtNum(p.likes||0)}</div>
-      </div>
-      <button class="my-video-del" onclick="deletePost('${p.id}',event)"><i class="fas fa-trash"></i></button>
-    </div>`;
-  }).join('');
-}
-
-async function loadSubscribersList() {
-  if (!currentUser) return;
-  const list = document.getElementById('subsList');
-  const snap = await db.collection('subscriptions').where('channelId','==',currentUser.uid).orderBy('createdAt','desc').limit(20).get();
-  if (snap.empty) { list.innerHTML = '<p style="font-size:13px;color:var(--text2);">No subscribers yet.</p>'; return; }
-  list.innerHTML = snap.docs.map(doc => {
-    const s = doc.data();
-    const av = s.userPhoto ? `<img src="${s.userPhoto}">` : (s.userName||'?')[0].toUpperCase();
-    return `<div class="sub-item">
-      <div class="sub-avatar">${av}</div>
-      <div>
-        <div class="sub-name">${s.userName||'Unknown'}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-async function deletePost(id, e) {
+async function quickLike(id,btn,e){
   e.stopPropagation();
-  if (!confirm('Delete this post?')) return;
-  await db.collection('posts').doc(id).delete();
-  showToast('Deleted');
-  loadDashboard();
+  if(!cUser) return showToast('Login karein!');
+  try{
+    const ref=db.collection('posts').doc(id);
+    const doc=await ref.get();const p=doc.data();
+    const liked=(p.likedBy||[]).includes(cUser.uid);
+    if(liked){
+      await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
+      btn.innerHTML=`<i class="fas fa-heart"></i> ${Math.max(0,(p.likes||1)-1)}`;
+      btn.classList.remove('liked');
+    }else{
+      await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid)});
+      btn.innerHTML=`<i class="fas fa-heart"></i> ${(p.likes||0)+1}`;
+      btn.classList.add('liked');
+      sendNotif(p.authorId,'like',`${cUserData?.name||'Someone'} liked your post "${p.title||''}"`,id);
+    }
+  }catch(err){showToast('Error');}
 }
 
-// ═══════════════════════════════════════════
-// SUBS FEED
-// ═══════════════════════════════════════════
-async function loadSubsFeed() {
-  const feed = document.getElementById('subsFeed');
-  feed.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-  if (!currentUser) return;
-  const mySubs = await db.collection('subscriptions').where('userId','==',currentUser.uid).get();
-  if (mySubs.empty) {
-    feed.innerHTML = '<div class="empty-state"><i class="fas fa-th-large"></i><p>Subscribe to channels to see their content here</p></div>';
-    return;
-  }
-  const channelIds = mySubs.docs.map(d => d.data().channelId);
-  const snap = await db.collection('posts').where('userId','in',channelIds.slice(0,10)).orderBy('createdAt','desc').limit(20).get();
-  if (snap.empty) {
-    feed.innerHTML = '<div class="empty-state"><i class="fas fa-video-slash"></i><p>No new videos from subscriptions</p></div>';
-    return;
-  }
-  const posts = snap.docs.map(d => ({id:d.id,...d.data()}));
-  feed.innerHTML = posts.map(p => {
-    const thumb = p.thumbnailUrl || p.mediaUrl || '';
-    const avatarContent = p.userPhoto ? `<img src="${p.userPhoto}">` : (p.userName||'?')[0].toUpperCase();
-    return `<div class="video-card" onclick="openVideo('${p.id}')">
-      <div class="thumb-wrap">${thumb ? `<img src="${thumb}" loading="lazy">` : '<div style="width:100%;height:100%;background:var(--bg3);"></div>'}</div>
-      <div class="video-info">
-        <div class="channel-avatar">${avatarContent}</div>
-        <div class="video-meta">
-          <div class="video-title">${p.title||'Untitled'}</div>
-          <div class="video-sub">${p.channelName||p.userName||'Unknown'} · ${fmtNum(p.views||0)} views</div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+function sharePost(url){navigator.clipboard.writeText(url||location.href);showToast('Link copied! 📋');}
+function getTimeAgo(ts){
+  if(!ts) return '';
+  const d=Date.now()-ts,m=Math.floor(d/6e4),h=Math.floor(d/36e5),dy=Math.floor(d/864e5);
+  if(m<1)return 'just now';if(m<60)return m+'m ago';if(h<24)return h+'h ago';return dy+'d ago';
 }
 
-// ═══════════════════════════════════════════
-// OWNER DASHBOARD
-// ═══════════════════════════════════════════
-async function loadOwnerDashboard() {
-  if (!currentUser || currentUser.email !== OWNER_EMAIL) {
-    showToast('Access denied');
-    showScreen('home');
-    return;
-  }
-  // Total users
-  const usersSnap = await db.collection('users').get();
-  document.getElementById('ownerTotalUsers').textContent = fmtNum(usersSnap.size);
-  // Total videos
-  const videosSnap = await db.collection('posts').get();
-  document.getElementById('ownerTotalVideos').textContent = fmtNum(videosSnap.size);
-  // Channels
-  const channelsSnap = await db.collection('channels').get();
-  document.getElementById('ownerTotalChannels').textContent = fmtNum(channelsSnap.size);
-  // Active users (last 7 days)
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-  const activeSnap = await db.collection('users').where('lastActive','>=',sevenDaysAgo).get();
-  document.getElementById('ownerActiveUsers').textContent = fmtNum(activeSnap.size);
-  // List users
-  const list = document.getElementById('ownerUsersList');
-  list.innerHTML = '';
-  usersSnap.forEach(doc => {
-    const u = doc.data();
-    const av = u.photoURL ? `<img src="${u.photoURL}">` : (u.name||'?')[0].toUpperCase();
-    const isActive = u.lastActive && u.lastActive.toDate() > sevenDaysAgo;
-    const hasChannel = u.hasChannel;
-    list.innerHTML += `
-      <div class="owner-user-item">
-        <div class="owner-user-avatar">${av}</div>
-        <div class="owner-user-info">
-          <div class="owner-user-name">${u.name||'Unknown'}</div>
-          <div class="owner-user-meta">${u.email||''} · ${fmtNum(u.subscribers||0)} subs · ${fmtNum(u.videos||0)} videos</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
-          <span class="owner-user-badge ${isActive?'badge-active':'badge-inactive'}">${isActive?'Active':'Inactive'}</span>
-          ${hasChannel?`<span class="owner-user-badge badge-channel">Channel</span>`:''}
+// ═══════════════════════════════════════════════════
+// SHORTS
+// ═══════════════════════════════════════════════════
+async function loadShorts(){
+  const grid=document.getElementById('shortsGrid');
+  grid.innerHTML='<div class="loader" style="grid-column:1/-1;"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('posts').orderBy('time','desc').limit(60).get();
+    sfPosts=snap.docs.filter(d=>d.data().type==='short').map(d=>({id:d.id,...d.data()}));
+    if(!sfPosts.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-film"></i><p>No shorts yet!</p></div>';return;}
+    grid.innerHTML=sfPosts.map((p,i)=>{
+      const tUrl=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_0,w_400/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      return `<div class="short-card" onclick="openShortFS(${i})">
+        <img src="${tUrl}" onerror="this.style.display='none'">
+        <div class="short-overlay">
+          <div class="short-title">${p.title||''}</div>
+          <div class="short-views">❤️ ${p.likes||0} • 👁️ ${p.views||0}</div>
         </div>
       </div>`;
+    }).join('');
+  }catch(e){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-circle"></i><p>Error loading shorts</p></div>';}
+}
+
+function openShortFS(idx){
+  sfCurrentIdx=idx;
+  const fs=document.getElementById('shortFS');
+  fs.classList.add('open');
+  playShortAt(idx);
+}
+
+function playShortAt(idx){
+  if(idx<0||idx>=sfPosts.length)return;
+  sfCurrentIdx=idx;
+  sfCurrentId=sfPosts[idx].id;
+  const p=sfPosts[idx];
+  const vid=document.getElementById('sfVid');
+  vid.src=p.url;vid.play().catch(()=>{});
+  document.getElementById('sfTtl').textContent=p.title||'';
+  document.getElementById('sfCh').textContent=p.authorName||'';
+  document.getElementById('sfLikeCount').textContent=p.likes||0;
+  const liked=cUser&&(p.likedBy||[]).includes(cUser.uid);
+  document.getElementById('sfLikeBtn').style.color=liked?'#ff4d4d':'white';
+  db.collection('posts').doc(p.id).update({views:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
+}
+
+function prevShort(){if(sfCurrentIdx>0)playShortAt(sfCurrentIdx-1);}
+function nextShort(){if(sfCurrentIdx<sfPosts.length-1)playShortAt(sfCurrentIdx+1);}
+
+function closeShortFS(){
+  document.getElementById('shortFS').classList.remove('open');
+  document.getElementById('sfVid').pause();
+  document.getElementById('sfVid').src='';
+}
+
+async function sfLike(){
+  if(!cUser||!sfCurrentId)return;
+  try{
+    const ref=db.collection('posts').doc(sfCurrentId);
+    const doc=await ref.get();const p=doc.data();
+    const liked=(p.likedBy||[]).includes(cUser.uid);
+    if(liked){
+      await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
+      document.getElementById('sfLikeCount').textContent=Math.max(0,(p.likes||1)-1);
+      document.getElementById('sfLikeBtn').style.color='white';
+    }else{
+      await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid)});
+      document.getElementById('sfLikeCount').textContent=(p.likes||0)+1;
+      document.getElementById('sfLikeBtn').style.color='#ff4d4d';
+    }
+    sfPosts[sfCurrentIdx]={...sfPosts[sfCurrentIdx],likedBy:liked?(p.likedBy||[]).filter(u=>u!==cUser.uid):[...(p.likedBy||[]),cUser.uid]};
+  }catch(e){}
+}
+
+function sfCommentOpen(){openPost(sfCurrentId);closeShortFS();}
+function sfShare(){navigator.clipboard.writeText(sfPosts[sfCurrentIdx]?.url||'');showToast('Link copied! 📋');}
+
+// ═══════════════════════════════════════════════════
+// UPLOAD
+// ═══════════════════════════════════════════════════
+function selectType(type,el){
+  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  uploadType=type;
+  document.getElementById('uploadForm').classList.add('show');
+  const fi=document.getElementById('uploadFile');
+  document.getElementById('uploadImgPrev').style.display='none';
+  document.getElementById('uploadVidPrev').style.display='none';
+  document.getElementById('thumbUploadWrap').style.display='none';
+  document.getElementById('postImgsWrap').style.display='none';
+  document.getElementById('fileDrop').style.display='block';
+  selectedFile=null;thumbFile=null;postImgFiles=[];
+  if(type==='post'){
+    document.getElementById('fileDrop').style.display='none';
+    document.getElementById('postImgsWrap').style.display='block';
+  }else if(type==='image'){fi.accept='image/*';document.getElementById('fileIcon').className='fas fa-image';}
+  else{fi.accept='video/*';document.getElementById('fileIcon').className='fas fa-video';document.getElementById('thumbUploadWrap').style.display='block';}
+  document.getElementById('fileText').textContent='Tap to select '+type;
+}
+
+function onFileSelect(input){
+  selectedFile=input.files[0];if(!selectedFile)return;
+  document.getElementById('fileText').textContent=selectedFile.name;
+  if(uploadType==='image'){const i=document.getElementById('uploadImgPrev');i.src=URL.createObjectURL(selectedFile);i.style.display='block';}
+  else{const v=document.getElementById('uploadVidPrev');v.src=URL.createObjectURL(selectedFile);v.style.display='block';}
+}
+
+function onThumbSelect(input){
+  thumbFile=input.files[0];if(!thumbFile)return;
+  const p=document.getElementById('thumbPrev');
+  p.src=URL.createObjectURL(thumbFile);p.style.display='block';
+}
+
+function addPostImages(input){
+  const files=Array.from(input.files);
+  files.forEach(f=>{
+    postImgFiles.push(f);
+    const grid=document.getElementById('postImgGrid');
+    const item=document.createElement('div');item.className='post-img-item';
+    const img=document.createElement('img');img.src=URL.createObjectURL(f);
+    const rm=document.createElement('button');rm.className='post-img-rm';rm.innerHTML='×';
+    const idx=postImgFiles.length-1;
+    rm.onclick=()=>{postImgFiles.splice(idx,1);item.remove();};
+    item.appendChild(img);item.appendChild(rm);
+    grid.insertBefore(item,grid.lastElementChild);
   });
 }
 
-// ═══════════════════════════════════════════
-// LIVE STREAM
-// ═══════════════════════════════════════════
-async function checkLiveRequirements() {
-  if (!currentUser) return;
-  const postsSnap = await db.collection('posts').where('userId','==',currentUser.uid).get();
-  let videoCount = 0, shortCount = 0, maxLikes = 0;
-  postsSnap.forEach(doc => {
-    const p = doc.data();
-    if (p.type === 'short') shortCount++;
-    else videoCount++;
-    if ((p.likes||0) > maxLikes) maxLikes = p.likes||0;
-  });
-  const subsSnap = await db.collection('subscriptions').where('channelId','==',currentUser.uid).get();
-  const subCount = subsSnap.size;
-
-  const reqV = document.getElementById('reqVideos');
-  const reqS = document.getElementById('reqShorts');
-  const reqL = document.getElementById('reqLikes');
-  const reqSb = document.getElementById('reqSubs');
-  const liveBtn = document.getElementById('liveBtn');
-
-  const vMet = videoCount >= 40;
-  const sMet = shortCount >= 50;
-  const lMet = maxLikes >= 100;
-  const subMet = subCount >= 100;
-
-  reqV.className = `fas fa-video ${vMet?'req-met':'req-unmet'}`;
-  reqS.className = `fas fa-film ${sMet?'req-met':'req-unmet'}`;
-  reqL.className = `fas fa-heart ${lMet?'req-met':'req-unmet'}`;
-  reqSb.className = `fas fa-users ${subMet?'req-met':'req-unmet'}`;
-
-  document.getElementById('reqVideosText').textContent = `40 videos uploaded (${videoCount}/40)`;
-  document.getElementById('reqShortsText').textContent = `50 shorts uploaded (${shortCount}/50)`;
-  document.getElementById('reqLikesText').textContent = `100 likes on 1 video (${maxLikes}/100)`;
-  document.getElementById('reqSubsText').textContent = `100 subscribers (${subCount}/100)`;
-
-  const allMet = vMet && sMet && lMet && subMet;
-  liveBtn.disabled = !allMet;
-  liveBtn.style.opacity = allMet ? '1' : '0.5';
-  document.getElementById('liveRequirements').style.display = allMet ? 'none' : 'block';
-
-  // Camera preview
-  if (allMet && !isLive) {
-    startCameraPreview();
-  }
-}
-
-async function startCameraPreview() {
-  try {
-    liveStream = await navigator.mediaDevices.getUserMedia({video:true, audio:true});
-    document.getElementById('livePreviewVideo').srcObject = liveStream;
-  } catch(e) { console.log('Camera not available'); }
-}
-
-async function toggleLive() {
-  const title = document.getElementById('liveTitle').value.trim();
-  if (!title) return showToast('Enter stream title');
-  if (!isLive) {
-    // Start live
-    isLive = true;
-    document.getElementById('liveBtn').innerHTML = '<i class="fas fa-stop"></i> End Live Stream';
-    document.getElementById('liveBtn').style.background = '#333';
-    document.getElementById('liveBadge').style.display = 'block';
-    document.getElementById('liveViewers').style.display = 'block';
-    document.getElementById('liveChatSection').style.display = 'block';
-    // Save live stream to Firestore
+async function doUpload(){
+  if(!cUser)return showToast('Login karein!');
+  const title=document.getElementById('uploadTitle').value.trim();
+  const desc=document.getElementById('uploadDesc').value.trim();
+  const cat=document.getElementById('uploadCat').value.trim();
+  if(!title)return showToast('Title required!');
+  const btn=document.getElementById('uploadBtn');
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';
+  try{
+    let url='',thumbURL='';
+    // Upload main file
+    if(uploadType!=='post'){
+      if(!selectedFile){showToast('Select file first!');btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';return;}
+      const maxMB=uploadType==='image'?10:100;
+      if(selectedFile.size>maxMB*1024*1024){showToast(`Max ${maxMB}MB!`);btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';return;}
+      showProgress();
+      const ep=(uploadType==='video'||uploadType==='short'||uploadType==='gaming'||uploadType==='music')
+        ?`https://api.cloudinary.com/v1_1/${CLOUD}/video/upload`
+        :`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`;
+      url=await uploadToCloudinary(selectedFile,ep);
+      // Upload thumbnail
+      if(thumbFile){
+        thumbURL=await uploadToCloudinary(thumbFile,`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`);
+      }
+    }
+    // Upload post images
+    let images=[];
+    if(uploadType==='post'&&postImgFiles.length){
+      for(const f of postImgFiles){
+        const iu=await uploadToCloudinary(f,`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`);
+        images.push(iu);
+      }
+    }
+    hideProgress();
     await db.collection('posts').add({
-      title, type: 'live', isLive: true,
-      userId: currentUser.uid,
-      userName: currentUserData?.name || '',
-      userPhoto: currentUserData?.photoURL || '',
-      channelName: currentUserData?.channelName || currentUserData?.name || '',
-      mediaUrl: '', thumbnailUrl: '',
-      viewers: 0, likes: 0, views: 0, comments: 0,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      title,desc,url,thumbURL,images,type:uploadType,
+      category:cat||uploadType,
+      authorId:cUser.uid,
+      authorName:cUserData?.name||cUser.email,
+      authorPhoto:cUserData?.photoURL||'',
+      likes:0,likedBy:[],views:0,comments:0,reactions:{},
+      time:Date.now()
     });
-    // Send notifications to all subscribers
-    await sendLiveNotification(title);
-    showToast('You are LIVE! Subscribers notified 🔴');
-    // Simulate viewers
-    simulateViewers();
-  } else {
-    // End live
-    isLive = false;
-    document.getElementById('liveBtn').innerHTML = '<i class="fas fa-broadcast-tower"></i> Start Live Stream';
-    document.getElementById('liveBtn').style.background = '';
-    document.getElementById('liveBadge').style.display = 'none';
-    document.getElementById('liveViewers').style.display = 'none';
-    document.getElementById('liveChatSection').style.display = 'none';
-    if (liveStream) { liveStream.getTracks().forEach(t => t.stop()); liveStream = null; }
-    showToast('Live stream ended');
+    showToast('✅ Upload successful!');
+    resetUploadForm();
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';
+    setTimeout(()=>showScreen('home'),1000);
+  }catch(e){
+    console.error(e);showToast('Upload failed: '+e.message);
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';
+    hideProgress();
   }
 }
 
-let viewerInterval;
-function simulateViewers() {
-  let count = 0;
-  viewerInterval = setInterval(() => {
-    if (!isLive) { clearInterval(viewerInterval); return; }
-    count = Math.max(0, count + Math.floor(Math.random()*3) - 1);
-    document.getElementById('liveViewCount').textContent = fmtNum(count);
-  }, 3000);
+async function uploadToCloudinary(file,ep){
+  const fd=new FormData();fd.append('file',file);fd.append('upload_preset',PRESET);
+  let prog=0;
+  const iv=setInterval(()=>{prog=Math.min(prog+4,88);document.getElementById('progFill').style.width=prog+'%';},300);
+  const res=await fetch(ep,{method:'POST',body:fd});
+  clearInterval(iv);document.getElementById('progFill').style.width='100%';
+  if(!res.ok){const er=await res.json();throw new Error(er.error?.message||'Upload failed');}
+  const data=await res.json();return data.secure_url;
 }
 
-async function sendLiveChat() {
-  const input = document.getElementById('liveChatInput');
-  const msg = input.value.trim();
-  if (!msg) return;
-  input.value = '';
-  const chat = document.getElementById('liveChat');
-  chat.innerHTML += `<div class="live-chat-msg"><strong>${currentUserData?.name||'You'}:</strong> ${msg}</div>`;
-  chat.scrollTop = chat.scrollHeight;
+function showProgress(){document.getElementById('progBar').style.display='block';document.getElementById('progFill').style.width='0%';}
+function hideProgress(){setTimeout(()=>{document.getElementById('progBar').style.display='none';document.getElementById('progFill').style.width='0%';},500);}
+
+function resetUploadForm(){
+  document.getElementById('uploadTitle').value='';
+  document.getElementById('uploadDesc').value='';
+  document.getElementById('uploadCat').value='';
+  document.getElementById('uploadImgPrev').style.display='none';
+  document.getElementById('uploadVidPrev').style.display='none';
+  document.getElementById('thumbPrev').style.display='none';
+  document.getElementById('uploadForm').classList.remove('show');
+  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('postImgGrid').innerHTML=`<div class="add-img-btn" onclick="document.getElementById('postImgFile').click()"><i class="fas fa-plus"></i><input type="file" id="postImgFile" accept="image/*" multiple onchange="addPostImages(this)"></div>`;
+  selectedFile=null;thumbFile=null;postImgFiles=[];
 }
 
-// ═══════════════════════════════════════════
-// SEARCH
-// ═══════════════════════════════════════════
-let searchTimeout;
-function handleSearch(val) {
-  clearTimeout(searchTimeout);
-  if (val.length < 2) return;
-  searchTimeout = setTimeout(() => doSearch(val), 400);
+// ═══════════════════════════════════════════════════
+// VIDEO PLAYER
+// ═══════════════════════════════════════════════════
+async function openPost(id){
+  currentPostId=id;
+  const sc=document.getElementById('playerScreen');
+  sc.classList.add('open');sc.scrollTop=0;
+  document.getElementById('playerTitle').textContent='Loading...';
+  document.getElementById('commList').innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const doc=await db.collection('posts').doc(id).get();
+    const p=doc.data();currentPostData={id,...p};
+    const vid=document.getElementById('playerVid');
+    const wrap=document.getElementById('playerVidWrap');
+    // Clear previous
+    wrap.style.backgroundImage='';
+    if(p.type==='image'){
+      vid.style.display='none';
+      wrap.style.backgroundImage=`url(${p.url})`;
+      wrap.style.backgroundSize='contain';
+      wrap.style.backgroundRepeat='no-repeat';
+      wrap.style.backgroundPosition='center';
+      wrap.style.backgroundColor='#000';
+    }else if(p.type==='post'){
+      vid.style.display='none';
+      wrap.style.display='none';
+    }else{
+      wrap.style.display='block';
+      vid.style.display='block';
+      vid.src=p.url;vid.play().catch(()=>{});
+    }
+    document.getElementById('playerTitle').textContent=p.title||'Untitled';
+    document.getElementById('playerMeta').textContent=`❤️ ${p.likes||0} • 👁️ ${p.views||0} • ${getTimeAgo(p.time)}`;
+    // Like
+    const liked=cUser&&(p.likedBy||[]).includes(cUser.uid);
+    document.getElementById('likeBtn').classList.toggle('liked',liked);
+    document.getElementById('likeCount').textContent=p.likes||0;
+    // Reactions
+    loadReactions(p);
+    // Channel
+    const ca=document.getElementById('playerChAv');
+    if(p.authorPhoto){ca.innerHTML=`<img src="${p.authorPhoto}">`;}else{ca.textContent=(p.authorName||'U')[0].toUpperCase();}
+    document.getElementById('playerChName').textContent=p.authorName||'Unknown';
+    if(p.authorId){
+      const ud=await db.collection('users').doc(p.authorId).get();
+      if(ud.exists)document.getElementById('playerChSubs').textContent=(ud.data().subscribers||0)+' subscribers';
+      const subDoc=await db.collection('subscriptions').doc(`${cUser.uid}_${p.authorId}`).get();
+      const sb=document.getElementById('playerSubBtn');
+      if(subDoc.exists){sb.textContent='Subscribed';sb.classList.add('subscribed');}
+      else{sb.textContent='Subscribe';sb.classList.remove('subscribed');}
+      sb.style.display=p.authorId===cUser.uid?'none':'block';
+    }
+    db.collection('posts').doc(id).update({views:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
+    loadComments(id);
+  }catch(e){console.error(e);showToast('Error loading');}
 }
 
-async function doSearch(query) {
-  query = query || document.getElementById('searchInput').value.trim();
-  if (!query) return;
-  showScreen('search');
-  const results = document.getElementById('searchResults');
-  results.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
-  const snap = await db.collection('posts').orderBy('createdAt','desc').limit(50).get();
-  const q = query.toLowerCase();
-  const filtered = snap.docs.filter(d => {
-    const p = d.data();
-    return (p.title||'').toLowerCase().includes(q) || (p.desc||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q);
+function closePlayer(){
+  document.getElementById('playerScreen').classList.remove('open');
+  const v=document.getElementById('playerVid');v.pause();v.src='';
+  document.getElementById('playerVidWrap').style.display='block';
+  document.getElementById('playerVidWrap').style.backgroundImage='';
+  currentPostId=null;currentPostData=null;
+}
+
+// Like
+async function toggleLike(){
+  if(!cUser||!currentPostId)return;
+  try{
+    const ref=db.collection('posts').doc(currentPostId);
+    const doc=await ref.get();const p=doc.data();
+    const liked=(p.likedBy||[]).includes(cUser.uid);
+    if(liked){
+      await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
+      document.getElementById('likeCount').textContent=Math.max(0,(p.likes||1)-1);
+      document.getElementById('likeBtn').classList.remove('liked');
+    }else{
+      await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid)});
+      document.getElementById('likeCount').textContent=(p.likes||0)+1;
+      document.getElementById('likeBtn').classList.add('liked');
+      sendNotif(p.authorId,'like',`${cUserData?.name||'Someone'} liked "${p.title||'your video'}"`,currentPostId);
+    }
+  }catch(e){showToast('Error');}
+}
+
+// Emoji Reactions
+function loadReactions(p){
+  const emojis=['❤️','😂','🔥','😮','👏'];
+  const ids=['e1','e2','e3','e4','e5'];
+  const r=p.reactions||{};
+  emojis.forEach((em,i)=>{
+    const el=document.getElementById(ids[i]);
+    if(el)el.textContent=(r[em]||0);
+    const btn=el?.parentElement;
+    if(btn&&cUser)btn.classList.toggle('reacted',(r[em+'_users']||[]).includes(cUser.uid));
   });
-  if (!filtered.length) {
-    results.innerHTML = '<div class="search-empty"><i class="fas fa-search"></i><p>No results for "'+query+'"</p></div>';
-    return;
-  }
-  results.innerHTML = filtered.map(doc => {
-    const p = {id:doc.id,...doc.data()};
-    const thumb = p.thumbnailUrl || p.mediaUrl || '';
-    const avatarContent = p.userPhoto ? `<img src="${p.userPhoto}">` : (p.userName||'?')[0].toUpperCase();
-    return `<div class="video-card" onclick="openVideo('${p.id}')">
-      <div class="thumb-wrap">${thumb?`<img src="${thumb}" loading="lazy">`:'<div style="width:100%;height:100%;background:var(--bg3);"></div>'}</div>
-      <div class="video-info">
-        <div class="channel-avatar">${avatarContent}</div>
-        <div class="video-meta">
-          <div class="video-title">${p.title||'Untitled'}</div>
-          <div class="video-sub">${p.channelName||p.userName||'Unknown'} · ${fmtNum(p.views||0)} views</div>
+}
+
+async function reactEmoji(emoji,btn){
+  if(!cUser||!currentPostId)return;
+  try{
+    const ref=db.collection('posts').doc(currentPostId);
+    const doc=await ref.get();const p=doc.data();
+    const r=p.reactions||{};
+    const users=r[emoji+'_users']||[];
+    const reacted=users.includes(cUser.uid);
+    const update={};
+    if(reacted){
+      update[`reactions.${emoji}`]=firebase.firestore.FieldValue.increment(-1);
+      update[`reactions.${emoji}_users`]=firebase.firestore.FieldValue.arrayRemove(cUser.uid);
+      btn.classList.remove('reacted');
+    }else{
+      update[`reactions.${emoji}`]=firebase.firestore.FieldValue.increment(1);
+      update[`reactions.${emoji}_users`]=firebase.firestore.FieldValue.arrayUnion(cUser.uid);
+      btn.classList.add('reacted');
+    }
+    await ref.update(update);
+    const newDoc=await ref.get();loadReactions(newDoc.data());
+  }catch(e){}
+}
+
+// Subscribe
+async function toggleSubscribe(){
+  if(!cUser||!currentPostData)return;
+  const aId=currentPostData.authorId;
+  if(aId===cUser.uid)return;
+  const sid=`${cUser.uid}_${aId}`;
+  const ref=db.collection('subscriptions').doc(sid);
+  const btn=document.getElementById('playerSubBtn');
+  try{
+    const doc=await ref.get();
+    if(doc.exists){
+      await ref.delete();
+      await db.collection('users').doc(aId).update({subscribers:firebase.firestore.FieldValue.increment(-1)});
+      btn.textContent='Subscribe';btn.classList.remove('subscribed');showToast('Unsubscribed');
+    }else{
+      await ref.set({from:cUser.uid,to:aId,time:Date.now()});
+      await db.collection('users').doc(aId).update({subscribers:firebase.firestore.FieldValue.increment(1)});
+      btn.textContent='Subscribed';btn.classList.add('subscribed');showToast('Subscribed! ✅');
+      sendNotif(aId,'sub',`${cUserData?.name||'Someone'} subscribed to your channel!`,null);
+    }
+    const ud=await db.collection('users').doc(aId).get();
+    if(ud.exists)document.getElementById('playerChSubs').textContent=(ud.data().subscribers||0)+' subscribers';
+  }catch(e){showToast('Error');}
+}
+
+function shareVideo(){navigator.clipboard.writeText(currentPostData?.url||location.href);showToast('Link copied! 📋');}
+
+// ═══════════════════════════════════════════════════
+// COMMENTS
+// ═══════════════════════════════════════════════════
+async function loadComments(postId){
+  const list=document.getElementById('commList');
+  list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('time','desc').limit(50).get();
+    document.getElementById('commTitle').textContent=`Comments (${snap.size})`;
+    if(snap.empty){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px;">No comments yet!</div>';return;}
+    list.innerHTML=snap.docs.map(d=>{
+      const c=d.data();
+      const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
+      return `<div class="comm-item">
+        <div class="comm-av">${av}</div>
+        <div class="comm-body">
+          <div class="comm-author">${c.authorName||'User'}</div>
+          <div class="comm-text">${c.text}</div>
+          <div class="comm-time">${getTimeAgo(c.time)}</div>
+        </div></div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<p style="color:var(--text2);padding:10px;font-size:12px;">Could not load comments</p>';}
+}
+
+async function postComment(){
+  if(!cUser||!currentPostId)return;
+  const input=document.getElementById('commInput');
+  const text=input.value.trim();if(!text)return;
+  input.value='';
+  try{
+    await db.collection('posts').doc(currentPostId).collection('comments').add({
+      text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
+      authorPhoto:cUserData?.photoURL||'',time:Date.now()
+    });
+    await db.collection('posts').doc(currentPostId).update({comments:firebase.firestore.FieldValue.increment(1)});
+    loadComments(currentPostId);showToast('Comment posted ✅');
+    sendNotif(currentPostData?.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,currentPostId);
+  }catch(e){showToast('Error posting comment');}
+}
+
+// ═══════════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════════
+async function sendNotif(toUid,type,text,postId){
+  if(!toUid||toUid===cUser?.uid)return;
+  try{
+    await db.collection('notifications').add({
+      to:toUid,from:cUser?.uid,fromName:cUserData?.name||'',
+      fromPhoto:cUserData?.photoURL||'',type,text,postId:postId||null,
+      read:false,time:Date.now()
+    });
+  }catch(e){}
+}
+
+async function loadNotifs(){
+  if(!cUser)return;
+  const list=document.getElementById('notifList');
+  list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('notifications').where('to','==',cUser.uid).orderBy('time','desc').limit(30).get();
+    if(snap.empty){list.innerHTML='<div class="empty-state"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>';document.getElementById('notifDot').style.display='none';return;}
+    const unread=snap.docs.filter(d=>!d.data().read).length;
+    document.getElementById('notifDot').style.display=unread>0?'block':'none';
+    list.innerHTML=snap.docs.map(d=>{
+      const n=d.data();
+      const icMap={like:'like',comment:'comment',sub:'sub',system:'system'};
+      const ic=icMap[n.type]||'system';
+      const emoMap={like:'❤️',comment:'💬',sub:'🔔',system:'📢'};
+      return `<div class="notif-item ${n.read?'':'unread'}" onclick="markNotifRead('${d.id}')">
+        <div class="notif-ic ${ic}">${emoMap[n.type]||'📢'}</div>
+        <div class="notif-body">
+          <div class="notif-text">${n.text}</div>
+          <div class="notif-time">${getTimeAgo(n.time)}</div>
+        </div></div>`;
+    }).join('');
+    // Mark all read
+    snap.docs.forEach(d=>{if(!d.data().read)db.collection('notifications').doc(d.id).update({read:true}).catch(()=>{});});
+    document.getElementById('notifDot').style.display='none';
+  }catch(e){list.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
+}
+
+function markNotifRead(id){db.collection('notifications').doc(id).update({read:true}).catch(()=>{});}
+
+// ═══════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════
+async function loadDashboard(){
+  if(!cUser)return;
+  document.getElementById('dashWelcome').textContent='Welcome, '+(cUserData?.name||'Creator')+'!';
+  try{
+    const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
+    let likes=0,views=0,vids=0;const myPosts=[];
+    snap.forEach(d=>{const p=d.data();likes+=p.likes||0;views+=p.views||0;vids++;myPosts.push({id:d.id,...p});});
+    const ud=await db.collection('users').doc(cUser.uid).get();
+    const subs=ud.exists?(ud.data().subscribers||0):0;
+    document.getElementById('dVideos').textContent=vids;
+    document.getElementById('dSubs').textContent=subs;
+    document.getElementById('dLikes').textContent=likes;
+    document.getElementById('dViews').textContent=views;
+    document.getElementById('profVideos').textContent=vids;
+    document.getElementById('profSubs').textContent=subs;
+    document.getElementById('profLikes').textContent=likes;
+    // CTR analytics
+    const ctr=vids>0?Math.min(100,Math.round((likes/Math.max(views,1))*100)):0;
+    const avgViews=vids>0?Math.round(views/vids):0;
+    const eng=vids>0?Math.min(100,Math.round(((likes+(myPosts.reduce((a,p)=>a+(p.comments||0),0)))/Math.max(views,1))*100)):0;
+    document.getElementById('aCTR').textContent=ctr+'%';
+    document.getElementById('aAvgViews').textContent=avgViews;
+    document.getElementById('aEngagement').textContent=eng+'%';
+    // My content
+    myPosts.sort((a,b)=>b.time-a.time);
+    const cl=document.getElementById('myContentList');
+    if(!myPosts.length){cl.innerHTML='<div class="empty-state"><i class="fas fa-upload"></i><p>No content yet!</p></div>';return;}
+    cl.innerHTML=myPosts.map(p=>{
+      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      return `<div class="my-vid-item">
+        <div class="my-vid-thumb">${th?`<img src="${th}">`:'<i class="fas fa-video" style="font-size:20px;color:var(--text3);margin:auto;display:flex;height:100%;align-items:center;justify-content:center;"></i>'}</div>
+        <div class="my-vid-info">
+          <div class="my-vid-title">${p.title||'Untitled'}</div>
+          <div class="my-vid-stats">❤️${p.likes||0} 👁️${p.views||0} 💬${p.comments||0} • ${getTimeAgo(p.time)}</div>
         </div>
-      </div>
-    </div>`;
-  }).join('');
+        <button class="my-vid-del" onclick="deletePost('${p.id}',event)"><i class="fas fa-trash-alt"></i></button>
+      </div>`;
+    }).join('');
+    // Subscribers list
+    const subsSnap=await db.collection('subscriptions').where('to','==',cUser.uid).limit(20).get();
+    const sl=document.getElementById('subsList');
+    if(subsSnap.empty){sl.innerHTML='<div style="color:var(--text2);font-size:13px;padding:8px 0;">No subscribers yet</div>';return;}
+    const subUIDs=subsSnap.docs.map(d=>d.data().from);
+    const subDocs=await Promise.all(subUIDs.map(uid=>db.collection('users').doc(uid).get()));
+    sl.innerHTML=subDocs.map(d=>{
+      if(!d.exists)return '';const u=d.data();
+      const av=u.photoURL?`<img src="${u.photoURL}">`:(u.name||'U')[0].toUpperCase();
+      return `<div class="sub-item"><div class="sub-av">${av}</div><div><div class="sub-name">${u.name||'User'}</div><div class="sub-handle">${u.handle||''}</div></div></div>`;
+    }).join('');
+  }catch(e){console.error(e);}
 }
 
-// ═══════════════════════════════════════════
-// SHARE
-// ═══════════════════════════════════════════
-function shareVideo() {
-  if (navigator.share) {
-    navigator.share({title: currentPostData?.title||'MyTube Video', url: window.location.href});
-  } else {
-    navigator.clipboard.writeText(window.location.href).then(() => showToast('Link copied!'));
-  }
+async function deletePost(id,e){
+  e.stopPropagation();
+  if(!confirm('Delete this post?'))return;
+  try{await db.collection('posts').doc(id).delete();showToast('Deleted ✅');loadDashboard();}
+  catch(err){showToast('Error deleting');}
 }
 
-// ═══════════════════════════════════════════
-// VIDEO EDITOR
-// ═══════════════════════════════════════════
-function updateTrim() {
-  const s = document.getElementById('trimStart').value;
-  const e = document.getElementById('trimEnd').value;
-  document.getElementById('trimStartVal').textContent = s + '%';
-  document.getElementById('trimEndVal').textContent = e + '%';
-  const vid = document.getElementById('editorVideo');
-  if (vid.duration) {
-    vid.currentTime = (s/100) * vid.duration;
-  }
+// ═══════════════════════════════════════════════════
+// PROFILE PIC
+// ═══════════════════════════════════════════════════
+async function uploadProfilePic(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>5*1024*1024)return showToast('Max 5MB');
+  showToast('Uploading...');
+  try{
+    const url=await uploadToCloudinary(file,`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`);
+    await db.collection('users').doc(cUser.uid).update({photoURL:url});
+    cUserData.photoURL=url;
+    updateProfileUI();updateHeaderAv();showToast('Profile pic updated! ✅');
+  }catch(e){showToast('Upload failed');}
 }
 
-function addSound(type) {
-  const vid = document.getElementById('editorVideo');
-  if (type === 'mute') { vid.muted = true; showToast('Audio muted'); }
-  else if (type === 'none') { vid.muted = false; showToast('Original audio'); }
-  else { showToast('Background music coming soon!'); }
+// ═══════════════════════════════════════════════════
+// EDIT PROFILE
+// ═══════════════════════════════════════════════════
+function openEditModal(){
+  document.getElementById('editName').value=cUserData?.name||'';
+  document.getElementById('editHandle').value=cUserData?.handle||'';
+  document.getElementById('editAbout').value=cUserData?.about||'';
+  document.getElementById('editModal').classList.add('open');
 }
 
-function saveEdit() { showToast('Saved! Ready to upload.'); showScreen('upload'); }
-
-// ═══════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════
-function fmtNum(n) {
-  if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
-  if (n >= 1000) return (n/1000).toFixed(1)+'K';
-  return n;
+async function saveEditProfile(){
+  const name=document.getElementById('editName').value.trim();
+  const handle=document.getElementById('editHandle').value.trim();
+  const about=document.getElementById('editAbout').value.trim();
+  if(!name)return showToast('Name required!');
+  try{
+    await db.collection('users').doc(cUser.uid).update({name,handle,about});
+    cUserData={...cUserData,name,handle,about};
+    updateProfileUI();updateHeaderAv();
+    closeModal('editModal');showToast('Profile updated! ✅');
+  }catch(e){showToast('Error saving');}
 }
 
-function formatDur(sec) {
-  const m = Math.floor(sec/60), s = Math.floor(sec%60);
-  return `${m}:${s.toString().padStart(2,'0')}`;
+// ═══════════════════════════════════════════════════
+// CHANNEL
+// ═══════════════════════════════════════════════════
+async function saveChannel(){
+  const n=document.getElementById('channelName').value.trim();
+  const h=document.getElementById('channelHandle').value.trim();
+  const a=document.getElementById('channelAbout').value.trim();
+  if(!n)return showToast('Channel name required!');
+  try{
+    await db.collection('users').doc(cUser.uid).update({channelName:n,channelHandle:h,channelAbout:a});
+    cUserData={...cUserData,channelName:n,channelHandle:h,channelAbout:a};
+    showToast('Channel saved! ✅');
+  }catch(e){showToast('Error saving channel');}
 }
 
-function timeAgo(date) {
-  const sec = Math.floor((new Date()-date)/1000);
-  if (sec < 60) return 'just now';
-  if (sec < 3600) return Math.floor(sec/60)+'m ago';
-  if (sec < 86400) return Math.floor(sec/3600)+'h ago';
-  if (sec < 604800) return Math.floor(sec/86400)+'d ago';
-  return Math.floor(sec/604800)+'w ago';
+// ═══════════════════════════════════════════════════
+// SUBSCRIPTIONS FEED
+// ═══════════════════════════════════════════════════
+async function loadSubsFeed(){
+  const feed=document.getElementById('subsFeed');
+  feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('subscriptions').where('from','==',cUser.uid).get();
+    if(snap.empty){feed.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>Subscribe to channels to see their content</p></div>';return;}
+    const aids=snap.docs.map(d=>d.data().to);
+    const posts=[];
+    for(const aid of aids){
+      const ps=await db.collection('posts').where('authorId','==',aid).orderBy('time','desc').limit(5).get();
+      ps.forEach(d=>posts.push({id:d.id,...d.data()}));
+    }
+    posts.sort((a,b)=>b.time-a.time);
+    if(!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No new content from subscriptions</p></div>';return;}
+    feed.innerHTML=posts.map(p=>buildCard(p)).join('');
+  }catch(e){feed.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
 }
 
-// Hide main UI initially
-document.getElementById('mainHeader').style.display = 'none';
-document.getElementById('mainNav').style.display = 'none';
-document.querySelector('.main').style.display = 'none';
+// ═══════════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════════
+let searchTimeout;
+function onSearchInput(v){clearTimeout(searchTimeout);if(v.trim())searchTimeout=setTimeout(()=>doSearch(v),500);}
+async function doSearch(q){
+  const query=q||document.getElementById('searchInput').value.trim();
+  if(!query)return;
+  showScreen('search');
+  const res=document.getElementById('searchResults');
+  res.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('posts').orderBy('time','desc').limit(80).get();
+    const ql=query.toLowerCase();
+    const posts=snap.docs.map(d=>({id:d.id,...d.data()}))
+      .filter(p=>(p.title||'').toLowerCase().includes(ql)||(p.desc||'').toLowerCase().includes(ql)||(p.category||'').toLowerCase().includes(ql)||(p.authorName||'').toLowerCase().includes(ql));
+    if(!posts.length){res.innerHTML=`<div class="empty-state"><i class="fas fa-search"></i><p>No results for "${query}"</p></div>`;return;}
+    res.innerHTML=posts.map(p=>buildCard(p)).join('');
+  }catch(e){res.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Search error</p></div>';}
+}
+
+// ═══════════════════════════════════════════════════
+// OWNER DASHBOARD
+// ═══════════════════════════════════════════════════
+async function loadOwnerDash(){
+  if(!cUser||cUser.email!==OWNER_EMAIL)return;
+  try{
+    const usersSnap=await db.collection('users').get();
+    const postsSnap=await db.collection('posts').get();
+    let channels=0,totalLikes=0;
+    usersSnap.forEach(d=>{if(d.data().channelName)channels++;});
+    postsSnap.forEach(d=>{totalLikes+=d.data().likes||0;});
+    document.getElementById('owUsers').textContent=usersSnap.size;
+    document.getElementById('owChannels').textContent=channels;
+    document.getElementById('owVideos').textContent=postsSnap.size;
+    document.getElementById('owLikes').textContent=totalLikes;
+    const ul=document.getElementById('ownerUsersList');
+    ul.innerHTML=usersSnap.docs.map(d=>{
+      const u=d.data();
+      const av=u.photoURL?`<img src="${u.photoURL}">`:(u.name||'U')[0].toUpperCase();
+      const lastSeen=u.lastSeen?getTimeAgo(u.lastSeen):'Unknown';
+      const active=u.lastSeen&&(Date.now()-u.lastSeen)<7*24*60*60*1000;
+      return `<div class="owner-user-item">
+        <div class="ou-av">${av}</div>
+        <div class="ou-info">
+          <div class="ou-name">${u.name||'User'} ${u.email===OWNER_EMAIL?'👑':''}</div>
+          <div class="ou-meta">${u.email||''} • ${lastSeen}</div>
+        </div>
+        <span class="ou-badge ${active?'badge-active':''}">${active?'Active':''}${u.channelName?'<br>'+u.channelName:''}</span>
+      </div>`;
+    }).join('');
+  }catch(e){console.error(e);}
+}
+
+// ═══════════════════════════════════════════════════
+// LIVE SCREEN
+// ═══════════════════════════════════════════════════
+async function loadLiveScreen(){
+  if(!cUser)return;
+  try{
+    const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
+    let videos=0,shorts=0,maxLikes=0;
+    snap.forEach(d=>{
+      const p=d.data();
+      if(p.type==='video'||p.type==='gaming'||p.type==='music')videos++;
+      if(p.type==='short')shorts++;
+      if((p.likes||0)>maxLikes)maxLikes=p.likes||0;
+    });
+    const ud=await db.collection('users').doc(cUser.uid).get();
+    const subs=ud.exists?(ud.data().subscribers||0):0;
+    const reqs=[
+      {label:`${LIVE_REQS.videos} videos uploaded`,current:videos,req:LIVE_REQS.videos},
+      {label:`${LIVE_REQS.shorts} shorts uploaded`,current:shorts,req:LIVE_REQS.shorts},
+      {label:`${LIVE_REQS.likesOnOneVideo} likes on 1 video`,current:maxLikes,req:LIVE_REQS.likesOnOneVideo},
+      {label:`${LIVE_REQS.subscribers} subscribers`,current:subs,req:LIVE_REQS.subscribers}
+    ];
+    const allDone=reqs.every(r=>r.current>=r.req);
+    document.getElementById('liveReqList').innerHTML=reqs.map(r=>{
+      const done=r.current>=r.req;
+      return `<div class="live-req-item">
+        <div class="live-req-icon ${done?'req-done':'req-pend'}">${done?'✅':'🔒'}</div>
+        <div class="live-req-text">${r.label}</div>
+        <div class="live-req-prog">${r.current}/${r.req}</div>
+      </div>`;
+    }).join('');
+    if(allDone){
+      document.getElementById('liveLocked').style.display='none';
+      document.getElementById('liveSetup').style.display='block';
+    }else{
+      document.getElementById('liveLocked').style.display='block';
+      document.getElementById('liveSetup').style.display='none';
+    }
+  }catch(e){console.error(e);}
+}
+
+function startLive(){
+  const title=document.getElementById('liveTitle').value.trim();
+  if(!title)return showToast('Stream title required!');
+  showToast('🔴 Live starting... Use OBS with RTMP!');
+  db.collection('posts').add({
+    title,type:'live',isLive:true,
+    authorId:cUser.uid,authorName:cUserData?.name||'',authorPhoto:cUserData?.photoURL||'',
+    likes:0,views:0,comments:0,time:Date.now()
+  }).then(()=>showToast('Live post created! ✅')).catch(()=>{});
+}
+
+// ═══════════════════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════════════════
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeModalIfOut(e,id){if(e.target===document.getElementById(id))closeModal(id);}
 </script>
 </body>
 </html>
