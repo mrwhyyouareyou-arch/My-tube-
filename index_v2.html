@@ -1399,11 +1399,16 @@ function renderFeed(posts) {
 }
 
 function buildVideoCard(p) {
-  const thumb = p.type==='image'
-    ? `<img src="${p.url}" loading="lazy">`
-    : p.type==='video' || p.type==='short' || p.type==='gaming' || p.type==='music'
-    ? `<video src="${p.url}" preload="none"></video>`
-    : `<div style="background:var(--bg3);height:100%;display:flex;align-items:center;justify-content:center;padding:20px;font-size:15px;line-height:1.5;">${p.title||''}</div>`;
+  let thumb = '';
+  if (p.type==='image') {
+    thumb = `<img src="${p.url}" loading="lazy">`;
+  } else if (p.type==='video'||p.type==='short'||p.type==='gaming'||p.type==='music') {
+    // Cloudinary auto thumbnail
+    const thumbUrl = p.url ? p.url.replace('/upload/','/upload/so_1,w_600/').replace(/\.(mp4|mov|webm)$/,'.jpg') : '';
+    thumb = `<img src="${thumbUrl}" loading="lazy" onerror="this.src='';this.style.background='#222';">`;
+  } else {
+    thumb = `<div style="background:var(--bg3);height:100%;display:flex;align-items:center;justify-content:center;padding:20px;font-size:15px;line-height:1.5;">${p.title||''}</div>`;
+  }
 
   const timeAgo = getTimeAgo(p.time);
   const authorInitial = (p.authorName||'U')[0].toUpperCase();
@@ -1448,17 +1453,21 @@ async function loadShorts() {
   const grid = document.getElementById('shortsGrid');
   grid.innerHTML = '<div class="loader" style="grid-column:1/-1;"><div class="spinner"></div></div>';
   try {
-    const snap = await db.collection('posts').where('type','==','short').orderBy('time','desc').limit(20).get();
-    if (snap.empty) {
-      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-film"></i><p>No shorts yet</p></div>';
+    // No composite index needed - fetch all, filter client side
+    const snap = await db.collection('posts').orderBy('time','desc').limit(50).get();
+    const shorts = snap.docs.filter(d => d.data().type === 'short');
+    if (!shorts.length) {
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-film"></i><p>No shorts yet. Upload a Short!</p></div>';
       return;
     }
-    grid.innerHTML = snap.docs.map(d=>{
+    grid.innerHTML = shorts.map(d=>{
       const p = d.data();
-      const authorInitial = (p.authorName||'U')[0].toUpperCase();
+      // Use Cloudinary thumbnail for video
+      const thumbUrl = p.url ? p.url.replace('/upload/', '/upload/so_0,w_400/').replace('.mp4','.jpg').replace('.mov','.jpg').replace('.webm','.jpg') : '';
       return `
         <div class="short-card" onclick="openShortFullscreen('${d.id}')">
-          <video src="${p.url}" muted preload="none" playsinline></video>
+          <img src="${thumbUrl}" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" style="width:100%;height:100%;object-fit:cover;">
+          <video src="${p.url}" muted preload="none" playsinline style="display:none;width:100%;height:100%;object-fit:cover;"></video>
           <button class="short-menu"><i class="fas fa-ellipsis-v"></i></button>
           <div class="short-overlay">
             <div class="short-title">${p.title||''}</div>
@@ -1466,6 +1475,7 @@ async function loadShorts() {
         </div>`;
     }).join('');
   } catch(e) {
+    console.error(e);
     grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-circle"></i><p>Error loading shorts</p></div>';
   }
 }
