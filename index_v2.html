@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MyTube Upload</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+    }
+
+    .box {
+      margin-top: 50px;
+    }
+
+    button {
+      background: red;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    video {
+      width: 250px;
+      margin-top: 20px;
+    }
+
+    .feed {
+      margin-top: 40px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>🎬 Upload Video</h2>
+
+  <input type="file" id="fileInput" accept="video/*" />
+  <br>
+  <button onclick="uploadVideo()">Upload Video</button>
+
+  <p id="status"></p>
+
+  <video id="preview" controls style="display:none;"></video>
+</div>
+
+<div class="feed">
+  <h2>🔥 MyTube Feed</h2>
+  <div id="videos"></div>
+</div>
+
+<!-- 🔥 Firebase + Upload Logic -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, addDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ✅ YOUR CONFIG (already added)
+const firebaseConfig = {
+  apiKey: "AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
+  authDomain: "my-tube-e526b.firebaseapp.com",
+  projectId: "my-tube-e526b",
+  storageBucket: "my-tube-e526b.firebasestorage.app",
+  messagingSenderId: "948348267378",
+  appId: "1:948348267378:web:2dd25f59a9f510a8694beb",
+  measurementId: "G-EQ91748HD1"
+};
+
+// init
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🚀 Upload Function
+window.uploadVideo = async () => {
+
+  const file = document.getElementById("fileInput").files[0];
+  const status = document.getElementById("status");
+
+  if (!file) {
+    alert("Select video first");
+    return;
+  }
+
+  status.innerText = "Uploading... ⏳";
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "mytube_upload"); // your preset
+
+  try {
+    const res = await fetch("https://api.cloudinary.com/v1_1/dyrjyet9o/video/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      status.innerText = "Upload failed ❌";
+      console.log(data);
+      return;
+    }
+
+    // ✅ Preview
+    const video = document.getElementById("preview");
+    video.src = data.secure_url;
+    video.style.display = "block";
+
+    status.innerText = "Upload success ✅";
+
+    // 🔥 SAVE TO FIREBASE
+    await addDoc(collection(db, "videos"), {
+      url: data.secure_url,
+      createdAt: new Date()
+    });
+
+    console.log("Saved to Firebase 🔥");
+
+    // reload feed
+    loadVideos();
+
+  } catch (err) {
+    console.error(err);
+    status.innerText = "Error ❌";
+  }
+};
+
+// 📺 Load Videos (Feed)
+async function loadVideos() {
+  const container = document.getElementById("videos");
+  container.innerHTML = "";
+
+  const querySnapshot = await getDocs(collection(db, "videos"));
+
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+
+    const video = document.createElement("video");
+    video.src = data.url;
+    video.controls = true;
+
+    container.appendChild(video);
+  });
+}
+
+// initial load
+loadVideos();
+
+</script>
+
+</body>
+  </html>
