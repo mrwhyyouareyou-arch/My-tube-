@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>MyTube</title>
+  <title>MyTube Pro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -15,55 +15,56 @@
 
     header {
       padding: 15px;
-      font-size: 22px;
-      font-weight: bold;
-      background: #202020;
       text-align: center;
+      font-size: 22px;
+      background: #202020;
     }
 
     .container {
       padding: 15px;
     }
 
-    .upload-box {
-      background: #1c1c1c;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
+    button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      border: none;
+      background: red;
+      color: white;
+      border-radius: 5px;
     }
 
     input, textarea {
       width: 100%;
       padding: 10px;
       margin-top: 10px;
-      border-radius: 5px;
       border: none;
+      border-radius: 5px;
     }
 
-    button {
+    .options {
+      display: none;
+      gap: 10px;
       margin-top: 10px;
-      padding: 10px;
-      background: red;
-      color: white;
-      border: none;
-      width: 100%;
-      border-radius: 5px;
-      font-weight: bold;
     }
 
-    .feed {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+    .options button {
+      flex: 1;
+      background: #333;
+    }
+
+    .feed, .shorts {
+      margin-top: 20px;
     }
 
     .card {
       background: #1c1c1c;
+      margin-bottom: 15px;
       border-radius: 10px;
       overflow: hidden;
     }
 
-    .card img {
+    .card img, .card video {
       width: 100%;
     }
 
@@ -78,23 +79,33 @@
       border-top: 1px solid #333;
     }
 
-    .actions span {
-      cursor: pointer;
+    .shorts video {
+      height: 400px;
+      object-fit: cover;
     }
+
   </style>
 </head>
 
 <body>
 
-<header>🔥 MyTube</header>
+<header>🔥 MyTube Pro</header>
 
 <div class="container">
 
-  <!-- Upload Section -->
-  <div class="upload-box">
-    <h3>Upload</h3>
+  <!-- Upload Button -->
+  <button onclick="toggleOptions()">Create</button>
 
-    <input type="file" id="fileInput" accept="image/*" />
+  <!-- Options -->
+  <div class="options" id="options">
+    <button onclick="selectType('image')">Image</button>
+    <button onclick="selectType('video')">Video</button>
+    <button onclick="selectType('post')">Post</button>
+  </div>
+
+  <!-- Upload Box -->
+  <div id="uploadBox" style="display:none;">
+    <input type="file" id="fileInput" />
     <input type="text" id="title" placeholder="Title" />
     <textarea id="desc" placeholder="Description"></textarea>
 
@@ -104,12 +115,35 @@
   <!-- Feed -->
   <div class="feed" id="feed"></div>
 
+  <!-- Shorts -->
+  <h3>🔥 Shorts</h3>
+  <div class="shorts" id="shorts"></div>
+
 </div>
 
 <script>
 
-const CLOUD_NAME = "dyrjyet9o";
+const CLOUD = "dyrjyet9o";
 const PRESET = "mytube_upload";
+
+let currentType = "";
+
+function toggleOptions() {
+  const opt = document.getElementById("options");
+  opt.style.display = opt.style.display === "flex" ? "none" : "flex";
+}
+
+function selectType(type) {
+  currentType = type;
+  document.getElementById("uploadBox").style.display = "block";
+
+  const fileInput = document.getElementById("fileInput");
+
+  if (type === "image") fileInput.accept = "image/*";
+  if (type === "video") fileInput.accept = "video/*";
+  if (type === "post") fileInput.style.display = "none";
+  else fileInput.style.display = "block";
+}
 
 async function upload() {
 
@@ -117,14 +151,23 @@ async function upload() {
   const title = document.getElementById("title").value;
   const desc = document.getElementById("desc").value;
 
-  if (!file) return alert("Select file");
+  if (currentType !== "post" && !file) {
+    return alert("Select file");
+  }
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", PRESET);
+  let url = "";
 
-  try {
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+  if (currentType !== "post") {
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", PRESET);
+
+    const endpoint = currentType === "video"
+      ? `https://api.cloudinary.com/v1_1/${CLOUD}/video/upload`
+      : `https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`;
+
+    const res = await fetch(endpoint, {
       method: "POST",
       body: formData
     });
@@ -137,25 +180,29 @@ async function upload() {
       return;
     }
 
-    addToFeed(data.secure_url, title, desc);
-
-  } catch (err) {
-    console.log(err);
-    alert("Error");
+    url = data.secure_url;
   }
+
+  addToFeed(url, title, desc, currentType);
 }
 
-function addToFeed(url, title, desc) {
+function addToFeed(url, title, desc, type) {
 
   const feed = document.getElementById("feed");
+
+  let media = "";
+
+  if (type === "image") media = `<img src="${url}" />`;
+  if (type === "video") media = `<video controls src="${url}"></video>`;
+  if (type === "post") media = `<div style="padding:20px;">${desc}</div>`;
+
+  const time = new Date().toLocaleTimeString();
 
   const card = document.createElement("div");
   card.className = "card";
 
-  const time = new Date().toLocaleTimeString();
-
   card.innerHTML = `
-    <img src="${url}" />
+    ${media}
     <div class="info">
       <h4>${title || "No Title"}</h4>
       <p>${desc || ""}</p>
@@ -163,30 +210,36 @@ function addToFeed(url, title, desc) {
     </div>
     <div class="actions">
       <span onclick="like(this)">👍 0</span>
-      <span onclick="comment()">💬</span>
       <span onclick="share('${url}')">🔗</span>
     </div>
   `;
 
   feed.prepend(card);
+
+  // Shorts auto add (video only)
+  if (type === "video") {
+    const shorts = document.getElementById("shorts");
+
+    const vid = document.createElement("video");
+    vid.src = url;
+    vid.controls = true;
+
+    shorts.prepend(vid);
+  }
+
 }
 
 function like(el) {
-  let count = parseInt(el.innerText.split(" ")[1]);
-  count++;
-  el.innerText = `👍 ${count}`;
-}
-
-function comment() {
-  alert("Comment system coming soon 💬");
+  let n = parseInt(el.innerText.split(" ")[1]);
+  el.innerText = `👍 ${n + 1}`;
 }
 
 function share(url) {
   navigator.clipboard.writeText(url);
-  alert("Link copied 🔗");
+  alert("Link copied");
 }
 
 </script>
 
 </body>
-  </html>
+</html>
