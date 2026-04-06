@@ -1,88 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>MyTube Pro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MyTube Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-  <style>
-    body{margin:0;font-family:Arial;background:#0f0f0f;color:white;}
-    header{display:flex;gap:10px;padding:10px;background:#202020;align-items:center;}
-    .logo{font-weight:bold;color:red;font-size:18px;}
-    .search{flex:1;padding:8px;background:#222;color:white;border:none;border-radius:20px;}
-    .nav{display:flex;justify-content:space-around;background:#202020;padding:10px;}
-    .nav button{background:none;color:white;border:none;font-size:18px;}
-    .container{padding:10px;}
-    .card{background:#1c1c1c;margin-bottom:15px;border-radius:10px;overflow:hidden;}
-    .card img,.card video{width:100%;}
-    .actions{display:flex;justify-content:space-around;padding:10px;border-top:1px solid #333;}
-    input,textarea{width:100%;padding:10px;margin-top:10px;background:#222;color:white;border:none;border-radius:5px;}
-    button{padding:10px;width:100%;margin-top:10px;background:red;color:white;border:none;border-radius:5px;}
-    .google-btn{background:white;color:black;}
-    .tab{display:none;}
-    .comment{padding:5px;border-bottom:1px solid #444;font-size:14px;}
-  </style>
+<style>
+body{margin:0;font-family:Arial;background:#0f0f0f;color:white;}
+header{display:flex;gap:10px;padding:10px;background:#202020;align-items:center;}
+.logo{font-weight:bold;color:red;font-size:20px;}
+.search{flex:1;padding:8px;background:#222;color:white;border:none;border-radius:20px;}
+.nav{display:flex;justify-content:space-around;background:#202020;padding:10px;}
+.nav button{background:none;color:white;border:none;font-size:20px;}
+.container{padding:10px;}
+.card{background:#1c1c1c;margin-bottom:15px;border-radius:10px;overflow:hidden;}
+.card img,.card video{width:100%;}
+input,textarea{width:100%;padding:10px;margin-top:10px;background:#222;color:white;border:none;border-radius:5px;}
+button{padding:10px;width:100%;margin-top:10px;background:red;color:white;border:none;border-radius:5px;}
+.tab{display:none;}
+.profile-img{width:80px;height:80px;border-radius:50%;background:#333;}
+</style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo">▶ MyTube</div>
-  <input class="search" placeholder="Search...">
+<div class="logo">▶ MyTube</div>
+<input class="search" placeholder="Search...">
 </header>
 
 <div id="loginBox" class="container">
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-
-  <button onclick="login()">Login</button>
-  <button onclick="signup()">Signup</button>
-
-  <button class="google-btn" onclick="googleLogin()">🔵 Continue with Google</button>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<button onclick="signup()">Signup</button>
+<button onclick="googleLogin()">🔵 Google</button>
 </div>
 
 <div id="app" style="display:none;">
 
 <div class="nav">
-  <button onclick="showTab('home')">🏠</button>
-  <button onclick="showTab('shorts')">🎬</button>
-  <button onclick="showTab('upload')">➕</button>
-  <button onclick="showTab('dashboard')">📊</button>
-  <button onclick="showTab('profile')">👤</button>
+<button onclick="showTab('home')">🏠</button>
+<button onclick="showTab('shorts')">🎬</button>
+<button onclick="showTab('upload')">➕</button>
+<button onclick="showTab('dashboard')">📊</button>
+<button onclick="showTab('profile')">👤</button>
 </div>
 
 <div class="container">
 
 <div id="home" class="tab"><div id="feed"></div></div>
-<div id="shorts" class="tab"><div id="shortsContainer"></div></div>
+
+<div id="shorts" class="tab">
+<div id="shortsContainer" style="height:80vh;overflow-y:scroll;"></div>
+</div>
 
 <div id="upload" class="tab">
-  <button onclick="type='image'">Image</button>
-  <button onclick="type='video'">Video</button>
-  <button onclick="type='post'">Post</button>
+<button onclick="type='image'">Image</button>
+<button onclick="type='video'">Video</button>
+<button onclick="type='post'">Post</button>
 
-  <input type="file" id="fileInput">
-  <input id="title" placeholder="Title">
-  <textarea id="desc"></textarea>
+<input type="file" id="fileInput">
+<input id="title" placeholder="Title">
+<textarea id="desc"></textarea>
 
-  <button onclick="upload()">Upload</button>
+<button onclick="upload()">Upload</button>
 </div>
 
 <div id="dashboard" class="tab">
-  <p>Posts: <span id="p">0</span></p>
-  <p>Videos: <span id="v">0</span></p>
-  <p>Likes: <span id="l">0</span></p>
+<p>Posts: <span id="p">0</span></p>
+<p>Videos: <span id="v">0</span></p>
+<p>Likes: <span id="l">0</span></p>
 </div>
 
 <div id="profile" class="tab">
-  <p id="userEmail"></p>
-  <p>Subscribers: <span id="subCount">0</span></p>
-  <button onclick="subscribe()">Subscribe</button>
-  <button onclick="logout()">Logout</button>
+<img id="profilePic" class="profile-img">
+<input id="about" placeholder="About you">
+<button onclick="saveProfile()">Save Profile</button>
+
+<p id="userEmail"></p>
+<p>Subscribers: <span id="subCount">0</span></p>
+
+<button onclick="subscribe()">Subscribe</button>
+
+<hr>
+
+<h3>Create Channel</h3>
+<input id="channelName" placeholder="Channel Name">
+<input id="username" placeholder="@username">
+<textarea id="channelAbout" placeholder="Channel About"></textarea>
+<button onclick="createChannel()">Create Channel</button>
+
+<button onclick="logout()">Logout</button>
 </div>
 
 </div>
@@ -90,65 +102,148 @@
 
 <script>
 
-// Firebase config
+// Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
-  authDomain: "my-tube-e526b.firebaseapp.com",
-  projectId: "my-tube-e526b",
-  storageBucket: "my-tube-e526b.firebasestorage.app",
-  messagingSenderId: "948348267378",
-  appId: "1:948348267378:web:2dd25f59a9f510a8694beb"
+apiKey: "AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
+authDomain: "my-tube-e526b.firebaseapp.com",
+projectId: "my-tube-e526b",
 };
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// AUTH STATE
+let currentUser;
+let type="post";
+
+// AUTH
 auth.onAuthStateChanged(user=>{
-  if(user){
-    loginBox.style.display="none";
-    app.style.display="block";
-    userEmail.innerText = user.email || user.displayName;
-    showTab("home");
-  }
+if(user){
+currentUser=user;
+loginBox.style.display="none";
+app.style.display="block";
+userEmail.innerText=user.email;
+showTab("home");
+loadProfile();
+}
 });
 
-// EMAIL AUTH
 function signup(){
-  auth.createUserWithEmailAndPassword(email.value,password.value)
-  .then(()=>alert("Signup Success"))
-  .catch(e=>alert(e.message));
+auth.createUserWithEmailAndPassword(email.value,password.value);
 }
 
 function login(){
-  auth.signInWithEmailAndPassword(email.value,password.value)
-  .then(()=>alert("Login Success"))
-  .catch(e=>alert(e.message));
+auth.signInWithEmailAndPassword(email.value,password.value);
 }
 
-function logout(){
-  auth.signOut();
-}
+function logout(){auth.signOut();}
 
-// ✅ GOOGLE LOGIN (FINAL FIX)
+// GOOGLE
 function googleLogin(){
-  const provider = new firebase.auth.GoogleAuthProvider();
-
-  auth.signInWithPopup(provider)
-    .then(result=>{
-      alert("Welcome " + (result.user.displayName || result.user.email));
-    })
-    .catch(err=>{
-      alert(err.message);
-      console.log(err);
-    });
+const provider=new firebase.auth.GoogleAuthProvider();
+auth.signInWithPopup(provider);
 }
 
 // TABS
 function showTab(t){
-  document.querySelectorAll(".tab").forEach(x=>x.style.display="none");
-  document.getElementById(t).style.display="block";
+document.querySelectorAll(".tab").forEach(x=>x.style.display="none");
+document.getElementById(t).style.display="block";
+
+if(t==="home") loadHome();
+if(t==="shorts") loadShorts();
+if(t==="dashboard") loadStats();
+}
+
+// HOME
+function loadHome(){
+const feed=document.getElementById("feed");
+feed.innerHTML="";
+
+db.collection("posts").orderBy("time","desc").get().then(snap=>{
+snap.forEach(doc=>{
+let d=doc.data();
+feed.innerHTML+=`
+<div class="card">
+<img src="${d.url}">
+<div style="padding:10px">${d.title}</div>
+</div>`;
+});
+});
+}
+
+// SHORTS
+function loadShorts(){
+const box=document.getElementById("shortsContainer");
+box.innerHTML="";
+
+db.collection("posts").where("type","==","video").get().then(snap=>{
+snap.forEach(doc=>{
+let d=doc.data();
+box.innerHTML+=`
+<div class="card">
+<video src="${d.url}" controls autoplay loop></video>
+</div>`;
+});
+});
+}
+
+// UPLOAD
+function upload(){
+let file=fileInput.files[0];
+if(!file)return alert("Select file");
+
+let reader=new FileReader();
+reader.onload=e=>{
+db.collection("posts").add({
+url:e.target.result,
+title:title.value,
+type:type,
+time:Date.now(),
+uid:currentUser.uid
+});
+alert("Uploaded");
+};
+reader.readAsDataURL(file);
+}
+
+// DASHBOARD
+function loadStats(){
+db.collection("posts").where("uid","==",currentUser.uid).get().then(snap=>{
+p.innerText=snap.size;
+v.innerText=snap.docs.filter(d=>d.data().type==="video").length;
+l.innerText=0;
+});
+}
+
+// PROFILE
+function saveProfile(){
+db.collection("users").doc(currentUser.uid).set({
+about:about.value
+});
+alert("Saved");
+}
+
+function loadProfile(){
+db.collection("users").doc(currentUser.uid).get().then(doc=>{
+if(doc.exists){
+about.value=doc.data().about || "";
+}
+});
+}
+
+// CHANNEL
+function createChannel(){
+db.collection("channels").doc(currentUser.uid).set({
+name:channelName.value,
+username:username.value,
+about:channelAbout.value
+});
+alert("Channel Created");
+}
+
+// SUBSCRIBE
+function subscribe(){
+subCount.innerText=parseInt(subCount.innerText)+1;
 }
 
 </script>
