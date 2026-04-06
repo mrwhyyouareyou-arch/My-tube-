@@ -4,106 +4,27 @@
   <title>MyTube Pro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <!-- ✅ Firebase FIX (v8 use karo) -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <style>
     body{margin:0;font-family:Arial;background:#0f0f0f;color:white;}
-
-    header{
-      display:flex;
-      gap:10px;
-      padding:10px;
-      background:#202020;
-      align-items:center;
-    }
-
-    .logo{
-      font-weight:bold;
-      color:red;
-      font-size:18px;
-    }
-
-    .search{
-      flex:1;
-      padding:8px;
-      background:#222;
-      color:white;
-      border:none;
-      border-radius:20px;
-    }
-
-    .nav{
-      display:flex;
-      justify-content:space-around;
-      background:#202020;
-      padding:10px;
-    }
-
-    .nav button{
-      background:none;
-      color:white;
-      border:none;
-      font-size:18px;
-    }
-
+    header{display:flex;gap:10px;padding:10px;background:#202020;align-items:center;}
+    .logo{font-weight:bold;color:red;font-size:18px;}
+    .search{flex:1;padding:8px;background:#222;color:white;border:none;border-radius:20px;}
+    .nav{display:flex;justify-content:space-around;background:#202020;padding:10px;}
+    .nav button{background:none;color:white;border:none;font-size:18px;}
     .container{padding:10px;}
-
-    .card{
-      background:#1c1c1c;
-      margin-bottom:15px;
-      border-radius:10px;
-      overflow:hidden;
-    }
-
+    .card{background:#1c1c1c;margin-bottom:15px;border-radius:10px;overflow:hidden;}
     .card img,.card video{width:100%;}
-
-    .actions{
-      display:flex;
-      justify-content:space-around;
-      padding:10px;
-      border-top:1px solid #333;
-    }
-
-    input,textarea{
-      width:100%;
-      padding:10px;
-      margin-top:10px;
-      background:#222;
-      color:white;
-      border:none;
-      border-radius:5px;
-    }
-
-    button{
-      padding:10px;
-      width:100%;
-      margin-top:10px;
-      background:red;
-      color:white;
-      border:none;
-      border-radius:5px;
-    }
-
-    .google-btn{
-      background:white;
-      color:black;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-    }
-
+    .actions{display:flex;justify-content:space-around;padding:10px;border-top:1px solid #333;}
+    input,textarea{width:100%;padding:10px;margin-top:10px;background:#222;color:white;border:none;border-radius:5px;}
+    button{padding:10px;width:100%;margin-top:10px;background:red;color:white;border:none;border-radius:5px;}
+    .google-btn{background:white;color:black;}
     .tab{display:none;}
-
-    .comment{
-      padding:5px;
-      border-bottom:1px solid #444;
-      font-size:14px;
-    }
-
+    .comment{padding:5px;border-bottom:1px solid #444;font-size:14px;}
   </style>
 </head>
 
@@ -121,10 +42,7 @@
   <button onclick="login()">Login</button>
   <button onclick="signup()">Signup</button>
 
-  <!-- ✅ Google Login -->
-  <button class="google-btn" onclick="googleLogin()">
-    🔵 Continue with Google
-  </button>
+  <button class="google-btn" onclick="googleLogin()">🔵 Continue with Google</button>
 </div>
 
 <div id="app" style="display:none;">
@@ -186,6 +104,19 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+
+// 🔥 GOOGLE REDIRECT RESULT FIX (ADDED PROPERLY)
+auth.getRedirectResult()
+.then((result) => {
+  if (result.user) {
+    alert("Welcome " + (result.user.displayName || result.user.email));
+  }
+})
+.catch((error) => {
+  console.log(error);
+});
+
+
 auth.onAuthStateChanged(user=>{
   if(user){
     loginBox.style.display="none";
@@ -210,7 +141,7 @@ function login(){
 
 function logout(){auth.signOut()}
 
-// ✅ Google Login FIX (REDIRECT METHOD)
+// GOOGLE LOGIN
 function googleLogin(){
   const provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithRedirect(provider);
@@ -221,8 +152,6 @@ function showTab(t){
   document.querySelectorAll(".tab").forEach(x=>x.style.display="none");
   document.getElementById(t).style.display="block";
 }
-
-// باقی code SAME (upload, feed, comments etc)
 
 </script>
 
