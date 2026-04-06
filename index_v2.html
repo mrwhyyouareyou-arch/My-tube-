@@ -37,6 +37,11 @@
   <input id="password" type="password" placeholder="Password">
   <button onclick="login()">Login</button>
   <button onclick="signup()">Signup</button>
+
+  <!-- ✅ Google Button -->
+  <button onclick="googleLogin()" style="background:#fff;color:#000;">
+    🔵 Continue with Google
+  </button>
 </div>
 
 <div id="app" style="display:none;">
@@ -102,7 +107,7 @@ auth.onAuthStateChanged(user=>{
   if(user){
     loginBox.style.display="none";
     app.style.display="block";
-    userEmail.innerText=user.email;
+    userEmail.innerText=user.email || user.displayName;
     showTab("home");
   }
 });
@@ -111,6 +116,20 @@ auth.onAuthStateChanged(user=>{
 function signup(){auth.createUserWithEmailAndPassword(email.value,password.value)}
 function login(){auth.signInWithEmailAndPassword(email.value,password.value)}
 function logout(){auth.signOut()}
+
+// ✅ GOOGLE LOGIN
+function googleLogin(){
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  auth.signInWithPopup(provider)
+    .then(result=>{
+      alert("Welcome " + result.user.displayName);
+    })
+    .catch(err=>{
+      alert(err.message);
+      console.log(err);
+    });
+}
 
 // TABS
 function showTab(t){
@@ -136,6 +155,9 @@ async function upload(){
 
     let res=await fetch(endpoint,{method:"POST",body:fd});
     let data=await res.json();
+
+    if(!res.ok){alert("Upload failed");return;}
+
     url=data.secure_url;
   }
 
@@ -151,6 +173,8 @@ window.onload = ()=>{
   db.collection("posts").orderBy("time","desc").onSnapshot(snap=>{
     feed.innerHTML="";
     shortsContainer.innerHTML="";
+    posts=0; videos=0;
+
     snap.forEach(doc=>{
       let d=doc.data();
       add(doc.id,d.url,d.title,d.desc,d.type);
@@ -197,7 +221,6 @@ function add(id,url,title,desc,type){
     shortsContainer.prepend(v);
   }
 
-  // REAL-TIME COMMENTS
   db.collection("comments").where("postId","==",id)
   .onSnapshot(s=>{
     let box=document.getElementById("c-"+id);
@@ -225,7 +248,7 @@ async function comment(id){
   input.value="";
 }
 
-// LIKE SAVE
+// LIKE
 async function like(id,el){
   let n=parseInt(el.innerText.split(" ")[1])+1;
   el.innerText="👍 "+n;
@@ -253,24 +276,6 @@ function search(q){
     card.style.display = card.innerText.toLowerCase().includes(q.toLowerCase()) ? "block":"none";
   });
 }
-
-// SHORTS SWIPE
-let current=0;
-document.addEventListener("wheel",(e)=>{
-  let vids=document.querySelectorAll("#shortsContainer video");
-  if(e.deltaY>0) current++; else current--;
-  vids.forEach(v=>v.style.display="none");
-  if(vids[current]) vids[current].style.display="block";
-});
-
-// AUTOPLAY
-document.addEventListener("scroll",()=>{
-  document.querySelectorAll("video").forEach(v=>{
-    let r=v.getBoundingClientRect();
-    if(r.top>=0 && r.bottom<=window.innerHeight) v.play();
-    else v.pause();
-  });
-});
 
 </script>
 
