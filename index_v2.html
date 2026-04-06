@@ -22,6 +22,7 @@ input,textarea{width:100%;padding:10px;margin-top:10px;background:#222;color:whi
 button{padding:10px;width:100%;margin-top:10px;background:red;color:white;border:none;border-radius:5px;}
 .tab{display:none;}
 .profile-img{width:80px;height:80px;border-radius:50%;background:#333;}
+.actions{display:flex;justify-content:space-around;padding:10px;}
 </style>
 </head>
 
@@ -59,9 +60,9 @@ button{padding:10px;width:100%;margin-top:10px;background:red;color:white;border
 </div>
 
 <div id="upload" class="tab">
-<button onclick="type='image'">Image</button>
-<button onclick="type='video'">Video</button>
-<button onclick="type='post'">Post</button>
+<button onclick="setType('image')">Image</button>
+<button onclick="setType('video')">Video</button>
+<button onclick="setType('post')">Post</button>
 
 <input type="file" id="fileInput">
 <input id="title" placeholder="Title">
@@ -144,7 +145,7 @@ const provider=new firebase.auth.GoogleAuthProvider();
 auth.signInWithPopup(provider);
 }
 
-// TABS
+// TAB SWITCH
 function showTab(t){
 document.querySelectorAll(".tab").forEach(x=>x.style.display="none");
 document.getElementById(t).style.display="block";
@@ -154,7 +155,13 @@ if(t==="shorts") loadShorts();
 if(t==="dashboard") loadStats();
 }
 
-// HOME
+// SET TYPE
+function setType(t){
+type=t;
+alert("Selected: "+t);
+}
+
+// HOME (FIXED)
 function loadHome(){
 const feed=document.getElementById("feed");
 feed.innerHTML="";
@@ -162,16 +169,35 @@ feed.innerHTML="";
 db.collection("posts").orderBy("time","desc").get().then(snap=>{
 snap.forEach(doc=>{
 let d=doc.data();
+
+let media="";
+if(d.type==="image"){
+media=`<img src="${d.url}">`;
+}
+else if(d.type==="video"){
+media=`<video src="${d.url}" controls></video>`;
+}
+else{
+media=`<div style="padding:10px">${d.title}</div>`;
+}
+
 feed.innerHTML+=`
 <div class="card">
-<img src="${d.url}">
-<div style="padding:10px">${d.title}</div>
+${media}
+<div style="padding:10px">${d.title || ""}</div>
+
+<div class="actions">
+<button onclick="likePost()">❤️</button>
+<button onclick="commentPost()">💬</button>
+<button onclick="sharePost('${d.url}')">📤</button>
+</div>
+
 </div>`;
 });
 });
 }
 
-// SHORTS
+// SHORTS (TikTok Style)
 function loadShorts(){
 const box=document.getElementById("shortsContainer");
 box.innerHTML="";
@@ -179,16 +205,29 @@ box.innerHTML="";
 db.collection("posts").where("type","==","video").get().then(snap=>{
 snap.forEach(doc=>{
 let d=doc.data();
+
 box.innerHTML+=`
-<div class="card">
-<video src="${d.url}" controls autoplay loop></video>
+<div style="height:90vh;margin-bottom:20px;">
+<video src="${d.url}" autoplay loop controls style="width:100%;height:100%;object-fit:cover;"></video>
 </div>`;
 });
 });
 }
 
-// UPLOAD
+// UPLOAD FIX
 function upload(){
+
+if(type==="post"){
+db.collection("posts").add({
+title:title.value,
+type:"post",
+time:Date.now(),
+uid:currentUser.uid
+});
+alert("Post Uploaded");
+return;
+}
+
 let file=fileInput.files[0];
 if(!file)return alert("Select file");
 
@@ -206,11 +245,33 @@ alert("Uploaded");
 reader.readAsDataURL(file);
 }
 
+// LIKE / COMMENT / SHARE
+function likePost(){
+alert("Liked ❤️");
+}
+
+function commentPost(){
+let c=prompt("Write comment:");
+if(c) alert("Comment added");
+}
+
+function sharePost(url){
+navigator.clipboard.writeText(url);
+alert("Copied 📋");
+}
+
 // DASHBOARD
 function loadStats(){
 db.collection("posts").where("uid","==",currentUser.uid).get().then(snap=>{
-p.innerText=snap.size;
-v.innerText=snap.docs.filter(d=>d.data().type==="video").length;
+let posts=0,videos=0;
+
+snap.forEach(d=>{
+posts++;
+if(d.data().type==="video") videos++;
+});
+
+p.innerText=posts;
+v.innerText=videos;
 l.innerText=0;
 });
 }
