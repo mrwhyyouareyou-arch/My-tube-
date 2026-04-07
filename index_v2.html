@@ -94,7 +94,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .post-imgs{display:grid;gap:2px;}
 .post-imgs.one img{width:100%;max-height:280px;object-fit:cover;}
 .post-imgs.two{grid-template-columns:1fr 1fr;}
-.post-imgs.two img{height:150px;object-fit:cover;}
+.post-imgs.two img{height:150px;object-fit:cover;} have
 .post-imgs.three{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;}
 .post-imgs.three img:first-child{grid-column:1/-1;height:160px;object-fit:cover;}
 .post-imgs.three img{height:100px;object-fit:cover;}
@@ -918,7 +918,7 @@ function filterFeed(btn,filter){
 }
 
 function renderFeed(posts){
-  (orderBy('rank_score', 'desc'))
+  (orderBy('rankscore', 'desc'))
   if(!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet. Be the first!</p></div>';return;}
   feed.innerHTML=posts.map(p=>buildCard(p)).join('');
 }
