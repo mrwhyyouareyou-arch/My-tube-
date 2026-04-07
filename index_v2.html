@@ -17,7 +17,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 /* HEADER */
 .header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--border);backdrop-filter:blur(10px);}
-.logo{font-size:20px;font-weight:800;color:var(--text);flex-shrink:0;}
+.logo{font-size:20px;font-weight:800;color:var(--text);flex-shrink:0;display:flex;align-items:center;gap:6px;}
 .logo span{color:var(--red);}
 .search-bar{flex:1;display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:25px;overflow:hidden;}
 .search-bar input{flex:1;padding:8px 12px;background:none;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:13px;}
@@ -94,12 +94,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .post-imgs{display:grid;gap:2px;}
 .post-imgs.one img{width:100%;max-height:280px;object-fit:cover;}
 .post-imgs.two{grid-template-columns:1fr 1fr;}
-.post-imgs.two img{height:150px;object-fit:cover;} have
+.post-imgs.two img{height:150px;object-fit:cover;}
 .post-imgs.three{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;}
 .post-imgs.three img:first-child{grid-column:1/-1;height:160px;object-fit:cover;}
 .post-imgs.three img{height:100px;object-fit:cover;}
 .post-actions{display:flex;padding:8px 14px;gap:0;border-top:1px solid var(--border);}
-.post-action{flex:1;background:none;border:none;color:var(--text2);cursor:pointer;font-family:var(--font);font-size:12px;display:flex;align-items:center;justify-content:center;gap:5px;padding:6px;}
+.post-action{flex:1;background:none;border:none;color:var(--text2);cursor:pointer;font-family:var(--font);font-size:12px;display:flex;align-items:center;justify-content:center;gap:5px;padding:6px;transition:all .3s;-webkit-tap-highlight-color:transparent;}
 .post-action.liked{color:var(--red);}
 .post-emoji-row{display:flex;gap:6px;padding:6px 14px;flex-wrap:wrap;}
 .emoji-btn{background:var(--bg3);border:none;border-radius:20px;padding:4px 10px;font-size:14px;cursor:pointer;transition:transform .2s;}
@@ -367,7 +367,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
   <!-- Header -->
   <div class="header">
-    <div class="logo">▶ My<span>Tube</span></div>
+    <div class="logo"><svg width="28" height="20" viewBox="0 0 28 20" fill="none"><rect width="28" height="20" rx="5" fill="#FF0000"/><polygon points="11,5 11,15 20,10" fill="white"/></svg><span style="color:var(--text);letter-spacing:-0.5px">My</span><span style="color:#FF0000">Tube</span></div>
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search..." oninput="onSearchInput(this.value)">
       <button onclick="doSearch()"><i class="fas fa-search"></i></button>
@@ -509,7 +509,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
           </div>
         </div>
         <!-- Channel -->
-             <div class="channel-section" id="createChannelSection">     <h3><i class="fas fa-tv" style="color:var(--red);margin-right:6px;"></i>My Channel</h3>
+        <div class="channel-section">
+          <h3><i class="fas fa-tv" style="color:var(--red);margin-right:6px;"></i>My Channel</h3>
           <input class="inp" id="channelName" placeholder="Channel Name">
           <input class="inp" id="channelHandle" placeholder="@handle">
           <input class="inp" id="channelAbout" placeholder="Channel description">
@@ -904,11 +905,23 @@ async function loadHome(){
   const feed=document.getElementById('homeFeed');
   feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
-   const snap = await db.collection('posts').limit(40).get();
+    const snap=await db.collection('posts').orderBy('time','desc').limit(40).get();
     allPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
-    
+    // Client-side sort by rankScore (no index conflict)
+    allPosts.sort((a,b)=>(b.rankScore||b.time||0)-(a.rankScore||a.time||0));
     renderFeed(allPosts);
-  }catch(e){feed.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Could not load feed</p></div>';}
+  }catch(e){
+    console.error(e);
+    // Fallback without orderBy
+    try{
+      const snap2=await db.collection('posts').limit(40).get();
+      allPosts=snap2.docs.map(d=>({id:d.id,...d.data()}));
+      allPosts.sort((a,b)=>(b.time||0)-(a.time||0));
+      renderFeed(allPosts);
+    }catch(e2){
+      feed.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Check internet & Firestore Rules</p></div>';
+    }
+  }
 }
 
 function filterFeed(btn,filter){
@@ -919,10 +932,11 @@ function filterFeed(btn,filter){
 }
 
 function renderFeed(posts){
+  const feed=document.getElementById('homeFeed');
   if(!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet. Be the first!</p></div>';return;}
   feed.innerHTML=posts.map(p=>buildCard(p)).join('');
 }
-  
+
 function buildCard(p){
   if(p.type==='post') return buildPostCard(p);
   // Video/image card
@@ -970,9 +984,11 @@ function buildPostCard(p){
   </div>`;
 }
 
+const _liking={};
 async function quickLike(id,btn,e){
   e.stopPropagation();
   if(!cUser) return showToast('Login karein!');
+  if(_liking[id]) return; _liking[id]=true; setTimeout(()=>delete _liking[id],1500);
   try{
     const ref=db.collection('posts').doc(id);
     const doc=await ref.get();const p=doc.data();
@@ -1411,11 +1427,12 @@ async function loadNotifs(){
   const list=document.getElementById('notifList');
   list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
-    const snap=await db.collection('notifications').where('to','==',cUser.uid).orderBy('time','desc').limit(30).get();
-    if(snap.empty){list.innerHTML='<div class="empty-state"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>';document.getElementById('notifDot').style.display='none';return;}
-    const unread=snap.docs.filter(d=>!d.data().read).length;
+    const snap=await db.collection('notifications').where('to','==',cUser.uid).limit(30).get(); // client sort
+    const notifDocs=snap.docs.sort((a,b)=>b.data().time-a.data().time);
+    if(!notifDocs.length){list.innerHTML='<div class="empty-state"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>';document.getElementById('notifDot').style.display='none';return;}
+    const unread=notifDocs.filter(d=>!d.data().read).length;
     document.getElementById('notifDot').style.display=unread>0?'block':'none';
-    list.innerHTML=snap.docs.map(d=>{
+    list.innerHTML=notifDocs.map(d=>{
       const n=d.data();
       const icMap={like:'like',comment:'comment',sub:'sub',system:'system'};
       const ic=icMap[n.type]||'system';
@@ -1428,7 +1445,7 @@ async function loadNotifs(){
         </div></div>`;
     }).join('');
     // Mark all read
-    snap.docs.forEach(d=>{if(!d.data().read)db.collection('notifications').doc(d.id).update({read:true}).catch(()=>{});});
+    notifDocs.forEach(d=>{if(!d.data().read)db.collection('notifications').doc(d.id).update({read:true}).catch(()=>{});});
     document.getElementById('notifDot').style.display='none';
   }catch(e){list.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
 }
@@ -1538,100 +1555,37 @@ async function saveEditProfile(){
 // ═══════════════════════════════════════════════════
 // CHANNEL
 // ═══════════════════════════════════════════════════
-async function saveChannel() {
-    const n = document.getElementById('channelName').value.trim();
-    const h = document.getElementById('channelHandle').value.trim();
-    const a = document.getElementById('channelAbout').value.trim();
-
-    if (!n || !h) return showToast('Channel Name and Handle required!');
-
-    try {
-        // 1. Update User Profile (Basic Info)
-        await db.collection('users').doc(cUser.uid).update({
-            channelName: n,
-            channelHandle: h,
-            hasChannel: true
-        });
-
-        // 2. Create YouTube Style Channel (Main Data)
-        // Isme Email aur UID dono save honge
-        await db.collection('channels').doc(cUser.uid).set({
-            name: n,
-            handle: h,
-            about: a,
-            ownerEmail: cUser.email,
-            ownerUid: cUser.uid,
-            subscribers: 0,
-            videos: 0,
-            isLive: false,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        // Local data sync
-        cUserData = { ...cUserData, channelName: n, channelHandle: h, hasChannel: true };
-        
-        showToast('Channel Created Successfully! 🚀');
-
-        // 3. Screen Reset (Automatic reload taake error loading hat jaye)
-        setTimeout(() => {
-            window.location.reload();
-        }, 1500);
-
-    } catch (e) {
-        console.error("Channel Error:", e);
-        showToast('Error: Database rules or connection issue');
-    }
+async function saveChannel(){
+  const n=document.getElementById('channelName').value.trim();
+  const h=document.getElementById('channelHandle').value.trim();
+  const a=document.getElementById('channelAbout').value.trim();
+  if(!n)return showToast('Channel name required!');
+  try{
+    await db.collection('users').doc(cUser.uid).update({channelName:n,channelHandle:h,channelAbout:a});
+    cUserData={...cUserData,channelName:n,channelHandle:h,channelAbout:a};
+    showToast('Channel saved! ✅');
+  }catch(e){showToast('Error saving channel');}
 }
 
 // ═══════════════════════════════════════════════════
 // SUBSCRIPTIONS FEED
 // ═══════════════════════════════════════════════════
-// =============================================================================
-// DASHBOARD
-// =============================================================================
-async function loadDashboard() {
-    if (!cUser) return;
-    
-    const channelSection = document.getElementById('createChannelSection');
-    const profName = document.getElementById('profName');
-    const profHandle = document.getElementById('profHandle');
-
-    try {
-        // 1. Check if user has a channel
-        const channelSnap = await db.collection('channels').doc(cUser.uid).get();
-
-        if (channelSnap.exists) {
-            const cData = channelSnap.data();
-            
-            // Channel mil gaya? Form hide karo aur data dikhao
-            if(channelSection) channelSection.style.display = 'none';
-            if(profName) profName.textContent = cData.name || 'No Name';
-            if(profHandle) profHandle.textContent = '@' + (cData.handle || 'user');
-            
-            // Subscribers count update
-            const subEl = document.getElementById('profSubs');
-            if(subEl) subEl.textContent = cData.subscribers || 0;
-            
-        } else {
-            // Channel nahi hai? Form dikhao
-            if(channelSection) channelSection.style.display = 'block';
-        }
-
-        // 2. Videos and Stats calculate karo
-        const snap = await db.collection('posts').where('authorId', '==', cUser.uid).get();
-        let vids = 0, likes = 0;
-        
-        snap.forEach(d => {
-            vids++;
-            likes += (d.data().likes || 0);
-        });
-
-        if(document.getElementById('profVideos')) document.getElementById('profVideos').textContent = vids;
-        if(document.getElementById('profLikes')) document.getElementById('profLikes').textContent = likes;
-
-    } catch (e) {
-        console.error("Dashboard Load Error:", e);
+async function loadSubsFeed(){
+  const feed=document.getElementById('subsFeed');
+  feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('subscriptions').where('from','==',cUser.uid).get();
+    if(snap.empty){feed.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>Subscribe to channels to see their content</p></div>';return;}
+    const aids=snap.docs.map(d=>d.data().to);
+    const posts=[];
+    for(const aid of aids){
+      const ps=await db.collection('posts').where('authorId','==',aid).orderBy('time','desc').limit(5).get();
+      ps.forEach(d=>posts.push({id:d.id,...d.data()}));
     }
+    posts.sort((a,b)=>b.time-a.time);
+    if(!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No new content from subscriptions</p></div>';return;}
+    feed.innerHTML=posts.map(p=>buildCard(p)).join('');
+  }catch(e){feed.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
 }
 
 // ═══════════════════════════════════════════════════
@@ -1745,65 +1699,6 @@ function startLive(){
 // ═══════════════════════════════════════════════════
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function closeModalIfOut(e,id){if(e.target===document.getElementById(id))closeModal(id);}
-  // --- 1. CHANNEL CREATION LOGIC ---
-async function handleChannelCreation() {
-    if (!cUser) return showToast("Pehle login karein!");
-
-    const cName = document.getElementById('channelName').value.trim();
-    const cHandle = document.getElementById('channelHandle').value.trim();
-    const cAbout = document.getElementById('channelAbout').value.trim();
-
-    if (!cName || !cHandle) return showToast("Name aur Handle lazmi hain!");
-
-    try {
-        await db.collection("channels").doc(cUser.uid).set({
-            channelName: cName,
-            handle: cHandle,
-            about: cAbout,
-            ownerUid: cUser.uid,
-            subscribers: 0,
-            isLive: false,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        // User profile update (optional but good)
-        await db.collection("users").doc(cUser.uid).update({
-            hasChannel: true,
-            channelName: cName
-        });
-
-        showToast("Channel Created Successfully! 🎉");
-        // Dashboard reload karein taake naya data dikhe
-        loadDashboard();
-    } catch (error) {
-        console.error(error);
-        showToast("Error creating channel!");
-    }
-}
-
-// --- 2. NOTIFICATION LISTENER (Real-time) ---
-// Isse red dot automatic ayega bina page refresh kiye
-function listenForNotifsRealTime() {
-    if(!cUser) return;
-    
-    db.collection("notifications")
-      .where("to", "==", cUser.uid)
-      .where("read", "==", false)
-      .onSnapshot(snap => {
-          const dot = document.getElementById('notifDot');
-          if(dot) {
-              dot.style.display = snap.empty ? 'none' : 'block';
-          }
-      });
-}
-
-// --- 3. AUTO START ---
-// Jab app load ho toh notifications check karein
-setTimeout(() => {
-    if(cUser) {
-        listenForNotifsRealTime();
-    }
-}, 3000);
 </script>
 </body>
 </html>
