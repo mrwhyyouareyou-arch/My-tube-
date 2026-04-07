@@ -918,7 +918,7 @@ function filterFeed(btn,filter){
 }
 
 function renderFeed(posts){
-  (orderBy('rankScore', 'desc'))
+  (orderBy('rank_score', 'desc'))
   if(!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet. Be the first!</p></div>';return;}
   feed.innerHTML=posts.map(p=>buildCard(p)).join('');
 }
