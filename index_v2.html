@@ -1539,18 +1539,44 @@ async function saveEditProfile(){
 // ═══════════════════════════════════════════════════
 // CHANNEL
 // ═══════════════════════════════════════════════════
-async function saveChannel(){
-  const n=document.getElementById('channelName').value.trim();
-  const h=document.getElementById('channelHandle').value.trim();
-  const a=document.getElementById('channelAbout').value.trim();
-  if(!n)return showToast('Channel name required!');
-  try{
-    await db.collection('users').doc(cUser.uid).update({channelName:n,channelHandle:h,channelAbout:a});
-    cUserData={...cUserData,channelName:n,channelHandle:h,channelAbout:a};
-    showToast('Channel saved! ✅');
-  }catch(e){showToast('Error saving channel');}
-}
 
+async function saveChannel(){
+    const n = document.getElementById('channelName').value.trim();
+    const h = document.getElementById('channelHandle').value.trim();
+    const a = document.getElementById('channelAbout').value.trim();
+
+    if(!n) return showToast('Channel name required!');
+    if(!h) return showToast('Handle required!');
+
+    try {
+        // User data update
+        await db.collection('users').doc(cUser.uid).update({
+            channelName: n,
+            channelHandle: h,
+            channelAbout: a,
+            hasChannel: true
+        });
+
+        // Channel creation for Dashboard
+        await db.collection('channels').doc(cUser.uid).set({
+            name: n,
+            handle: h,
+            about: a,
+            ownerId: cUser.uid,
+            subscribers: 0,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        cUserData = {...cUserData, channelName: n, channelHandle: h, channelAbout: a};
+        showToast('Channel saved successfully! 🎉');
+        
+        if(typeof loadDashboard === "function") loadDashboard();
+        
+    } catch(e) {
+        console.error(e);
+        showToast('Error saving channel');
+    }
+}
 // ═══════════════════════════════════════════════════
 // SUBSCRIPTIONS FEED
 // ═══════════════════════════════════════════════════
@@ -1683,6 +1709,65 @@ function startLive(){
 // ═══════════════════════════════════════════════════
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function closeModalIfOut(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+  // --- 1. CHANNEL CREATION LOGIC ---
+async function handleChannelCreation() {
+    if (!cUser) return showToast("Pehle login karein!");
+
+    const cName = document.getElementById('channelName').value.trim();
+    const cHandle = document.getElementById('channelHandle').value.trim();
+    const cAbout = document.getElementById('channelAbout').value.trim();
+
+    if (!cName || !cHandle) return showToast("Name aur Handle lazmi hain!");
+
+    try {
+        await db.collection("channels").doc(cUser.uid).set({
+            channelName: cName,
+            handle: cHandle,
+            about: cAbout,
+            ownerUid: cUser.uid,
+            subscribers: 0,
+            isLive: false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // User profile update (optional but good)
+        await db.collection("users").doc(cUser.uid).update({
+            hasChannel: true,
+            channelName: cName
+        });
+
+        showToast("Channel Created Successfully! 🎉");
+        // Dashboard reload karein taake naya data dikhe
+        loadDashboard();
+    } catch (error) {
+        console.error(error);
+        showToast("Error creating channel!");
+    }
+}
+
+// --- 2. NOTIFICATION LISTENER (Real-time) ---
+// Isse red dot automatic ayega bina page refresh kiye
+function listenForNotifsRealTime() {
+    if(!cUser) return;
+    
+    db.collection("notifications")
+      .where("to", "==", cUser.uid)
+      .where("read", "==", false)
+      .onSnapshot(snap => {
+          const dot = document.getElementById('notifDot');
+          if(dot) {
+              dot.style.display = snap.empty ? 'none' : 'block';
+          }
+      });
+}
+
+// --- 3. AUTO START ---
+// Jab app load ho toh notifications check karein
+setTimeout(() => {
+    if(cUser) {
+        listenForNotifsRealTime();
+    }
+}, 3000);
 </script>
 </body>
 </html>
