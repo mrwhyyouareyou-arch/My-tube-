@@ -1587,22 +1587,52 @@ async function saveChannel() {
 // ═══════════════════════════════════════════════════
 // SUBSCRIPTIONS FEED
 // ═══════════════════════════════════════════════════
-async function loadSubsFeed(){
-  const feed=document.getElementById('subsFeed');
-  feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
-  try{
-    const snap=await db.collection('subscriptions').where('from','==',cUser.uid).get();
-    if(snap.empty){feed.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>Subscribe to channels to see their content</p></div>';return;}
-    const aids=snap.docs.map(d=>d.data().to);
-    const posts=[];
-    for(const aid of aids){
-      const ps=await db.collection('posts').where('authorId','==',aid).orderBy('time','desc').limit(5).get();
-      ps.forEach(d=>posts.push({id:d.id,...d.data()}));
+// =============================================================================
+// DASHBOARD
+// =============================================================================
+async function loadDashboard() {
+    if (!cUser) return;
+    
+    const channelSection = document.querySelector('.channel-section');
+    const profName = document.getElementById('profName');
+    const profHandle = document.getElementById('profHandle');
+
+    try {
+        // 1. Check if user has a channel
+        const channelSnap = await db.collection('channels').doc(cUser.uid).get();
+
+        if (channelSnap.exists) {
+            const cData = channelSnap.data();
+            
+            // Channel mil gaya? Form hide karo aur data dikhao
+            if(channelSection) channelSection.style.display = 'none';
+            if(profName) profName.textContent = cData.name || 'No Name';
+            if(profHandle) profHandle.textContent = '@' + (cData.handle || 'user');
+            
+            // Subscribers count update
+            const subEl = document.getElementById('profSubs');
+            if(subEl) subEl.textContent = cData.subscribers || 0;
+            
+        } else {
+            // Channel nahi hai? Form dikhao
+            if(channelSection) channelSection.style.display = 'block';
+        }
+
+        // 2. Videos and Stats calculate karo
+        const snap = await db.collection('posts').where('authorId', '==', cUser.uid).get();
+        let vids = 0, likes = 0;
+        
+        snap.forEach(d => {
+            vids++;
+            likes += (d.data().likes || 0);
+        });
+
+        if(document.getElementById('profVideos')) document.getElementById('profVideos').textContent = vids;
+        if(document.getElementById('profLikes')) document.getElementById('profLikes').textContent = likes;
+
+    } catch (e) {
+        console.error("Dashboard Load Error:", e);
     }
-    posts.sort((a,b)=>b.time-a.time);
-    if(!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No new content from subscriptions</p></div>';return;}
-    feed.innerHTML=posts.map(p=>buildCard(p)).join('');
-  }catch(e){feed.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
 }
 
 // ═══════════════════════════════════════════════════
