@@ -904,7 +904,7 @@ async function loadHome(){
   const feed=document.getElementById('homeFeed');
   feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
-   const snap = await db.collection('posts').orderBy('createdAt', 'desc').limit(40).get();
+   const snap = await db.collection('posts').limit(40).get();
     allPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
     
     renderFeed(allPosts);
