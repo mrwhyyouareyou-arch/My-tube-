@@ -509,8 +509,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
           </div>
         </div>
         <!-- Channel -->
-        <div class="channel-section">
-          <h3><i class="fas fa-tv" style="color:var(--red);margin-right:6px;"></i>My Channel</h3>
+             <div class="channel-section" id="createChannelSection">     <h3><i class="fas fa-tv" style="color:var(--red);margin-right:6px;"></i>My Channel</h3>
           <input class="inp" id="channelName" placeholder="Channel Name">
           <input class="inp" id="channelHandle" placeholder="@handle">
           <input class="inp" id="channelAbout" placeholder="Channel description">
@@ -1593,7 +1592,7 @@ async function saveChannel() {
 async function loadDashboard() {
     if (!cUser) return;
     
-    const channelSection = document.querySelector('.channel-section');
+    const channelSection = document.getElementById('createChannelSection');
     const profName = document.getElementById('profName');
     const profHandle = document.getElementById('profHandle');
 
