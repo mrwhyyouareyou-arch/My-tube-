@@ -1539,44 +1539,51 @@ async function saveEditProfile(){
 // ═══════════════════════════════════════════════════
 // CHANNEL
 // ═══════════════════════════════════════════════════
-
-async function saveChannel(){
+async function saveChannel() {
     const n = document.getElementById('channelName').value.trim();
     const h = document.getElementById('channelHandle').value.trim();
     const a = document.getElementById('channelAbout').value.trim();
 
-    if(!n) return showToast('Channel name required!');
-    if(!h) return showToast('Handle required!');
+    if (!n || !h) return showToast('Channel Name and Handle required!');
 
     try {
-        // User data update
+        // 1. Update User Profile (Basic Info)
         await db.collection('users').doc(cUser.uid).update({
             channelName: n,
             channelHandle: h,
-            channelAbout: a,
             hasChannel: true
         });
 
-        // Channel creation for Dashboard
+        // 2. Create YouTube Style Channel (Main Data)
+        // Isme Email aur UID dono save honge
         await db.collection('channels').doc(cUser.uid).set({
             name: n,
             handle: h,
             about: a,
-            ownerId: cUser.uid,
+            ownerEmail: cUser.email,
+            ownerUid: cUser.uid,
             subscribers: 0,
+            videos: 0,
+            isLive: false,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        cUserData = {...cUserData, channelName: n, channelHandle: h, channelAbout: a};
-        showToast('Channel saved successfully! 🎉');
+        // Local data sync
+        cUserData = { ...cUserData, channelName: n, channelHandle: h, hasChannel: true };
         
-        if(typeof loadDashboard === "function") loadDashboard();
-        
-    } catch(e) {
-        console.error(e);
-        showToast('Error saving channel');
+        showToast('Channel Created Successfully! 🚀');
+
+        // 3. Screen Reset (Automatic reload taake error loading hat jaye)
+        setTimeout(() => {
+            window.location.reload();
+        }, 1500);
+
+    } catch (e) {
+        console.error("Channel Error:", e);
+        showToast('Error: Database rules or connection issue');
     }
 }
+
 // ═══════════════════════════════════════════════════
 // SUBSCRIPTIONS FEED
 // ═══════════════════════════════════════════════════
