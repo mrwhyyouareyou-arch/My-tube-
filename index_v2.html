@@ -904,8 +904,9 @@ async function loadHome(){
   const feed=document.getElementById('homeFeed');
   feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
-    const snap=await db.collection('posts').orderBy('time','desc').limit(40).get();
+   const snap = await db.collection('posts').orderBy('createdAt', 'desc').limit(40).get();
     allPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    
     renderFeed(allPosts);
   }catch(e){feed.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Could not load feed</p></div>';}
 }
@@ -918,11 +919,10 @@ function filterFeed(btn,filter){
 }
 
 function renderFeed(posts){
-  const q = query(collection(db, "posts"), orderBy("rankscore", "desc"), limit(20));
   if(!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet. Be the first!</p></div>';return;}
   feed.innerHTML=posts.map(p=>buildCard(p)).join('');
 }
-
+  
 function buildCard(p){
   if(p.type==='post') return buildPostCard(p);
   // Video/image card
