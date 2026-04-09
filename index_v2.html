@@ -2239,86 +2239,74 @@ function downloadVideo(){
 // ══════════════════════════════════════════════════════
 // COMMENTS
 // ══════════════════════════════════════════════════════
+
 async function loadComments(postId){
   const list=document.getElementById('commList');
   list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+
   try{
-    const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('time','desc').limit(50).get();
+    const snap=await db.collection('posts')
+      .doc(postId)
+      .collection('comments')
+      .orderBy('time','desc')
+      .get();
+
     document.getElementById('commTitle').textContent=`Comments (${snap.size})`;
-    if(snap.empty){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet. Be first! 💬</div>';return;}
+
+    if(snap.empty){
+      list.innerHTML='<p style="text-align:center;">No comments yet</p>';
+      return;
+    }
+
     list.innerHTML=snap.docs.map(d=>{
       const c=d.data();
-      const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
-      return `<div class="comm-item">
-        <div class="comm-av">${av}</div>
+      return `
+      <div class="comm-item">
+        <div class="comm-av">
+          <img src="${c.authorPhoto || ''}">
+        </div>
         <div class="comm-body">
-          <div class="comm-author">${c.authorName||'User'}</div>
+          <div class="comm-author">${c.authorName || 'User'}</div>
           <div class="comm-text">${c.text}</div>
           <div class="comm-time">${getTimeAgo(c.time)}</div>
-        </div></div>`;
-    }).join('');
-  }catch(e){
-    // Fallback without orderBy
-    try{
-      const snap2=await db.collection('posts').doc(postId).collection('comments').limit(50).get();
-      const sorted=snap2.docs.sort((a,b)=>b.data().time-a.data().time);
-      document.getElementById('commTitle').textContent=`Comments (${sorted.length})`;
-      list.innerHTML=sorted.map(d=>{
-        const c=d.data();
-        const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
-        return `<div class="comm-item"><div class="comm-av">${av}</div><div class="comm-body"><div class="comm-author">${c.authorName||'User'}</div><div class="comm-text">${c.text}</div><div class="comm-time">${getTimeAgo(c.time)}</div></div></div>`;
-      }).join('')||'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet!</div>';
-    }catch(e2){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';}
-  }
-}
-
-async function loadRelated(postId, postType, category){
-  const list=document.getElementById('relatedList');
-  if(!list)return;
-  list.innerHTML='<div style="color:var(--text3);font-size:12px;">Loading...</div>';
-  try{
-    const snap=await db.collection('posts').orderBy('time','desc').limit(20).get();
-    let related=snap.docs.map(d=>({id:d.id,...d.data()}))
-      .filter(p=>p.id!==postId)
-      .map(p=>({...p,_rel:(p.category===category||p.type===postType?10:0)+(p.rankScore||0)}))
-      .sort((a,b)=>b._rel-a._rel)
-      .slice(0,8);
-    if(!related.length){list.innerHTML='';return;}
-    list.innerHTML=related.map(p=>{
-      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-      const av=p.authorPhoto?`<img src="${p.authorPhoto}">`:(p.authorName||'U')[0].toUpperCase();
-      return `<div onclick="openPost('${p.id}')" style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;">
-        <div style="width:100px;height:60px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
-          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<i class="fas fa-video" style="font-size:18px;color:var(--text3);"></i>'}
-        </div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:12px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
-          <div style="font-size:10px;color:var(--text2);margin-top:3px;">${p.authorName||''} • ${getTimeAgo(p.time)}</div>
         </div>
       </div>`;
     }).join('');
-  }catch(e){list.innerHTML='';}
+
+  }catch(e){
+    console.error(e);
+    list.innerHTML='<p style="color:red;">Error loading comments</p>';
+  }
 }
 
-async function postComment(){
-  if(!cUser||!currentPostId)return;
-  const input=document.getElementById('commInput');
-  const text=input.value.trim();if(!text)return;
-  input.value='';
-  try{
-    await db.collection('posts').doc(currentPostId).collection('comments').add({
-      text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
-      authorPhoto:cUserData?.photoURL||'',time:Date.now()
-    });
-    await db.collection('posts').doc(currentPostId).update({
-      comments:firebase.firestore.FieldValue.increment(1),
-      rankScore:firebase.firestore.FieldValue.increment(5)
-    });
-    loadComments(currentPostId);showToast('Comment posted ✅');
-    sendNotif(currentPostData?.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,currentPostId);
-  }catch(e){showToast('Error posting comment');}
-}
+  async function openPost(id){
+  currentPostId = id;
 
+  // 🔥 FIND POST
+  const post = allPosts.find(p => p.id === id);
+
+  // 🔥 ADD TO HISTORY
+  if(post) addToHistory(post);
+
+  // 🔥 BASIC UI LOAD (simple version)
+  const player = document.getElementById('videoPlayer');
+  const titleEl = document.getElementById('videoTitle');
+  const descEl = document.getElementById('videoDesc');
+
+  if(post){
+    if(player) player.src = post.url || '';
+    if(titleEl) titleEl.textContent = post.title || '';
+    if(descEl) descEl.textContent = post.desc || '';
+  }
+
+  // 🔥 LOAD COMMENTS
+  loadComments(id);
+
+  // 🔥 OPTIONAL: related videos (agar function hai)
+  if(typeof loadRelated === "function"){
+    loadRelated(id);
+  }
+}
 // ══════════════════════════════════════════════════════
 // NOTIFICATIONS
 // ══════════════════════════════════════════════════════
