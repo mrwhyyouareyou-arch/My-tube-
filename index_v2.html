@@ -449,6 +449,56 @@ button,input,textarea{font-family:var(--font);}
 .sheet-title{font-size:16px;font-weight:700;margin-bottom:16px;}
 
 /* ═══ TOAST ═══ */
+
+/* SIDE MENU */
+.side-menu-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.5);display:none;}
+.side-menu-overlay.open{display:block;}
+.side-menu{position:fixed;left:0;top:0;bottom:0;z-index:401;width:75%;max-width:280px;background:var(--bg2);transform:translateX(-100%);transition:transform .3s ease;overflow-y:auto;display:flex;flex-direction:column;}
+.side-menu.open{transform:translateX(0);}
+.side-menu-header{padding:20px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.side-menu-header svg{flex-shrink:0;}
+.side-menu-header span{font-size:18px;font-weight:800;}
+.side-menu-header span b{color:var(--red);}
+.side-item{display:flex;align-items:center;gap:14px;padding:13px 16px;cursor:pointer;transition:background .2s;border-radius:0;color:var(--text);}
+.side-item:active,.side-item:hover{background:var(--bg3);}
+.side-item i{font-size:18px;width:24px;text-align:center;color:var(--text2);}
+.side-item span{font-size:14px;font-weight:500;}
+.side-section-title{font-size:11px;font-weight:700;color:var(--text3);padding:12px 16px 4px;text-transform:uppercase;letter-spacing:.5px;}
+.side-divider{height:1px;background:var(--border);margin:8px 0;}
+.side-footer{padding:16px;margin-top:auto;}
+.side-footer p{font-size:11px;color:var(--text3);line-height:1.6;}
+
+
+
+/* STUDIO TABS */
+.studio-tab{flex-shrink:0;padding:10px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);cursor:pointer;font-size:12px;font-weight:500;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:5px;margin-bottom:-2px;}
+.studio-tab.active{color:var(--red);border-bottom-color:var(--red);}
+.studio-tab i{font-size:13px;}
+
+/* TRIM PANEL */
+.trim-panel{position:fixed;bottom:0;left:0;right:0;z-index:250;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px;transform:translateY(100%);transition:transform .3s ease;}
+.trim-panel.open{transform:translateY(0);}
+.trim-handle{width:34px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;}
+.trim-title{font-size:16px;font-weight:700;margin-bottom:14px;}
+.trim-range-wrap{margin-bottom:16px;}
+.trim-range-label{font-size:12px;color:var(--text2);margin-bottom:6px;display:flex;justify-content:space-between;}
+.trim-range{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border);outline:none;}
+.trim-range::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--red);cursor:pointer;}
+.trim-preview{background:var(--bg3);border-radius:10px;padding:12px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.trim-preview i{color:var(--red);font-size:20px;}
+
+/* Music selector scroll */
+#trendingSongsList::-webkit-scrollbar{display:none;}
+#trendingSongsList{-webkit-overflow-scrolling:touch;}
+/* Shorts scroll on home feed */
+.shorts-inline::-webkit-scrollbar{display:none;}
+/* Video player bottom sheet feel */
+.player-screen{-webkit-overflow-scrolling:touch;}
+/* Post subscribe button */
+.post-act.liked i.fa-user-check{color:var(--red);}
+/* Smooth chip scroll */
+.chips-wrap{-webkit-overflow-scrolling:touch;}
+
 .toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none;}
 .toast.show{opacity:1;}
 </style>
@@ -492,9 +542,43 @@ button,input,textarea{font-family:var(--font);}
 
 <!-- ═══ MAIN APP ═══ -->
 <div id="mainApp" style="display:none;">
+<!-- ═══ SIDE MENU ═══ -->
+<div class="side-menu-overlay" id="sideOverlay" onclick="closeSideMenu()"></div>
+<div class="side-menu" id="sideMenu">
+  <div class="side-menu-header">
+    <svg width="26" height="18" viewBox="0 0 26 18"><rect width="26" height="18" rx="4" fill="#FF0000"/><polygon points="10,4 10,14 20,9" fill="white"/></svg>
+    <span>My<b>Tube</b></span>
+  </div>
+  <div class="side-item" onclick="showScreen('home');closeSideMenu()"><i class="fas fa-home"></i><span>Home</span></div>
+  <div class="side-item" onclick="showScreen('shorts');closeSideMenu()"><i class="fas fa-film"></i><span>Shorts</span></div>
+  <div class="side-item" onclick="showScreen('subs');closeSideMenu()"><i class="fas fa-th-large"></i><span>Subscriptions</span></div>
+  <div class="side-item" onclick="showScreen('history');closeSideMenu()"><i class="fas fa-history"></i><span>History</span></div>
+  <div class="side-item" onclick="showScreen('gallery');closeSideMenu()"><i class="fas fa-images"></i><span>My Gallery</span></div>
+  <div class="side-divider"></div>
+  <div class="side-section-title">Explore</div>
+  <div class="side-item" onclick="filterFeed(document.querySelector('.chip'),'trending');closeSideMenu();showScreen('home')"><i class="fas fa-fire" style="color:#ff6600;"></i><span>Trending</span></div>
+  <div class="side-item" onclick="doSearch('music');closeSideMenu()"><i class="fas fa-music" style="color:#e91e8c;"></i><span>Music</span></div>
+  <div class="side-item" onclick="doSearch('gaming');closeSideMenu()"><i class="fas fa-gamepad" style="color:#00c864;"></i><span>Gaming</span></div>
+  <div class="side-item" onclick="doSearch('news');closeSideMenu()"><i class="fas fa-newspaper" style="color:#0096ff;"></i><span>News</span></div>
+  <div class="side-item" onclick="doSearch('cricket');closeSideMenu()"><i class="fas fa-circle" style="color:#00c864;"></i><span>Sports</span></div>
+  <div class="side-item" onclick="showScreen('live');closeSideMenu()"><i class="fas fa-circle" style="color:#ff0000;font-size:12px;"></i><span>Live</span></div>
+  <div class="side-divider"></div>
+  <div class="side-section-title">Creator</div>
+  <div class="side-item" onclick="showScreen('dashboard');closeSideMenu()"><i class="fas fa-chart-line" style="color:var(--red);"></i><span>Studio</span></div>
+  <div class="side-item" onclick="showScreen('themes');closeSideMenu()"><i class="fas fa-palette" style="color:#9b59b6;"></i><span>Themes</span></div>
+  <div class="side-divider"></div>
+  <div class="side-section-title">Legal</div>
+  <div class="side-item" onclick="showScreen('privacy');closeSideMenu()"><i class="fas fa-shield-alt"></i><span>Privacy Policy</span></div>
+  <div class="side-item" onclick="showScreen('terms');closeSideMenu()"><i class="fas fa-file-contract"></i><span>Terms of Service</span></div>
+  <div class="side-item" onclick="showScreen('copyright');closeSideMenu()"><i class="fas fa-copyright"></i><span>Copyright</span></div>
+  <div class="side-footer">
+    <p>© 2025 MyTube Pakistan<br>All rights reserved.<br><span style="color:var(--red);">▶ MyTube</span> v5.0</p>
+  </div>
+</div>
+
   <!-- Header -->
   <div class="header">
-    <div class="logo-wrap" onclick="showScreen('home')">
+    <div class="logo-wrap" onclick="openSideMenu()">
       <svg class="logo-icon" viewBox="0 0 30 21"><rect width="30" height="21" rx="5" fill="#FF0000"/><polygon points="11,5 11,16 22,10.5" fill="white"/></svg>
       <div class="logo-text">My<span>Tube</span></div>
     </div>
@@ -559,10 +643,12 @@ button,input,textarea{font-family:var(--font);}
           </div>
           <img id="uploadImgPrev" class="upload-prev-img">
           <video id="uploadVidPrev" class="upload-prev-vid" controls></video>
-          <div class="thumb-box" id="thumbBoxWrap" style="display:none;" onclick="document.getElementById('thumbFile').click()">
-            <input type="file" id="thumbFile" accept="image/*" onchange="onThumbSelect(this)">
-            <i class="fas fa-image" style="font-size:20px;color:var(--text2);margin-bottom:4px;display:block;"></i>
-            <p>Custom Thumbnail (optional)</p>
+          <div class="thumb-box" id="thumbBoxWrap" style="display:none;">
+            <div onclick="document.getElementById('thumbFile').click()" style="cursor:pointer;">
+              <input type="file" id="thumbFile" accept="image/*" onchange="onThumbSelect(this)">
+              <i class="fas fa-image" style="font-size:20px;color:var(--text2);margin-bottom:4px;display:block;"></i>
+              <p>📸 Add Thumbnail (optional)</p>
+            </div>
             <img id="thumbPrev" class="thumb-prev">
           </div>
           <div id="postImgsWrap" style="display:none;">
@@ -577,6 +663,16 @@ button,input,textarea{font-family:var(--font);}
           <input class="inp" id="uploadTitle" placeholder="Title *">
           <input class="inp" id="uploadDesc" placeholder="Description">
           <input class="inp" id="uploadTags" placeholder="Tags (cricket, funny, gaming...)">
+          <!-- Music selector (for shorts/videos) -->
+          <div id="musicSelectorWrap" style="display:none;margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;"><i class="fas fa-music" style="color:var(--red);"></i> Add Background Music</div>
+            <div style="overflow-x:auto;display:flex;gap:8px;padding-bottom:4px;" id="trendingSongsList"></div>
+            <div id="selectedSongInfo" style="display:none;background:rgba(255,0,0,.07);border:1px solid var(--red);border-radius:8px;padding:8px 12px;margin-top:8px;font-size:12px;display:flex;align-items:center;gap:8px;">
+              <i class="fas fa-music" style="color:var(--red);"></i>
+              <span id="selectedSongName">No song selected</span>
+              <button onclick="clearSong()" style="background:none;border:none;color:var(--text3);cursor:pointer;margin-left:auto;font-size:16px;">×</button>
+            </div>
+          </div>
           <button class="btn-red" id="uploadBtn" onclick="doUpload()"><i class="fas fa-upload"></i> Upload</button>
         </div>
       </div>
@@ -585,31 +681,124 @@ button,input,textarea{font-family:var(--font);}
     <!-- DASHBOARD -->
     <div id="dashboardScreen" class="screen">
       <div class="dash-screen">
-        <div class="dash-hdr">
-          <h2>📊 Studio</h2>
-          <p id="dashWelcome">Creator Dashboard</p>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card"><div class="stat-ico"><i class="fas fa-video"></i></div><div class="stat-num" id="dVideos">0</div><div class="stat-lbl">Videos</div></div>
-          <div class="stat-card"><div class="stat-ico"><i class="fas fa-users"></i></div><div class="stat-num" id="dSubs">0</div><div class="stat-lbl">Subscribers</div></div>
-          <div class="stat-card"><div class="stat-ico"><i class="fas fa-heart"></i></div><div class="stat-num" id="dLikes">0</div><div class="stat-lbl">Likes</div></div>
-          <div class="stat-card"><div class="stat-ico"><i class="fas fa-eye"></i></div><div class="stat-num" id="dViews">0</div><div class="stat-lbl">Views</div></div>
-        </div>
-        <div class="analytics-wrap">
-          <div class="analytics-title"><i class="fas fa-chart-line"></i> Analytics</div>
-          <div class="an-grid">
-            <div class="an-card"><div class="an-num" id="aCTR">0%</div><div class="an-lbl">CTR</div></div>
-            <div class="an-card"><div class="an-num" id="aAvgViews">0</div><div class="an-lbl">Avg Views</div></div>
-            <div class="an-card"><div class="an-num" id="aEngagement">0%</div><div class="an-lbl">Engagement</div></div>
-            <div class="an-card"><div class="an-num" id="aScore">0</div><div class="an-lbl">Rank Score</div></div>
-            <div class="an-card"><div class="an-num" id="aBest">-</div><div class="an-lbl">Best Post</div></div>
-            <div class="an-card"><div class="an-num" id="aGrowth">0%</div><div class="an-lbl">Growth</div></div>
+        <!-- Studio Header -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:white;font-size:15px;overflow:hidden;" id="studioAvatar">?</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;" id="studioChannelName">My Channel</div>
+            <div style="font-size:11px;color:var(--text2);" id="dashWelcome">Creator Dashboard</div>
           </div>
         </div>
-        <div class="sec-title">👥 Subscribers</div>
-        <div id="subsList"><div style="color:var(--text3);font-size:12px;padding:8px 0;">No subscribers yet</div></div>
-        <div class="sec-title" style="margin-top:16px;">🎬 My Content</div>
-        <div id="myContentList"><div class="loader"><div class="spinner"></div></div></div>
+        <!-- Studio Tabs -->
+        <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:16px;overflow-x:auto;">
+          <button class="studio-tab active" id="stab-overview" onclick="switchStudioTab('overview')"><i class="fas fa-th-large"></i> Overview</button>
+          <button class="studio-tab" id="stab-content" onclick="switchStudioTab('content')"><i class="fas fa-video"></i> Content</button>
+          <button class="studio-tab" id="stab-analytics" onclick="switchStudioTab('analytics')"><i class="fas fa-chart-bar"></i> Analytics</button>
+          <button class="studio-tab" id="stab-audience" onclick="switchStudioTab('audience')"><i class="fas fa-users"></i> Audience</button>
+        </div>
+
+        <!-- OVERVIEW TAB -->
+        <div id="studio-overview">
+          <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Last 28 days</div>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-ico"><i class="fas fa-eye"></i></div><div class="stat-num" id="dViews">0</div><div class="stat-lbl">Views</div></div>
+            <div class="stat-card"><div class="stat-ico"><i class="fas fa-clock"></i></div><div class="stat-num" id="dWatchTime">0m</div><div class="stat-lbl">Watch Time</div></div>
+            <div class="stat-card"><div class="stat-ico"><i class="fas fa-users"></i></div><div class="stat-num" id="dSubs">0</div><div class="stat-lbl">Subscribers</div></div>
+            <div class="stat-card"><div class="stat-ico"><i class="fas fa-dollar-sign"></i></div><div class="stat-num" id="dRevenue">$0</div><div class="stat-lbl">Est. Revenue</div></div>
+          </div>
+          <!-- Latest video performance -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Latest Video Performance</div>
+            <div id="latestVideoPerfEl">
+              <div style="color:var(--text3);font-size:12px;">No videos yet</div>
+            </div>
+          </div>
+          <div class="analytics-wrap">
+            <div class="analytics-title"><i class="fas fa-chart-line"></i> Quick Stats</div>
+            <div class="an-grid">
+              <div class="an-card"><div class="an-num" id="aCTR">0%</div><div class="an-lbl">CTR</div></div>
+              <div class="an-card"><div class="an-num" id="aAvgViews">0</div><div class="an-lbl">Avg Views</div></div>
+              <div class="an-card"><div class="an-num" id="aEngagement">0%</div><div class="an-lbl">Engagement</div></div>
+              <div class="an-card"><div class="an-num" id="aScore">0</div><div class="an-lbl">Rank Score</div></div>
+              <div class="an-card"><div class="an-num" id="aBest">-</div><div class="an-lbl">Best Post</div></div>
+              <div class="an-card"><div class="an-num" id="aGrowth">0%</div><div class="an-lbl">Growth %</div></div>
+            </div>
+          </div>
+          <div class="sec-title">👥 Subscribers</div>
+          <div id="subsList"><div style="color:var(--text3);font-size:12px;padding:8px 0;">No subscribers yet</div></div>
+        </div>
+
+        <!-- CONTENT TAB -->
+        <div id="studio-content" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;">My Content</div>
+            <button onclick="showScreen('upload')" style="background:var(--red);color:white;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;"><i class="fas fa-plus"></i> Upload</button>
+          </div>
+          <div id="dVideos2" style="font-size:12px;color:var(--text2);margin-bottom:10px;"></div>
+          <div id="myContentList"><div class="loader"><div class="spinner"></div></div></div>
+        </div>
+
+        <!-- ANALYTICS TAB -->
+        <div id="studio-analytics" style="display:none;">
+          <div style="font-size:12px;color:var(--text3);margin-bottom:14px;">Channel Analytics · Last 28 days</div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:14px;">Performance</div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:13px;color:var(--text2);">Views</span>
+              <span style="font-size:13px;font-weight:600;" id="an-views">0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:13px;color:var(--text2);">Watch time (minutes)</span>
+              <span style="font-size:13px;font-weight:600;" id="an-watchtime">0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:13px;color:var(--text2);">Subscriber change</span>
+              <span style="font-size:13px;font-weight:600;color:#00c864;" id="an-subchange">+0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:13px;color:var(--text2);">Avg. view duration</span>
+              <span style="font-size:13px;font-weight:600;" id="an-avgdur">0:00</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;">
+              <span style="font-size:13px;color:var(--text2);">Click-through rate</span>
+              <span style="font-size:13px;font-weight:600;" id="an-ctr2">0%</span>
+            </div>
+          </div>
+          <!-- Top content -->
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Top Content</div>
+          <div id="topContentList"></div>
+        </div>
+
+        <!-- AUDIENCE TAB -->
+        <div id="studio-audience" style="display:none;">
+          <div style="font-size:12px;color:var(--text3);margin-bottom:14px;">Your Audience · Last 28 days</div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:14px;">
+              <div style="text-align:center;flex:1;">
+                <div style="font-size:22px;font-weight:800;" id="aud-returning">0</div>
+                <div style="font-size:11px;color:var(--text2);">Returning viewers</div>
+              </div>
+              <div style="text-align:center;flex:1;">
+                <div style="font-size:22px;font-weight:800;" id="aud-unique">0</div>
+                <div style="font-size:11px;color:var(--text2);">Unique viewers</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:12px;">Subscribers</div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:13px;color:var(--text2);">Total subscribers</span>
+              <span style="font-size:13px;font-weight:700;" id="aud-subs">0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;">
+              <span style="font-size:13px;color:var(--text2);">New subscribers</span>
+              <span style="font-size:13px;font-weight:700;color:#00c864;" id="aud-newsubs">+0</span>
+            </div>
+          </div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Your Subscribers</div>
+          <div id="subsList2"><div style="color:var(--text3);font-size:12px;">No subscribers yet</div></div>
+        </div>
+
       </div>
     </div>
 
@@ -658,9 +847,10 @@ button,input,textarea{font-family:var(--font);}
           <div class="prof-sec-title">About</div>
           <div id="profAboutText" style="font-size:13px;color:var(--text2);line-height:1.6;">No bio yet.</div>
         </div>
-        <!-- Gallery shortcut -->
-        <div class="prof-section" style="margin-top:16px;">
-          <button class="btn-red" onclick="showScreen('gallery')" style="display:flex;align-items:center;justify-content:center;gap:8px;"><i class="fas fa-images"></i> My Gallery</button>
+        <!-- Gallery + History shortcuts -->
+        <div class="prof-section" style="margin-top:16px;display:flex;gap:8px;">
+          <button class="btn-red" onclick="showScreen('gallery')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;"><i class="fas fa-images"></i> Gallery</button>
+          <button onclick="showScreen('history')" style="flex:1;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><i class="fas fa-history"></i> History</button>
         </div>
       </div>
     </div>
@@ -714,6 +904,136 @@ button,input,textarea{font-family:var(--font);}
       </div>
     </div>
 
+    <!-- HISTORY -->
+    <div id="historyScreen" class="screen">
+      <div style="padding:16px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <h2 style="font-size:18px;font-weight:700;">📺 Watch History</h2>
+          <button onclick="clearHistory()" style="background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">Clear All</button>
+        </div>
+        <div id="historyList"><div class="loader"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+
+
+    <!-- PRIVACY POLICY -->
+    <div id="privacyScreen" class="screen">
+      <div style="padding:16px 14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <button onclick="history.back()" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:18px;"><i class="fas fa-arrow-left"></i></button>
+          <h2 style="font-size:18px;font-weight:700;">Privacy Policy</h2>
+        </div>
+        <div style="font-size:13px;line-height:1.8;color:var(--text2);">
+          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">MyTube Privacy Policy</p>
+          <p style="color:var(--text3);font-size:11px;margin-bottom:16px;">Last updated: April 2025</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">1. Information We Collect</p>
+          <p style="margin-bottom:14px;">We collect information you provide directly: name, email address, profile picture, and content you upload. We also collect usage data including videos watched, liked, and shared.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">2. How We Use Your Information</p>
+          <p style="margin-bottom:14px;">Your information is used to provide personalized content recommendations, improve our algorithm, send notifications about activity on your content, and maintain your account security.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">3. Data Storage</p>
+          <p style="margin-bottom:14px;">All data is stored securely using Google Firebase (Firestore). Media files are stored on Cloudinary servers. We do not sell your personal data to third parties.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">4. Your Rights</p>
+          <p style="margin-bottom:14px;">You can delete your account and all associated data at any time. You can edit your profile information, delete your uploaded content, and control your notification preferences.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">5. Cookies & Local Storage</p>
+          <p style="margin-bottom:14px;">We use browser local storage to save your theme preference, watch history, and search history. This data stays on your device and is not shared.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">6. Content Policy</p>
+          <p style="margin-bottom:14px;">Users are responsible for content they upload. MyTube reserves the right to remove content that violates our community guidelines including spam, harassment, or illegal content.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">7. Contact Us</p>
+          <p style="margin-bottom:14px;">For privacy concerns, contact us through the MyTube platform. We respond within 48 hours.</p>
+
+          <div style="background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.2);border-radius:10px;padding:12px;margin-top:16px;">
+            <p style="font-size:12px;color:var(--text);">By using MyTube, you agree to this Privacy Policy. We may update this policy and will notify users of significant changes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TERMS OF SERVICE -->
+    <div id="termsScreen" class="screen">
+      <div style="padding:16px 14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <button onclick="showScreen('home')" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:18px;"><i class="fas fa-arrow-left"></i></button>
+          <h2 style="font-size:18px;font-weight:700;">Terms of Service</h2>
+        </div>
+        <div style="font-size:13px;line-height:1.8;color:var(--text2);">
+          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">MyTube Terms of Service</p>
+          <p style="color:var(--text3);font-size:11px;margin-bottom:16px;">Effective: April 2025</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">1. Acceptance of Terms</p>
+          <p style="margin-bottom:14px;">By accessing or using MyTube, you agree to be bound by these Terms of Service. If you do not agree, please do not use the platform.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">2. User Accounts</p>
+          <p style="margin-bottom:14px;">You must be 13 years or older to use MyTube. You are responsible for maintaining the security of your account and all activities that occur under it.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">3. Content Guidelines</p>
+          <p style="margin-bottom:14px;">You may not upload content that is illegal, harmful, threatening, abusive, defamatory, or violates anyone's rights. Spam, fake accounts, and bot activity are strictly prohibited.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">4. Intellectual Property</p>
+          <p style="margin-bottom:14px;">You retain ownership of content you create. By uploading to MyTube, you grant us a license to display and distribute your content on the platform.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">5. Live Streaming Requirements</p>
+          <p style="margin-bottom:14px;">Live streaming requires meeting minimum thresholds: 40 videos, 50 shorts, 100 likes on one video, and 100 subscribers. These requirements ensure platform quality.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">6. Termination</p>
+          <p style="margin-bottom:14px;">MyTube reserves the right to suspend or terminate accounts that violate these terms, with or without notice.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">7. Limitation of Liability</p>
+          <p style="margin-bottom:14px;">MyTube is provided "as is." We are not liable for any damages arising from your use of the platform.</p>
+
+          <div style="background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.2);border-radius:10px;padding:12px;margin-top:16px;">
+            <p style="font-size:12px;color:var(--text);">These terms govern your use of MyTube. Continued use constitutes acceptance of any updates to these terms.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COPYRIGHT -->
+    <div id="copyrightScreen" class="screen">
+      <div style="padding:16px 14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <button onclick="showScreen('home')" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:18px;"><i class="fas fa-arrow-left"></i></button>
+          <h2 style="font-size:18px;font-weight:700;">Copyright Policy</h2>
+        </div>
+        <div style="font-size:13px;line-height:1.8;color:var(--text2);">
+          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">MyTube Copyright Policy</p>
+
+          <div style="background:rgba(255,0,0,.08);border-radius:12px;padding:14px;margin-bottom:16px;display:flex;gap:10px;">
+            <i class="fas fa-copyright" style="color:var(--red);font-size:20px;flex-shrink:0;margin-top:2px;"></i>
+            <p style="color:var(--text);">MyTube respects intellectual property rights and expects users to do the same.</p>
+          </div>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">What is Copyright Infringement?</p>
+          <p style="margin-bottom:14px;">Uploading content that you do not own or have permission to use — including music, videos, images, or other creative works — is copyright infringement.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">DMCA Policy</p>
+          <p style="margin-bottom:14px;">MyTube follows DMCA (Digital Millennium Copyright Act) guidelines. Copyright holders can report infringing content and we will review and act accordingly.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">What Happens to Violators?</p>
+          <p style="margin-bottom:14px;">• First violation: Warning issued<br>• Second violation: Content removed, channel restricted<br>• Third violation: Account permanently suspended</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">Fair Use</p>
+          <p style="margin-bottom:14px;">Commentary, criticism, education, and news reporting may qualify as fair use. However, this does not protect all uses of copyrighted material.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">Original Content</p>
+          <p style="margin-bottom:14px;">Always upload content you created yourself. Use royalty-free music and images from approved sources when creating videos.</p>
+
+          <p style="font-weight:600;color:var(--text);margin-bottom:6px;">Report Copyright Violation</p>
+          <p style="margin-bottom:14px;">Use the Report button on any video to report copyright violations. Our team reviews all reports within 72 hours.</p>
+
+          <div style="background:rgba(0,200,100,.06);border:1px solid rgba(0,200,100,.2);border-radius:10px;padding:12px;margin-top:16px;">
+            <p style="font-size:12px;color:var(--text);"><i class="fas fa-check-circle" style="color:#00c864;margin-right:6px;"></i>Protect your original content by uploading it on MyTube. Your content is your property.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- OWNER -->
     <div id="ownerScreen" class="screen">
       <div class="owner-screen">
@@ -762,8 +1082,11 @@ button,input,textarea{font-family:var(--font);}
 <!-- ═══ VIDEO PLAYER ═══ -->
 <div class="player-screen" id="playerScreen">
   <button class="player-back" onclick="closePlayer()"><i class="fas fa-arrow-left"></i></button>
-  <div class="player-vid-wrap" id="playerVidWrap">
+  <div class="player-vid-wrap" id="playerVidWrap" style="position:relative;">
     <video id="playerVid" controls playsinline></video>
+    <button onclick="toggleFullscreen()" style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:6px;padding:5px 8px;font-size:13px;cursor:pointer;z-index:5;">
+      <i class="fas fa-expand" id="fsIcon"></i>
+    </button>
   </div>
   <div class="player-info">
     <div class="player-title" id="playerTitle">Loading...</div>
@@ -773,6 +1096,8 @@ button,input,textarea{font-family:var(--font);}
     <button class="pl-act" id="likeBtn" onclick="toggleLike()"><i class="fas fa-thumbs-up"></i><span id="likeCount">0</span></button>
     <button class="pl-act" onclick="shareVideo()"><i class="fas fa-share"></i><span>Share</span></button>
     <button class="pl-act" onclick="saveVideo()"><i class="fas fa-bookmark"></i><span>Save</span></button>
+    <button class="pl-act" onclick="downloadVideo()"><i class="fas fa-download"></i><span>Download</span></button>
+    <button class="pl-act" onclick="showTrimPanel()"><i class="fas fa-cut"></i><span>Trim</span></button>
     <button class="pl-act" onclick="showToast('Reported')"><i class="fas fa-flag"></i><span>Report</span></button>
   </div>
   <div class="emoji-row">
@@ -787,6 +1112,12 @@ button,input,textarea{font-family:var(--font);}
     <div class="ch-row-info"><div class="ch-row-name" id="playerChName"></div><div class="ch-row-subs" id="playerChSubs">0 subscribers</div></div>
     <button class="sub-btn" id="playerSubBtn" onclick="toggleSubscribe()">Subscribe</button>
   </div>
+  <!-- Related Videos -->
+  <div id="relatedVideos" style="padding:0 14px;margin-bottom:16px;">
+    <div style="font-size:13px;font-weight:700;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border);">Up Next</div>
+    <div id="relatedList"></div>
+  </div>
+
   <div class="comm-sec">
     <div class="comm-title" id="commTitle">Comments</div>
     <div class="comm-input-row">
@@ -812,7 +1143,11 @@ button,input,textarea{font-family:var(--font);}
       <button class="sf-act" onclick="sfCommentOpen()"><i class="fas fa-comment"></i><span>Comment</span></button>
       <button class="sf-act" onclick="sfShare()"><i class="fas fa-share"></i><span>Share</span></button>
     </div>
-    <div class="sf-info"><div class="sf-ch" id="sfCh"></div><div class="sf-ttl2" id="sfTtl"></div></div>
+    <div class="sf-info">
+      <div class="sf-ch" id="sfCh"></div>
+      <div class="sf-ttl2" id="sfTtl"></div>
+      <div id="sfMusic" style="font-size:11px;color:rgba(255,255,255,.7);margin-top:3px;display:none;"><i class="fas fa-music" style="margin-right:4px;"></i><span id="sfMusicName"></span></div>
+    </div>
     <div class="sf-progress"><div class="sf-prog-fill" id="sfProgFill"></div></div>
   </div>
 </div>
@@ -846,6 +1181,36 @@ button,input,textarea{font-family:var(--font);}
     <input class="inp" id="editAbout" placeholder="Bio">
     <button class="btn-red" onclick="saveEditProfile()">Save Changes</button>
     <button class="btn-outline" style="margin-top:8px;" onclick="closeModal('editModal')">Cancel</button>
+  </div>
+</div>
+
+
+<!-- TRIM PANEL -->
+<div class="trim-panel" id="trimPanel">
+  <div class="trim-handle"></div>
+  <div class="trim-title">✂️ Trim to Short</div>
+  <div class="trim-preview">
+    <i class="fas fa-film"></i>
+    <div>
+      <div style="font-size:13px;font-weight:600;" id="trimVideoTitle">Video Title</div>
+      <div style="font-size:11px;color:var(--text2);">Create a short clip from this video</div>
+    </div>
+  </div>
+  <div class="trim-range-wrap">
+    <div class="trim-range-label"><span>Start: <span id="trimStartVal">0s</span></span><span>Max: 60s</span></div>
+    <input type="range" class="trim-range" id="trimStart" min="0" max="300" value="0" oninput="updateTrimStart(this.value)">
+  </div>
+  <div class="trim-range-wrap">
+    <div class="trim-range-label"><span>Duration: <span id="trimDurVal">30s</span></span><span>Max: 60s</span></div>
+    <input type="range" class="trim-range" id="trimDur" min="5" max="60" value="30" oninput="updateTrimDur(this.value)">
+  </div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:14px;background:rgba(255,0,0,.06);padding:10px;border-radius:8px;">
+    <i class="fas fa-info-circle" style="color:var(--red);margin-right:6px;"></i>
+    Short will be created from your selected start point with chosen duration. The original video link will be used.
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button onclick="closeTrimPanel()" style="flex:1;padding:11px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;cursor:pointer;font-size:14px;">Cancel</button>
+    <button onclick="createShortFromTrim()" class="btn-red" style="flex:2;">Create Short</button>
   </div>
 </div>
 
@@ -924,6 +1289,52 @@ let currentPostId=null, currentPostData=null;
 let allPosts=[], uploadType='', selectedFile=null, thumbFile=null, postImgFiles=[];
 let sfPosts=[], sfCurrentIdx=0, sfCurrentId=null;
 let galleryPosts=[], galleryFilter='all', currentGalleryPost=null;
+let selectedSong=null;
+// Trending songs list (royalty-free style)
+const TRENDING_SONGS=[
+  {id:'s1',name:'Husn - Anuv Jain',emoji:'🎵',url:''},
+  {id:'s2',name:'Pasoori - Ali Sethi',emoji:'🎶',url:''},
+  {id:'s3',name:'Kesariya - Arijit',emoji:'🎸',url:''},
+  {id:'s4',name:'Dil Hai Tumhara',emoji:'💕',url:''},
+  {id:'s5',name:'Apna Bana Le',emoji:'🔥',url:''},
+  {id:'s6',name:'Raatan Lambiyan',emoji:'🌙',url:''},
+  {id:'s7',name:'Tere Vaaste',emoji:'❤️',url:''},
+  {id:'s8',name:'Teri Baaton Mein',emoji:'✨',url:''},
+  {id:'s9',name:'Jalte Diye - OST',emoji:'🕯️',url:''},
+  {id:'s10',name:'Trending Beat #1',emoji:'🔊',url:''},
+  {id:'s11',name:'Cricket Anthem',emoji:'🏏',url:''},
+  {id:'s12',name:'Kahani Suno 2.0',emoji:'🎤',url:''},
+];
+
+function renderTrendingSongs(){
+  const el=document.getElementById('trendingSongsList');
+  if(!el)return;
+  el.innerHTML=TRENDING_SONGS.map(s=>`
+    <div onclick="selectSong(${JSON.stringify(s).replace(/"/g,"'")}" 
+    style="flex-shrink:0;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;min-width:120px;text-align:center;transition:all .2s;"
+    id="song_${s.id}">
+      <div style="font-size:18px;margin-bottom:4px;">${s.emoji}</div>
+      <div style="font-size:10px;font-weight:600;color:var(--text2);">${s.name}</div>
+    </div>`).join('');
+}
+
+function selectSong(song){
+  selectedSong=song;
+  document.querySelectorAll('[id^="song_"]').forEach(el=>{el.style.borderColor='var(--border)';el.style.background='var(--bg3)';});
+  const el=document.getElementById('song_'+song.id);
+  if(el){el.style.borderColor='var(--red)';el.style.background='rgba(255,0,0,.08)';}
+  const info=document.getElementById('selectedSongInfo');
+  const nameEl=document.getElementById('selectedSongName');
+  if(info){info.style.display='flex';}
+  if(nameEl)nameEl.textContent=song.name;
+}
+
+function clearSong(){
+  selectedSong=null;
+  document.querySelectorAll('[id^="song_"]').forEach(el=>{el.style.borderColor='var(--border)';el.style.background='var(--bg3)';});
+  const info=document.getElementById('selectedSongInfo');
+  if(info)info.style.display='none';
+}
 let userPrefs={topCats:[],seenAuthors:{}};
 let searchHistory=[];
 
@@ -1187,7 +1598,11 @@ const screenMap={
   home:'homeScreen',shorts:'shortsScreen',upload:'uploadScreen',
   dashboard:'dashboardScreen',profile:'profileScreen',notif:'notifScreen',
   search:'searchScreen',subs:'subsScreen',owner:'ownerScreen',
-  live:'liveScreen',themes:'themesScreen',gallery:'galleryScreen'
+  live:'liveScreen',themes:'themesScreen',gallery:'galleryScreen',
+  history:'historyScreen',
+  privacy:'privacyScreen',
+  terms:'termsScreen',
+  copyright:'copyrightScreen'
 };
 const navMap={home:'nav-home',shorts:'nav-shorts',upload:'nav-upload',subs:'nav-subs',profile:'nav-profile',owner:'nav-owner'};
 
@@ -1206,6 +1621,7 @@ function showScreen(name){
   if(name==='live')loadLiveScreen();
   if(name==='themes')renderThemeGrid();
   if(name==='gallery')loadGallery();
+  if(name==='history')loadHistory();
 }
 
 // ══════════════════════════════════════════════════════
@@ -1245,7 +1661,39 @@ function filterFeed(btn,filter){
 function renderFeed(posts){
   const feed=document.getElementById('homeFeed');
   if(!posts||!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet. Be the first to upload!</p></div>';return;}
-  feed.innerHTML=posts.map(p=>buildCard(p)).join('');
+  // Inject shorts section after 3rd item (YouTube style)
+  const shorts=posts.filter(p=>p.type==='short').slice(0,6);
+  const nonShorts=posts.filter(p=>p.type!=='short');
+  let html='';
+  nonShorts.forEach((p,i)=>{
+    html+=buildCard(p);
+    if(i===2&&shorts.length){
+      html+=buildInlineShortsRow(shorts);
+    }
+  });
+  if(!html)html=posts.map(p=>buildCard(p)).join('');
+  feed.innerHTML=html;
+}
+
+function buildInlineShortsRow(shorts){
+  return `<div style="margin-bottom:18px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <i class="fas fa-film" style="color:var(--red);font-size:16px;"></i>
+      <span style="font-size:14px;font-weight:700;">Shorts</span>
+      <span style="font-size:12px;color:var(--text2);margin-left:auto;cursor:pointer;" onclick="showScreen('shorts')">See all →</span>
+    </div>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
+      ${shorts.map((p,i)=>{
+        const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_0,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+        return `<div onclick="openShortFS(${sfPosts.findIndex(s=>s.id===p.id)||i})" style="flex-shrink:0;width:90px;height:160px;border-radius:10px;overflow:hidden;background:var(--bg3);position:relative;cursor:pointer;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-film" style="color:var(--text3);font-size:22px;"></i></div>'}
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:6px;background:linear-gradient(transparent,rgba(0,0,0,.8));">
+            <div style="font-size:9px;color:white;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||''}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
 }
 
 function buildCard(p){
@@ -1296,6 +1744,7 @@ function buildPostCard(p){
       <button class="post-act" id="qlike_${p.id}" onclick="quickLike('${p.id}',this,event)"><i class="fas fa-heart"></i> ${p.likes||0}</button>
       <button class="post-act" onclick="openPost('${p.id}');event.stopPropagation()"><i class="fas fa-comment"></i> ${p.comments||0}</button>
       <button class="post-act" onclick="sharePost('${p.url||''}');event.stopPropagation()"><i class="fas fa-share"></i></button>
+      ${p.authorId!==cUser?.uid?`<button class="post-act" onclick="quickSubscribe('${p.authorId}','${p.authorName||''}',this,event)" id="qs_${p.id}"><i class="fas fa-user-plus"></i></button>`:''}
     </div>
   </div>`;
 }
@@ -1324,6 +1773,29 @@ async function quickLike(id,btn,e){
       btn.innerHTML=`<i class="fas fa-heart"></i> ${(p.likes||0)+1}`;
       btn.classList.add('liked');
       sendNotif(p.authorId,'like',`${cUserData?.name||'Someone'} liked your post "${p.title||''}"`,id);
+    }
+  }catch(e){showToast('Error');}
+}
+
+async function quickSubscribe(authorId,authorName,btn,e){
+  e.stopPropagation();
+  if(!cUser)return showToast('Login karein!');
+  if(!authorId)return;
+  const sid=`${cUser.uid}_${authorId}`;
+  const ref=db.collection('subscriptions').doc(sid);
+  try{
+    const doc=await ref.get();
+    if(doc.exists){
+      await ref.delete();
+      await db.collection('users').doc(authorId).update({subscribers:firebase.firestore.FieldValue.increment(-1)});
+      btn.innerHTML='<i class="fas fa-user-plus"></i>';
+      btn.classList.remove('liked');showToast('Unsubscribed');
+    }else{
+      await ref.set({from:cUser.uid,to:authorId,time:Date.now()});
+      await db.collection('users').doc(authorId).update({subscribers:firebase.firestore.FieldValue.increment(1)});
+      btn.innerHTML='<i class="fas fa-user-check"></i>';
+      btn.classList.add('liked');showToast(`Subscribed to ${authorName}! ✅`);
+      sendNotif(authorId,'sub',`${cUserData?.name||'Someone'} subscribed to your channel!`,null);
     }
   }catch(e){showToast('Error');}
 }
@@ -1382,11 +1854,31 @@ function playShortAt(idx){
   setTimeout(()=>{pf.style.transition='width 6s linear';pf.style.width='100%';},100);
   db.collection('posts').doc(p.id).update({views:firebase.firestore.FieldValue.increment(1),rankScore:firebase.firestore.FieldValue.increment(2)}).catch(()=>{});
   updateUserPrefs(p);
+  // Show bg music if available
+  const sfMusicEl=document.getElementById('sfMusic');
+  const sfMusicName=document.getElementById('sfMusicName');
+  if(p.bgMusic&&sfMusicEl&&sfMusicName){sfMusicEl.style.display='block';sfMusicName.textContent=p.bgMusic;}
+  else if(sfMusicEl){sfMusicEl.style.display='none';}
 }
 
 function closeShortFS(){document.getElementById('shortFS').classList.remove('open');const v=document.getElementById('sfVid');v.pause();v.src='';}
 function prevShort(){if(sfCurrentIdx>0)playShortAt(sfCurrentIdx-1);}
 function nextShort(){if(sfCurrentIdx<sfPosts.length-1)playShortAt(sfCurrentIdx+1);}
+
+// Touch swipe for shorts
+(function(){
+  let ts=0,ty=0;
+  const el=document.getElementById('shortFS')||document.body;
+  document.addEventListener('touchstart',e=>{if(!document.getElementById('shortFS').classList.contains('open'))return;ts=e.touches[0].clientY;ty=e.touches[0].clientX;},{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(!document.getElementById('shortFS').classList.contains('open'))return;
+    const dy=ts-e.changedTouches[0].clientY;
+    const dx=ty-e.changedTouches[0].clientX;
+    if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>50){
+      if(dy>0)nextShort();else prevShort();
+    }
+  },{passive:true});
+})();
 
 async function sfLike(){
   if(!cUser||!sfCurrentId)return;
@@ -1423,7 +1915,7 @@ function selectType(type,el){
   document.getElementById('thumbBoxWrap').style.display='none';
   document.getElementById('postImgsWrap').style.display='none';
   document.getElementById('fileDrop').style.display='block';
-  selectedFile=null;thumbFile=null;postImgFiles=[];
+  selectedFile=null;thumbFile=null;postImgFiles=[];selectedSong=null;clearSong();
   const icon=document.getElementById('fileIcon');
   if(type==='post'){
     document.getElementById('fileDrop').style.display='none';
@@ -1435,6 +1927,8 @@ function selectType(type,el){
     fi.accept='video/*';if(icon)icon.className='fas fa-video';
     document.getElementById('fileText').textContent='Select Video';
     document.getElementById('thumbBoxWrap').style.display='block';
+    document.getElementById('musicSelectorWrap').style.display='block';
+    renderTrendingSongs();
   }
 }
 
@@ -1502,7 +1996,8 @@ async function doUpload(){
       authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
       authorPhoto:cUserData?.photoURL||'',
       likes:0,likedBy:[],views:0,comments:0,reactions:{},
-      rankScore:initialScore,time:Date.now()
+      rankScore:initialScore,time:Date.now(),
+      bgMusic:selectedSong?selectedSong.name:''
     });
     showToast('✅ Uploaded successfully!');
     resetUploadForm();btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';
@@ -1534,7 +2029,7 @@ function resetUploadForm(){
   document.getElementById('uploadForm').classList.remove('show');
   document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
   document.getElementById('postImgGrid').innerHTML=`<div class="add-img-btn" onclick="document.getElementById('postImgFile').click()"><i class="fas fa-plus"></i><input type="file" id="postImgFile" accept="image/*" multiple onchange="addPostImages(this)"></div>`;
-  selectedFile=null;thumbFile=null;postImgFiles=[];
+  selectedFile=null;thumbFile=null;postImgFiles=[];selectedSong=null;clearSong();
 }
 
 // ══════════════════════════════════════════════════════
@@ -1549,6 +2044,7 @@ async function openPost(id){
     const doc=await db.collection('posts').doc(id).get();
     const p=doc.data();currentPostData={id,...p};
     updateUserPrefs(p);
+    addToHistory(p);
     const vid=document.getElementById('playerVid');
     const wrap=document.getElementById('playerVidWrap');
     wrap.style.backgroundImage='';wrap.style.display='block';vid.style.display='block';
@@ -1584,7 +2080,54 @@ async function openPost(id){
     }
     db.collection('posts').doc(id).update({views:firebase.firestore.FieldValue.increment(1),rankScore:firebase.firestore.FieldValue.increment(2)}).catch(()=>{});
     loadComments(id);
+    loadRelated(id, p.type, p.category||p.type);
   }catch(e){console.error(e);showToast('Error loading');}
+}
+
+// Trim functions
+function showTrimPanel(){
+  if(!currentPostData||(!currentPostData.url&&currentPostData.type==='post'))return showToast('Cannot trim this content');
+  document.getElementById('trimVideoTitle').textContent=currentPostData.title||'Video';
+  document.getElementById('trimStart').max=Math.floor(document.getElementById('playerVid').duration||300)||300;
+  document.getElementById('trimPanel').classList.add('open');
+}
+function closeTrimPanel(){document.getElementById('trimPanel').classList.remove('open');}
+function updateTrimStart(v){document.getElementById('trimStartVal').textContent=Math.round(v)+'s';}
+function updateTrimDur(v){document.getElementById('trimDurVal').textContent=Math.round(v)+'s';}
+
+async function createShortFromTrim(){
+  if(!currentUser||!currentPostData)return;
+  const start=parseInt(document.getElementById('trimStart').value)||0;
+  const dur=parseInt(document.getElementById('trimDur').value)||30;
+  const title=prompt('Short title:',currentPostData.title+' - Short')||currentPostData.title+' - Short';
+  closeTrimPanel();
+  showToast('Creating short... ✂️');
+  try{
+    await db.collection('posts').add({
+      title,
+      url:currentPostData.url,
+      thumbURL:currentPostData.thumbURL||'',
+      type:'short',
+      category:currentPostData.category||'video',
+      authorId:cUser.uid,
+      authorName:cUserData?.name||cUser.email,
+      authorPhoto:cUserData?.photoURL||'',
+      likes:0,likedBy:[],views:0,comments:0,reactions:{},
+      rankScore:20,
+      trimStart:start,trimDur:dur,
+      isTrimmmed:true,originalId:currentPostData.id,
+      time:Date.now()
+    });
+    showToast('Short created! ✅');
+  }catch(e){showToast('Error creating short');}
+}
+
+function toggleFullscreen(){
+  const vid=document.getElementById('playerVid');
+  if(!vid)return;
+  if(vid.requestFullscreen)vid.requestFullscreen();
+  else if(vid.webkitRequestFullscreen)vid.webkitRequestFullscreen();
+  else if(vid.webkitEnterFullscreen)vid.webkitEnterFullscreen();
 }
 
 function closePlayer(){
@@ -1677,6 +2220,22 @@ async function toggleSubscribe(){
 function shareVideo(){navigator.clipboard.writeText(currentPostData?.url||location.href).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));}
 function saveVideo(){showToast('Saved to Watch Later ✅');}
 
+function downloadVideo(){
+  if(!currentPostData||!currentPostData.url)return showToast('No downloadable content');
+  const url=currentPostData.url;
+  const title=(currentPostData.title||'video').replace(/[^a-z0-9]/gi,'_');
+  // Create download link
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=title;
+  a.target='_blank';
+  a.rel='noopener';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast('Downloading... 📥');
+}
+
 // ══════════════════════════════════════════════════════
 // COMMENTS
 // ══════════════════════════════════════════════════════
@@ -1711,6 +2270,34 @@ async function loadComments(postId){
       }).join('')||'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet!</div>';
     }catch(e2){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';}
   }
+}
+
+async function loadRelated(postId, postType, category){
+  const list=document.getElementById('relatedList');
+  if(!list)return;
+  list.innerHTML='<div style="color:var(--text3);font-size:12px;">Loading...</div>';
+  try{
+    const snap=await db.collection('posts').orderBy('time','desc').limit(20).get();
+    let related=snap.docs.map(d=>({id:d.id,...d.data()}))
+      .filter(p=>p.id!==postId)
+      .map(p=>({...p,_rel:(p.category===category||p.type===postType?10:0)+(p.rankScore||0)}))
+      .sort((a,b)=>b._rel-a._rel)
+      .slice(0,8);
+    if(!related.length){list.innerHTML='';return;}
+    list.innerHTML=related.map(p=>{
+      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      const av=p.authorPhoto?`<img src="${p.authorPhoto}">`:(p.authorName||'U')[0].toUpperCase();
+      return `<div onclick="openPost('${p.id}')" style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;">
+        <div style="width:100px;height:60px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<i class="fas fa-video" style="font-size:18px;color:var(--text3);"></i>'}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:3px;">${p.authorName||''} • ${getTimeAgo(p.time)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){list.innerHTML='';}
 }
 
 async function postComment(){
@@ -1786,6 +2373,11 @@ async function loadNotifs(){
 async function loadDashboard(){
   if(!cUser)return;
   document.getElementById('dashWelcome').textContent='Welcome, '+(cUserData?.name||'Creator')+'!';
+  // Studio header
+  const stAvEl=document.getElementById('studioAvatar');
+  if(stAvEl){if(cUserData?.photoURL)stAvEl.innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;else stAvEl.textContent=(cUserData?.name||'U')[0].toUpperCase();}
+  const stChEl=document.getElementById('studioChannelName');
+  if(stChEl)stChEl.textContent=cUserData?.channelName||cUserData?.name||'My Channel';
   try{
     const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
     let likes=0,views=0,vids=0,comments=0,maxLikes=0,bestTitle='';
@@ -1797,10 +2389,46 @@ async function loadDashboard(){
     });
     const ud=await db.collection('users').doc(cUser.uid).get();
     const subs=ud.exists?(ud.data().subscribers||0):0;
-    document.getElementById('dVideos').textContent=vids;
+    document.getElementById('dVideos') && (document.getElementById('dVideos').textContent=vids);
     document.getElementById('dSubs').textContent=subs;
-    document.getElementById('dLikes').textContent=likes;
+    document.getElementById('dLikes') && (document.getElementById('dLikes').textContent=likes);
     document.getElementById('dViews').textContent=views;
+    // Watch time estimate (avg 2 min per view)
+    const watchMins=Math.round(views*2);
+    const wtEl=document.getElementById('dWatchTime');if(wtEl)wtEl.textContent=watchMins>60?Math.round(watchMins/60)+'h':watchMins+'m';
+    // Revenue estimate (₨0.5 per 1000 views = very rough)
+    const revEl=document.getElementById('dRevenue');if(revEl)revEl.textContent='₨'+(Math.round(views*0.5/1000*100)/100).toFixed(2);
+    const d2El=document.getElementById('dVideos2');if(d2El)d2El.textContent=vids+' videos • '+likes+' total likes';
+    // Latest video performance
+    const lpEl=document.getElementById('latestVideoPerfEl');
+    if(lpEl&&myPosts.length){
+      const latest=myPosts[0];
+      const th=latest.thumbURL||(latest.url?latest.url.replace('/upload/','/upload/so_1,w_120/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      const score=latest.rankScore||0;
+      const typical_views=Math.max(1,Math.round(views/Math.max(vids,1)));
+      const isAbove=latest.views>=typical_views;
+      lpEl.innerHTML=`<div style="display:flex;gap:10px;margin-bottom:12px;">
+        <div style="width:80px;height:50px;border-radius:7px;overflow:hidden;background:var(--bg3);flex-shrink:0;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:''}
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:600;">${latest.title||'Untitled'}</div>
+          <div style="font-size:10px;color:var(--text2);">Rank Score: <b>${score}</b></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:12px;color:var(--text2);">Ranking by views</span>
+        <span style="font-size:12px;font-weight:600;">${myPosts.indexOf(latest)+1} of ${vids}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:12px;color:var(--text2);">Views</span>
+        <span style="font-size:12px;font-weight:700;">${latest.views||0} <span style="color:${isAbove?'#00c864':'#ff4444'};font-size:10px;">${isAbove?'↑':'↓'}</span></span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;">
+        <span style="font-size:12px;color:var(--text2);">Likes</span>
+        <span style="font-size:12px;font-weight:700;">${latest.likes||0}</span>
+      </div>`;
+    }
     document.getElementById('profVideos').textContent=vids;
     document.getElementById('profSubs').textContent=subs;
     document.getElementById('profLikes').textContent=likes;
@@ -1917,6 +2545,44 @@ async function saveChannel(){
     showToast('Channel created! 🚀');
     loadDashboard();
   }catch(e){console.error(e);showToast('Error: '+e.message);}
+}
+
+// ══════════════════════════════════════════════════════
+// WATCH HISTORY
+// ══════════════════════════════════════════════════════
+function addToHistory(post){
+  if(!post||!post.id)return;
+  let history=JSON.parse(localStorage.getItem('mt_history')||'[]');
+  history=history.filter(h=>h.id!==post.id);
+  history.unshift({id:post.id,title:post.title,thumbURL:post.thumbURL,url:post.url,type:post.type,authorName:post.authorName,time:Date.now()});
+  history=history.slice(0,50);
+  localStorage.setItem('mt_history',JSON.stringify(history));
+}
+
+function loadHistory(){
+  const list=document.getElementById('historyList');
+  if(!list)return;
+  const history=JSON.parse(localStorage.getItem('mt_history')||'[]');
+  if(!history.length){list.innerHTML='<div class="empty-state"><i class="fas fa-history"></i><p>No watch history yet</p></div>';return;}
+  list.innerHTML=history.map(p=>{
+    const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+    return `<div onclick="openPost('${p.id}')" style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;">
+      <div style="width:90px;height:56px;border-radius:7px;overflow:hidden;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+        ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<i class="fas fa-video" style="font-size:18px;color:var(--text3);"></i>'}
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
+        <div style="font-size:10px;color:var(--text2);margin-top:3px;">${p.authorName||''} • ${getTimeAgo(p.time)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function clearHistory(){
+  if(!confirm('Clear all history?'))return;
+  localStorage.removeItem('mt_history');
+  loadHistory();
+  showToast('History cleared ✅');
 }
 
 // ══════════════════════════════════════════════════════
@@ -2154,6 +2820,78 @@ function startLive(){
 // ══════════════════════════════════════════════════════
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function closeModalOut(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+
+// ══ SIDE MENU ══
+function openSideMenu(){
+  document.getElementById('sideOverlay').classList.add('open');
+  document.getElementById('sideMenu').classList.add('open');
+}
+function closeSideMenu(){
+  document.getElementById('sideOverlay').classList.remove('open');
+  document.getElementById('sideMenu').classList.remove('open');
+}
+
+// ══ STUDIO TABS ══
+function switchStudioTab(tab){
+  ['overview','content','analytics','audience'].forEach(t=>{
+    const el=document.getElementById('studio-'+t);
+    const btn=document.getElementById('stab-'+t);
+    if(el)el.style.display=t===tab?'block':'none';
+    if(btn)btn.classList.toggle('active',t===tab);
+  });
+  // Load content if needed
+  if(tab==='analytics')updateAnalyticsTab();
+  if(tab==='audience')updateAudienceTab();
+  if(tab==='content')document.getElementById('myContentList').innerHTML.includes('spinner')?loadMyContent():null;
+}
+
+function updateAnalyticsTab(){
+  // Mirror data from main dashboard
+  const views=document.getElementById('dViews')?.textContent||'0';
+  const el=document.getElementById('an-views');if(el)el.textContent=views;
+  const ctr=document.getElementById('aCTR')?.textContent||'0%';
+  const ctrEl=document.getElementById('an-ctr2');if(ctrEl)ctrEl.textContent=ctr;
+  const subs=document.getElementById('dSubs')?.textContent||'0';
+  const subEl=document.getElementById('an-subchange');if(subEl)subEl.textContent='+'+subs;
+  const avgEl=document.getElementById('an-watchtime');if(avgEl)avgEl.textContent=document.getElementById('dWatchTime')?.textContent?.replace('m','')||'0';
+  // Top content
+  loadTopContent();
+}
+
+function updateAudienceTab(){
+  const subs=document.getElementById('dSubs')?.textContent||'0';
+  const views=document.getElementById('dViews')?.textContent||'0';
+  const el1=document.getElementById('aud-subs');if(el1)el1.textContent=subs;
+  const el2=document.getElementById('aud-newsubs');if(el2)el2.textContent='+'+subs;
+  const el3=document.getElementById('aud-unique');if(el3)el3.textContent=views;
+  const el4=document.getElementById('aud-returning');if(el4)el4.textContent=Math.floor(parseInt(views)||0*0.3).toString();
+  // Copy subs list
+  const sl=document.getElementById('subsList');
+  const sl2=document.getElementById('subsList2');
+  if(sl&&sl2)sl2.innerHTML=sl.innerHTML;
+}
+
+async function loadTopContent(){
+  const el=document.getElementById('topContentList');
+  if(!el||!cUser)return;
+  try{
+    const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
+    const posts=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,5);
+    el.innerHTML=posts.map((p,i)=>{
+      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_100/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      return `<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);">
+        <div style="font-size:16px;font-weight:800;color:var(--text3);width:20px;text-align:center;">${i+1}</div>
+        <div style="width:60px;height:38px;border-radius:6px;overflow:hidden;background:var(--bg3);flex-shrink:0;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:''}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.title||'Untitled'}</div>
+          <div style="font-size:10px;color:var(--text2);">👁️${p.views||0} • ❤️${p.likes||0} • 💬${p.comments||0}</div>
+        </div>
+      </div>`;
+    }).join('')||'<div style="color:var(--text3);font-size:12px;">No content yet</div>';
+  }catch(e){}
+}
 </script>
 </body>
 </html>
