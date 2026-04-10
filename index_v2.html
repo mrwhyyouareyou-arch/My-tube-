@@ -3972,7 +3972,27 @@ async function loadTopContent(){
       </div>`;
     }).join('')||'<div style="color:var(--text3);font-size:12px;">No content yet</div>';
   }catch(e){}
+} <script>
+// VIDEO CHALANE WALA JUGAAD
+function loadFeed() {
+    const feedContainer = document.getElementById('mainFeed') || document.body; 
+    db.collection('posts').orderBy('createdAt', 'desc').onSnapshot(snap => {
+        let html = '';
+        snap.forEach(doc => {
+            const data = doc.data();
+            html += `
+                <div style="margin-bottom:20px; background:#111; border-radius:15px; overflow:hidden;">
+                    <video src="${data.videoUrl}" controls style="width:100%; max-height:400px;"></video>
+                    <div style="padding:12px;">
+                        <h3 style="color:#fff; font-size:16px; margin:0;">${data.title || 'Untitled'}</h3>
+                    </div>
+                </div>`;
+        });
+        feedContainer.innerHTML = html;
+    });
 }
+// Ise chalu karne ke liye
+setTimeout(loadFeed, 2000);
 </script>
 </body>
 </html>
