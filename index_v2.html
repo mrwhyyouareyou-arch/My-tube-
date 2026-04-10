@@ -722,11 +722,10 @@ button,input,textarea{font-family:var(--font);}
           <img id="uploadImgPrev" class="upload-prev-img">
           <video id="uploadVidPrev" class="upload-prev-vid" controls></video>
           <div class="thumb-box" id="thumbBoxWrap" style="display:none;">
-            <div onclick="handleThumbClick()" style="cursor:pointer;">
-              <input type="file" id="thumbFile" accept="image/*" onchange="onThumbSelect(this)" style="display:none;">
+            <div onclick="document.getElementById('thumbFile').click()" style="cursor:pointer;">
+              <input type="file" id="thumbFile" accept="image/*" onchange="onThumbSelect(this)">
               <i class="fas fa-image" style="font-size:20px;color:var(--text2);margin-bottom:4px;display:block;"></i>
-              <p>📸 Add Thumbnail</p>
-              <p style="font-size:10px;color:var(--text3);margin-top:3px;" id="thumbVerifyHint">🔒 Phone verification required</p>
+              <p>📸 Add Thumbnail (optional)</p>
             </div>
             <img id="thumbPrev" class="thumb-prev">
           </div>
@@ -739,15 +738,6 @@ button,input,textarea{font-family:var(--font);}
             </div>
           </div>
           <div class="prog-bar" id="progBar"><div class="prog-fill" id="progFill"></div></div>
-          <!-- Trim section for videos -->
-          <div id="trimUploadWrap" style="display:none;margin-bottom:12px;background:var(--bg3);border-radius:10px;padding:12px;">
-            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">✂️ Trim (Shorts: max 60s)</div>
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px;">
-              <span>Start: <span id="trimUpStart">0s</span></span>
-              <span>End: <span id="trimUpEnd">60s</span></span>
-            </div>
-            <input type="range" style="-webkit-appearance:none;width:100%;height:4px;background:var(--border);border-radius:2px;outline:none;" id="trimUpStartRange" min="0" max="60" value="0" oninput="document.getElementById('trimUpStart').textContent=this.value+'s'">
-          </div>
           <input class="inp" id="uploadTitle" placeholder="Title *">
           <input class="inp" id="uploadDesc" placeholder="Description">
           <input class="inp" id="uploadTags" placeholder="Tags (cricket, funny, gaming...)">
@@ -903,7 +893,6 @@ button,input,textarea{font-family:var(--font);}
           <div class="prof-name" id="profName">Loading...</div>
           <div class="prof-handle" id="profHandle">@user</div>
           <div class="prof-email" id="profEmail"></div>
-          <div id="phoneVerifiedBadge" style="display:none;margin-top:4px;"><span style="background:rgba(0,200,100,.15);color:#00c864;font-size:11px;padding:3px 8px;border-radius:20px;"><i class="fas fa-check-circle"></i> Phone Verified</span></div>
           <div class="prof-stats">
             <div class="pst"><div class="pst-num" id="profVideos">0</div><div class="pst-lbl">Videos</div></div>
             <div class="pst"><div class="pst-num" id="profSubs">0</div><div class="pst-lbl">Subscribers</div></div>
@@ -912,61 +901,34 @@ button,input,textarea{font-family:var(--font);}
           <div class="prof-acts">
             <button class="btn-sm" onclick="openEditModal()"><i class="fas fa-edit"></i> Edit</button>
             <button class="btn-sm" onclick="showScreen('themes')"><i class="fas fa-palette"></i> Themes</button>
-            <button class="btn-sm" onclick="openPhoneVerify()" id="verifyPhoneBtn"><i class="fas fa-mobile-alt"></i> Verify</button>
             <button class="btn-sm" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
           </div>
         </div>
         <!-- Channel Card -->
         <div class="channel-setup-card" id="channelSetupCard">
           <h3><i class="fas fa-tv"></i> My Channel</h3>
-          <!-- YouTube style: current account -->
-          <div id="emailChannelWrap" class="email-channel-wrap selected" style="margin-bottom:12px;">
+          <!-- Email selection (YouTube style) -->
+          <div id="emailChannelWrap" class="email-channel-wrap selected">
             <div class="email-channel-av" id="emailChAv">?</div>
             <div class="email-channel-info">
               <div class="email-channel-name" id="emailChName">Loading...</div>
               <div class="email-channel-email" id="emailChEmail"></div>
             </div>
-            <i class="fas fa-check-circle email-check" style="display:block;color:var(--red);"></i>
+            <i class="fas fa-check-circle email-check"></i>
           </div>
-          <!-- If channel exists, show it; else show create form -->
-          <div id="channelExistsView" style="display:none;">
-            <div style="background:rgba(0,200,100,.06);border:1px solid rgba(0,200,100,.2);border-radius:10px;padding:12px;margin-bottom:12px;">
-              <div style="font-size:13px;font-weight:700;color:#00c864;margin-bottom:4px;"><i class="fas fa-check-circle"></i> Channel Active</div>
-              <div style="font-size:13px;" id="channelExistingName"></div>
-              <div style="font-size:11px;color:var(--text2);" id="channelExistingHandle"></div>
-            </div>
-            <button onclick="toggleChannelEdit()" class="btn-outline" style="margin-bottom:10px;"><i class="fas fa-edit"></i> Edit Channel</button>
-          </div>
-          <div id="channelCreateView">
-            <input class="inp" id="channelName" placeholder="Channel Name *">
-            <input class="inp" id="channelHandle" placeholder="@handle *">
-            <input class="inp" id="channelAbout" placeholder="Channel description">
-            <button class="btn-red" onclick="saveChannel()"><i class="fas fa-tv"></i> Save Channel</button>
-          </div>
+          <input class="inp" id="channelName" placeholder="Channel Name *">
+          <input class="inp" id="channelHandle" placeholder="@handle *">
+          <input class="inp" id="channelAbout" placeholder="Channel description">
+          <button class="btn-red" onclick="saveChannel()"><i class="fas fa-tv"></i> Save Channel</button>
         </div>
         <div class="prof-section">
           <div class="prof-sec-title">About</div>
           <div id="profAboutText" style="font-size:13px;color:var(--text2);line-height:1.6;">No bio yet.</div>
         </div>
-        <!-- YouTube-style "You" section -->
-        <div class="prof-section" style="margin-top:16px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-            <button onclick="showScreen('history')" style="padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="fas fa-history" style="font-size:20px;color:var(--red);"></i>History</button>
-            <button onclick="showScreen('gallery')" style="padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="fas fa-images" style="font-size:20px;color:var(--red);"></i>Gallery</button>
-            <button onclick="showScreen('dashboard')" style="padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="fas fa-chart-line" style="font-size:20px;color:var(--red);"></i>Studio</button>
-            <button onclick="showScreen('live')" style="padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="fas fa-circle" style="font-size:20px;color:var(--red);"></i>Go Live</button>
-          </div>
-          <!-- Liked videos shortcut -->
-          <div onclick="filterFeed(document.querySelector('.chip'),'liked');showScreen('home');" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:8px;">
-            <div style="width:40px;height:40px;background:rgba(255,0,0,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-thumbs-up" style="color:var(--red);font-size:18px;"></i></div>
-            <div><div style="font-size:13px;font-weight:600;">Liked videos</div><div style="font-size:11px;color:var(--text2);">Private</div></div>
-            <i class="fas fa-chevron-right" style="color:var(--text3);margin-left:auto;"></i>
-          </div>
-          <div onclick="showScreen('history')" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:12px;cursor:pointer;">
-            <div style="width:40px;height:40px;background:rgba(0,150,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-history" style="color:#0096ff;font-size:18px;"></i></div>
-            <div><div style="font-size:13px;font-weight:600;">Watch Later</div><div style="font-size:11px;color:var(--text2);">Private</div></div>
-            <i class="fas fa-chevron-right" style="color:var(--text3);margin-left:auto;"></i>
-          </div>
+        <!-- Gallery + History shortcuts -->
+        <div class="prof-section" style="margin-top:16px;display:flex;gap:8px;">
+          <button class="btn-red" onclick="showScreen('gallery')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;"><i class="fas fa-images"></i> Gallery</button>
+          <button onclick="showScreen('history')" style="flex:1;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><i class="fas fa-history"></i> History</button>
         </div>
       </div>
     </div>
@@ -1206,10 +1168,7 @@ button,input,textarea{font-family:var(--font);}
   </div>
   <div class="player-info">
     <div class="player-title" id="playerTitle">Loading...</div>
-    <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
-      <span id="playerDurationBadge" style="background:rgba(0,0,0,.7);color:white;font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;display:none;"></span>
-    </div>
-    <div class="player-meta" id="playerMeta" style="cursor:pointer;margin-top:4px;" onclick="openDescSheet()">
+    <div class="player-meta" id="playerMeta" style="cursor:pointer;" onclick="openDescSheet()">
       <span id="playerMetaText"></span>
       <span id="playerHashtags" style="color:var(--red);"></span>
       <span style="color:var(--red);font-size:11px;margin-left:4px;">...more</span>
@@ -1225,7 +1184,7 @@ button,input,textarea{font-family:var(--font);}
     <button class="pl-act" onclick="ctxPostId=currentPostId;ctxPostUrl=currentPostData?.url;document.getElementById('reportModal').classList.add('open')"><i class="fas fa-flag"></i><span>Report</span></button>
   </div>
   <div class="emoji-row">
-    <button class="emoji-btn" onclick="reactEmoji('👍',this)">👍<span id="e1">0</span></button>
+    <button class="emoji-btn" onclick="reactEmoji('❤️',this)">❤️<span id="e1">0</span></button>
     <button class="emoji-btn" onclick="reactEmoji('😂',this)">😂<span id="e2">0</span></button>
     <button class="emoji-btn" onclick="reactEmoji('🔥',this)">🔥<span id="e3">0</span></button>
     <button class="emoji-btn" onclick="reactEmoji('😮',this)">😮<span id="e4">0</span></button>
@@ -1401,34 +1360,6 @@ button,input,textarea{font-family:var(--font);}
     <div class="comm-av" id="myCommAv" style="flex-shrink:0;">?</div>
     <input class="comm-input" id="commInput" placeholder="Add a comment..." style="flex:1;">
     <button class="comm-send" onclick="postComment()"><i class="fas fa-paper-plane"></i></button>
-  </div>
-</div>
-
-
-<!-- PHONE OTP MODAL -->
-<div class="modal-overlay" id="phoneModal" onclick="closeModalOut(event,'phoneModal')">
-  <div class="modal-sheet" style="max-height:70vh;">
-    <div class="sheet-handle"></div>
-    <div class="sheet-title">📱 Verify Phone Number</div>
-    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Verify your phone to unlock custom thumbnails and advanced features.</p>
-    <div id="phoneStep1">
-      <input class="inp" id="phoneInput" type="tel" placeholder="+92 300 0000000" maxlength="15">
-      <div id="recaptcha-container" style="margin-bottom:12px;"></div>
-      <button class="btn-red" id="sendOtpBtn" onclick="sendPhoneOTP()"><i class="fas fa-sms"></i> Send OTP</button>
-    </div>
-    <div id="phoneStep2" style="display:none;">
-      <p style="font-size:13px;color:var(--text2);margin-bottom:12px;" id="otpSentMsg">OTP sent!</p>
-      <input class="inp" id="otpInput" type="number" placeholder="Enter 6-digit OTP" maxlength="6">
-      <button class="btn-red" id="verifyOtpBtn" onclick="verifyPhoneOTP()"><i class="fas fa-check"></i> Verify & Unlock</button>
-      <button class="btn-outline" style="margin-top:8px;" onclick="resendOTP()">Resend OTP</button>
-    </div>
-    <div id="phoneVerifiedMsg" style="display:none;text-align:center;padding:20px;">
-      <i class="fas fa-check-circle" style="font-size:48px;color:#00c864;margin-bottom:12px;display:block;"></i>
-      <div style="font-size:16px;font-weight:700;color:#00c864;">Phone Verified! ✅</div>
-      <div style="font-size:13px;color:var(--text2);margin-top:6px;">Thumbnails & advanced features unlocked!</div>
-    </div>
-    <div class="auth-err" id="phoneErr"></div>
-    <button class="btn-outline" style="margin-top:8px;" onclick="closeModal('phoneModal')">Skip for now</button>
   </div>
 </div>
 
@@ -1805,9 +1736,6 @@ function updateProfileUI(){
   const pic=document.getElementById('profPicEl');
   if(cUserData.photoURL){pic.innerHTML=`<img src="${cUserData.photoURL}">`;}
   else{pic.textContent=(cUserData.name||'U')[0].toUpperCase();}
-  // Phone verified badge
-  const pvBadge=document.getElementById('phoneVerifiedBadge');
-  if(pvBadge)pvBadge.style.display=cUserData.phoneVerified?'block':'none';
   if(cUserData.channelName){
     const el=document.getElementById('channelName');
     if(el)el.value=cUserData.channelName||'';
@@ -1832,36 +1760,11 @@ function updateEmailChannelUI(){
     if(cUserData?.photoURL){avEl.innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;}
     else{avEl.textContent=(cUserData?.name||'U')[0].toUpperCase();}
   }
-  // Show channel exists vs create view
-  const existView=document.getElementById('channelExistsView');
-  const createView=document.getElementById('channelCreateView');
-  if(cUserData?.hasChannel&&cUserData?.channelName){
-    if(existView)existView.style.display='block';
-    if(createView)createView.style.display='none';
-    const en=document.getElementById('channelExistingName');
-    const eh=document.getElementById('channelExistingHandle');
-    if(en)en.textContent=cUserData.channelName;
-    if(eh)eh.textContent=cUserData.channelHandle||'';
-  }else{
-    if(existView)existView.style.display='none';
-    if(createView)createView.style.display='block';
-    // Pre-fill
-    const cnEl=document.getElementById('channelName');
-    if(cnEl&&!cnEl.value&&cUserData?.name)cnEl.value=cUserData.name;
-    const chEl=document.getElementById('channelHandle');
-    if(chEl&&!chEl.value&&cUserData?.handle)chEl.value=cUserData.handle;
-  }
-}
-
-function toggleChannelEdit(){
-  const cv=document.getElementById('channelCreateView');
-  if(cv)cv.style.display=cv.style.display==='none'?'block':'none';
+  // Pre-fill channel name from display name
   const cnEl=document.getElementById('channelName');
-  if(cnEl)cnEl.value=cUserData?.channelName||'';
+  if(cnEl&&!cnEl.value&&cUserData?.name)cnEl.value=cUserData.name;
   const chEl=document.getElementById('channelHandle');
-  if(chEl)chEl.value=cUserData?.channelHandle||'';
-  const caEl=document.getElementById('channelAbout');
-  if(caEl)caEl.value=cUserData?.channelAbout||'';
+  if(chEl&&!chEl.value&&cUserData?.handle)chEl.value=cUserData.handle;
 }
 
 function setupOwnerNav(){
@@ -2021,7 +1924,7 @@ function buildCard(p){
       ${thumb}
       ${p.type==='short'?'<div class="yt-badge">SHORT</div>':''}
       ${p.isLive?'<div class="yt-badge">🔴 LIVE</div>':''}
-      ${p.duration?`<div class="yt-dur">${p.duration}</div>`:(p.type==='video'||p.type==='gaming'||p.type==='music')?'<div class="yt-dur">▶</div>':''}
+      ${(p.type==='video'||p.type==='gaming'||p.type==='music')?'<div class="yt-dur"><i class="fas fa-play" style="font-size:8px;"></i></div>':''}
     </div>
     <div class="yt-info">
       <div class="yt-av" onclick="openChannelPage('${p.authorId||''}',event)" style="cursor:pointer;">${avHtml}</div>
@@ -2043,16 +1946,15 @@ function buildPostCard(p){
   }
   return `<div class="post-card" onclick="openPost('${p.id}')">
     <div class="post-hdr">
-      <div class="post-av" onclick="openChannelPage('${p.authorId||''}',event)" style="cursor:pointer;">${avHtml}</div>
-      <div style="flex:1;"><div class="post-author">${p.authorName||'User'}</div><div class="post-time">${getTimeAgo(p.time)}</div></div>
-      ${p.authorId&&p.authorId!==cUser?.uid?`<button onclick="quickSubscribe('${p.authorId}','${(p.authorName||'').replace(/'/g,'')}',this,event)" style="background:var(--text);color:var(--bg);border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;">Subscribe</button>`:''}
+      <div class="post-av">${avHtml}</div>
+      <div><div class="post-author">${p.authorName||'User'}</div><div class="post-time">${getTimeAgo(p.time)}</div></div>
     </div>
     ${(p.title||p.desc)?`<div class="post-body">${p.title||''}${p.desc?'<br>'+p.desc:''}</div>`:''}
     ${imgs}
     <div class="post-acts">
       <button class="post-act" id="qlike_${p.id}" onclick="quickLike('${p.id}',this,event)"><i class="fas fa-thumbs-up"></i> ${p.likes||0}</button>
       <button class="post-act" onclick="openPost('${p.id}');event.stopPropagation()"><i class="fas fa-comment"></i> ${p.comments||0}</button>
-      <button class="post-act" onclick="sharePostItem('${p.id}','${(p.title||'').replace(/'/g,'')}','${p.url||''}',event)"><i class="fas fa-share"></i> Share</button>
+      <button class="post-act" onclick="sharePost('${p.url||''}');event.stopPropagation()"><i class="fas fa-share"></i> Share</button>
       ${p.authorId!==cUser?.uid?`<button class="post-act" onclick="quickSubscribe('${p.authorId}','${p.authorName||''}',this,event)"><i class="fas fa-user-plus"></i></button>`:''}
     </div>
   </div>`;
@@ -2084,18 +1986,6 @@ async function quickLike(id,btn,e){
       sendNotif(p.authorId,'like',`${cUserData?.name||'Someone'} liked your post "${p.title||''}"`,id);
     }
   }catch(e){showToast('Error');}
-}
-
-function sharePostItem(id,title,url,e){
-  if(e)e.stopPropagation();
-  const shareUrl=url||location.href;
-  const shareTitle=title||'MyTube Post';
-  if(navigator.share){
-    navigator.share({title:shareTitle,text:shareTitle+' on MyTube',url:shareUrl})
-      .catch(()=>copyFallback(shareUrl));
-  }else{
-    showShareMenu(shareUrl,shareTitle,'Check this out on MyTube!');
-  }
 }
 
 async function quickSubscribe(authorId,authorName,btn,e){
@@ -2403,10 +2293,7 @@ function selectType(type,el){
   document.getElementById('postImgsWrap').style.display='none';
   document.getElementById('fileDrop').style.display='block';
   selectedFile=null;thumbFile=null;postImgFiles=[];selectedSong=null;clearSong();
-  window._uploadDuration='';
-  const trimW=document.getElementById('trimUploadWrap');if(trimW)trimW.style.display='none';
   const icon=document.getElementById('fileIcon');
-  document.getElementById('trimUploadWrap').style.display='none';
   if(type==='post'){
     document.getElementById('fileDrop').style.display='none';
     document.getElementById('postImgsWrap').style.display='block';
@@ -2419,7 +2306,6 @@ function selectType(type,el){
     document.getElementById('thumbBoxWrap').style.display='block';
     document.getElementById('musicSelectorWrap').style.display='block';
     renderTrendingSongs();
-    if(type==='short')document.getElementById('trimUploadWrap').style.display='block';
   }
 }
 
@@ -2429,37 +2315,8 @@ function onFileSelect(input){
   if(uploadType==='image'){
     const i=document.getElementById('uploadImgPrev');i.src=URL.createObjectURL(selectedFile);i.style.display='block';
   }else{
-    const v=document.getElementById('uploadVidPrev');
-    v.src=URL.createObjectURL(selectedFile);v.style.display='block';
-    v.onloadedmetadata=()=>{
-      // Check shorts 60s limit
-      if((uploadType==='short')&&v.duration>61){
-        showToast('⚠️ Shorts max 60 seconds! Your video: '+Math.round(v.duration)+'s');
-        selectedFile=null;v.src='';v.style.display='none';
-        document.getElementById('fileText').textContent='Tap to select file';
-        return;
-      }
-      // Store duration
-      const m=Math.floor(v.duration/60),s=Math.floor(v.duration%60);
-      window._uploadDuration=`${m}:${s<10?'0'+s:s}`;
-    };
+    const v=document.getElementById('uploadVidPrev');v.src=URL.createObjectURL(selectedFile);v.style.display='block';
   }
-}
-
-async function handleThumbClick(){
-  // Check from Firestore (not just local - security)
-  try{
-    const doc=await db.collection('users').doc(cUser.uid).get();
-    const verified=doc.exists&&doc.data().phoneVerified===true;
-    if(!verified){
-      await openPhoneVerify();
-      return;
-    }
-    cUserData.phoneVerified=true;
-    document.getElementById('thumbVerifyHint').textContent='✅ Verified';
-    document.getElementById('thumbVerifyHint').style.color='#00c864';
-    document.getElementById('thumbFile').click();
-  }catch(e){document.getElementById('thumbFile').click();}
 }
 
 function onThumbSelect(input){
@@ -2514,13 +2371,10 @@ async function doUpload(){
       category:tags.split(',')[0]?.trim()||uploadType,
       tags:tags.split(',').map(t=>t.trim()).filter(Boolean),
       authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
-      authorHandle:cUserData?.channelHandle||cUserData?.handle||'',
-      channelHandle:cUserData?.channelHandle||cUserData?.handle||'',
       authorPhoto:cUserData?.photoURL||'',
       likes:0,likedBy:[],views:0,comments:0,reactions:{},
       rankScore:initialScore,time:Date.now(),
-      bgMusic:selectedSong?selectedSong.name:'',
-      duration:window._uploadDuration||''
+      bgMusic:selectedSong?selectedSong.name:''
     });
     showToast('✅ Uploaded successfully!');
     resetUploadForm();btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';
@@ -2553,8 +2407,6 @@ function resetUploadForm(){
   document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
   document.getElementById('postImgGrid').innerHTML=`<div class="add-img-btn" onclick="document.getElementById('postImgFile').click()"><i class="fas fa-plus"></i><input type="file" id="postImgFile" accept="image/*" multiple onchange="addPostImages(this)"></div>`;
   selectedFile=null;thumbFile=null;postImgFiles=[];selectedSong=null;clearSong();
-  window._uploadDuration='';
-  const trimW=document.getElementById('trimUploadWrap');if(trimW)trimW.style.display='none';
 }
 
 // ══════════════════════════════════════════════════════
@@ -2581,19 +2433,11 @@ async function openPost(id){
     }else if(p.type==='post'){
       vid.style.display='none';wrap.style.display='none';
     }else{
-      if(p.url){
-        vid.src=p.url;
-        vid.load();
-        vid.play().catch(e=>{console.log('Autoplay blocked:',e);});
-      }
+      vid.src=p.url;vid.play().catch(()=>{});
     }
     document.getElementById('playerTitle').textContent=p.title||'Untitled';
     const metaEl=document.getElementById('playerMetaText');
-    const authorHandle=p.channelHandle||p.authorHandle||('@'+(p.authorName||'user').toLowerCase().replace(/\s+/g,''));
-    if(metaEl)metaEl.textContent=`${authorHandle} • ${p.views||0} views • ${getTimeAgo(p.time)} `;
-    const durBadge=document.getElementById('playerDurationBadge');
-    if(durBadge&&p.duration){durBadge.textContent=p.duration;durBadge.style.display='inline';}
-    else if(durBadge)durBadge.style.display='none';
+    if(metaEl)metaEl.textContent=`${p.authorName||''} • ❤️${p.likes||0} • 👁️${p.views||0} • ${getTimeAgo(p.time)} `;
     const hashEl=document.getElementById('playerHashtags');
     if(hashEl)hashEl.textContent=(p.tags||[]).slice(0,3).map(t=>'#'+t).join(' ');
     const liked=cUser&&(p.likedBy||[]).includes(cUser.uid);
@@ -2728,20 +2572,10 @@ async function createShortFromTrim(){
 function toggleFullscreen(){
   const vid=document.getElementById('playerVid');
   if(!vid)return;
-  try{
-    if(vid.requestFullscreen){vid.requestFullscreen().then(()=>{
-      if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});
-    }).catch(()=>{});}
-    else if(vid.webkitRequestFullscreen)vid.webkitRequestFullscreen();
-    else if(vid.webkitEnterFullscreen)vid.webkitEnterFullscreen();
-  }catch(e){}
+  if(vid.requestFullscreen)vid.requestFullscreen();
+  else if(vid.webkitRequestFullscreen)vid.webkitRequestFullscreen();
+  else if(vid.webkitEnterFullscreen)vid.webkitEnterFullscreen();
 }
-// Exit fullscreen restore portrait
-document.addEventListener('fullscreenchange',()=>{
-  if(!document.fullscreenElement){
-    if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('portrait').catch(()=>{});
-  }
-});
 
 let _watchTimer=null, _watchStart=0, _watchPostId=null;
 function startWatchTimer(postId){
@@ -3004,7 +2838,7 @@ async function loadCommentsSheet(postId,sort='top'){
             <button style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">
               <i class="fas fa-thumbs-down"></i>
             </button>
-            <button onclick="replyToComment('${d.authorHandle||d.authorName||'user'}')" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:12px;">Reply</button>
+            <button style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:12px;">Reply</button>
           </div>
         </div>
       </div>`;
@@ -3026,14 +2860,6 @@ async function likeComment(postId,commentId,btn){
       btn.innerHTML=`<i class="fas fa-thumbs-up" style="color:var(--red)"></i> ${(d.likes||0)+1}`;
     }
   }catch(e){}
-}
-
-function replyToComment(username){
-  const input=document.getElementById('commInput');
-  if(!input)return;
-  input.value='@'+username+' ';
-  input.focus();
-  showToast('Replying to @'+username);
 }
 
 function showCommentMenu(commentId,isOwn){
@@ -3702,99 +3528,6 @@ function closeDescSheet(){
 }
 
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-
-// ══ PHONE OTP VERIFICATION ══
-let _recaptchaVerifier=null, _confirmResult=null;
-
-function checkPhoneVerified(){
-  return cUserData?.phoneVerified===true;
-}
-
-async function openPhoneVerify(){
-  // Check if already verified from Firestore
-  const doc=await db.collection('users').doc(cUser.uid).get();
-  if(doc.exists&&doc.data().phoneVerified){
-    cUserData.phoneVerified=true;
-    return true;
-  }
-  document.getElementById('phoneModal').classList.add('open');
-  // Check if already verified
-  if(cUserData?.phoneVerified){
-    document.getElementById('phoneStep1').style.display='none';
-    document.getElementById('phoneStep2').style.display='none';
-    document.getElementById('phoneVerifiedMsg').style.display='block';
-  }else{
-    document.getElementById('phoneStep1').style.display='block';
-    document.getElementById('phoneStep2').style.display='none';
-    document.getElementById('phoneVerifiedMsg').style.display='none';
-  }
-  // Setup recaptcha
-  if(!_recaptchaVerifier){
-    try{
-      _recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container',{
-        'size':'invisible','callback':()=>{}
-      });
-      await _recaptchaVerifier.render();
-    }catch(e){console.log('Recaptcha:',e);}
-  }
-  return false;
-}
-
-async function sendPhoneOTP(){
-  const phone=document.getElementById('phoneInput').value.trim();
-  if(!phone||phone.length<10)return document.getElementById('phoneErr').textContent='Enter valid phone number';
-  const btn=document.getElementById('sendOtpBtn');
-  btn.disabled=true;btn.textContent='Sending...';
-  document.getElementById('phoneErr').textContent='';
-  try{
-    if(!_recaptchaVerifier){
-      _recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container',{'size':'invisible','callback':()=>{}});
-      await _recaptchaVerifier.render();
-    }
-    _confirmResult=await auth.signInWithPhoneNumber(phone,_recaptchaVerifier);
-    document.getElementById('phoneStep1').style.display='none';
-    document.getElementById('phoneStep2').style.display='block';
-    document.getElementById('otpSentMsg').textContent='OTP sent to '+phone;
-    showToast('OTP sent! ✅');
-  }catch(e){
-    console.error(e);
-    document.getElementById('phoneErr').textContent=e.message||'Failed to send OTP';
-    btn.disabled=false;btn.textContent='Send OTP';
-    if(_recaptchaVerifier){try{_recaptchaVerifier.clear();}catch(err){}  _recaptchaVerifier=null;}
-  }
-}
-
-async function verifyPhoneOTP(){
-  const code=document.getElementById('otpInput').value.trim();
-  if(!code||code.length!==6)return document.getElementById('phoneErr').textContent='Enter 6-digit OTP';
-  const btn=document.getElementById('verifyOtpBtn');
-  btn.disabled=true;btn.textContent='Verifying...';
-  try{
-    await _confirmResult.confirm(code);
-    // Save to Firestore
-    const phone=document.getElementById('phoneInput').value.trim();
-    await db.collection('users').doc(cUser.uid).update({
-      phoneVerified:true,phoneNumber:phone
-    });
-    cUserData.phoneVerified=true;
-    document.getElementById('phoneStep2').style.display='none';
-    document.getElementById('phoneVerifiedMsg').style.display='block';
-    showToast('Phone verified! 🎉');
-    setTimeout(()=>closeModal('phoneModal'),2000);
-    // Now allow thumbnail
-    document.getElementById('thumbBoxWrap').style.display='block';
-  }catch(e){
-    document.getElementById('phoneErr').textContent='Wrong OTP. Try again.';
-    btn.disabled=false;btn.textContent='Verify & Unlock';
-  }
-}
-
-async function resendOTP(){
-  _confirmResult=null;
-  if(_recaptchaVerifier){try{_recaptchaVerifier.clear();}catch(e){}_recaptchaVerifier=null;}
-  document.getElementById('phoneStep1').style.display='block';
-  document.getElementById('phoneStep2').style.display='none';
-}
 function closeModalOut(e,id){if(e.target===document.getElementById(id))closeModal(id);}
 
 // ══ SIDE MENU ══
@@ -3972,27 +3705,7 @@ async function loadTopContent(){
       </div>`;
     }).join('')||'<div style="color:var(--text3);font-size:12px;">No content yet</div>';
   }catch(e){}
-} <script>
-// VIDEO CHALANE WALA JUGAAD
-function loadFeed() {
-    const feedContainer = document.getElementById('mainFeed') || document.body; 
-    db.collection('posts').orderBy('createdAt', 'desc').onSnapshot(snap => {
-        let html = '';
-        snap.forEach(doc => {
-            const data = doc.data();
-            html += `
-                <div style="margin-bottom:20px; background:#111; border-radius:15px; overflow:hidden;">
-                    <video src="${data.videoUrl}" controls style="width:100%; max-height:400px;"></video>
-                    <div style="padding:12px;">
-                        <h3 style="color:#fff; font-size:16px; margin:0;">${data.title || 'Untitled'}</h3>
-                    </div>
-                </div>`;
-        });
-        feedContainer.innerHTML = html;
-    });
 }
-// Ise chalu karne ke liye
-setTimeout(loadFeed, 2000);
 </script>
 </body>
 </html>
