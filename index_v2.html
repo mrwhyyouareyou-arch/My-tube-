@@ -452,29 +452,6 @@ button,input,textarea{font-family:var(--font);}
 
 
 
-
-/* REELS - TikTok/YT Shorts style */
-.reel-item{height:100vh;width:100%;scroll-snap-align:start;position:relative;overflow:hidden;background:#000;flex-shrink:0;}
-.reel-item video{width:100%;height:100%;object-fit:cover;display:block;}
-.reel-item .reel-overlay{position:absolute;inset:0;pointer-events:none;}
-.reel-acts{position:absolute;right:12px;bottom:100px;display:flex;flex-direction:column;gap:18px;align-items:center;z-index:5;pointer-events:all;}
-.reel-act{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:white;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.reel-act i{font-size:28px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));}
-.reel-act span{font-size:12px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.8);}
-.reel-info{position:absolute;bottom:60px;left:12px;right:80px;z-index:5;pointer-events:all;}
-.reel-ch-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.reel-av{width:36px;height:36px;border-radius:50%;background:var(--red);overflow:hidden;border:2px solid white;flex-shrink:0;}
-.reel-av img{width:100%;height:100%;object-fit:cover;}
-.reel-ch-name{font-size:14px;font-weight:700;color:white;text-shadow:0 1px 4px rgba(0,0,0,.8);}
-.reel-sub-btn{background:white;color:#000;border:none;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;margin-left:4px;}
-.reel-sub-btn.subscribed{background:rgba(255,255,255,.3);color:white;border:1px solid rgba(255,255,255,.6);}
-.reel-title{font-size:13px;color:rgba(255,255,255,.95);line-height:1.5;text-shadow:0 1px 3px rgba(0,0,0,.8);}
-.reel-music{font-size:11px;color:rgba(255,255,255,.7);margin-top:4px;}
-.reel-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.2);z-index:5;}
-.reel-prog-fill{height:100%;background:var(--red);width:0%;transition:none;}
-.reel-mute-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.5);border-radius:50%;width:60px;height:60px;display:flex;align-items:center;justify-content:center;color:white;font-size:24px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:6;}
-#reelsContainer::-webkit-scrollbar{display:none;}
-
 /* CHANNEL PAGE */
 .channel-page{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;}
 .channel-page.open{display:flex;}
@@ -1168,11 +1145,7 @@ button,input,textarea{font-family:var(--font);}
   </div>
   <div class="player-info">
     <div class="player-title" id="playerTitle">Loading...</div>
-    <div class="player-meta" id="playerMeta" style="cursor:pointer;" onclick="openDescSheet()">
-      <span id="playerMetaText"></span>
-      <span id="playerHashtags" style="color:var(--red);"></span>
-      <span style="color:var(--red);font-size:11px;margin-left:4px;">...more</span>
-    </div>
+    <div class="player-meta" id="playerMeta"></div>
   </div>
   <div class="player-acts">
     <button class="pl-act" id="likeBtn" onclick="toggleLike()"><i class="fas fa-thumbs-up"></i><span id="likeCount">0</span></button>
@@ -1201,31 +1174,40 @@ button,input,textarea{font-family:var(--font);}
     <div id="relatedList"></div>
   </div>
 
-  <!-- Comments section - YouTube style -->
-  <div style="padding:0 14px;margin-bottom:16px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;cursor:pointer;" onclick="openCommentsSheet()">
-      <div class="comm-title" id="commTitle" style="font-size:15px;font-weight:700;">Comments</div>
-      <i class="fas fa-chevron-up" style="color:var(--text2);font-size:14px;"></i>
+  <div class="comm-sec">
+    <div class="comm-title" id="commTitle">Comments</div>
+    <div class="comm-input-row">
+      <div class="comm-av" id="myCommAv">?</div>
+      <input class="comm-input" id="commInput" placeholder="Add a comment...">
+      <button class="comm-send" onclick="postComment()"><i class="fas fa-paper-plane"></i></button>
     </div>
-    <!-- Preview top comment -->
-    <div id="commPreview" style="padding:10px;background:var(--bg3);border-radius:10px;cursor:pointer;" onclick="openCommentsSheet()">
-      <div style="font-size:12px;color:var(--text2);">Tap to view all comments</div>
-    </div>
+    <div id="commList"></div>
   </div>
 </div>
 
-<!-- ═══ FULLSCREEN REELS (TikTok/YT Shorts style) ═══ -->
+<!-- ═══ FULLSCREEN SHORT ═══ -->
 <div class="sf" id="shortFS">
-  <div style="position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:12px 14px;">
-    <button class="sf-close" style="position:relative;top:0;left:0;" onclick="closeShortFS()"><i class="fas fa-times"></i></button>
-    <div style="display:flex;gap:8px;">
-      <div class="sf-filter-chip" id="sfAll" onclick="sfFilterSet('all',this)" style="background:white;color:#000;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;">All</div>
-      <div class="sf-filter-chip" onclick="sfFilterSet('subs',this)" style="background:rgba(255,255,255,.2);color:white;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;">Subscriptions</div>
-      <div class="sf-filter-chip" onclick="sfFilterSet('trending',this)" style="background:rgba(255,255,255,.2);color:white;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;">Trending</div>
+  <div class="sf-wrap" id="sfWrap">
+    <button class="sf-close" onclick="closeShortFS()"><i class="fas fa-times"></i></button>
+    <video id="sfVid" loop playsinline></video>
+    <div class="sf-nav">
+      <button onclick="prevShort()"><i class="fas fa-chevron-left"></i></button>
+      <button onclick="nextShort()"><i class="fas fa-chevron-right"></i></button>
     </div>
-  </div>
-  <!-- Vertical scroll container -->
-  <div id="reelsContainer" style="height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
+    <div class="sf-acts">
+      <button class="sf-act" id="sfLikeBtn" onclick="sfLike()"><i class="fas fa-heart"></i><span id="sfLikeCount">0</span></button>
+      <button class="sf-act" onclick="sfCommentOpen()"><i class="fas fa-comment"></i><span>Comment</span></button>
+      <button class="sf-act" onclick="sfShare()"><i class="fas fa-share"></i><span>Share</span></button>
+    </div>
+    <div class="sf-info">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <div class="sf-ch" id="sfCh" style="flex:1;"></div>
+        <button id="sfSubBtn" onclick="sfSubscribe()" style="background:white;color:#000;border:none;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;">Subscribe</button>
+      </div>
+      <div class="sf-ttl2" id="sfTtl"></div>
+      <div id="sfMusic" style="font-size:11px;color:rgba(255,255,255,.7);margin-top:3px;display:none;"><i class="fas fa-music" style="margin-right:4px;"></i><span id="sfMusicName"></span></div>
+    </div>
+    <div class="sf-progress"><div class="sf-prog-fill" id="sfProgFill"></div></div>
   </div>
 </div>
 
@@ -1318,48 +1300,6 @@ button,input,textarea{font-family:var(--font);}
       <button onclick="closeReportModal()" style="flex:1;padding:11px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;cursor:pointer;font-size:14px;">Cancel</button>
       <button onclick="submitReport()" style="flex:2;padding:11px;background:var(--red);color:white;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;">Submit Report</button>
     </div>
-  </div>
-</div>
-
-
-
-<!-- DESCRIPTION SHEET (YouTube style) -->
-<div id="descSheetOverlay" style="position:fixed;inset:0;z-index:350;background:rgba(0,0,0,.6);display:none;" onclick="closeDescSheet()"></div>
-<div id="descSheet" style="position:fixed;bottom:0;left:0;right:0;z-index:351;background:var(--bg2);border-radius:20px 20px 0 0;max-height:80vh;display:none;flex-direction:column;transform:translateY(100%);transition:transform .3s ease;overflow-y:auto;padding:20px 16px;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-    <div style="font-size:16px;font-weight:700;">Description</div>
-    <i class="fas fa-times" style="font-size:18px;cursor:pointer;" onclick="closeDescSheet()"></i>
-  </div>
-  <div id="descSheetContent"></div>
-</div>
-
-<!-- COMMENTS BOTTOM SHEET (YouTube style) -->
-<div id="commSheetOverlay" style="position:fixed;inset:0;z-index:350;background:rgba(0,0,0,.6);display:none;" onclick="closeCommentsSheet()"></div>
-<div id="commSheet" style="position:fixed;bottom:0;left:0;right:0;z-index:351;background:var(--bg2);border-radius:20px 20px 0 0;height:80vh;display:none;flex-direction:column;transform:translateY(100%);transition:transform .3s ease;">
-  <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
-    <div style="font-size:16px;font-weight:700;" id="commSheetTitle">Comments</div>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <i class="fas fa-info-circle" style="color:var(--text2);font-size:16px;cursor:pointer;" onclick="showToast('Be respectful in comments')"></i>
-      <i class="fas fa-times" style="color:var(--text);font-size:18px;cursor:pointer;" onclick="closeCommentsSheet()"></i>
-    </div>
-  </div>
-  <!-- Sort tabs -->
-  <div style="display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);flex-shrink:0;">
-    <button id="commSortTop" onclick="sortComments('top',this)" style="padding:7px 18px;border-radius:20px;background:var(--text);color:var(--bg);border:none;font-size:13px;font-weight:700;cursor:pointer;">Top</button>
-    <button id="commSortNew" onclick="sortComments('new',this)" style="padding:7px 18px;border-radius:20px;background:var(--bg3);color:var(--text);border:1px solid var(--border);font-size:13px;cursor:pointer;">Newest</button>
-  </div>
-  <!-- Community guidelines -->
-  <div style="padding:10px 16px;background:rgba(0,0,0,.04);font-size:11px;color:var(--text2);flex-shrink:0;border-bottom:1px solid var(--border);">
-    <i class="fas fa-shield-alt" style="color:var(--red);margin-right:4px;"></i>
-    Remember to keep comments respectful. <span style="color:var(--red);cursor:pointer;" onclick="showScreen('copyright')">Community Guidelines</span>
-  </div>
-  <!-- Comments list -->
-  <div id="commSheetList" style="flex:1;overflow-y:auto;padding:0 16px;"></div>
-  <!-- Input -->
-  <div style="padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-shrink:0;background:var(--bg2);">
-    <div class="comm-av" id="myCommAv" style="flex-shrink:0;">?</div>
-    <input class="comm-input" id="commInput" placeholder="Add a comment..." style="flex:1;">
-    <button class="comm-send" onclick="postComment()"><i class="fas fa-paper-plane"></i></button>
   </div>
 </div>
 
@@ -1597,7 +1537,6 @@ auth.onAuthStateChanged(async user=>{
     document.getElementById('authScreen').style.display='none';
     document.getElementById('mainApp').style.display='block';
     await loadUserData();
-    await autoCreateChannel(); // Auto create channel on login
     updateHeaderAv();
     setupOwnerNav();
     loadHome();
@@ -1677,32 +1616,6 @@ function fErr(c){
 // ══════════════════════════════════════════════════════
 // USER DATA
 // ══════════════════════════════════════════════════════
-// Auto-create channel linked to email (YouTube style)
-async function autoCreateChannel(){
-  if(!cUser)return;
-  try{
-    const userDoc=await db.collection('users').doc(cUser.uid).get();
-    if(!userDoc.exists)return;
-    const userData=userDoc.data();
-    // Already has channel
-    if(userData.hasChannel&&userData.channelName)return;
-    // Auto create with user's name/email
-    const chName=userData.name||cUser.displayName||cUser.email.split('@')[0];
-    const chHandle='@'+chName.toLowerCase().replace(/[^a-z0-9]/g,'').substring(0,20);
-    await db.collection('channels').doc(cUser.uid).set({
-      name:chName,handle:chHandle,about:'',
-      ownerEmail:cUser.email,ownerUid:cUser.uid,
-      ownerPhoto:userData.photoURL||'',
-      subscribers:0,videos:0,isLive:false,
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    },{merge:true});
-    await db.collection('users').doc(cUser.uid).update({
-      channelName:chName,channelHandle:chHandle,hasChannel:true
-    });
-    cUserData={...cUserData,channelName:chName,channelHandle:chHandle,hasChannel:true};
-  }catch(e){console.error('Channel auto-create:',e);}
-}
-
 async function loadUserData(){
   if(!cUser)return;
   try{
@@ -2070,214 +1983,113 @@ async function loadShorts(){
   }catch(e){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-circle"></i><p>Error loading shorts</p></div>';}
 }
 
-// ══════════════════════════════════════════════════
-// REAL VERTICAL REELS - IntersectionObserver
-// TikTok/YouTube Shorts - ONE video at a time
-// ══════════════════════════════════════════════════
-let reelsObserver=null,reelsMuted=true;
-
 function openShortFS(idx){
   sfCurrentIdx=idx;
   document.getElementById('shortFS').classList.add('open');
-  document.body.style.overflow='hidden';
-  buildReelsContainer(sfPosts,idx);
+  playShortAt(idx);
 }
 
-function buildReelsContainer(posts,startIdx=0){
-  const container=document.getElementById('reelsContainer');
-  if(!container)return;
-  // Cleanup
-  if(reelsObserver){reelsObserver.disconnect();reelsObserver=null;}
-  container.querySelectorAll('video').forEach(v=>{v.pause();v.src='';});
-  container.innerHTML='';
-  posts.forEach((p,i)=>{
-    const item=document.createElement('div');
-    item.className='reel-item';
-    item.dataset.idx=i;item.dataset.id=p.id;
-    const avHtml=p.authorPhoto?`<img src="${p.authorPhoto}">`:(p.authorName||'U')[0].toUpperCase();
-    item.innerHTML=`
-      <video preload="${i===startIdx?'auto':'none'}" loop playsinline muted
-        style="width:100%;height:100%;object-fit:cover;display:block;cursor:pointer;position:absolute;inset:0;">
-      </video>
-      <div class="reel-mute-overlay" id="reel_mute_${i}"><i class="fas fa-volume-mute"></i></div>
-      <div class="reel-acts">
-        <button class="reel-act" id="rlLike_${i}" onclick="reelLike('${p.id}',${i},event)">
-          <i class="fas fa-thumbs-up" id="rlLikeIcon_${i}" style="${cUser&&(p.likedBy||[]).includes(cUser.uid)?'color:#4fc3f7':''}"></i>
-          <span id="rlLikeCount_${i}">${p.likes||0}</span>
-        </button>
-        <button class="reel-act" onclick="openPost('${p.id}');closeShortFS()">
-          <i class="fas fa-comment"></i>
-          <span>${p.comments||0}</span>
-        </button>
-        <button class="reel-act" onclick="reelShare('${p.id}','${(p.title||'').replace(/['"]/g,'').substring(0,30)}','${p.url||''}')">
-          <i class="fas fa-share"></i><span>Share</span>
-        </button>
-        <button class="reel-act" onclick="reelToggleMute(${i})">
-          <i class="fas fa-volume-mute" id="rlMuteIcon_${i}"></i><span>Sound</span>
-        </button>
-      </div>
-      <div class="reel-info">
-        <div class="reel-ch-row">
-          <div class="reel-av" onclick="openChannelPage('${p.authorId||''}',event)">${avHtml}</div>
-          <div class="reel-ch-name">${p.authorName||'Unknown'}</div>
-          ${p.authorId&&p.authorId!==cUser?.uid?`<button class="reel-sub-btn" id="rlSub_${i}" onclick="reelSubscribe('${p.authorId}','${(p.authorName||'').replace(/'/g,'')}',${i})">Subscribe</button>`:''}
-        </div>
-        <div class="reel-title">${p.title||''}${p.bgMusic?`<div class="reel-music"><i class="fas fa-music"></i> ${p.bgMusic}</div>`:''}</div>
-      </div>
-      <div class="reel-progress"><div class="reel-prog-fill" id="rlProg_${i}"></div></div>`;
-    container.appendChild(item);
-    // Set src after append
-    const vid=item.querySelector('video');
-    if(vid)vid.src=p.url||'';
-  });
-  // IntersectionObserver - one plays at a time
-  reelsObserver=new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      const vid=entry.target.querySelector('video');
-      const idx=parseInt(entry.target.dataset.idx);
-      const id=entry.target.dataset.id;
-      if(!vid)return;
-      if(entry.isIntersecting&&entry.intersectionRatio>=0.5){
-        // Pause ALL other videos first
-        container.querySelectorAll('video').forEach(v=>{if(v!==vid){v.pause();}});
-        // Reset all progress bars
-        container.querySelectorAll('.reel-prog-fill').forEach(pf=>{pf.style.transition='none';pf.style.width='0%';});
-        // Play this one
-        vid.muted=reelsMuted;
-        vid.play().catch(()=>{});
-        sfCurrentIdx=idx;sfCurrentId=id;
-        // Progress bar
-        const pf=document.getElementById('rlProg_'+idx);
-        if(pf){setTimeout(()=>{pf.style.transition='width 30s linear';pf.style.width='100%';},50);}
-        // Preload next
-        const nextItem=container.querySelectorAll('.reel-item')[idx+1];
-        if(nextItem){const nv=nextItem.querySelector('video');if(nv&&!nv.src)nv.src=posts[idx+1]?.url||'';}
-        // Check sub status
-        if(posts[idx]?.authorId&&cUser&&posts[idx].authorId!==cUser.uid){
-          db.collection('subscriptions').doc(`${cUser.uid}_${posts[idx].authorId}`).get().then(d=>{
-            const sbtn=document.getElementById('rlSub_'+idx);
-            if(sbtn){if(d.exists){sbtn.textContent='Subscribed';sbtn.classList.add('subscribed');}else{sbtn.textContent='Subscribe';sbtn.classList.remove('subscribed');}}
-          }).catch(()=>{});
-        }
-        // View tracking (once per session)
-        const vk='reel_viewed_'+id;
-        if(!sessionStorage.getItem(vk)){
-          sessionStorage.setItem(vk,'1');
-          db.collection('posts').doc(id).update({views:firebase.firestore.FieldValue.increment(1),rankScore:firebase.firestore.FieldValue.increment(2)}).catch(()=>{});
-        }
-        updateUserPrefs(posts[idx]);
-      }else{
-        vid.pause();
-        const pf=document.getElementById('rlProg_'+idx);
-        if(pf){pf.style.transition='none';pf.style.width='0%';}
+function playShortAt(idx){
+  if(idx<0||idx>=sfPosts.length)return;
+  sfCurrentIdx=idx;sfCurrentId=sfPosts[idx].id;
+  const p=sfPosts[idx];
+  const vid=document.getElementById('sfVid');
+  vid.src=p.url;vid.play().catch(()=>{});
+  document.getElementById('sfTtl').textContent=p.title||'';
+  document.getElementById('sfCh').textContent=p.authorName||'';
+  document.getElementById('sfLikeCount').textContent=p.likes||0;
+  const liked=cUser&&(p.likedBy||[]).includes(cUser.uid);
+  document.getElementById('sfLikeBtn').style.color=liked?'#ff4d4d':'white';
+  // Progress bar animation
+  const pf=document.getElementById('sfProgFill');
+  pf.style.width='0%';
+  setTimeout(()=>{pf.style.transition='width 6s linear';pf.style.width='100%';},100);
+  db.collection('posts').doc(p.id).update({views:firebase.firestore.FieldValue.increment(1),rankScore:firebase.firestore.FieldValue.increment(2)}).catch(()=>{});
+  updateUserPrefs(p);
+  // Check subscribe status
+  if(p.authorId&&cUser&&p.authorId!==cUser.uid){
+    db.collection('subscriptions').doc(`${cUser.uid}_${p.authorId}`).get().then(d=>{
+      const btn=document.getElementById('sfSubBtn');
+      if(btn){
+        if(d.exists){btn.textContent='Subscribed';btn.style.background='rgba(255,255,255,.2)';btn.style.color='white';}
+        else{btn.textContent='Subscribe';btn.style.background='white';btn.style.color='#000';}
+        btn.style.display='block';
       }
-    });
-  },{threshold:[0.5],root:container});
-  container.querySelectorAll('.reel-item').forEach(item=>reelsObserver.observe(item));
-  // Scroll to start
-  setTimeout(()=>{
-    const items=container.querySelectorAll('.reel-item');
-    if(items[startIdx])items[startIdx].scrollIntoView({behavior:'instant'});
-  },100);
-}
-
-function reelToggleMute(idx){
-  reelsMuted=!reelsMuted;
-  const container=document.getElementById('reelsContainer');
-  container.querySelectorAll('video').forEach(v=>v.muted=reelsMuted);
-  const overlay=document.getElementById('reel_mute_'+idx);
-  if(overlay){
-    overlay.innerHTML=reelsMuted?'<i class="fas fa-volume-mute"></i>':'<i class="fas fa-volume-up"></i>';
-    overlay.style.opacity='1';setTimeout(()=>overlay.style.opacity='0',900);
+    }).catch(()=>{});
+  }else{
+    const btn=document.getElementById('sfSubBtn');if(btn)btn.style.display='none';
   }
-  document.querySelectorAll('[id^="rlMuteIcon_"]').forEach(el=>{
-    el.className=reelsMuted?'fas fa-volume-mute':'fas fa-volume-up';
-  });
+  // Show bg music if available
+  const sfMusicEl=document.getElementById('sfMusic');
+  const sfMusicName=document.getElementById('sfMusicName');
+  if(p.bgMusic&&sfMusicEl&&sfMusicName){sfMusicEl.style.display='block';sfMusicName.textContent=p.bgMusic;}
+  else if(sfMusicEl){sfMusicEl.style.display='none';}
 }
 
-async function reelLike(postId,idx,e){
-  if(e)e.stopPropagation();
-  if(!cUser)return showToast('Login karein!');
-  if(_liking['r'+idx])return;_liking['r'+idx]=true;setTimeout(()=>delete _liking['r'+idx],1500);
+function closeShortFS(){document.getElementById('shortFS').classList.remove('open');const v=document.getElementById('sfVid');v.pause();v.src='';}
+function prevShort(){if(sfCurrentIdx>0)playShortAt(sfCurrentIdx-1);}
+function nextShort(){if(sfCurrentIdx<sfPosts.length-1)playShortAt(sfCurrentIdx+1);}
+
+// Touch swipe for shorts
+(function(){
+  let ts=0,ty=0;
+  const el=document.getElementById('shortFS')||document.body;
+  document.addEventListener('touchstart',e=>{if(!document.getElementById('shortFS').classList.contains('open'))return;ts=e.touches[0].clientY;ty=e.touches[0].clientX;},{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(!document.getElementById('shortFS').classList.contains('open'))return;
+    const dy=ts-e.changedTouches[0].clientY;
+    const dx=ty-e.changedTouches[0].clientX;
+    if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>50){
+      if(dy>0)nextShort();else prevShort();
+    }
+  },{passive:true});
+})();
+
+async function sfLike(){
+  if(!cUser||!sfCurrentId)return;
   try{
-    const ref=db.collection('posts').doc(postId);
+    const ref=db.collection('posts').doc(sfCurrentId);
     const doc=await ref.get();const p=doc.data();
     const liked=(p.likedBy||[]).includes(cUser.uid);
-    const icon=document.getElementById('rlLikeIcon_'+idx);
-    const cnt=document.getElementById('rlLikeCount_'+idx);
     if(liked){
-      await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
-      if(icon)icon.style.color='white';
-      if(cnt)cnt.textContent=Math.max(0,(p.likes||1)-1);
+      await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid),rankScore:firebase.firestore.FieldValue.increment(-10)});
+      document.getElementById('sfLikeCount').textContent=Math.max(0,(p.likes||1)-1);
+      document.getElementById('sfLikeBtn').style.color='white';
     }else{
       await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid),rankScore:firebase.firestore.FieldValue.increment(10)});
-      if(icon)icon.style.color='#4fc3f7';
-      if(cnt)cnt.textContent=(p.likes||0)+1;
-      sendNotif(p.authorId,'like',`${cUserData?.name||'Someone'} liked your reel`,postId);
+      document.getElementById('sfLikeCount').textContent=(p.likes||0)+1;
+      document.getElementById('sfLikeBtn').style.color='#ff4d4d';
     }
+    sfPosts[sfCurrentIdx]={...sfPosts[sfCurrentIdx]};
   }catch(e){}
 }
 
-async function reelSubscribe(authorId,authorName,idx){
+function sfCommentOpen(){openPost(sfCurrentId);closeShortFS();}
+
+async function sfSubscribe(){
   if(!cUser)return showToast('Login karein!');
+  const p=sfPosts[sfCurrentIdx];if(!p)return;
+  const authorId=p.authorId;if(!authorId||authorId===cUser.uid)return;
   const sid=`${cUser.uid}_${authorId}`;
   const ref=db.collection('subscriptions').doc(sid);
-  const btn=document.getElementById('rlSub_'+idx);
+  const btn=document.getElementById('sfSubBtn');
   try{
     const doc=await ref.get();
     if(doc.exists){
       await ref.delete();
       await db.collection('users').doc(authorId).update({subscribers:firebase.firestore.FieldValue.increment(-1)});
-      if(btn){btn.textContent='Subscribe';btn.classList.remove('subscribed');}showToast('Unsubscribed');
+      if(btn){btn.textContent='Subscribe';btn.style.background='white';btn.style.color='#000';}
+      showToast('Unsubscribed');
     }else{
       await ref.set({from:cUser.uid,to:authorId,time:Date.now()});
       await db.collection('users').doc(authorId).update({subscribers:firebase.firestore.FieldValue.increment(1)});
-      if(btn){btn.textContent='Subscribed';btn.classList.add('subscribed');}showToast('Subscribed! ✅');
+      if(btn){btn.textContent='Subscribed';btn.style.background='rgba(255,255,255,.2)';btn.style.color='white';}
+      showToast('Subscribed! ✅');
       sendNotif(authorId,'sub',`${cUserData?.name||'Someone'} subscribed to your channel!`,null);
     }
-  }catch(e){showToast('Error');}
+  }catch(e){}
 }
-
-function reelShare(id,title,url){
-  if(navigator.share){navigator.share({title:title||'MyTube Reel',url:url||location.href}).catch(()=>copyFallback(url));}
-  else showShareMenu(url||location.href,title||'Reel','Watch this reel on MyTube!');
-}
-
-function closeShortFS(){
-  if(reelsObserver){reelsObserver.disconnect();reelsObserver=null;}
-  const container=document.getElementById('reelsContainer');
-  if(container){container.querySelectorAll('video').forEach(v=>{v.pause();v.src='';});container.innerHTML='';}
-  document.getElementById('shortFS').classList.remove('open');
-  document.body.style.overflow='';
-}
-function prevShort(){
-  const items=document.querySelectorAll('#reelsContainer .reel-item');
-  if(sfCurrentIdx>0)items[sfCurrentIdx-1]?.scrollIntoView({behavior:'smooth'});
-}
-function nextShort(){
-  const items=document.querySelectorAll('#reelsContainer .reel-item');
-  if(sfCurrentIdx<items.length-1)items[sfCurrentIdx+1]?.scrollIntoView({behavior:'smooth'});
-}
-
-async function sfFilterSet(filter,btn){
-  document.querySelectorAll('.sf-filter-chip').forEach(c=>{c.style.background='rgba(255,255,255,.2)';c.style.color='white';});
-  if(btn){btn.style.background='white';btn.style.color='#000';}
-  let posts=[...allSfPosts];
-  if(filter==='trending')posts=[...posts].sort((a,b)=>(b.likes||0)-(a.likes||0));
-  else if(filter==='subs'&&cUser){
-    try{
-      const snap=await db.collection('subscriptions').where('from','==',cUser.uid).get();
-      const aids=snap.docs.map(d=>d.data().to);
-      posts=posts.filter(p=>aids.includes(p.authorId));
-    }catch(e){}
-  }
-  sfPosts=[...posts];
-  buildReelsContainer(sfPosts,0);
-}
-
-
-
-
+function sfShare(){navigator.clipboard.writeText(sfPosts[sfCurrentIdx]?.url||'').then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));}
 
 // ══════════════════════════════════════════════════════
 // UPLOAD
@@ -2436,10 +2248,7 @@ async function openPost(id){
       vid.src=p.url;vid.play().catch(()=>{});
     }
     document.getElementById('playerTitle').textContent=p.title||'Untitled';
-    const metaEl=document.getElementById('playerMetaText');
-    if(metaEl)metaEl.textContent=`${p.authorName||''} • ❤️${p.likes||0} • 👁️${p.views||0} • ${getTimeAgo(p.time)} `;
-    const hashEl=document.getElementById('playerHashtags');
-    if(hashEl)hashEl.textContent=(p.tags||[]).slice(0,3).map(t=>'#'+t).join(' ');
+    document.getElementById('playerMeta').textContent=`❤️${p.likes||0} • 👁️${p.views||0} • ${getTimeAgo(p.time)}`;
     const liked=cUser&&(p.likedBy||[]).includes(cUser.uid);
     document.getElementById('likeBtn').classList.toggle('liked',liked);
     document.getElementById('likeCount').textContent=p.likes||0;
@@ -2458,19 +2267,9 @@ async function openPost(id){
         sb.style.display=p.authorId===cUser.uid?'none':'block';
       });
     }
-    // View tracking - once per session per post
-    const viewKey = 'viewed_'+id;
-    if(!sessionStorage.getItem(viewKey)){
-      sessionStorage.setItem(viewKey,'1');
-      db.collection('posts').doc(id).update({
-        views:firebase.firestore.FieldValue.increment(1),
-        rankScore:firebase.firestore.FieldValue.increment(2)
-      }).catch(()=>{});
-    }
+    db.collection('posts').doc(id).update({views:firebase.firestore.FieldValue.increment(1),rankScore:firebase.firestore.FieldValue.increment(2)}).catch(()=>{});
     loadComments(id);
     loadRelated(id, p.type, p.category||p.type);
-    // Start watch time tracker
-    startWatchTimer(id);
   }catch(e){console.error(e);showToast('Error loading');}
 }
 
@@ -2500,14 +2299,7 @@ function closeCtxMenu(){
   document.getElementById('ctxMenu').classList.remove('open');
 }
 function ctxSave(){closeCtxMenu();showToast('Saved to Watch Later ✅');}
-function ctxShare(){
-  closeCtxMenu();
-  if(ctxPostUrl){
-    const title=document.getElementById('ctxTitle')?.textContent||'MyTube Video';
-    if(navigator.share){navigator.share({title,url:ctxPostUrl}).catch(()=>showShareMenu(ctxPostUrl,title,''));}
-    else showShareMenu(ctxPostUrl,title,'');
-  }
-}
+function ctxShare(){closeCtxMenu();if(ctxPostUrl){navigator.clipboard.writeText(ctxPostUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Share link copied!'));}}
 function ctxDownload(){
   closeCtxMenu();
   if(!ctxPostUrl)return showToast('No downloadable content');
@@ -2577,35 +2369,7 @@ function toggleFullscreen(){
   else if(vid.webkitEnterFullscreen)vid.webkitEnterFullscreen();
 }
 
-let _watchTimer=null, _watchStart=0, _watchPostId=null;
-function startWatchTimer(postId){
-  stopWatchTimer();
-  _watchPostId=postId;
-  _watchStart=Date.now();
-  _watchTimer=setInterval(()=>{
-    const secs=Math.floor((Date.now()-_watchStart)/1000);
-    if(secs>0&&_watchPostId){
-      db.collection('posts').doc(_watchPostId).update({
-        watchTime:firebase.firestore.FieldValue.increment(5)
-      }).catch(()=>{});
-      _watchStart=Date.now();
-    }
-  },5000);
-}
-function stopWatchTimer(){
-  if(_watchTimer){clearInterval(_watchTimer);_watchTimer=null;}
-  if(_watchPostId&&_watchStart){
-    const secs=Math.floor((Date.now()-_watchStart)/1000);
-    if(secs>1){
-      db.collection('posts').doc(_watchPostId).update({
-        watchTime:firebase.firestore.FieldValue.increment(secs)
-      }).catch(()=>{});
-    }
-    _watchPostId=null;_watchStart=0;
-  }
-}
 function closePlayer(){
-  stopWatchTimer();
   document.getElementById('playerScreen').classList.remove('open');
   const v=document.getElementById('playerVid');v.pause();v.src='';
   const wrap=document.getElementById('playerVidWrap');
@@ -2692,56 +2456,7 @@ async function toggleSubscribe(){
   }catch(e){showToast('Error');}
 }
 
-function shareVideo(){
-  if(!currentPostData)return;
-  const url=currentPostData.url||location.href;
-  const title=currentPostData.title||'Watch on MyTube';
-  const text=`${title} - Watch on MyTube Pakistan 🇵🇰`;
-  if(navigator.share){
-    navigator.share({title,text,url}).catch(()=>copyFallback(url));
-  }else{
-    showShareMenu(url,title,text);
-  }
-}
-
-function showShareMenu(url,title,text){
-  const enc=encodeURIComponent(url);
-  const etxt=encodeURIComponent(text);
-  const sheet=document.createElement('div');
-  sheet.style.cssText='position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;';
-  sheet.innerHTML=`<div style="width:100%;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px;">
-    <div style="font-size:15px;font-weight:700;margin-bottom:16px;">Share Video</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
-      <a href="https://wa.me/?text=${etxt}" target="_blank" style="text-decoration:none;text-align:center;padding:12px 0;background:rgba(37,211,102,.1);border-radius:12px;color:#25d366;">
-        <i class="fab fa-whatsapp" style="font-size:24px;display:block;margin-bottom:4px;"></i>
-        <span style="font-size:10px;">WhatsApp</span>
-      </a>
-      <a href="https://www.facebook.com/sharer/sharer.php?u=${enc}" target="_blank" style="text-decoration:none;text-align:center;padding:12px 0;background:rgba(24,119,242,.1);border-radius:12px;color:#1877f2;">
-        <i class="fab fa-facebook" style="font-size:24px;display:block;margin-bottom:4px;"></i>
-        <span style="font-size:10px;">Facebook</span>
-      </a>
-      <a href="https://twitter.com/intent/tweet?text=${etxt}" target="_blank" style="text-decoration:none;text-align:center;padding:12px 0;background:rgba(29,155,240,.1);border-radius:12px;color:#1d9bf0;">
-        <i class="fab fa-twitter" style="font-size:24px;display:block;margin-bottom:4px;"></i>
-        <span style="font-size:10px;">Twitter</span>
-      </a>
-      <div onclick="copyFallback('${url}')" style="text-align:center;padding:12px 0;background:var(--bg3);border-radius:12px;color:var(--text2);cursor:pointer;">
-        <i class="fas fa-link" style="font-size:24px;display:block;margin-bottom:4px;"></i>
-        <span style="font-size:10px;">Copy Link</span>
-      </div>
-    </div>
-    <button onclick="this.closest('div[style*=fixed]').remove()" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;cursor:pointer;font-size:14px;">Cancel</button>
-  </div>`;
-  sheet.onclick=e=>{if(e.target===sheet)sheet.remove();};
-  document.body.appendChild(sheet);
-}
-
-function copyFallback(url){
-  navigator.clipboard.writeText(url||location.href).then(()=>showToast('Link copied! 📋')).catch(()=>{
-    const ta=document.createElement('textarea');ta.value=url||location.href;
-    document.body.appendChild(ta);ta.select();document.execCommand('copy');
-    document.body.removeChild(ta);showToast('Link copied! 📋');
-  });
-}
+function shareVideo(){navigator.clipboard.writeText(currentPostData?.url||location.href).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));}
 function saveVideo(){showToast('Saved to Watch Later ✅');}
 
 async function toggleDislike(){
@@ -2777,123 +2492,8 @@ function downloadVideo(){
 // ══════════════════════════════════════════════════════
 // COMMENTS
 // ══════════════════════════════════════════════════════
-let _commSort='top';
-async function openCommentsSheet(){
-  const sheet=document.getElementById('commSheet');
-  const overlay=document.getElementById('commSheetOverlay');
-  if(!sheet||!overlay)return;
-  sheet.style.display='flex';overlay.style.display='block';
-  setTimeout(()=>{sheet.style.transform='translateY(0)';},10);
-  if(currentPostId)loadCommentsSheet(currentPostId,_commSort);
-}
-function closeCommentsSheet(){
-  const sheet=document.getElementById('commSheet');
-  const overlay=document.getElementById('commSheetOverlay');
-  if(!sheet||!overlay)return;
-  sheet.style.transform='translateY(100%)';
-  setTimeout(()=>{sheet.style.display='none';overlay.style.display='none';},300);
-}
-function sortComments(sort,btn){
-  _commSort=sort;
-  document.getElementById('commSortTop').style.background=sort==='top'?'var(--text)':'var(--bg3)';
-  document.getElementById('commSortTop').style.color=sort==='top'?'var(--bg)':'var(--text)';
-  document.getElementById('commSortNew').style.background=sort==='new'?'var(--text)':'var(--bg3)';
-  document.getElementById('commSortNew').style.color=sort==='new'?'var(--bg)':'var(--text)';
-  if(currentPostId)loadCommentsSheet(currentPostId,sort);
-}
-async function loadCommentsSheet(postId,sort='top'){
-  const list=document.getElementById('commSheetList');
-  if(!list)return;
-  list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
-  try{
-    const snap=await db.collection('posts').doc(postId).collection('comments').limit(100).get();
-    let docs=snap.docs.map(d=>({id:d.id,...d.data()}));
-    if(sort==='top')docs=docs.sort((a,b)=>(b.likes||0)-(a.likes||0)||(b.time||0)-(a.time||0));
-    else docs=docs.sort((a,b)=>(b.time||0)-(a.time||0));
-    document.getElementById('commSheetTitle').textContent=`Comments (${docs.length})`;
-    document.getElementById('commTitle').textContent=`Comments (${docs.length})`;
-    // Update preview
-    const prev=document.getElementById('commPreview');
-    if(prev&&docs.length){
-      const first=docs[0];
-      const av=first.authorPhoto?`<img src="${first.authorPhoto}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;">`:'';
-      prev.innerHTML=`<div style="display:flex;gap:8px;align-items:flex-start;">${av}<div><span style="font-size:12px;font-weight:600;">${first.authorName||'User'}</span><div style="font-size:12px;color:var(--text2);margin-top:2px;">${first.text||''}</div></div></div>`;
-    }
-    if(!docs.length){list.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">No comments yet. Be first! 💬</div>';return;}
-    list.innerHTML=docs.map(d=>{
-      const av=d.authorPhoto?`<img src="${d.authorPhoto}">`:(d.authorName||'U')[0].toUpperCase();
-      const isOwn=d.authorId===cUser?.uid;
-      return `<div style="display:flex;gap:9px;margin:14px 0;animation:fadeUp .3s ease;">
-        <div class="comm-av" style="flex-shrink:0;">${av}</div>
-        <div style="flex:1;">
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-size:12px;font-weight:600;">${d.authorHandle||d.authorName||'User'} • ${getTimeAgo(d.time)}</span>
-            <i class="fas fa-ellipsis-v" style="color:var(--text3);font-size:13px;cursor:pointer;margin-left:auto;" onclick="showCommentMenu('${d.id}','${isOwn}')"></i>
-          </div>
-          <div style="font-size:13px;color:var(--text2);margin-top:3px;line-height:1.5;">${d.text}</div>
-          <div style="display:flex;gap:16px;margin-top:6px;">
-            <button onclick="likeComment('${postId}','${d.id}',this)" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">
-              <i class="fas fa-thumbs-up" style="${(d.likedBy||[]).includes(cUser?.uid)?'color:var(--red)':''}"></i> ${d.likes||0}
-            </button>
-            <button style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">
-              <i class="fas fa-thumbs-down"></i>
-            </button>
-            <button style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:12px;">Reply</button>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-  }catch(e){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;text-align:center;">Could not load comments</p>';}
-}
-
-async function likeComment(postId,commentId,btn){
-  if(!cUser)return;
-  try{
-    const ref=db.collection('posts').doc(postId).collection('comments').doc(commentId);
-    const doc=await ref.get();const d=doc.data();
-    const liked=(d.likedBy||[]).includes(cUser.uid);
-    if(liked){
-      await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
-      btn.innerHTML=`<i class="fas fa-thumbs-up"></i> ${Math.max(0,(d.likes||1)-1)}`;
-    }else{
-      await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid)});
-      btn.innerHTML=`<i class="fas fa-thumbs-up" style="color:var(--red)"></i> ${(d.likes||0)+1}`;
-    }
-  }catch(e){}
-}
-
-function showCommentMenu(commentId,isOwn){
-  if(isOwn==='true'){
-    if(confirm('Delete this comment?')){
-      db.collection('posts').doc(currentPostId).collection('comments').doc(commentId).delete()
-        .then(()=>{loadCommentsSheet(currentPostId,_commSort);showToast('Deleted ✅');}).catch(()=>{});
-    }
-  }else showToast('Comment reported');
-}
-
 async function loadComments(postId){
-  // Just load preview + update title
-  try{
-    const snap=await db.collection('posts').doc(postId).collection('comments').limit(1).get();
-    const title=document.getElementById('commTitle');
-    // Get total count
-    const allSnap=await db.collection('posts').doc(postId).collection('comments').get();
-    if(title)title.textContent=`Comments (${allSnap.size})`;
-    const prev=document.getElementById('commPreview');
-    if(prev&&snap.docs.length){
-      const first=snap.docs[0].data();
-      const av=first.authorPhoto?`<img src="${first.authorPhoto}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;">`:'';
-      prev.innerHTML=`<div style="display:flex;gap:8px;align-items:flex-start;">${av}<div><span style="font-size:12px;font-weight:600;">${first.authorName||'User'}</span><div style="font-size:12px;color:var(--text2);margin-top:2px;">${first.text||''}</div></div></div>`;
-    }else if(prev){prev.innerHTML='<div style="font-size:12px;color:var(--text2);">No comments yet. Tap to add one!</div>';}
-  }catch(e){}
-  // Dummy - list is in sheet now
   const list=document.getElementById('commList');
-  if(list)list.innerHTML='';
-}
-
-async function loadComments_old(postId){
-  const list=document.getElementById('commList');
-  if(!list){loadCommentsSheet(postId,_commSort);return;}
   list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
     const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('time','desc').limit(50).get();
@@ -2960,19 +2560,14 @@ async function postComment(){
   input.value='';
   try{
     await db.collection('posts').doc(currentPostId).collection('comments').add({
-      text,authorId:cUser.uid,
-      authorName:cUserData?.name||cUser.email,
-      authorHandle:cUserData?.handle||'',
-      authorPhoto:cUserData?.photoURL||'',
-      likes:0,likedBy:[],time:Date.now()
+      text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
+      authorPhoto:cUserData?.photoURL||'',time:Date.now()
     });
     await db.collection('posts').doc(currentPostId).update({
       comments:firebase.firestore.FieldValue.increment(1),
       rankScore:firebase.firestore.FieldValue.increment(5)
     });
-    loadComments(currentPostId);
-    loadCommentsSheet(currentPostId,_commSort);
-    showToast('Comment posted ✅');
+    loadComments(currentPostId);showToast('Comment posted ✅');
     sendNotif(currentPostData?.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,currentPostId);
   }catch(e){showToast('Error posting comment');}
 }
@@ -3031,37 +2626,29 @@ async function loadNotifs(){
 async function loadDashboard(){
   if(!cUser)return;
   document.getElementById('dashWelcome').textContent='Welcome, '+(cUserData?.name||'Creator')+'!';
+  // Studio header
   const stAvEl=document.getElementById('studioAvatar');
   if(stAvEl){if(cUserData?.photoURL)stAvEl.innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;else stAvEl.textContent=(cUserData?.name||'U')[0].toUpperCase();}
   const stChEl=document.getElementById('studioChannelName');
   if(stChEl)stChEl.textContent=cUserData?.channelName||cUserData?.name||'My Channel';
   try{
-    // REAL DATA from Firestore
     const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
-    let likes=0,views=0,vids=0,comments=0,watchTimeSecs=0,maxLikes=0,bestTitle='';
+    let likes=0,views=0,vids=0,comments=0,maxLikes=0,bestTitle='';
     const myPosts=[];
     snap.forEach(d=>{
-      const p=d.data();
-      likes+=p.likes||0;
-      views+=p.views||0;
-      vids++;
-      comments+=p.comments||0;
-      watchTimeSecs+=p.watchTime||0;
+      const p=d.data();likes+=p.likes||0;views+=p.views||0;vids++;comments+=p.comments||0;
       if((p.likes||0)>maxLikes){maxLikes=p.likes||0;bestTitle=p.title||'N/A';}
       myPosts.push({id:d.id,...p});
     });
-    // REAL subscribers from Firestore
     const ud=await db.collection('users').doc(cUser.uid).get();
     const subs=ud.exists?(ud.data().subscribers||0):0;
-    // REAL watch time from actual data
-    const watchMins=Math.round(watchTimeSecs/60);
     document.getElementById('dVideos') && (document.getElementById('dVideos').textContent=vids);
     document.getElementById('dSubs').textContent=subs;
     document.getElementById('dLikes') && (document.getElementById('dLikes').textContent=likes);
     document.getElementById('dViews').textContent=views;
-    // Real watch time from Firestore watchTime field
-    const watchMinsDisplay=watchMins>60?Math.round(watchMins/60)+'h':watchMins+'m';
-    const wtEl=document.getElementById('dWatchTime');if(wtEl)wtEl.textContent=watchMinsDisplay;
+    // Watch time estimate (avg 2 min per view)
+    const watchMins=Math.round(views*2);
+    const wtEl=document.getElementById('dWatchTime');if(wtEl)wtEl.textContent=watchMins>60?Math.round(watchMins/60)+'h':watchMins+'m';
     // Revenue estimate (₨0.5 per 1000 views = very rough)
     const revEl=document.getElementById('dRevenue');if(revEl)revEl.textContent='₨'+(Math.round(views*0.5/1000*100)/100).toFixed(2);
     const d2El=document.getElementById('dVideos2');if(d2El)d2El.textContent=vids+' videos • '+likes+' total likes';
@@ -3412,49 +2999,31 @@ async function doSearch(q){
 // ══════════════════════════════════════════════════════
 async function loadOwnerDash(){
   if(!cUser||cUser.email!==OWNER_EMAIL)return;
-  const ul=document.getElementById('ownerUsersList');
-  if(ul)ul.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
-    // REAL counts from Firestore
-    const [usersSnap,postsSnap,subsSnap]=await Promise.all([
-      db.collection('users').get(),
-      db.collection('posts').get(),
-      db.collection('subscriptions').get()
-    ]);
-    let channels=0,totalLikes=0,totalViews=0,totalWatchTime=0;
+    const [usersSnap,postsSnap]=await Promise.all([db.collection('users').get(),db.collection('posts').get()]);
+    let channels=0,totalLikes=0;
     usersSnap.forEach(d=>{if(d.data().channelName||d.data().hasChannel)channels++;});
-    postsSnap.forEach(d=>{
-      const p=d.data();
-      totalLikes+=p.likes||0;
-      totalViews+=p.views||0;
-      totalWatchTime+=p.watchTime||0;
-    });
+    postsSnap.forEach(d=>{totalLikes+=d.data().likes||0;});
     document.getElementById('owUsers').textContent=usersSnap.size;
     document.getElementById('owChannels').textContent=channels;
     document.getElementById('owVideos').textContent=postsSnap.size;
     document.getElementById('owLikes').textContent=totalLikes;
-    // User list sorted by lastSeen
-    const users=usersSnap.docs.map(d=>({id:d.id,...d.data()}))
-      .sort((a,b)=>(b.lastSeen||0)-(a.lastSeen||0));
-    if(ul)ul.innerHTML=users.map(u=>{
+    const ul=document.getElementById('ownerUsersList');
+    ul.innerHTML=usersSnap.docs.map(d=>{
+      const u=d.data();
       const av=u.photoURL?`<img src="${u.photoURL}">`:(u.name||'U')[0].toUpperCase();
-      const ls=u.lastSeen?getTimeAgo(u.lastSeen):'Never';
+      const ls=u.lastSeen?getTimeAgo(u.lastSeen):'Unknown';
       const active=u.lastSeen&&(Date.now()-u.lastSeen)<7*24*3600*1000;
-      const isOwner=u.email===OWNER_EMAIL;
       return `<div class="ou-item">
-        <div class="ou-av" style="overflow:hidden;">${av}</div>
+        <div class="ou-av">${av}</div>
         <div class="ou-info">
-          <div class="ou-name">${u.name||'User'} ${isOwner?'👑':''}</div>
+          <div class="ou-name">${u.name||'User'} ${u.email===OWNER_EMAIL?'👑':''}</div>
           <div class="ou-meta">${u.email||''} • ${ls}</div>
-          ${u.channelName?`<div style="font-size:10px;color:var(--red);margin-top:2px;">📺 ${u.channelName}</div>`:''}
         </div>
-        <div style="text-align:right;">
-          <span class="ou-badge ${active?'badge-active':''}" style="display:block;">${active?'Active':'Offline'}</span>
-          <span style="font-size:10px;color:var(--text3);">${u.subscribers||0} subs</span>
-        </div>
+        <span class="ou-badge ${active?'badge-active':''} ${u.hasChannel?'badge-ch':''}">${active?'Active':''}${u.channelName?'\n'+u.channelName:''}</span>
       </div>`;
-    }).join('')||'<div class="empty-state"><i class="fas fa-users"></i><p>No users</p></div>';
-  }catch(e){console.error(e);if(ul)ul.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
+    }).join('');
+  }catch(e){console.error(e);}
 }
 
 // ══════════════════════════════════════════════════════
@@ -3502,31 +3071,6 @@ function startLive(){
 // ══════════════════════════════════════════════════════
 // MODALS
 // ══════════════════════════════════════════════════════
-function openDescSheet(){
-  if(!currentPostData)return;
-  const sheet=document.getElementById('descSheet');
-  const overlay=document.getElementById('descSheetOverlay');
-  if(!sheet)return;
-  const p=currentPostData;
-  const tags=(p.tags||[]).map(t=>`<span style="color:var(--red);margin-right:6px;">#${t}</span>`).join('');
-  document.getElementById('descSheetContent').innerHTML=`
-    <div style="font-size:16px;font-weight:700;margin-bottom:6px;">${p.title||'Untitled'}</div>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:12px;">${p.authorName||''} • ❤️${p.likes||0} • 👁️${p.views||0} • ${getTimeAgo(p.time)}</div>
-    ${tags?`<div style="margin-bottom:12px;">${tags}</div>`:''}
-    <div style="font-size:14px;line-height:1.7;color:var(--text2);">${p.desc||'No description'}</div>
-    ${p.bgMusic?`<div style="margin-top:14px;padding:10px;background:var(--bg3);border-radius:8px;font-size:13px;"><i class="fas fa-music" style="color:var(--red);margin-right:6px;"></i>${p.bgMusic}</div>`:''}
-  `;
-  sheet.style.display='flex';overlay.style.display='block';
-  setTimeout(()=>sheet.style.transform='translateY(0)',10);
-}
-function closeDescSheet(){
-  const sheet=document.getElementById('descSheet');
-  const overlay=document.getElementById('descSheetOverlay');
-  if(!sheet)return;
-  sheet.style.transform='translateY(100%)';
-  setTimeout(()=>{sheet.style.display='none';overlay.style.display='none';},300);
-}
-
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function closeModalOut(e,id){if(e.target===document.getElementById(id))closeModal(id);}
 
