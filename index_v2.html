@@ -1537,6 +1537,7 @@ auth.onAuthStateChanged(async user=>{
     document.getElementById('authScreen').style.display='none';
     document.getElementById('mainApp').style.display='block';
     await loadUserData();
+    await ensureChannelExists();
     updateHeaderAv();
     setupOwnerNav();
     loadHome();
@@ -1616,6 +1617,30 @@ function fErr(c){
 // ══════════════════════════════════════════════════════
 // USER DATA
 // ══════════════════════════════════════════════════════
+async function ensureChannelExists(){
+  if(!cUser)return;
+  try{
+    const doc=await db.collection('users').doc(cUser.uid).get();
+    if(!doc.exists)return;
+    const u=doc.data();
+    if(u.hasChannel&&u.channelName)return; // Already has channel
+    // Auto create channel from user name
+    const name=u.name||cUser.displayName||cUser.email.split('@')[0];
+    const handle='@'+name.toLowerCase().replace(/[^a-z0-9]/g,'').substring(0,20);
+    await db.collection('channels').doc(cUser.uid).set({
+      name,handle,about:'',
+      ownerEmail:cUser.email,ownerUid:cUser.uid,
+      ownerPhoto:u.photoURL||'',
+      subscribers:0,videos:0,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+    await db.collection('users').doc(cUser.uid).update({
+      channelName:name,channelHandle:handle,hasChannel:true
+    });
+    if(cUserData){cUserData.channelName=name;cUserData.channelHandle=handle;cUserData.hasChannel=true;}
+  }catch(e){console.log('Channel auto-create:',e.message);}
+}
+
 async function loadUserData(){
   if(!cUser)return;
   try{
@@ -1836,8 +1861,8 @@ function buildCard(p){
     <div class="yt-thumb">
       ${thumb}
       ${p.type==='short'?'<div class="yt-badge">SHORT</div>':''}
-      ${p.isLive?'<div class="yt-badge">🔴 LIVE</div>':''}
-      ${(p.type==='video'||p.type==='gaming'||p.type==='music')?'<div class="yt-dur"><i class="fas fa-play" style="font-size:8px;"></i></div>':''}
+      ${p.isLive?'<div class="yt-badge" style="background:#ff0000;">🔴 LIVE</div>':''}
+      ${p.duration?`<div class="yt-dur">${p.duration}</div>`:((p.type==='video'||p.type==='gaming'||p.type==='music')&&!p.isLive?'<div class="yt-dur">▶</div>':'')}
     </div>
     <div class="yt-info">
       <div class="yt-av" onclick="openChannelPage('${p.authorId||''}',event)" style="cursor:pointer;">${avHtml}</div>
@@ -1994,7 +2019,15 @@ function playShortAt(idx){
   sfCurrentIdx=idx;sfCurrentId=sfPosts[idx].id;
   const p=sfPosts[idx];
   const vid=document.getElementById('sfVid');
-  vid.src=p.url;vid.play().catch(()=>{});
+  if(!p.url){showToast('Video URL missing');return;}
+  vid.src='';
+  vid.src=p.url;
+  vid.load();
+  vid.play().catch(()=>{
+    // Show tap to play on shorts
+    showToast('Tap screen to play');
+    vid.addEventListener('click',()=>vid.play(),{once:true});
+  });
   document.getElementById('sfTtl').textContent=p.title||'';
   document.getElementById('sfCh').textContent=p.authorName||'';
   document.getElementById('sfLikeCount').textContent=p.likes||0;
@@ -2024,6 +2057,31 @@ function playShortAt(idx){
   const sfMusicName=document.getElementById('sfMusicName');
   if(p.bgMusic&&sfMusicEl&&sfMusicName){sfMusicEl.style.display='block';sfMusicName.textContent=p.bgMusic;}
   else if(sfMusicEl){sfMusicEl.style.display='none';}
+}
+
+async function sfSubscribe(){
+  if(!cUser)return showToast('Login karein!');
+  const p=sfPosts[sfCurrentIdx];if(!p||!p.authorId||p.authorId===cUser.uid)return;
+  const sid=`${cUser.uid}_${p.authorId}`;
+  const ref=db.collection('subscriptions').doc(sid);
+  const btn=document.getElementById('sfSubBtn');
+  if(btn)btn.disabled=true;
+  try{
+    const doc=await ref.get();
+    if(doc.exists){
+      await ref.delete();
+      await db.collection('users').doc(p.authorId).update({subscribers:firebase.firestore.FieldValue.increment(-1)}).catch(()=>{});
+      if(btn){btn.textContent='Subscribe';btn.style.background='white';btn.style.color='#000';}
+      showToast('Unsubscribed');
+    }else{
+      await ref.set({from:cUser.uid,to:p.authorId,time:Date.now()});
+      await db.collection('users').doc(p.authorId).update({subscribers:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
+      if(btn){btn.textContent='Subscribed ✓';btn.style.background='rgba(255,255,255,.25)';btn.style.color='white';}
+      showToast('Subscribed! ✅');
+      sendNotif(p.authorId,'sub',`${cUserData?.name||'Someone'} subscribed!`,null);
+    }
+  }catch(e){showToast('Error');}
+  finally{if(btn)btn.disabled=false;}
 }
 
 function closeShortFS(){document.getElementById('shortFS').classList.remove('open');const v=document.getElementById('sfVid');v.pause();v.src='';}
@@ -2128,6 +2186,17 @@ function onFileSelect(input){
     const i=document.getElementById('uploadImgPrev');i.src=URL.createObjectURL(selectedFile);i.style.display='block';
   }else{
     const v=document.getElementById('uploadVidPrev');v.src=URL.createObjectURL(selectedFile);v.style.display='block';
+    v.onloadedmetadata=()=>{
+      const dur=v.duration;
+      if(uploadType==='short'&&dur>61){
+        showToast('Shorts max 60 seconds! Teri video: '+Math.round(dur)+'s ⚠️');
+        selectedFile=null;v.src='';v.style.display='none';
+        document.getElementById('fileText').textContent='Tap to select file';
+        return;
+      }
+      const m=Math.floor(dur/60),s=Math.floor(dur%60);
+      window._vidDuration=`${m>0?m+':':''}${s<10?'0'+s:s}`;
+    };
   }
 }
 
@@ -2182,7 +2251,9 @@ async function doUpload(){
       title,desc,url,thumbURL,images,type:uploadType,
       category:tags.split(',')[0]?.trim()||uploadType,
       tags:tags.split(',').map(t=>t.trim()).filter(Boolean),
-      authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
+      authorId:cUser.uid,
+      authorName:cUserData?.name||cUser.email,
+      authorHandle:cUserData?.channelHandle||cUserData?.handle||(''.concat('@',((cUserData?.name||cUser.email).toLowerCase().replace(/[^a-z0-9]/g,'').substring(0,20)))),
       authorPhoto:cUserData?.photoURL||'',
       likes:0,likedBy:[],views:0,comments:0,reactions:{},
       rankScore:initialScore,time:Date.now(),
@@ -2245,10 +2316,37 @@ async function openPost(id){
     }else if(p.type==='post'){
       vid.style.display='none';wrap.style.display='none';
     }else{
-      vid.src=p.url;vid.play().catch(()=>{});
+      if(p.url){
+        vid.src='';
+        vid.src=p.url;
+        vid.load();
+        vid.play().catch(()=>{
+          // Show play button if autoplay blocked
+          let po=document.getElementById('playOverlay');
+          if(po)po.remove();
+          po=document.createElement('div');
+          po.id='playOverlay';
+          po.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;background:rgba(0,0,0,0.3);';
+          po.innerHTML='<div style="width:64px;height:64px;background:rgba(0,0,0,.75);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play" style="color:white;font-size:26px;margin-left:4px;"></i></div>';
+          po.onclick=()=>{vid.play();po.remove();};
+          wrap.appendChild(po);
+        });
+      }else{
+        vid.style.display='none';
+        wrap.style.display='flex';
+        wrap.style.alignItems='center';
+        wrap.style.justifyContent='center';
+        wrap.innerHTML='<div style="color:#aaa;text-align:center;"><i class="fas fa-video-slash" style="font-size:36px;margin-bottom:8px;display:block;"></i><div style="font-size:13px;">Video unavailable</div></div>';
+      }
     }
     document.getElementById('playerTitle').textContent=p.title||'Untitled';
-    document.getElementById('playerMeta').textContent=`❤️${p.likes||0} • 👁️${p.views||0} • ${getTimeAgo(p.time)}`;
+    // Show @handle + views + time
+    const handle=p.channelHandle||p.authorHandle||('@'+(p.authorName||'user').toLowerCase().replace(/[^a-z0-9]/g,''));
+    document.getElementById('playerMeta').innerHTML=`
+      <span style="color:var(--text2);font-size:12px;">${handle} &nbsp;•&nbsp; ${p.views||0} views &nbsp;•&nbsp; ${getTimeAgo(p.time)}</span>
+      ${p.duration?`<span style="background:#000;color:#fff;font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;margin-left:6px;">${p.duration}</span>`:''}
+      <span style="color:var(--red);font-size:11px;cursor:pointer;margin-left:4px;" onclick="showDescSheet()" id="playerMoreBtn">&nbsp;...more</span>
+    `;
     const liked=cUser&&(p.likedBy||[]).includes(cUser.uid);
     document.getElementById('likeBtn').classList.toggle('liked',liked);
     document.getElementById('likeCount').textContent=p.likes||0;
@@ -2267,9 +2365,15 @@ async function openPost(id){
         sb.style.display=p.authorId===cUser.uid?'none':'block';
       });
     }
-    db.collection('posts').doc(id).update({views:firebase.firestore.FieldValue.increment(1),rankScore:firebase.firestore.FieldValue.increment(2)}).catch(()=>{});
+    // View tracking - once per session
+    const vKey='viewed_'+id;
+    if(!sessionStorage.getItem(vKey)){
+      sessionStorage.setItem(vKey,'1');
+      db.collection('posts').doc(id).update({views:firebase.firestore.FieldValue.increment(1),rankScore:firebase.firestore.FieldValue.increment(2)}).catch(()=>{});
+    }
     loadComments(id);
     loadRelated(id, p.type, p.category||p.type);
+    startWatchTimer(id);
   }catch(e){console.error(e);showToast('Error loading');}
 }
 
@@ -2364,14 +2468,47 @@ async function createShortFromTrim(){
 function toggleFullscreen(){
   const vid=document.getElementById('playerVid');
   if(!vid)return;
-  if(vid.requestFullscreen)vid.requestFullscreen();
-  else if(vid.webkitRequestFullscreen)vid.webkitRequestFullscreen();
-  else if(vid.webkitEnterFullscreen)vid.webkitEnterFullscreen();
+  const goFS=()=>{
+    if(screen.orientation&&screen.orientation.lock){
+      screen.orientation.lock('landscape').catch(()=>{});
+    }
+  };
+  if(vid.requestFullscreen){vid.requestFullscreen().then(goFS).catch(()=>{});}
+  else if(vid.webkitRequestFullscreen){vid.webkitRequestFullscreen();goFS();}
+  else if(vid.webkitEnterFullscreen){vid.webkitEnterFullscreen();goFS();}
+}
+document.addEventListener('fullscreenchange',()=>{
+  if(!document.fullscreenElement){
+    if(screen.orientation&&screen.orientation.lock){
+      screen.orientation.lock('portrait').catch(()=>{});
+    }
+  }
+});
+
+let _wtTimer=null,_wtStart=0,_wtPostId=null;
+function startWatchTimer(pid){
+  stopWatchTimer();
+  _wtPostId=pid;_wtStart=Date.now();
+  _wtTimer=setInterval(()=>{
+    if(_wtPostId){
+      db.collection('posts').doc(_wtPostId).update({watchTime:firebase.firestore.FieldValue.increment(5)}).catch(()=>{});
+    }
+  },5000);
+}
+function stopWatchTimer(){
+  if(_wtTimer){clearInterval(_wtTimer);_wtTimer=null;}
+  if(_wtPostId&&_wtStart){
+    const secs=Math.floor((Date.now()-_wtStart)/1000);
+    if(secs>2)db.collection('posts').doc(_wtPostId).update({watchTime:firebase.firestore.FieldValue.increment(secs)}).catch(()=>{});
+    _wtPostId=null;_wtStart=0;
+  }
 }
 
 function closePlayer(){
+  stopWatchTimer();
   document.getElementById('playerScreen').classList.remove('open');
   const v=document.getElementById('playerVid');v.pause();v.src='';
+  const po=document.getElementById('playOverlay');if(po)po.remove();
   const wrap=document.getElementById('playerVidWrap');
   wrap.style.backgroundImage='';wrap.style.display='block';
   currentPostId=null;currentPostData=null;
@@ -2433,31 +2570,136 @@ async function reactEmoji(emoji,btn){
 }
 
 async function toggleSubscribe(){
-  if(!cUser||!currentPostData)return;
-  const aId=currentPostData.authorId;if(aId===cUser.uid)return;
+  if(!cUser){showToast('Login karein pehle!');return;}
+  if(!currentPostData){return;}
+  const aId=currentPostData.authorId;
+  if(!aId||aId===cUser.uid){showToast('Apne aap ko subscribe nahi kar sakte');return;}
+  const btn=document.getElementById('playerSubBtn');
+  if(btn){btn.disabled=true;btn.style.opacity='0.6';}
   const sid=`${cUser.uid}_${aId}`;
   const ref=db.collection('subscriptions').doc(sid);
-  const btn=document.getElementById('playerSubBtn');
   try{
     const doc=await ref.get();
     if(doc.exists){
       await ref.delete();
-      await db.collection('users').doc(aId).update({subscribers:firebase.firestore.FieldValue.increment(-1)});
-      btn.textContent='Subscribe';btn.classList.remove('subscribed');showToast('Unsubscribed');
+      await db.collection('users').doc(aId).update({subscribers:firebase.firestore.FieldValue.increment(-1)}).catch(()=>{});
+      if(btn){btn.textContent='Subscribe';btn.classList.remove('subscribed');}
+      showToast('Unsubscribed');
     }else{
       await ref.set({from:cUser.uid,to:aId,time:Date.now()});
-      await db.collection('users').doc(aId).update({subscribers:firebase.firestore.FieldValue.increment(1)});
-      btn.textContent='Subscribed';btn.classList.add('subscribed');showToast('Subscribed! ✅');
+      await db.collection('users').doc(aId).update({subscribers:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
+      if(btn){btn.textContent='Subscribed ✓';btn.classList.add('subscribed');}
+      showToast('Subscribed! ✅');
       sendNotif(aId,'sub',`${cUserData?.name||'Someone'} subscribed to your channel!`,null);
     }
+    // Update subscriber count display
     db.collection('users').doc(aId).get().then(ud=>{
-      if(ud.exists)document.getElementById('playerChSubs').textContent=(ud.data().subscribers||0)+' subscribers';
-    });
-  }catch(e){showToast('Error');}
+      if(ud.exists){
+        const subsEl=document.getElementById('playerChSubs');
+        if(subsEl)subsEl.textContent=(ud.data().subscribers||0)+' subscribers';
+      }
+    }).catch(()=>{});
+  }catch(e){
+    console.error('Subscribe error:',e);
+    showToast('Error: '+e.message);
+  }finally{
+    if(btn){btn.disabled=false;btn.style.opacity='1';}
+  }
 }
 
-function shareVideo(){navigator.clipboard.writeText(currentPostData?.url||location.href).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));}
+function shareVideo(){
+  if(!currentPostData)return;
+  const url=currentPostData.url||location.href;
+  const title=currentPostData.title||'Watch on MyTube';
+  const text=`${title} - MyTube Pakistan 🇵🇰`;
+  if(navigator.share){
+    navigator.share({title,text,url}).catch(()=>showShareSheet(url,title));
+  }else{
+    showShareSheet(url,title);
+  }
+}
+
+function showShareSheet(url,title){
+  // Remove existing
+  const ex=document.getElementById('shareSheet');
+  if(ex)ex.remove();
+  const ex2=document.getElementById('shareSheetOv');
+  if(ex2)ex2.remove();
+  
+  const ov=document.createElement('div');
+  ov.id='shareSheetOv';
+  ov.style.cssText='position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);';
+  ov.onclick=()=>{ov.remove();sheet.remove();};
+  document.body.appendChild(ov);
+  
+  const sheet=document.createElement('div');
+  sheet.id='shareSheet';
+  sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:501;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 28px;';
+  const enc=encodeURIComponent(url);
+  const etxt=encodeURIComponent(text||title);
+  sheet.innerHTML=`
+    <div style="font-size:16px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+      <span>Share</span>
+      <i class="fas fa-times" style="cursor:pointer;color:var(--text2);font-size:18px;" onclick="document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();"></i>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
+      <a href="https://wa.me/?text=${etxt}%20${enc}" target="_blank" rel="noopener" onclick="document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();" style="text-decoration:none;text-align:center;">
+        <div style="width:52px;height:52px;border-radius:14px;background:rgba(37,211,102,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fab fa-whatsapp" style="font-size:26px;color:#25d366;"></i></div>
+        <div style="font-size:11px;color:var(--text2);">WhatsApp</div>
+      </a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${enc}" target="_blank" rel="noopener" onclick="document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();" style="text-decoration:none;text-align:center;">
+        <div style="width:52px;height:52px;border-radius:14px;background:rgba(24,119,242,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fab fa-facebook" style="font-size:26px;color:#1877f2;"></i></div>
+        <div style="font-size:11px;color:var(--text2);">Facebook</div>
+      </a>
+      <a href="https://twitter.com/intent/tweet?text=${etxt}&url=${enc}" target="_blank" rel="noopener" onclick="document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();" style="text-decoration:none;text-align:center;">
+        <div style="width:52px;height:52px;border-radius:14px;background:rgba(29,161,242,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fab fa-twitter" style="font-size:26px;color:#1da1f2;"></i></div>
+        <div style="font-size:11px;color:var(--text2);">Twitter</div>
+      </a>
+      <div onclick="navigator.clipboard.writeText('${url}').then(()=>{showToast('Link copied! 📋');document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();}).catch(()=>showToast('Copied!'));" style="text-align:center;cursor:pointer;">
+        <div style="width:52px;height:52px;border-radius:14px;background:var(--bg3);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fas fa-link" style="font-size:22px;color:var(--text2);"></i></div>
+        <div style="font-size:11px;color:var(--text2);">Copy Link</div>
+      </div>
+    </div>
+    <div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);word-break:break-all;">${url}</div>
+  `;
+  document.body.appendChild(sheet);
+}
 function saveVideo(){showToast('Saved to Watch Later ✅');}
+
+function showDescSheet(){
+  if(!currentPostData)return;
+  const p=currentPostData;
+  let sheet=document.getElementById('descQuickSheet');
+  if(!sheet){
+    sheet=document.createElement('div');
+    sheet.id='descQuickSheet';
+    sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:400;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s;';
+    document.body.appendChild(sheet);
+    // Overlay
+    const ov=document.createElement('div');
+    ov.id='descQuickOv';
+    ov.style.cssText='position:fixed;inset:0;z-index:399;background:rgba(0,0,0,.5);display:none;';
+    ov.onclick=()=>{sheet.style.transform='translateY(100%)';ov.style.display='none';};
+    document.body.appendChild(ov);
+  }
+  const tags=(p.tags||[]).map(t=>`<span style="color:var(--red);margin-right:6px;font-size:13px;">#${t}</span>`).join('');
+  sheet.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div style="font-size:15px;font-weight:700;">Description</div>
+      <i class="fas fa-times" style="font-size:18px;cursor:pointer;color:var(--text2);" onclick="document.getElementById('descQuickSheet').style.transform='translateY(100%)';document.getElementById('descQuickOv').style.display='none';"></i>
+    </div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:8px;">${p.title||'Untitled'}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">
+      ${p.views||0} views &nbsp;•&nbsp; ${getTimeAgo(p.time)}
+      ${p.duration?`&nbsp;•&nbsp; <b>${p.duration}</b>`:''}
+    </div>
+    ${tags?`<div style="margin-bottom:12px;">${tags}</div>`:''}
+    <div style="font-size:14px;color:var(--text2);line-height:1.7;">${p.desc||'No description added.'}</div>
+    ${p.bgMusic?`<div style="margin-top:14px;padding:10px 12px;background:var(--bg3);border-radius:8px;font-size:13px;"><i class="fas fa-music" style="color:var(--red);margin-right:6px;"></i>${p.bgMusic}</div>`:''}
+  `;
+  sheet.style.transform='translateY(0)';
+  document.getElementById('descQuickOv').style.display='block';
+}
 
 async function toggleDislike(){
   if(!cUser||!currentPostId)return;
@@ -2508,6 +2750,7 @@ async function loadComments(postId){
           <div class="comm-author">${c.authorName||'User'}</div>
           <div class="comm-text">${c.text}</div>
           <div class="comm-time">${getTimeAgo(c.time)}</div>
+          <button onclick="setReply('@${(c.authorName||'user').replace(/[^a-z0-9]/gi,'')}')" style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;padding:2px 0;">Reply</button>
         </div></div>`;
     }).join('');
   }catch(e){
@@ -2551,6 +2794,13 @@ async function loadRelated(postId, postType, category){
       </div>`;
     }).join('');
   }catch(e){list.innerHTML='';}
+}
+
+function setReply(mention){
+  const inp=document.getElementById('commInput');
+  if(!inp)return;
+  inp.value=mention+' ';
+  inp.focus();
 }
 
 async function postComment(){
@@ -2626,6 +2876,11 @@ async function loadNotifs(){
 async function loadDashboard(){
   if(!cUser)return;
   document.getElementById('dashWelcome').textContent='Welcome, '+(cUserData?.name||'Creator')+'!';
+  // Studio avatar
+  const stAv=document.getElementById('studioAvatar');
+  if(stAv){if(cUserData?.photoURL)stAv.innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;else stAv.textContent=(cUserData?.name||'U')[0].toUpperCase();}
+  const stCh=document.getElementById('studioChannelName');
+  if(stCh)stCh.textContent=cUserData?.channelName||cUserData?.name||'My Channel';
   // Studio header
   const stAvEl=document.getElementById('studioAvatar');
   if(stAvEl){if(cUserData?.photoURL)stAvEl.innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;else stAvEl.textContent=(cUserData?.name||'U')[0].toUpperCase();}
@@ -2635,8 +2890,14 @@ async function loadDashboard(){
     const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
     let likes=0,views=0,vids=0,comments=0,maxLikes=0,bestTitle='';
     const myPosts=[];
+    let watchTimeSecs=0;
     snap.forEach(d=>{
-      const p=d.data();likes+=p.likes||0;views+=p.views||0;vids++;comments+=p.comments||0;
+      const p=d.data();
+      likes+=p.likes||0;
+      views+=p.views||0;
+      vids++;
+      comments+=p.comments||0;
+      watchTimeSecs+=p.watchTime||0;
       if((p.likes||0)>maxLikes){maxLikes=p.likes||0;bestTitle=p.title||'N/A';}
       myPosts.push({id:d.id,...p});
     });
@@ -2646,8 +2907,7 @@ async function loadDashboard(){
     document.getElementById('dSubs').textContent=subs;
     document.getElementById('dLikes') && (document.getElementById('dLikes').textContent=likes);
     document.getElementById('dViews').textContent=views;
-    // Watch time estimate (avg 2 min per view)
-    const watchMins=Math.round(views*2);
+    const watchMins=Math.round(watchTimeSecs/60);
     const wtEl=document.getElementById('dWatchTime');if(wtEl)wtEl.textContent=watchMins>60?Math.round(watchMins/60)+'h':watchMins+'m';
     // Revenue estimate (₨0.5 per 1000 views = very rough)
     const revEl=document.getElementById('dRevenue');if(revEl)revEl.textContent='₨'+(Math.round(views*0.5/1000*100)/100).toFixed(2);
@@ -2999,31 +3259,40 @@ async function doSearch(q){
 // ══════════════════════════════════════════════════════
 async function loadOwnerDash(){
   if(!cUser||cUser.email!==OWNER_EMAIL)return;
+  const ul=document.getElementById('ownerUsersList');
+  if(ul)ul.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
-    const [usersSnap,postsSnap]=await Promise.all([db.collection('users').get(),db.collection('posts').get()]);
-    let channels=0,totalLikes=0;
+    const [usersSnap,postsSnap]=await Promise.all([
+      db.collection('users').get(),
+      db.collection('posts').get()
+    ]);
+    let channels=0,totalLikes=0,totalViews=0;
     usersSnap.forEach(d=>{if(d.data().channelName||d.data().hasChannel)channels++;});
-    postsSnap.forEach(d=>{totalLikes+=d.data().likes||0;});
+    postsSnap.forEach(d=>{totalLikes+=d.data().likes||0;totalViews+=d.data().views||0;});
     document.getElementById('owUsers').textContent=usersSnap.size;
     document.getElementById('owChannels').textContent=channels;
     document.getElementById('owVideos').textContent=postsSnap.size;
     document.getElementById('owLikes').textContent=totalLikes;
-    const ul=document.getElementById('ownerUsersList');
-    ul.innerHTML=usersSnap.docs.map(d=>{
-      const u=d.data();
-      const av=u.photoURL?`<img src="${u.photoURL}">`:(u.name||'U')[0].toUpperCase();
-      const ls=u.lastSeen?getTimeAgo(u.lastSeen):'Unknown';
-      const active=u.lastSeen&&(Date.now()-u.lastSeen)<7*24*3600*1000;
+    const users=usersSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.lastSeen||0)-(a.lastSeen||0));
+    if(ul)ul.innerHTML=users.map(u=>{
+      const av=u.photoURL?`<img src="${u.photoURL}" style="width:100%;height:100%;object-fit:cover;">`:(u.name||'U')[0].toUpperCase();
+      const ls=u.lastSeen?getTimeAgo(u.lastSeen):'Never';
+      const active=u.lastSeen&&(Date.now()-u.lastSeen)<3*24*3600*1000;
+      const isOwner=u.email===OWNER_EMAIL;
       return `<div class="ou-item">
-        <div class="ou-av">${av}</div>
+        <div class="ou-av" style="overflow:hidden;">${av}</div>
         <div class="ou-info">
-          <div class="ou-name">${u.name||'User'} ${u.email===OWNER_EMAIL?'👑':''}</div>
+          <div class="ou-name">${u.name||'User'}${isOwner?' 👑':''}</div>
           <div class="ou-meta">${u.email||''} • ${ls}</div>
+          ${u.channelName?`<div style="font-size:10px;color:var(--red);">📺 ${u.channelName}</div>`:''}
         </div>
-        <span class="ou-badge ${active?'badge-active':''} ${u.hasChannel?'badge-ch':''}">${active?'Active':''}${u.channelName?'\n'+u.channelName:''}</span>
+        <div style="text-align:right;flex-shrink:0;">
+          <span class="ou-badge ${active?'badge-active':''}" style="display:block;font-size:10px;">${active?'🟢 Active':'⚫ Offline'}</span>
+          <span style="font-size:10px;color:var(--text3);">${u.subscribers||0} subs</span>
+        </div>
       </div>`;
-    }).join('');
-  }catch(e){console.error(e);}
+    }).join('')||'<div class="empty-state"><i class="fas fa-users"></i><p>No users yet</p></div>';
+  }catch(e){console.error(e);if(ul)ul.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
 }
 
 // ══════════════════════════════════════════════════════
