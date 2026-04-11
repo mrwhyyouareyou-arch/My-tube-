@@ -760,6 +760,8 @@ button,input,textarea{font-family:var(--font);}
               <button onclick="clearSong()" style="background:none;border:none;color:var(--text3);cursor:pointer;margin-left:auto;font-size:16px;">×</button>
             </div>
           </div>
+          <!-- Short Editor Button — shows only for shorts -->
+          <button id="shortEditorBtn" onclick="openShortEditor(selectedFile)" style="display:none;width:100%;padding:12px;background:#1a1a1a;border:2px solid var(--red);color:white;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;align-items:center;justify-content:center;gap:8px;"><i class="fas fa-film" style="color:var(--red);"></i> Open Short Editor ✂️</button>
           <button class="btn-red" id="uploadBtn" onclick="doUpload()"><i class="fas fa-upload"></i> Upload</button>
         </div>
       </div>
@@ -828,6 +830,24 @@ button,input,textarea{font-family:var(--font);}
         <!-- ANALYTICS TAB -->
         <div id="studio-analytics" style="display:none;">
           <div style="font-size:12px;color:var(--text3);margin-bottom:14px;">Channel Analytics · Last 28 days</div>
+          <!-- VIEWS CHART -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:4px;">📊 Views Chart</div>
+            <div style="font-size:10px;color:var(--text3);margin-bottom:12px;">Per-video performance (last 7)</div>
+            <div id="dashViewsChart" style="display:flex;align-items:flex-end;gap:5px;height:80px;"></div>
+            <div id="dashViewsLabels" style="display:flex;gap:5px;margin-top:5px;font-size:8px;color:var(--text3);overflow:hidden;"></div>
+          </div>
+          <!-- IMPRESSIONS CHART -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:4px;">🎯 Impressions</div>
+            <div style="font-size:10px;color:var(--text3);margin-bottom:12px;">Likes + Views combo trend</div>
+            <div id="dashImpressionsChart" style="display:flex;align-items:flex-end;gap:5px;height:60px;"></div>
+          </div>
+          <!-- SUBSCRIBERS TREND -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px;">👥 Subscriber Milestones</div>
+            <div id="dashSubsTrend" style="font-size:13px;color:var(--text2);"></div>
+          </div>
           <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
             <div style="font-size:13px;font-weight:600;margin-bottom:14px;">Performance</div>
             <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
@@ -1013,6 +1033,10 @@ button,input,textarea{font-family:var(--font);}
         <div style="font-size:13px;line-height:1.8;color:var(--text2);">
           <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">MyTube Privacy Policy</p>
           <p style="color:var(--text3);font-size:11px;margin-bottom:16px;">Last updated: April 2025</p>
+          <div style="background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.25);border-radius:10px;padding:12px;margin-bottom:16px;display:flex;gap:10px;align-items:center;">
+            <i class="fas fa-exclamation-triangle" style="color:var(--red);font-size:18px;flex-shrink:0;"></i>
+            <p style="color:var(--text);font-size:13px;font-weight:600;">🔞 This platform is for users aged 18 and above only.</p>
+          </div>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">1. Information We Collect</p>
           <p style="margin-bottom:14px;">We collect information you provide directly: name, email address, profile picture, and content you upload. We also collect usage data including videos watched, liked, and shared.</p>
@@ -1057,7 +1081,7 @@ button,input,textarea{font-family:var(--font);}
           <p style="margin-bottom:14px;">By accessing or using MyTube, you agree to be bound by these Terms of Service. If you do not agree, please do not use the platform.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">2. User Accounts</p>
-          <p style="margin-bottom:14px;">You must be 13 years or older to use MyTube. You are responsible for maintaining the security of your account and all activities that occur under it.</p>
+          <p style="margin-bottom:14px;">You must be <b>18 years or older</b> to use MyTube. By creating an account, you confirm that you are at least 18 years of age. You are responsible for maintaining the security of your account and all activities that occur under it. MyTube is intended for adults only.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">3. Content Guidelines</p>
           <p style="margin-bottom:14px;">You may not upload content that is illegal, harmful, threatening, abusive, defamatory, or violates anyone's rights. Spam, fake accounts, and bot activity are strictly prohibited.</p>
@@ -1162,11 +1186,13 @@ button,input,textarea{font-family:var(--font);}
     <div id="ownerScreen" class="screen">
       <div class="owner-screen">
         <div class="owner-hdr"><h2>Admin Panel</h2><span class="owner-badge">OWNER</span></div>
-        <div class="owner-stats">
-          <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,150,255,.15);color:#0096ff;"><i class="fas fa-users"></i></div><div class="ow-num" id="owUsers">0</div><div class="ow-lbl">Users</div></div>
+        <div class="owner-stats" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,150,255,.15);color:#0096ff;"><i class="fas fa-users"></i></div><div class="ow-num" id="owUsers">0</div><div class="ow-lbl">Total Users</div></div>
           <div class="ow-stat"><div class="ow-ico" style="background:rgba(255,0,0,.1);color:var(--red);"><i class="fas fa-tv"></i></div><div class="ow-num" id="owChannels">0</div><div class="ow-lbl">Channels</div></div>
           <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,200,100,.15);color:#00c864;"><i class="fas fa-video"></i></div><div class="ow-num" id="owVideos">0</div><div class="ow-lbl">Videos</div></div>
-          <div class="ow-stat"><div class="ow-ico" style="background:rgba(255,150,0,.15);color:#ff9600;"><i class="fas fa-heart"></i></div><div class="ow-num" id="owLikes">0</div><div class="ow-lbl">Likes</div></div>
+          <div class="ow-stat"><div class="ow-ico" style="background:rgba(255,150,0,.15);color:#ff9600;"><i class="fas fa-heart"></i></div><div class="ow-num" id="owLikes">0</div><div class="ow-lbl">Total Likes</div></div>
+          <div class="ow-stat"><div class="ow-ico" style="background:rgba(100,100,255,.15);color:#6464ff;"><i class="fas fa-eye"></i></div><div class="ow-num" id="owViews">0</div><div class="ow-lbl">Total Views</div></div>
+          <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,200,200,.15);color:#00c8c8;"><i class="fas fa-film"></i></div><div class="ow-num" id="owShorts">0</div><div class="ow-lbl">Shorts</div></div>
         </div>
         <div class="owner-sec-title">All Users</div>
         <div id="ownerUsersList"><div class="loader"><div class="spinner"></div></div></div>
@@ -1245,13 +1271,36 @@ button,input,textarea{font-family:var(--font);}
   </div>
 
   <div class="comm-sec">
-    <div class="comm-title" id="commTitle">Comments</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div class="comm-title" id="commTitle" style="margin-bottom:0;">Comments</div>
+      <button onclick="showAboutComments()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:4px;"><i class="fas fa-info-circle"></i></button>
+    </div>
+    <!-- Comment filter tabs — YouTube style -->
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;" id="commFilterRow">
+      <button class="chip active" onclick="filterComments('top',this)" style="border-radius:20px;white-space:nowrap;">Top</button>
+      <button class="chip" onclick="filterComments('topics',this)" style="border-radius:20px;white-space:nowrap;">✦ Topics</button>
+      <button class="chip" onclick="filterComments('newest',this)" style="border-radius:20px;white-space:nowrap;">Newest</button>
+      <button class="chip" onclick="filterComments('timed',this)" style="border-radius:20px;white-space:nowrap;">Timed</button>
+    </div>
     <div class="comm-input-row">
       <div class="comm-av" id="myCommAv">?</div>
       <input class="comm-input" id="commInput" placeholder="Add a comment...">
       <button class="comm-send" onclick="postComment()"><i class="fas fa-paper-plane"></i></button>
     </div>
     <div id="commList"></div>
+  </div>
+
+  <!-- About Comments Popup -->
+  <div id="aboutCommOverlay" onclick="closeAboutComments()" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.5);"></div>
+  <div id="aboutCommSheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:601;background:var(--bg2);border-radius:20px 20px 0 0;padding:24px 20px 32px;">
+    <div style="font-size:18px;font-weight:800;margin-bottom:12px;">About comments</div>
+    <div style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:16px;">
+      When <b style="color:var(--text);">Top</b> is selected, you'll see featured comments.<br>
+      When <b style="color:var(--text);">Newest</b> is selected, you'll see recent comments, including potential spam.<br>
+      <b style="color:var(--text);">Topics</b> groups comments by subject.<br>
+      <b style="color:var(--text);">Timed</b> shows comments linked to specific moments.
+    </div>
+    <button onclick="closeAboutComments()" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;">Got it</button>
   </div>
 </div>
 
@@ -1260,6 +1309,11 @@ button,input,textarea{font-family:var(--font);}
   <div class="sf-wrap" id="sfWrap" id="sfWrap">
     <button class="sf-close" onclick="closeShortFS()"><i class="fas fa-times"></i></button>
     <video id="sfVid" loop playsinline onclick="handleSfTap(event)"></video>
+    <div id="sfPauseOverlay" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none;z-index:8;">
+      <div style="width:66px;height:66px;background:rgba(0,0,0,.65);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+        <i id="sfPauseIcon" class="fas fa-pause" style="color:white;font-size:26px;"></i>
+      </div>
+    </div>
     <div class="sf-nav">
       <button onclick="prevShort()"><i class="fas fa-chevron-left"></i></button>
       <button onclick="nextShort()"><i class="fas fa-chevron-right"></i></button>
@@ -1346,6 +1400,7 @@ button,input,textarea{font-family:var(--font);}
 <div class="ctx-menu-overlay" id="ctxOverlay" onclick="closeCtxMenu()"></div>
 <div class="ctx-menu" id="ctxMenu">
   <div class="ctx-menu-title" id="ctxTitle">Video</div>
+  <div class="ctx-item" onclick="hidePost(ctxPostId,null,null);closeCtxMenu();"><i class="fas fa-eye-slash"></i><span>Hide</span></div>
   <div class="ctx-item" onclick="ctxSave()"><i class="fas fa-bookmark"></i><span>Save to Watch Later</span></div>
   <div class="ctx-item" onclick="closeCtxMenu();addToPlaylist(ctxPostId)"><i class="fas fa-list-ul"></i><span>Add to Playlist</span></div>
   <div class="ctx-item" onclick="ctxShare()"><i class="fas fa-share-alt"></i><span>Share</span></div>
@@ -1401,6 +1456,93 @@ button,input,textarea{font-family:var(--font);}
   <div style="display:flex;gap:8px;">
     <button onclick="closeTrimPanel()" style="flex:1;padding:11px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;cursor:pointer;font-size:14px;">Cancel</button>
     <button onclick="createShortFromTrim()" class="btn-red" style="flex:2;">Create Short</button>
+  </div>
+</div>
+
+<!-- ═══ SHORT EDITOR MODAL ═══ -->
+<div id="shortEditorOverlay" onclick="closeShortEditor()" style="display:none;position:fixed;inset:0;z-index:990;background:rgba(0,0,0,.85);"></div>
+<div id="shortEditorModal" style="display:none;position:fixed;inset:0;z-index:991;background:#000;flex-direction:column;overflow:hidden;">
+  <!-- Editor Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,0,0,.8);border-bottom:1px solid #222;">
+    <button onclick="closeShortEditor()" style="background:none;border:none;color:white;font-size:22px;cursor:pointer;"><i class="fas fa-times"></i></button>
+    <div style="font-size:15px;font-weight:700;color:white;">✂️ Short Editor</div>
+    <button onclick="applyShortEdits()" style="background:var(--red);color:white;border:none;border-radius:20px;padding:6px 16px;font-size:13px;font-weight:700;cursor:pointer;">Done</button>
+  </div>
+  <!-- Preview Area -->
+  <div style="flex:1;position:relative;display:flex;align-items:center;justify-content:center;background:#111;min-height:0;">
+    <video id="editorVid" style="max-height:100%;max-width:100%;object-fit:contain;" playsinline></video>
+    <canvas id="editorCanvas" style="display:none;max-height:100%;max-width:100%;"></canvas>
+    <!-- Camera overlay -->
+    <video id="editorCamera" style="display:none;position:absolute;bottom:60px;right:12px;width:80px;height:110px;object-fit:cover;border-radius:8px;border:2px solid white;" playsinline autoplay muted></video>
+    <div id="editorEmptyState" style="color:#555;text-align:center;"><i class="fas fa-film" style="font-size:48px;margin-bottom:12px;display:block;"></i><div style="font-size:14px;">Select a video to edit</div></div>
+    <!-- Playback controls overlay -->
+    <div style="position:absolute;bottom:8px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:16px;">
+      <button onclick="editorVidSeek(-5)" style="background:rgba(0,0,0,.5);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:14px;"><i class="fas fa-backward"></i></button>
+      <button onclick="editorTogglePlay()" id="editorPlayBtn" style="background:rgba(0,0,0,.6);border:none;color:white;width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:18px;"><i class="fas fa-play"></i></button>
+      <button onclick="editorVidSeek(5)" style="background:rgba(0,0,0,.5);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:14px;"><i class="fas fa-forward"></i></button>
+    </div>
+  </div>
+  <!-- Editor Tools Row -->
+  <div style="background:#111;padding:10px 8px;overflow-x:auto;">
+    <div style="display:flex;gap:8px;min-width:max-content;">
+      <!-- Camera -->
+      <button onclick="toggleEditorCamera()" id="edCamBtn" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:60px;">
+        <i class="fas fa-camera" style="font-size:18px;color:#4fc3f7;"></i>Camera
+      </button>
+      <!-- Add Sound -->
+      <button onclick="openEditorSounds()" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:60px;">
+        <i class="fas fa-music" style="font-size:18px;color:#e91e8c;"></i>Sound
+      </button>
+      <!-- Trim -->
+      <button onclick="openEditorTrim()" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:60px;">
+        <i class="fas fa-cut" style="font-size:18px;color:#ff9600;"></i>Trim
+      </button>
+      <!-- Speed -->
+      <button onclick="cycleEditorSpeed(this)" id="edSpeedBtn" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:60px;">
+        <i class="fas fa-tachometer-alt" style="font-size:18px;color:#00c864;"></i><span id="edSpeedLbl">1x</span>
+      </button>
+      <!-- Timer -->
+      <button onclick="openEditorTimer()" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:60px;">
+        <i class="fas fa-clock" style="font-size:18px;color:#ffd700;"></i>Timer
+      </button>
+      <!-- Filter -->
+      <button onclick="openEditorFilters()" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:60px;">
+        <i class="fas fa-magic" style="font-size:18px;color:#aa44ff;"></i>Filter
+      </button>
+    </div>
+  </div>
+  <!-- Trim Panel inside editor -->
+  <div id="editorTrimPanel" style="display:none;background:#1a1a1a;padding:14px 16px;border-top:1px solid #333;">
+    <div style="font-size:13px;font-weight:700;color:white;margin-bottom:10px;">✂️ Trim Video</div>
+    <div style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#aaa;margin-bottom:4px;"><span>Start: <span id="edTrimStartLbl">0s</span></span><span>End: <span id="edTrimEndLbl">60s</span></span></div>
+      <input type="range" id="edTrimStart" min="0" max="300" value="0" style="width:100%;accent-color:var(--red);" oninput="updateEdTrim()">
+    </div>
+    <div style="margin-bottom:10px;">
+      <div style="font-size:11px;color:#aaa;margin-bottom:4px;">Duration: <span id="edTrimDurLbl">60s</span></div>
+      <input type="range" id="edTrimDur" min="5" max="60" value="60" style="width:100%;accent-color:var(--red);" oninput="updateEdTrim()">
+    </div>
+    <button onclick="applyEditorTrim()" style="background:var(--red);color:white;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;width:100%;">Apply Trim</button>
+  </div>
+  <!-- Sound Panel inside editor -->
+  <div id="editorSoundPanel" style="display:none;background:#1a1a1a;padding:14px 16px;border-top:1px solid #333;max-height:200px;overflow-y:auto;">
+    <div style="font-size:13px;font-weight:700;color:white;margin-bottom:10px;">🎵 Add Sound</div>
+    <div id="editorSongsList" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;"></div>
+    <div id="editorSelectedSong" style="display:none;margin-top:8px;background:rgba(255,0,0,.12);border:1px solid var(--red);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:8px;">
+      <i class="fas fa-music" style="color:var(--red);"></i>
+      <span id="editorSongName" style="font-size:12px;color:white;flex:1;">No song</span>
+      <button onclick="clearEditorSong()" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:16px;">×</button>
+    </div>
+  </div>
+  <!-- Timer Panel -->
+  <div id="editorTimerPanel" style="display:none;background:#1a1a1a;padding:14px 16px;border-top:1px solid #333;">
+    <div style="font-size:13px;font-weight:700;color:white;margin-bottom:10px;">⏱️ Record Timer</div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="setEditorTimer(15)" style="flex:1;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:10px;font-size:14px;font-weight:700;cursor:pointer;">15s</button>
+      <button onclick="setEditorTimer(30)" style="flex:1;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:10px;font-size:14px;font-weight:700;cursor:pointer;">30s</button>
+      <button onclick="setEditorTimer(60)" style="flex:1;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:10px;font-size:14px;font-weight:700;cursor:pointer;">60s</button>
+    </div>
+    <div id="editorTimerDisplay" style="text-align:center;font-size:36px;font-weight:800;color:var(--red);margin-top:10px;display:none;">0</div>
   </div>
 </div>
 
@@ -1939,7 +2081,24 @@ async function openFeedShort(postId){
   openShortFS(idx>=0?idx:0);
 }
 
+let _hiddenPosts=JSON.parse(localStorage.getItem('mt_hidden')||'[]');
+
+function hidePost(id,btn,e){
+  if(e)e.stopPropagation();
+  _hiddenPosts.push(id);
+  localStorage.setItem('mt_hidden',JSON.stringify(_hiddenPosts.slice(-100)));
+  const card=document.getElementById('card_'+id);
+  if(card){
+    card.style.transition='opacity .3s,max-height .4s';
+    card.style.opacity='0';
+    setTimeout(()=>{card.style.maxHeight='0';card.style.overflow='hidden';card.style.margin='0';},300);
+    setTimeout(()=>card.remove(),700);
+  }
+  showToast('Post hidden');
+}
+
 function buildCard(p){
+  if(_hiddenPosts.includes(p.id))return '';
   if(p.type==='post')return buildPostCard(p);
   // YouTube-style video card
   let thumb='';
@@ -1951,12 +2110,12 @@ function buildCard(p){
   }
   const avHtml=p.authorPhoto?`<img src="${p.authorPhoto}">`:(p.authorName||'U')[0].toUpperCase();
   const score=calcScore(p,userPrefs);
-  return `<div class="yt-card" onclick="openPost('${p.id}')">
+  return `<div class="yt-card" id="card_${p.id}" onclick="openPost('${p.id}')">
     <div class="yt-thumb">
       ${thumb}
       ${p.type==='short'?'<div class="yt-badge">SHORT</div>':''}
       ${p.isLive?'<div class="yt-badge" style="background:#ff0000;">🔴 LIVE</div>':''}
-      ${p.duration?`<div class="yt-dur">${p.duration}</div>`:((p.type==='video'||p.type==='gaming'||p.type==='music')&&!p.isLive?'<div class="yt-dur">▶</div>':'')}
+      ${p.duration?`<div class="yt-dur">${p.duration}</div>`:((p.type==='video'||p.type==='gaming'||p.type==='music'||p.type==='short')&&!p.isLive?`<div class="yt-dur" id="fdur_${p.id}">▶</div>`:'')}
     </div>
     <div class="yt-info">
       <div class="yt-av" onclick="openChannelPage('${p.authorId||''}',event)" style="cursor:pointer;">${avHtml}</div>
@@ -1979,7 +2138,8 @@ function buildPostCard(p){
   return `<div class="post-card" onclick="openPost('${p.id}')">
     <div class="post-hdr">
       <div class="post-av">${avHtml}</div>
-      <div><div class="post-author">${p.authorName||'User'}</div><div class="post-time">${getTimeAgo(p.time)}</div></div>
+      <div style="flex:1;min-width:0;"><div class="post-author">${p.authorName||'User'}</div><div class="post-time">${getTimeAgo(p.time)}</div></div>
+      ${p.authorId&&p.authorId!==cUser?.uid?`<button onclick="quickSubscribe('${p.authorId}','${(p.authorName||'').replace(/'/g,'').replace(/"/g,'')}',this,event)" style="flex-shrink:0;background:var(--red);color:white;border:none;border-radius:16px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;" id="psub_${p.id}">Subscribe</button>`:''}
     </div>
     ${(p.title||p.desc)?`<div class="post-body">${p.title||''}${p.desc?'<br>'+p.desc:''}</div>`:''}
     ${imgs}
@@ -2162,6 +2322,32 @@ function playShortAt(idx){
   else if(sfMusicEl){sfMusicEl.style.display='none';}
 }
 
+async function sfDislike(){
+  if(!cUser||!sfCurrentId)return showToast('Login karein!');
+  const btn=document.getElementById('sfDislikeBtn');
+  const isDisliked=btn?.classList.contains('disliked');
+  if(btn){
+    if(isDisliked){btn.classList.remove('disliked');btn.style.color='white';showToast('Dislike removed');}
+    else{
+      btn.classList.add('disliked');btn.style.color='#4fc3f7';
+      // Remove like if liked
+      const lb=document.getElementById('sfLikeBtn');
+      if(lb&&lb.style.color==='#ff4d4d'){
+        lb.style.color='white';
+        try{
+          await db.collection('posts').doc(sfCurrentId).update({
+            likes:firebase.firestore.FieldValue.increment(-1),
+            likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)
+          });
+          const cnt=document.getElementById('sfLikeCount');
+          if(cnt)cnt.textContent=Math.max(0,parseInt(cnt.textContent||'0')-1);
+        }catch(e){}
+      }
+      showToast('Disliked');
+    }
+  }
+}
+
 async function sfSubscribe(){
   if(!cUser)return showToast('Login karein!');
   const p=sfPosts[sfCurrentIdx];if(!p||!p.authorId||p.authorId===cUser.uid)return;
@@ -2182,6 +2368,7 @@ async function sfSubscribe(){
       if(btn){btn.textContent='Subscribed ✓';btn.style.background='rgba(255,255,255,.25)';btn.style.color='white';}
       showToast('Subscribed! ✅');
       sendNotif(p.authorId,'sub',`${cUserData?.name||'Someone'} subscribed!`,null);
+      showSubNotifPopup(p.authorId,p.authorName||'Channel');
     }
   }catch(e){showToast('Error');}
   finally{if(btn)btn.disabled=false;}
@@ -2198,9 +2385,18 @@ function handleSfTap(e){
   if(_sfTapCount===1){
     _sfTapTimer=setTimeout(()=>{
       _sfTapCount=0;
-      // Single tap = pause/play
       const v=document.getElementById('sfVid');
-      if(v){if(v.paused)v.play();else v.pause();}
+      const ov=document.getElementById('sfPauseOverlay');
+      const ic=document.getElementById('sfPauseIcon');
+      if(v){
+        if(v.paused){v.play();if(ic)ic.className='fas fa-play';}
+        else{v.pause();if(ic)ic.className='fas fa-pause';}
+        if(ov){
+          ov.style.display='flex';
+          clearTimeout(window._sfPauseTimer);
+          window._sfPauseTimer=setTimeout(()=>{ov.style.display='none';},700);
+        }
+      }
     },250);
   }else if(_sfTapCount>=2){
     clearTimeout(_sfTapTimer);_sfTapCount=0;
@@ -2224,15 +2420,23 @@ function handleSfTap(e){
 }
 
 function showDoubleTapHeart(x,y){
-  const color=HEART_COLORS[Math.floor(Math.random()*HEART_COLORS.length)];
-  const el=document.createElement('div');
-  el.className='heart-anim';
-  el.style.left=x+'px';
-  el.style.top=y+'px';
-  el.style.color=color;
-  el.innerHTML='❤️';
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),900);
+  // Multiple hearts in random colors — not just one red!
+  const count=5+Math.floor(Math.random()*4);
+  for(let i=0;i<count;i++){
+    const color=HEART_COLORS[Math.floor(Math.random()*HEART_COLORS.length)];
+    const el=document.createElement('div');
+    el.className='heart-anim';
+    const ox=(Math.random()-0.5)*100;
+    const oy=(Math.random()-0.5)*80;
+    el.style.left=(x+ox)+'px';
+    el.style.top=(y+oy)+'px';
+    el.style.color=color;
+    el.style.fontSize=(18+Math.random()*18)+'px';
+    el.style.animationDelay=(i*0.06)+'s';
+    el.innerHTML='❤️';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),950+i*60);
+  }
 }
 function prevShort(){if(sfCurrentIdx>0)playShortAt(sfCurrentIdx-1);}
 function nextShort(){if(sfCurrentIdx<sfPosts.length-1)playShortAt(sfCurrentIdx+1);}
@@ -2282,6 +2486,32 @@ async function sfDislike(){
 }
 
 function sfCommentOpen(){openPost(sfCurrentId);closeShortFS();}
+
+async function sfDislike(){
+  if(!cUser||!sfCurrentId)return showToast('Login karein!');
+  const btn=document.getElementById('sfDislikeBtn');
+  const isDisliked=btn?.classList.contains('disliked');
+  if(btn){
+    if(isDisliked){btn.classList.remove('disliked');btn.style.color='white';showToast('Dislike removed');}
+    else{
+      btn.classList.add('disliked');btn.style.color='#4fc3f7';
+      // Remove like if liked
+      const lb=document.getElementById('sfLikeBtn');
+      if(lb&&lb.style.color==='#ff4d4d'){
+        lb.style.color='white';
+        try{
+          await db.collection('posts').doc(sfCurrentId).update({
+            likes:firebase.firestore.FieldValue.increment(-1),
+            likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)
+          });
+          const cnt=document.getElementById('sfLikeCount');
+          if(cnt)cnt.textContent=Math.max(0,parseInt(cnt.textContent||'0')-1);
+        }catch(e){}
+      }
+      showToast('Disliked');
+    }
+  }
+}
 
 async function sfSubscribe(){
   if(!cUser)return showToast('Login karein!');
@@ -2752,6 +2982,8 @@ async function toggleSubscribe(){
       if(btn){btn.textContent='Subscribed ✓';btn.classList.add('subscribed');}
       showToast('Subscribed! ✅');
       sendNotif(aId,'sub',`${cUserData?.name||'Someone'} subscribed to your channel!`,null);
+      // Show notification preference popup
+      showSubNotifPopup(aId, currentPostData?.authorName||'Channel');
     }
     // Update subscriber count display
     db.collection('users').doc(aId).get().then(ud=>{
@@ -2895,36 +3127,120 @@ function downloadVideo(){
 // ══════════════════════════════════════════════════════
 // COMMENTS
 // ══════════════════════════════════════════════════════
+let _allComments=[], _commFilter='top';
+
+function buildCommentHTML(c, id){
+  const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
+  const hasNonEnglish=/[^ -]/.test(c.text);
+  const likeCount=c.likes||0;
+  const likedByMe=cUser&&(c.likedBy||[]).includes(cUser.uid);
+  return `<div class="comm-item" id="citem_${id}">
+    <div class="comm-av" onclick="openChannelPage('${c.authorId||''}',event)" style="cursor:pointer;">${av}</div>
+    <div class="comm-body" style="flex:1;">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div class="comm-author">${c.authorName||'User'}</div>
+        <div class="comm-time">${getTimeAgo(c.time)}</div>
+      </div>
+      <div class="comm-text" id="ctxt_${id}">${c.text}</div>
+      ${hasNonEnglish?`<button onclick="toggleTranslate('${id}','${encodeURIComponent(c.text)}')" style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;padding:2px 0;margin-top:2px;"><i class="fas fa-language" style="margin-right:4px;"></i>See original (Translated by Google)</button>`:''}
+      <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+        <button onclick="likeComment('${id}',this)" style="background:none;border:none;color:${likedByMe?'var(--red)':'var(--text3)'};font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px;"><i class="fas fa-thumbs-up"></i> <span id="clc_${id}">${likeCount}</span></button>
+        <button onclick="setReply('@${(c.authorName||'user').replace(/[^a-z0-9]/gi,'')}')" style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;">Reply</button>
+        ${c.replies>0?`<span style="font-size:11px;color:var(--red);cursor:pointer;" onclick="showToast('${c.replies} replies')">▼ ${c.replies} repl${c.replies===1?'y':'ies'}</span>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+async function toggleTranslate(id, encodedText){
+  const el=document.getElementById('ctxt_'+id);
+  const btn=el?.nextElementSibling;
+  if(!el)return;
+  if(el.dataset.translated==='true'){
+    el.dataset.translated='false';
+    el.innerHTML=el.dataset.original||el.innerHTML;
+    if(btn)btn.innerHTML='<i class="fas fa-language" style="margin-right:4px;"></i>See original (Translated by Google)';
+    return;
+  }
+  const text=decodeURIComponent(encodedText);
+  const url=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
+  try{
+    const res=await fetch(url);
+    const data=await res.json();
+    const translated=data[0].map(s=>s[0]).join('');
+    el.dataset.original=text;
+    el.innerHTML=translated;
+    el.dataset.translated='true';
+    if(btn)btn.innerHTML='<i class="fas fa-language" style="margin-right:4px;"></i>See original';
+  }catch(e){showToast('Translation unavailable');}
+}
+
+async function likeComment(commentId, btn){
+  if(!cUser||!currentPostId)return showToast('Login karein!');
+  try{
+    const ref=db.collection('posts').doc(currentPostId).collection('comments').doc(commentId);
+    const doc=await ref.get();
+    const c=doc.data();
+    const liked=(c.likedBy||[]).includes(cUser.uid);
+    if(liked){
+      await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
+      btn.style.color='var(--text3)';
+      const cnt=document.getElementById('clc_'+commentId);
+      if(cnt)cnt.textContent=Math.max(0,(c.likes||1)-1);
+    }else{
+      await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid)});
+      btn.style.color='var(--red)';
+      const cnt=document.getElementById('clc_'+commentId);
+      if(cnt)cnt.textContent=(c.likes||0)+1;
+    }
+  }catch(e){}
+}
+
+function filterComments(filter, btn){
+  _commFilter=filter;
+  document.querySelectorAll('#commFilterRow .chip').forEach(c=>c.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const list=document.getElementById('commList');
+  if(!_allComments.length)return;
+  let filtered=[..._allComments];
+  if(filter==='newest')filtered.sort((a,b)=>b.time-a.time);
+  else if(filter==='top')filtered.sort((a,b)=>(b.likes||0)-(a.likes||0)||(b.time-a.time));
+  else if(filter==='topics'){
+    // Group by first 3 words as "topic"
+    const topics={};
+    filtered.forEach(c=>{const t=c.text.split(' ').slice(0,3).join(' ').substring(0,20);if(!topics[t])topics[t]=[];topics[t].push(c);});
+    filtered=Object.values(topics).flat();
+  }else if(filter==='timed'){
+    filtered=filtered.filter(c=>c.timestamp).concat(filtered.filter(c=>!c.timestamp));
+  }
+  list.innerHTML=filtered.map(c=>buildCommentHTML(c.id,c.id)).join('')||'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet!</div>';
+}
+
+function showAboutComments(){
+  document.getElementById('aboutCommOverlay').style.display='block';
+  document.getElementById('aboutCommSheet').style.display='block';
+}
+function closeAboutComments(){
+  document.getElementById('aboutCommOverlay').style.display='none';
+  document.getElementById('aboutCommSheet').style.display='none';
+}
+
 async function loadComments(postId){
   const list=document.getElementById('commList');
   list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  _allComments=[];
   try{
     const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('time','desc').limit(50).get();
     document.getElementById('commTitle').textContent=`Comments (${snap.size})`;
     if(snap.empty){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet. Be first! 💬</div>';return;}
-    list.innerHTML=snap.docs.map(d=>{
-      const c=d.data();
-      const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
-      return `<div class="comm-item">
-        <div class="comm-av">${av}</div>
-        <div class="comm-body">
-          <div class="comm-author">${c.authorName||'User'}</div>
-          <div class="comm-text">${c.text}</div>
-          <div class="comm-time">${getTimeAgo(c.time)}</div>
-          <button onclick="setReply('@${(c.authorName||'user').replace(/[^a-z0-9]/gi,'')}')" style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;padding:2px 0;">Reply</button>
-        </div></div>`;
-    }).join('');
+    _allComments=snap.docs.map(d=>({id:d.id,...d.data()}));
+    list.innerHTML=_allComments.map(c=>buildCommentHTML(c,c.id)).join('');
   }catch(e){
-    // Fallback without orderBy
     try{
       const snap2=await db.collection('posts').doc(postId).collection('comments').limit(50).get();
-      const sorted=snap2.docs.sort((a,b)=>b.data().time-a.data().time);
-      document.getElementById('commTitle').textContent=`Comments (${sorted.length})`;
-      list.innerHTML=sorted.map(d=>{
-        const c=d.data();
-        const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
-        return `<div class="comm-item"><div class="comm-av">${av}</div><div class="comm-body"><div class="comm-author">${c.authorName||'User'}</div><div class="comm-text">${c.text}</div><div class="comm-time">${getTimeAgo(c.time)}</div></div></div>`;
-      }).join('')||'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet!</div>';
+      _allComments=snap2.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.time-a.time);
+      document.getElementById('commTitle').textContent=`Comments (${_allComments.length})`;
+      list.innerHTML=_allComments.map(c=>buildCommentHTML(c,c.id)).join('')||'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet!</div>';
     }catch(e2){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';}
   }
 }
@@ -2942,15 +3258,17 @@ async function loadRelated(postId, postType, category){
       .slice(0,8);
     if(!related.length){list.innerHTML='';return;}
     list.innerHTML=related.map(p=>{
-      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-      const av=p.authorPhoto?`<img src="${p.authorPhoto}">`:(p.authorName||'U')[0].toUpperCase();
-      return `<div onclick="openPost('${p.id}')" style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;">
-        <div style="width:100px;height:60px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
-          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<i class="fas fa-video" style="font-size:18px;color:var(--text3);"></i>'}
+      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_300/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      const dur=p.duration?`<div style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.85);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:2px;">${p.duration}</div>`:'';
+      return `<div onclick="openPost('${p.id}')" style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;">
+        <div style="width:130px;min-width:130px;height:74px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;position:relative;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-video" style="font-size:20px;color:var(--text3);"></i></div>'}
+          ${dur}
         </div>
         <div style="flex:1;min-width:0;">
-          <div style="font-size:12px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
-          <div style="font-size:10px;color:var(--text2);margin-top:3px;">${p.authorName||''} • ${getTimeAgo(p.time)}</div>
+          <div style="font-size:12px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:4px;">${p.authorName||''}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;">👁️${p.views||0} • ${getTimeAgo(p.time)}</div>
         </div>
       </div>`;
     }).join('');
@@ -3113,7 +3431,7 @@ async function loadDashboard(){
     const totalScore=myPosts.reduce((a,p)=>a+(p.rankScore||0),0);
     const growth=subs>0?Math.round((likes/Math.max(subs,1))*100):0;
     document.getElementById('aCTR').textContent=ctr+'%';
-    // Mini bar chart
+    // Mini bar chart (overview)
     const chartEl=document.getElementById('miniChart');
     if(chartEl&&myPosts.length){
       const last7=myPosts.slice(0,7);
@@ -3123,6 +3441,49 @@ async function loadDashboard(){
         const pct=Math.max(4,Math.round(((p.views||0)/maxV)*100));
         return `<div title="${p.title||'Post'}: ${p.views||0} views" onclick="openPost('${p.id}')" style="flex:1;background:${colors[i]||'var(--red)'};height:${pct}%;border-radius:4px 4px 0 0;cursor:pointer;min-height:4px;transition:height .3s;" ></div>`;
       }).join('');
+    }
+    // Analytics tab — views chart
+    const dcEl=document.getElementById('dashViewsChart');
+    const dlEl=document.getElementById('dashViewsLabels');
+    if(dcEl&&myPosts.length){
+      const last7=myPosts.slice(0,7);
+      const maxV=Math.max(...last7.map(p=>p.views||0),1);
+      const maxL=Math.max(...last7.map(p=>p.likes||0),1);
+      dcEl.innerHTML=last7.map((p,i)=>{
+        const pct=Math.max(6,Math.round(((p.views||0)/maxV)*100));
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="openPost('${p.id}')" title="${p.title||''}: ${p.views||0} views">
+          <div style="font-size:9px;color:var(--text3);">${p.views||0}</div>
+          <div style="width:100%;background:var(--red);height:${pct}%;border-radius:4px 4px 0 0;min-height:6px;opacity:.85;transition:height .4s;"></div>
+        </div>`;
+      }).join('');
+      if(dlEl)dlEl.innerHTML=last7.map(p=>`<div style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${(p.title||'').substring(0,6)}</div>`).join('');
+      // Impressions chart (likes bar)
+      const diEl=document.getElementById('dashImpressionsChart');
+      if(diEl)diEl.innerHTML=last7.map((p,i)=>{
+        const pct=Math.max(6,Math.round(((p.likes||0)/maxL)*100));
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="openPost('${p.id}')">
+          <div style="font-size:9px;color:var(--text3);">${p.likes||0}</div>
+          <div style="width:100%;background:#4fc3f7;height:${pct}%;border-radius:4px 4px 0 0;min-height:6px;transition:height .4s;"></div>
+        </div>`;
+      }).join('');
+      // Subs trend
+      const stEl=document.getElementById('dashSubsTrend');
+      if(stEl){
+        const ud2=await db.collection('users').doc(cUser.uid).get();
+        const curSubs=ud2.exists?(ud2.data().subscribers||0):0;
+        stEl.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span style="color:var(--text2);">Current subscribers</span>
+          <span style="font-weight:700;font-size:18px;color:var(--text);">${curSubs}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span style="color:var(--text2);">Total videos</span>
+          <span style="font-weight:700;">${vids}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;">
+          <span style="color:var(--text2);">Total watch time</span>
+          <span style="font-weight:700;">${watchMins>60?Math.round(watchMins/60)+'h':watchMins+'m'}</span>
+        </div>`;
+      }
     }
     document.getElementById('aAvgViews').textContent=avgV;
     document.getElementById('aEngagement').textContent=eng+'%';
@@ -3440,11 +3801,14 @@ async function loadOwnerDash(){
     ]);
     let channels=0,totalLikes=0,totalViews=0;
     usersSnap.forEach(d=>{if(d.data().channelName||d.data().hasChannel)channels++;});
-    postsSnap.forEach(d=>{totalLikes+=d.data().likes||0;totalViews+=d.data().views||0;});
+    let totalShorts=0;
+    postsSnap.forEach(d=>{const pd=d.data();totalLikes+=pd.likes||0;totalViews+=pd.views||0;if(pd.type==='short')totalShorts++;});
     document.getElementById('owUsers').textContent=usersSnap.size;
     document.getElementById('owChannels').textContent=channels;
     document.getElementById('owVideos').textContent=postsSnap.size;
     document.getElementById('owLikes').textContent=totalLikes;
+    const owV=document.getElementById('owViews');if(owV)owV.textContent=totalViews;
+    const owS=document.getElementById('owShorts');if(owS)owS.textContent=totalShorts;
     const users=usersSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.lastSeen||0)-(a.lastSeen||0));
     if(ul)ul.innerHTML=users.map(u=>{
       const av=u.photoURL?`<img src="${u.photoURL}" style="width:100%;height:100%;object-fit:cover;">`:(u.name||'U')[0].toUpperCase();
@@ -3628,6 +3992,458 @@ function openSideMenu(){
 function closeSideMenu(){
   document.getElementById('sideOverlay').classList.remove('open');
   document.getElementById('sideMenu').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════════════
+// PLAYLISTS — Full working implementation
+// ══════════════════════════════════════════════════════
+let currentPlaylistId=null, currentPlaylistName='';
+
+async function loadMyPlaylists(){
+  const grid=document.getElementById('myPlaylistsGrid');
+  if(!grid||!cUser)return;
+  grid.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('playlists').where('ownerId','==',cUser.uid).orderBy('time','desc').get();
+    if(snap.empty){grid.innerHTML='<div class="empty-state"><i class="fas fa-list-ul"></i><p>No playlists yet. Create one!</p></div>';return;}
+    grid.innerHTML=snap.docs.map(d=>{
+      const pl=d.data();
+      const count=pl.videoIds?.length||0;
+      return `<div onclick="openPlaylist('${d.id}','${(pl.name||'').replace(/'/g,'')}')" style="background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;gap:12px;padding:12px;">
+        <div style="width:60px;height:44px;background:linear-gradient(135deg,var(--red),#ff6644);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-list-ul" style="color:white;font-size:18px;"></i>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;">${pl.name||'Untitled'}</div>
+          <div style="font-size:11px;color:var(--text2);">${count} video${count!==1?'s':''} • Private</div>
+        </div>
+        <button onclick="event.stopPropagation();deletePlaylistById('${d.id}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;padding:4px;"><i class="fas fa-trash"></i></button>
+      </div>`;
+    }).join('');
+  }catch(e){
+    try{
+      const s2=await db.collection('playlists').where('ownerId','==',cUser.uid).get();
+      if(s2.empty){grid.innerHTML='<div class="empty-state"><i class="fas fa-list-ul"></i><p>No playlists yet</p></div>';return;}
+      grid.innerHTML=s2.docs.map(d=>{
+        const pl=d.data();
+        const count=pl.videoIds?.length||0;
+        return `<div onclick="openPlaylist('${d.id}','${(pl.name||'').replace(/'/g,'')}')" style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:12px;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;gap:12px;">
+          <div style="width:60px;height:44px;background:linear-gradient(135deg,var(--red),#ff6644);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-list-ul" style="color:white;font-size:18px;"></i>
+          </div>
+          <div style="flex:1;"><div style="font-size:13px;font-weight:700;">${pl.name||'Untitled'}</div><div style="font-size:11px;color:var(--text2);">${count} videos</div></div>
+        </div>`;
+      }).join('');
+    }catch(e2){grid.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading playlists</p></div>';}
+  }
+}
+
+async function openPlaylist(id,name){
+  currentPlaylistId=id;currentPlaylistName=name;
+  showScreen('playlist');
+  document.getElementById('playlistTitle').textContent=name||'Playlist';
+  const list=document.getElementById('playlistVideosList');
+  list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const doc=await db.collection('playlists').doc(id).get();
+    const pl=doc.data();
+    const ids=pl?.videoIds||[];
+    if(!ids.length){list.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No videos in this playlist yet</p></div>';return;}
+    const posts=await Promise.all(ids.map(vid=>db.collection('posts').doc(vid).get()));
+    const valid=posts.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}));
+    if(!valid.length){list.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>Videos not found</p></div>';return;}
+    list.innerHTML=valid.map((p,i)=>{
+      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      return `<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="openPost('${p.id}')">
+        <div style="font-size:13px;font-weight:800;color:var(--text3);width:18px;text-align:center;">${i+1}</div>
+        <div style="width:90px;height:56px;border-radius:7px;overflow:hidden;background:var(--bg3);flex-shrink:0;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-video" style="font-size:16px;color:var(--text3);"></i></div>'}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:3px;">${p.authorName||''} • ${getTimeAgo(p.time)}</div>
+        </div>
+        <button onclick="event.stopPropagation();removeFromPlaylist('${id}','${p.id}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:4px;"><i class="fas fa-times"></i></button>
+      </div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading playlist</p></div>';}
+}
+
+async function removeFromPlaylist(plId,vidId){
+  try{
+    await db.collection('playlists').doc(plId).update({
+      videoIds:firebase.firestore.FieldValue.arrayRemove(vidId)
+    });
+    showToast('Removed from playlist');
+    openPlaylist(plId,currentPlaylistName);
+  }catch(e){showToast('Error');}
+}
+
+function createPlaylistDialog(){
+  const name=prompt('Playlist name:');
+  if(!name||!name.trim())return;
+  createPlaylist(name.trim());
+}
+
+async function createPlaylist(name){
+  if(!cUser)return showToast('Login karein!');
+  try{
+    await db.collection('playlists').add({
+      name,ownerId:cUser.uid,videoIds:[],time:Date.now()
+    });
+    showToast('Playlist created! ✅');
+    loadMyPlaylists();
+  }catch(e){showToast('Error creating playlist');}
+}
+
+async function saveToPlaylist(){
+  if(!cUser||!currentPostId)return showToast('Login karein!');
+  try{
+    const snap=await db.collection('playlists').where('ownerId','==',cUser.uid).get();
+    if(snap.empty){
+      const name=prompt('No playlists found. Create one:');
+      if(!name)return;
+      const ref=await db.collection('playlists').add({name,ownerId:cUser.uid,videoIds:[currentPostId],time:Date.now()});
+      showToast('Added to new playlist "'+name+'" ✅');return;
+    }
+    // Show sheet to pick playlist
+    const ex=document.getElementById('plSheet');if(ex)ex.remove();
+    const exo=document.getElementById('plSheetOv');if(exo)exo.remove();
+    const ov=document.createElement('div');
+    ov.id='plSheetOv';
+    ov.style.cssText='position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);';
+    document.body.appendChild(ov);
+    const sheet=document.createElement('div');
+    sheet.id='plSheet';
+    sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:501;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 28px;max-height:60vh;overflow-y:auto;';
+    sheet.innerHTML=`<div style="font-size:16px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;"><span>💾 Save to Playlist</span><i class="fas fa-times" style="cursor:pointer;color:var(--text2);" onclick="document.getElementById('plSheet').remove();document.getElementById('plSheetOv').remove();"></i></div>`+
+      snap.docs.map(d=>`<div onclick="addToExistingPlaylist('${d.id}','${(d.data().name||'').replace(/'/g,'')}');document.getElementById('plSheet').remove();document.getElementById('plSheetOv').remove();" style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;cursor:pointer;margin-bottom:6px;background:var(--bg3);">
+        <i class="fas fa-list-ul" style="color:var(--red);font-size:16px;"></i>
+        <span style="font-size:14px;font-weight:600;">${d.data().name||'Untitled'}</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:auto;">${d.data().videoIds?.length||0} videos</span>
+      </div>`).join('')+
+      `<div onclick="(async()=>{const n=prompt('New playlist name:');if(n){await db.collection('playlists').add({name:n,ownerId:cUser.uid,videoIds:[currentPostId],time:Date.now()});showToast('Created & saved! ✅');}document.getElementById('plSheet').remove();document.getElementById('plSheetOv').remove();})()" style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;cursor:pointer;margin-top:6px;border:2px dashed var(--border);">
+        <i class="fas fa-plus" style="color:var(--text3);font-size:16px;"></i>
+        <span style="font-size:14px;color:var(--text2);">Create new playlist</span>
+      </div>`;
+    ov.onclick=()=>{sheet.remove();ov.remove();};
+    document.body.appendChild(sheet);
+  }catch(e){showToast('Error: '+e.message);}
+}
+
+async function addToExistingPlaylist(plId,plName){
+  if(!currentPostId)return;
+  try{
+    await db.collection('playlists').doc(plId).update({
+      videoIds:firebase.firestore.FieldValue.arrayUnion(currentPostId)
+    });
+    showToast('Saved to "'+plName+'" ✅');
+  }catch(e){showToast('Error saving');}
+}
+
+async function addToPlaylist(postId){
+  if(!cUser)return showToast('Login karein!');
+  const prevId=currentPostId;
+  currentPostId=postId;
+  await saveToPlaylist();
+  currentPostId=prevId;
+}
+
+async function deletePlaylist(){
+  if(!currentPlaylistId||!confirm('Delete this playlist?'))return;
+  try{
+    await db.collection('playlists').doc(currentPlaylistId).delete();
+    showToast('Playlist deleted ✅');
+    showScreen('playlists');
+    loadMyPlaylists();
+  }catch(e){showToast('Error deleting');}
+}
+
+async function deletePlaylistById(id){
+  if(!confirm('Delete this playlist?'))return;
+  try{
+    await db.collection('playlists').doc(id).delete();
+    showToast('Deleted ✅');
+    loadMyPlaylists();
+  }catch(e){showToast('Error');}
+}
+
+function filterLikedVideos(){
+  showScreen('home');
+  const liked=allPosts.filter(p=>cUser&&(p.likedBy||[]).includes(cUser.uid));
+  renderFeed(liked.length?liked:allPosts);
+  if(!liked.length)showToast('No liked videos yet');
+}
+
+
+// ══════════════════════════════════════════════════════
+// SUBSCRIBE NOTIFICATION POPUP
+// ══════════════════════════════════════════════════════
+function showSubNotifPopup(authorId, channelName){
+  const ex=document.getElementById('subNotifPopup');if(ex)ex.remove();
+  const popup=document.createElement('div');
+  popup.id='subNotifPopup';
+  popup.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:1200;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;width:min(320px,90vw);box-shadow:0 8px 32px rgba(0,0,0,.5);animation:fadeUp .3s ease;';
+  popup.innerHTML=`
+    <div style="font-size:14px;font-weight:700;margin-bottom:4px;">🔔 Notifications</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px;">Choose notifications for <b>${channelName}</b></div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button onclick="setSubNotif('${authorId}','all');document.getElementById('subNotifPopup').remove();" style="background:var(--red);color:white;border:none;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-bell" style="font-size:16px;"></i> All notifications
+      </button>
+      <button onclick="setSubNotif('${authorId}','personalized');document.getElementById('subNotifPopup').remove();" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-bell-slash" style="font-size:16px;color:var(--text2);"></i> Personalized only
+      </button>
+      <button onclick="document.getElementById('subNotifPopup').remove();" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;padding:4px;">Skip</button>
+    </div>
+  `;
+  document.body.appendChild(popup);
+  setTimeout(()=>{const el=document.getElementById('subNotifPopup');if(el)el.remove();},8000);
+}
+
+function setSubNotif(authorId,pref){
+  try{
+    const key='notif_'+authorId;
+    localStorage.setItem(key,pref);
+    showToast(pref==='all'?'🔔 All notifications on!':'🔔 Personalized notifications set!');
+  }catch(e){}
+}
+
+
+// ══════════════════════════════════════════════════════
+// SHORT CARD 3-DOT MENU
+// ══════════════════════════════════════════════════════
+function showShortMenu(id,title,authorId,url,e){
+  if(e){e.stopPropagation();e.preventDefault();}
+  const ex=document.getElementById('shortMenuSheet');if(ex)ex.remove();
+  const exo=document.getElementById('shortMenuOv');if(exo)exo.remove();
+  const ov=document.createElement('div');
+  ov.id='shortMenuOv';
+  ov.style.cssText='position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.5);';
+  document.body.appendChild(ov);
+  const sheet=document.createElement('div');
+  sheet.id='shortMenuSheet';
+  sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:801;background:var(--bg2);border-radius:20px 20px 0 0;padding:16px 0 24px;';
+  const isOwn=authorId===cUser?.uid;
+  sheet.innerHTML=`
+    <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 14px;"></div>
+    <div style="font-size:14px;font-weight:700;padding:0 16px 12px;border-bottom:1px solid var(--border);">${title||'Short'}</div>
+    <div onclick="closeShortMenu();ctxPostId='${id}';addToPlaylist('${id}');" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;">
+      <i class="fas fa-list-ul" style="width:22px;color:var(--text2);"></i><span style="font-size:14px;">Save to playlist</span>
+    </div>
+    <div onclick="closeShortMenu();navigator.clipboard.writeText('${url||''}').then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Copied!'));" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;">
+      <i class="fas fa-share-alt" style="width:22px;color:var(--text2);"></i><span style="font-size:14px;">Share</span>
+    </div>
+    <div onclick="closeShortMenu();showToast('Not interested');" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;">
+      <i class="fas fa-eye-slash" style="width:22px;color:var(--text2);"></i><span style="font-size:14px;">Not interested</span>
+    </div>
+    <div onclick="closeShortMenu();showToast('Reported! ✅');" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;">
+      <i class="fas fa-flag" style="width:22px;color:var(--text2);"></i><span style="font-size:14px;">Report</span>
+    </div>
+    ${isOwn?`<div onclick="closeShortMenu();ctxPostId='${id}';ctxDelete();" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;color:#ff4444;">
+      <i class="fas fa-trash-alt" style="width:22px;"></i><span style="font-size:14px;">Delete</span>
+    </div>`:''}
+  `;
+  ov.onclick=()=>{sheet.remove();ov.remove();};
+  document.body.appendChild(sheet);
+}
+function closeShortMenu(){
+  const s=document.getElementById('shortMenuSheet');if(s)s.remove();
+  const o=document.getElementById('shortMenuOv');if(o)o.remove();
+}
+
+
+// ══════════════════════════════════════════════════════
+// SHORT EDITOR — Camera, Sound, Trim, Speed, Timer
+// ══════════════════════════════════════════════════════
+let _editorSong=null, _editorTrimStart=0, _editorTrimDur=60, _editorSpeed=1;
+let _editorCameraStream=null, _editorTimerInterval=null;
+const SPEED_OPTIONS=[0.5,0.75,1,1.25,1.5,2];
+let _editorSpeedIdx=2;
+
+function openShortEditor(file){
+  const modal=document.getElementById('shortEditorModal');
+  if(modal)modal.style.display='flex';
+  if(file){
+    const vid=document.getElementById('editorVid');
+    const empty=document.getElementById('editorEmptyState');
+    const url=URL.createObjectURL(file);
+    if(vid){vid.src=url;vid.style.display='block';}
+    if(empty)empty.style.display='none';
+  }
+}
+
+function closeShortEditor(){
+  const modal=document.getElementById('shortEditorModal');
+  if(modal)modal.style.display='none';
+  stopEditorCamera();
+  const vid=document.getElementById('editorVid');
+  if(vid){vid.pause();}
+  closeAllEditorPanels();
+}
+
+function editorTogglePlay(){
+  const vid=document.getElementById('editorVid');
+  const btn=document.getElementById('editorPlayBtn');
+  if(!vid||!vid.src)return;
+  if(vid.paused){vid.play();if(btn)btn.innerHTML='<i class="fas fa-pause"></i>';}
+  else{vid.pause();if(btn)btn.innerHTML='<i class="fas fa-play"></i>';}
+}
+
+function editorVidSeek(secs){
+  const vid=document.getElementById('editorVid');
+  if(vid)vid.currentTime=Math.max(0,(vid.currentTime||0)+secs);
+}
+
+function closeAllEditorPanels(){
+  ['editorTrimPanel','editorSoundPanel','editorTimerPanel'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
+}
+
+// Camera
+async function toggleEditorCamera(){
+  const btn=document.getElementById('edCamBtn');
+  const camVid=document.getElementById('editorCamera');
+  if(_editorCameraStream){
+    stopEditorCamera();
+    if(btn)btn.style.borderColor='#333';
+    return;
+  }
+  try{
+    _editorCameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+    if(camVid){camVid.srcObject=_editorCameraStream;camVid.style.display='block';}
+    if(btn)btn.style.borderColor='var(--red)';
+    showToast('Camera on 📷');
+  }catch(e){showToast('Camera access denied. Allow camera in browser settings.');}
+}
+
+function stopEditorCamera(){
+  if(_editorCameraStream){
+    _editorCameraStream.getTracks().forEach(t=>t.stop());
+    _editorCameraStream=null;
+  }
+  const camVid=document.getElementById('editorCamera');
+  if(camVid){camVid.srcObject=null;camVid.style.display='none';}
+}
+
+// Sound
+function openEditorSounds(){
+  closeAllEditorPanels();
+  const panel=document.getElementById('editorSoundPanel');
+  if(!panel)return;
+  panel.style.display='block';
+  const list=document.getElementById('editorSongsList');
+  if(list)list.innerHTML=TRENDING_SONGS.map(s=>`
+    <div onclick="selectEditorSong(${JSON.stringify(s).replace(/"/g,"'")})" style="flex-shrink:0;background:#222;border:1.5px solid ${_editorSong?.id===s.id?'var(--red)':'#444'};border-radius:10px;padding:8px 12px;cursor:pointer;min-width:110px;text-align:center;">
+      <div style="font-size:18px;margin-bottom:3px;">${s.emoji}</div>
+      <div style="font-size:10px;font-weight:600;color:#ccc;">${s.name}</div>
+    </div>`).join('');
+}
+
+function selectEditorSong(song){
+  _editorSong=song;
+  const info=document.getElementById('editorSelectedSong');
+  const name=document.getElementById('editorSongName');
+  if(info)info.style.display='flex';
+  if(name)name.textContent=song.name;
+  showToast('Sound selected: '+song.name);
+  openEditorSounds(); // refresh
+}
+
+function clearEditorSong(){
+  _editorSong=null;
+  const info=document.getElementById('editorSelectedSong');
+  if(info)info.style.display='none';
+}
+
+// Trim
+function openEditorTrim(){
+  closeAllEditorPanels();
+  const panel=document.getElementById('editorTrimPanel');
+  if(!panel)return;
+  panel.style.display='block';
+  const vid=document.getElementById('editorVid');
+  const maxDur=Math.floor(vid?.duration||60);
+  const startEl=document.getElementById('edTrimStart');
+  if(startEl){startEl.max=Math.max(maxDur-5,1);startEl.value=_editorTrimStart;}
+  updateEdTrim();
+}
+
+function updateEdTrim(){
+  const s=parseInt(document.getElementById('edTrimStart')?.value||0);
+  const d=parseInt(document.getElementById('edTrimDur')?.value||60);
+  _editorTrimStart=s; _editorTrimDur=d;
+  const sl=document.getElementById('edTrimStartLbl');if(sl)sl.textContent=s+'s';
+  const el=document.getElementById('edTrimEndLbl');if(el)el.textContent=(s+d)+'s';
+  const dl=document.getElementById('edTrimDurLbl');if(dl)dl.textContent=d+'s';
+  const vid=document.getElementById('editorVid');
+  if(vid)vid.currentTime=s;
+}
+
+function applyEditorTrim(){
+  const vid=document.getElementById('editorVid');
+  if(vid){vid.currentTime=_editorTrimStart;}
+  showToast(`Trim set: ${_editorTrimStart}s → ${_editorTrimStart+_editorTrimDur}s ✂️`);
+  closeAllEditorPanels();
+}
+
+// Speed
+function cycleEditorSpeed(btn){
+  _editorSpeedIdx=(_editorSpeedIdx+1)%SPEED_OPTIONS.length;
+  _editorSpeed=SPEED_OPTIONS[_editorSpeedIdx];
+  const vid=document.getElementById('editorVid');
+  if(vid)vid.playbackRate=_editorSpeed;
+  const lbl=document.getElementById('edSpeedLbl');if(lbl)lbl.textContent=_editorSpeed+'x';
+  if(btn)btn.style.borderColor=_editorSpeed!==1?'var(--red)':'#333';
+  showToast('Speed: '+_editorSpeed+'x');
+}
+
+// Timer
+function openEditorTimer(){
+  closeAllEditorPanels();
+  const panel=document.getElementById('editorTimerPanel');
+  if(panel)panel.style.display='block';
+}
+
+function setEditorTimer(secs){
+  clearInterval(_editorTimerInterval);
+  const disp=document.getElementById('editorTimerDisplay');
+  if(!disp)return;
+  disp.style.display='block';
+  let count=secs;
+  disp.textContent=count;
+  _editorTimerInterval=setInterval(()=>{
+    count--;
+    if(disp)disp.textContent=count;
+    if(count<=0){
+      clearInterval(_editorTimerInterval);
+      disp.textContent='🎬';
+      showToast('Timer done! Record now 🔴');
+    }
+  },1000);
+}
+
+function applyShortEdits(){
+  // Collect all editor settings and pass back to upload
+  const edits={
+    trimStart:_editorTrimStart,
+    trimDur:_editorTrimDur,
+    speed:_editorSpeed,
+    bgMusic:_editorSong?.name||null,
+    bgMusicId:_editorSong?.id||null,
+  };
+  // Save to upload form state
+  window._shortEditorEdits=edits;
+  if(edits.bgMusic){
+    selectedSong=_editorSong;
+    const info=document.getElementById('selectedSongInfo');
+    const nameEl=document.getElementById('selectedSongName');
+    if(info)info.style.display='flex';
+    if(nameEl)nameEl.textContent=edits.bgMusic;
+  }
+  showToast('Edits applied! ✅');
+  closeShortEditor();
 }
 
 // ══ STUDIO TABS ══
