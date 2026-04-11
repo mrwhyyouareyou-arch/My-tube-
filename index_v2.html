@@ -540,6 +540,10 @@ button,input,textarea{font-family:var(--font);}
 /* Smooth chip scroll */
 .chips-wrap{-webkit-overflow-scrolling:touch;}
 
+/* Double tap heart animation */
+.heart-anim{position:fixed;pointer-events:none;z-index:9999;font-size:80px;animation:heartPop .8s ease forwards;}
+@keyframes heartPop{0%{transform:scale(0) translate(-50%,-50%);opacity:1}50%{transform:scale(1.4) translate(-50%,-50%);opacity:1}100%{transform:scale(1.2) translate(-50%,-50%);opacity:0}}
+
 .toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none;}
 .toast.show{opacity:1;}
 </style>
@@ -603,6 +607,8 @@ button,input,textarea{font-family:var(--font);}
   <div class="side-item" onclick="doSearch('news');closeSideMenu()"><i class="fas fa-newspaper" style="color:#0096ff;"></i><span>News</span></div>
   <div class="side-item" onclick="doSearch('cricket');closeSideMenu()"><i class="fas fa-circle" style="color:#00c864;"></i><span>Sports</span></div>
   <div class="side-item" onclick="showScreen('live');closeSideMenu()"><i class="fas fa-circle" style="color:#ff0000;font-size:12px;"></i><span>Live</span></div>
+  <div class="side-divider"></div>
+  <div class="side-item" onclick="showScreen('playlists');closeSideMenu()"><i class="fas fa-list-ul" style="color:#7c4dff;"></i><span>Playlists</span></div>
   <div class="side-divider"></div>
   <div class="side-section-title">Creator</div>
   <div class="side-item" onclick="showScreen('dashboard');closeSideMenu()"><i class="fas fa-chart-line" style="color:var(--red);"></i><span>Studio</span></div>
@@ -718,6 +724,32 @@ button,input,textarea{font-family:var(--font);}
           <input class="inp" id="uploadTitle" placeholder="Title *">
           <input class="inp" id="uploadDesc" placeholder="Description">
           <input class="inp" id="uploadTags" placeholder="Tags (cricket, funny, gaming...)">
+          <div style="margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">Category</div>
+            <select id="uploadCategory" class="inp" style="cursor:pointer;">
+              <option value="">Select Category</option>
+              <option value="entertainment">🎬 Entertainment</option>
+              <option value="music">🎵 Music</option>
+              <option value="gaming">🎮 Gaming</option>
+              <option value="cricket">🏏 Cricket</option>
+              <option value="sports">🏆 Sports</option>
+              <option value="news">📰 News</option>
+              <option value="education">📚 Education</option>
+              <option value="comedy">😂 Comedy</option>
+              <option value="tech">💻 Tech</option>
+              <option value="food">🍕 Food</option>
+              <option value="travel">✈️ Travel</option>
+              <option value="fitness">💪 Fitness</option>
+              <option value="fashion">👗 Fashion</option>
+              <option value="beauty">💄 Beauty</option>
+              <option value="vlog">📹 Vlog</option>
+              <option value="islamic">☪️ Islamic</option>
+              <option value="motivation">🔥 Motivation</option>
+              <option value="kids">👶 Kids</option>
+              <option value="cooking">👨‍🍳 Cooking</option>
+              <option value="nature">🌿 Nature</option>
+            </select>
+          </div>
           <!-- Music selector (for shorts/videos) -->
           <div id="musicSelectorWrap" style="display:none;margin-bottom:12px;">
             <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;"><i class="fas fa-music" style="color:var(--red);"></i> Add Background Music</div>
@@ -1089,6 +1121,43 @@ button,input,textarea{font-family:var(--font);}
       </div>
     </div>
 
+    <!-- PLAYLISTS SCREEN -->
+    <div id="playlistsScreen" class="screen">
+      <div style="padding:16px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <h2 style="font-size:18px;font-weight:700;">📋 Playlists</h2>
+          <button onclick="createPlaylistDialog()" style="background:var(--red);color:white;border:none;border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;"><i class="fas fa-plus"></i> New</button>
+        </div>
+        <!-- Default playlists -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+          <div onclick="showScreen('history')" style="background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;cursor:pointer;">
+            <div style="height:70px;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;"><i class="fas fa-history" style="font-size:26px;color:#4fc3f7;"></i></div>
+            <div style="padding:8px 10px;"><div style="font-size:13px;font-weight:600;">Watch Later</div><div style="font-size:10px;color:var(--text2);">Private</div></div>
+          </div>
+          <div onclick="filterLikedVideos()" style="background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;cursor:pointer;">
+            <div style="height:70px;background:linear-gradient(135deg,#2d1a1a,#4a0000);display:flex;align-items:center;justify-content:center;"><i class="fas fa-thumbs-up" style="font-size:26px;color:var(--red);"></i></div>
+            <div style="padding:8px 10px;"><div style="font-size:13px;font-weight:600;">Liked Videos</div><div style="font-size:10px;color:var(--text2);">Private</div></div>
+          </div>
+        </div>
+        <!-- User playlists -->
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;">My Playlists</div>
+        <div id="myPlaylistsGrid"></div>
+      </div>
+    </div>
+
+    <!-- SINGLE PLAYLIST VIEW -->
+    <div id="playlistScreen" class="screen">
+      <div style="padding:14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <button onclick="showScreen('playlists')" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:18px;"><i class="fas fa-arrow-left"></i></button>
+          <h2 style="font-size:17px;font-weight:700;" id="playlistTitle">Playlist</h2>
+          <button onclick="deletePlaylist()" style="background:none;border:none;color:var(--text3);cursor:pointer;margin-left:auto;font-size:16px;"><i class="fas fa-trash"></i></button>
+        </div>
+        <div id="playlistVideosList"></div>
+      </div>
+    </div>
+
+
     <!-- OWNER -->
     <div id="ownerScreen" class="screen">
       <div class="owner-screen">
@@ -1152,6 +1221,7 @@ button,input,textarea{font-family:var(--font);}
     <button class="pl-act" id="dislikeBtn" onclick="toggleDislike()"><i class="fas fa-thumbs-down"></i><span>Dislike</span></button>
     <button class="pl-act" onclick="shareVideo()"><i class="fas fa-share"></i><span>Share</span></button>
     <button class="pl-act" onclick="saveVideo()"><i class="fas fa-bookmark"></i><span>Save</span></button>
+    <button class="pl-act" onclick="saveToPlaylist()"><i class="fas fa-list-ul"></i><span>Playlist</span></button>
     <button class="pl-act" onclick="downloadVideo()"><i class="fas fa-download"></i><span>Download</span></button>
     <button class="pl-act" onclick="showTrimPanel()"><i class="fas fa-cut"></i><span>Trim</span></button>
     <button class="pl-act" onclick="ctxPostId=currentPostId;ctxPostUrl=currentPostData?.url;document.getElementById('reportModal').classList.add('open')"><i class="fas fa-flag"></i><span>Report</span></button>
@@ -1187,16 +1257,17 @@ button,input,textarea{font-family:var(--font);}
 
 <!-- ═══ FULLSCREEN SHORT ═══ -->
 <div class="sf" id="shortFS">
-  <div class="sf-wrap" id="sfWrap">
+  <div class="sf-wrap" id="sfWrap" id="sfWrap">
     <button class="sf-close" onclick="closeShortFS()"><i class="fas fa-times"></i></button>
-    <video id="sfVid" loop playsinline></video>
+    <video id="sfVid" loop playsinline onclick="handleSfTap(event)"></video>
     <div class="sf-nav">
       <button onclick="prevShort()"><i class="fas fa-chevron-left"></i></button>
       <button onclick="nextShort()"><i class="fas fa-chevron-right"></i></button>
     </div>
     <div class="sf-acts">
-      <button class="sf-act" id="sfLikeBtn" onclick="sfLike()"><i class="fas fa-heart"></i><span id="sfLikeCount">0</span></button>
-      <button class="sf-act" onclick="sfCommentOpen()"><i class="fas fa-comment"></i><span>Comment</span></button>
+      <button class="sf-act" id="sfLikeBtn" onclick="sfLike()"><i class="fas fa-thumbs-up"></i><span id="sfLikeCount">0</span></button>
+      <button class="sf-act" id="sfDislikeBtn" onclick="sfDislike()" style="color:white;"><i class="fas fa-thumbs-down"></i><span>Dislike</span></button>
+      <button class="sf-act" onclick="sfCommentOpen()"><i class="fas fa-comment"></i><span id="sfCommentCount">0</span></button>
       <button class="sf-act" onclick="sfShare()"><i class="fas fa-share"></i><span>Share</span></button>
     </div>
     <div class="sf-info">
@@ -1276,6 +1347,7 @@ button,input,textarea{font-family:var(--font);}
 <div class="ctx-menu" id="ctxMenu">
   <div class="ctx-menu-title" id="ctxTitle">Video</div>
   <div class="ctx-item" onclick="ctxSave()"><i class="fas fa-bookmark"></i><span>Save to Watch Later</span></div>
+  <div class="ctx-item" onclick="closeCtxMenu();addToPlaylist(ctxPostId)"><i class="fas fa-list-ul"></i><span>Add to Playlist</span></div>
   <div class="ctx-item" onclick="ctxShare()"><i class="fas fa-share-alt"></i><span>Share</span></div>
   <div class="ctx-item" onclick="ctxDownload()"><i class="fas fa-download"></i><span>Download</span></div>
   <div class="ctx-item" onclick="ctxCopyLink()"><i class="fas fa-link"></i><span>Copy Link</span></div>
@@ -1751,7 +1823,9 @@ const screenMap={
   history:'historyScreen',
   privacy:'privacyScreen',
   terms:'termsScreen',
-  copyright:'copyrightScreen'
+  copyright:'copyrightScreen',
+  playlist:'playlistScreen',
+  playlists:'playlistsScreen'
 };
 const navMap={home:'nav-home',shorts:'nav-shorts',upload:'nav-upload',subs:'nav-subs',profile:'nav-profile',owner:'nav-owner'};
 
@@ -1771,6 +1845,7 @@ function showScreen(name){
   if(name==='themes')renderThemeGrid();
   if(name==='gallery')loadGallery();
   if(name==='history')loadHistory();
+  if(name==='playlists')loadMyPlaylists();
 }
 
 // ══════════════════════════════════════════════════════
@@ -1834,7 +1909,7 @@ function buildInlineShortsRow(shorts){
     <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
       ${shorts.map((p,i)=>{
         const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_0,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-        return `<div onclick="openShortFS(${sfPosts.findIndex(s=>s.id===p.id)||i})" style="flex-shrink:0;width:90px;height:160px;border-radius:10px;overflow:hidden;background:var(--bg3);position:relative;cursor:pointer;">
+        return `<div onclick="openFeedShort('${p.id}')" style="flex-shrink:0;width:90px;height:160px;border-radius:10px;overflow:hidden;background:var(--bg3);position:relative;cursor:pointer;">
           ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-film" style="color:var(--text3);font-size:22px;"></i></div>'}
           <div style="position:absolute;bottom:0;left:0;right:0;padding:6px;background:linear-gradient(transparent,rgba(0,0,0,.8));">
             <div style="font-size:9px;color:white;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||''}</div>
@@ -1843,6 +1918,25 @@ function buildInlineShortsRow(shorts){
       }).join('')}
     </div>
   </div>`;
+}
+
+// Open short from feed - loads sfPosts first if empty
+async function openFeedShort(postId){
+  if(!sfPosts||sfPosts.length===0){
+    // Load shorts first
+    try{
+      const snap=await db.collection('posts').orderBy('time','desc').limit(60).get();
+      sfPosts=snap.docs.filter(d=>d.data().type==='short').map(d=>({id:d.id,...d.data()}));
+      allSfPosts=[...sfPosts];
+    }catch(e){
+      // Try without orderBy
+      const snap=await db.collection('posts').limit(60).get();
+      sfPosts=snap.docs.filter(d=>d.data().type==='short').map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.time-a.time);
+      allSfPosts=[...sfPosts];
+    }
+  }
+  const idx=sfPosts.findIndex(p=>p.id===postId);
+  openShortFS(idx>=0?idx:0);
 }
 
 function buildCard(p){
@@ -1950,6 +2044,12 @@ async function quickSubscribe(authorId,authorName,btn,e){
 }
 
 function sharePost(url){navigator.clipboard.writeText(url||location.href).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));}
+function formatViews(n){
+  if(n>=1000000)return (n/1000000).toFixed(1)+'M';
+  if(n>=1000)return (n/1000).toFixed(1)+'K';
+  return n.toString();
+}
+
 function getTimeAgo(ts){
   if(!ts)return '';
   const d=Date.now()-ts,m=Math.floor(d/6e4),h=Math.floor(d/36e5),dy=Math.floor(d/864e5);
@@ -2032,7 +2132,10 @@ function playShortAt(idx){
   document.getElementById('sfCh').textContent=p.authorName||'';
   document.getElementById('sfLikeCount').textContent=p.likes||0;
   const liked=cUser&&(p.likedBy||[]).includes(cUser.uid);
-  document.getElementById('sfLikeBtn').style.color=liked?'#ff4d4d':'white';
+  const slb=document.getElementById('sfLikeBtn');
+  if(slb)slb.style.color=liked?'#4fc3f7':'white';
+  const scc=document.getElementById('sfCommentCount');
+  if(scc)scc.textContent=sfPosts[idx]?.comments||0;
   // Progress bar animation
   const pf=document.getElementById('sfProgFill');
   pf.style.width='0%';
@@ -2085,6 +2188,52 @@ async function sfSubscribe(){
 }
 
 function closeShortFS(){document.getElementById('shortFS').classList.remove('open');const v=document.getElementById('sfVid');v.pause();v.src='';}
+
+// Double-tap like system for Shorts
+let _sfTapTimer=null,_sfTapCount=0;
+const HEART_COLORS=['#ff0000','#ff4d4d','#ff6b6b','#ff1493','#ff69b4','#e91e8c'];
+
+function handleSfTap(e){
+  _sfTapCount++;
+  if(_sfTapCount===1){
+    _sfTapTimer=setTimeout(()=>{
+      _sfTapCount=0;
+      // Single tap = pause/play
+      const v=document.getElementById('sfVid');
+      if(v){if(v.paused)v.play();else v.pause();}
+    },250);
+  }else if(_sfTapCount>=2){
+    clearTimeout(_sfTapTimer);_sfTapCount=0;
+    // Double tap = like with heart
+    showDoubleTapHeart(e.clientX,e.clientY);
+    // Auto like if not liked
+    if(sfCurrentId&&cUser){
+      db.collection('posts').doc(sfCurrentId).get().then(doc=>{
+        const p=doc.data();
+        const liked=(p.likedBy||[]).includes(cUser.uid);
+        if(!liked){
+          doc.ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid),rankScore:firebase.firestore.FieldValue.increment(10)});
+          const cnt=document.getElementById('sfLikeCount');
+          if(cnt)cnt.textContent=(p.likes||0)+1;
+          const likeBtn=document.getElementById('sfLikeBtn');
+          if(likeBtn)likeBtn.style.color='#ff4d4d';
+        }
+      }).catch(()=>{});
+    }
+  }
+}
+
+function showDoubleTapHeart(x,y){
+  const color=HEART_COLORS[Math.floor(Math.random()*HEART_COLORS.length)];
+  const el=document.createElement('div');
+  el.className='heart-anim';
+  el.style.left=x+'px';
+  el.style.top=y+'px';
+  el.style.color=color;
+  el.innerHTML='❤️';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),900);
+}
 function prevShort(){if(sfCurrentIdx>0)playShortAt(sfCurrentIdx-1);}
 function nextShort(){if(sfCurrentIdx<sfPosts.length-1)playShortAt(sfCurrentIdx+1);}
 
@@ -2120,6 +2269,16 @@ async function sfLike(){
     }
     sfPosts[sfCurrentIdx]={...sfPosts[sfCurrentIdx]};
   }catch(e){}
+}
+
+async function sfDislike(){
+  if(!cUser)return showToast('Login karein!');
+  const btn=document.getElementById('sfDislikeBtn');
+  if(btn){
+    const active=btn.style.color==='#ff4d4d';
+    btn.style.color=active?'white':'#ff4d4d';
+    showToast(active?'Dislike removed':'Disliked');
+  }
 }
 
 function sfCommentOpen(){openPost(sfCurrentId);closeShortFS();}
@@ -2163,6 +2322,7 @@ function selectType(type,el){
   document.getElementById('postImgsWrap').style.display='none';
   document.getElementById('fileDrop').style.display='block';
   selectedFile=null;thumbFile=null;postImgFiles=[];selectedSong=null;clearSong();
+  const catSel=document.getElementById('uploadCategory');if(catSel)catSel.value='';
   const icon=document.getElementById('fileIcon');
   if(type==='post'){
     document.getElementById('fileDrop').style.display='none';
@@ -2249,7 +2409,7 @@ async function doUpload(){
     const initialScore=calcScore({time:Date.now(),likes:0,views:0,comments:0,type:uploadType,category:tags.split(',')[0]?.trim()||uploadType});
     await db.collection('posts').add({
       title,desc,url,thumbURL,images,type:uploadType,
-      category:tags.split(',')[0]?.trim()||uploadType,
+      category:document.getElementById('uploadCategory')?.value||tags.split(',')[0]?.trim()||uploadType,
       tags:tags.split(',').map(t=>t.trim()).filter(Boolean),
       authorId:cUser.uid,
       authorName:cUserData?.name||cUser.email,
@@ -2290,6 +2450,7 @@ function resetUploadForm(){
   document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
   document.getElementById('postImgGrid').innerHTML=`<div class="add-img-btn" onclick="document.getElementById('postImgFile').click()"><i class="fas fa-plus"></i><input type="file" id="postImgFile" accept="image/*" multiple onchange="addPostImages(this)"></div>`;
   selectedFile=null;thumbFile=null;postImgFiles=[];selectedSong=null;clearSong();
+  const catSel=document.getElementById('uploadCategory');if(catSel)catSel.value='';
 }
 
 // ══════════════════════════════════════════════════════
@@ -2952,6 +3113,17 @@ async function loadDashboard(){
     const totalScore=myPosts.reduce((a,p)=>a+(p.rankScore||0),0);
     const growth=subs>0?Math.round((likes/Math.max(subs,1))*100):0;
     document.getElementById('aCTR').textContent=ctr+'%';
+    // Mini bar chart
+    const chartEl=document.getElementById('miniChart');
+    if(chartEl&&myPosts.length){
+      const last7=myPosts.slice(0,7);
+      const maxV=Math.max(...last7.map(p=>p.views||0),1);
+      const colors=['#ff0000','#ff4444','#ff6666','#ff8888','#ffaaaa','#cc0000','#aa0000'];
+      chartEl.innerHTML=last7.map((p,i)=>{
+        const pct=Math.max(4,Math.round(((p.views||0)/maxV)*100));
+        return `<div title="${p.title||'Post'}: ${p.views||0} views" onclick="openPost('${p.id}')" style="flex:1;background:${colors[i]||'var(--red)'};height:${pct}%;border-radius:4px 4px 0 0;cursor:pointer;min-height:4px;transition:height .3s;" ></div>`;
+      }).join('');
+    }
     document.getElementById('aAvgViews').textContent=avgV;
     document.getElementById('aEngagement').textContent=eng+'%';
     document.getElementById('aScore').textContent=totalScore;
