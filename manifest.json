@@ -2,11 +2,12 @@
   "name": "MyTube — Pakistan ka apna platform",
   "short_name": "MyTube",
   "description": "Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.",
-  "start_url": "/index.html",
+  "start_url": ".",
+  "scope": ".",
   "display": "standalone",
   "background_color": "#0f0f0f",
   "theme_color": "#FF0000",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-192.png",
@@ -22,6 +23,5 @@
     }
   ],
   "categories": ["entertainment", "social"],
-  "lang": "en-PK",
-  "screenshots": []
+  "lang": "en-PK"
 }
