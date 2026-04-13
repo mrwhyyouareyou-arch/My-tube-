@@ -11,6 +11,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="MyTube">
+<!-- PWA fast launch -->
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://www.gstatic.com">
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <!-- SEO -->
@@ -351,8 +356,8 @@ button,input,textarea{font-family:var(--font);}
 .player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;}
 .player-screen.open{display:flex;}
 .player-back{position:absolute;top:10px;left:10px;z-index:10;width:34px;height:34px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;}
-.player-vid-wrap{background:#000;width:100%;aspect-ratio:16/9;position:relative;flex-shrink:0;}
-.player-vid-wrap video{width:100%;height:100%;object-fit:contain;}
+.player-vid-wrap{background:#000;width:100%;position:relative;flex-shrink:0;min-height:220px;max-height:100vw;}
+.player-vid-wrap video{width:100%;height:auto;max-height:100vw;object-fit:contain;display:block;}
 .player-vid-wrap img{width:100%;height:100%;object-fit:contain;}
 .player-info{padding:12px 14px 0;}
 .player-title{font-size:15px;font-weight:700;line-height:1.4;}
@@ -565,7 +570,7 @@ button,input,textarea{font-family:var(--font);}
 <body>
 
 <!-- ═══ SPLASH SCREEN ═══ -->
-<div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease;">
+<div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .2s ease;">
   <svg width="80" height="58" viewBox="0 0 50 36" style="animation:splashPulse 1s ease infinite alternate;"><rect width="50" height="36" rx="8" fill="#FF0000"/><polygon points="19,8 19,28 38,18" fill="white"/></svg>
   <div style="font-size:32px;font-weight:800;color:white;margin-top:14px;letter-spacing:-1px;">My<span style="color:#FF0000;">Tube</span></div>
   <div style="font-size:13px;color:#aaa;margin-top:6px;">Pakistan ka apna platform 🇵🇰</div>
@@ -969,7 +974,7 @@ button,input,textarea{font-family:var(--font);}
           </div>
         </div>
         <!-- Channel Card -->
-        <div class="channel-setup-card" id="channelSetupCard">
+        <div class="channel-setup-card" id="channelSetupCard" style="display:none;">
           <h3><i class="fas fa-tv"></i> My Channel</h3>
           <!-- Email selection (YouTube style) -->
           <div id="emailChannelWrap" class="email-channel-wrap selected">
@@ -1322,9 +1327,52 @@ button,input,textarea{font-family:var(--font);}
   <div class="bottom-nav" id="bottomNav">
     <button class="nav-item active" id="nav-home" onclick="showScreen('home')"><i class="fas fa-home"></i><span>Home</span></button>
     <button class="nav-item" id="nav-shorts" onclick="showScreen('shorts')"><i class="fas fa-film"></i><span>Shorts</span></button>
-    <button class="nav-item" id="nav-upload" onclick="showScreen('upload')"><div class="nav-plus"><i class="fas fa-plus" style="color:white;font-size:19px;"></i></div></button>
+    <button class="nav-item" id="nav-upload" onclick="showUploadChoice()"><div class="nav-plus"><i class="fas fa-plus" style="color:white;font-size:19px;"></i></div></button>
     <button class="nav-item" id="nav-subs" onclick="showScreen('subs')"><i class="fas fa-th-large"></i><span>Subs</span></button>
     <button class="nav-item" id="nav-profile" onclick="showScreen('profile');"><i class="fas fa-user"></i><span>You</span></button>
+  </div>
+</div>
+
+<!-- ═══ UPLOAD CHOICE SHEET ═══ -->
+<div id="uploadChoiceOverlay" onclick="closeUploadChoice()" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.55);"></div>
+<div id="uploadChoiceSheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:801;background:var(--bg2);border-radius:24px 24px 0 0;padding:14px 0 40px;transform:translateY(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);">
+  <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 6px;"></div>
+  <!-- YouTube-style icon row -->
+  <div style="display:flex;justify-content:space-around;align-items:flex-start;padding:18px 8px 4px;">
+
+    <!-- Short / Camera -->
+    <div onclick="closeUploadChoice();openShortsCamera();" style="display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;min-width:72px;" ontouchstart="this.style.opacity='.6'" ontouchend="this.style.opacity='1'">
+      <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#ff416c,#ff4b2b);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(255,65,108,.45);">
+        <i class="fas fa-circle-notch" style="color:white;font-size:22px;"></i>
+      </div>
+      <span style="font-size:12px;font-weight:600;color:var(--text);text-align:center;">Short</span>
+    </div>
+
+    <!-- Upload Video -->
+    <div onclick="closeUploadChoice();openUploadDirect('video');" style="display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;min-width:72px;" ontouchstart="this.style.opacity='.6'" ontouchend="this.style.opacity='1'">
+      <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1a6fff,#0044cc);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(26,111,255,.4);">
+        <i class="fas fa-video" style="color:white;font-size:20px;"></i>
+      </div>
+      <span style="font-size:12px;font-weight:600;color:var(--text);text-align:center;">Video</span>
+    </div>
+
+    <!-- Live -->
+    <div onclick="closeUploadChoice();showScreen('live');" style="display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;min-width:72px;" ontouchstart="this.style.opacity='.6'" ontouchend="this.style.opacity='1'">
+      <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#cc0000,#880000);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(200,0,0,.4);">
+        <i class="fas fa-circle" style="color:white;font-size:14px;animation:blink 1.2s infinite;"></i>
+        <i class="fas fa-signal" style="color:white;font-size:18px;margin-left:2px;"></i>
+      </div>
+      <span style="font-size:12px;font-weight:600;color:var(--text);text-align:center;">Live</span>
+    </div>
+
+    <!-- Post -->
+    <div onclick="closeUploadChoice();openUploadDirect('post');" style="display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;min-width:72px;" ontouchstart="this.style.opacity='.6'" ontouchend="this.style.opacity='1'">
+      <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#00b09b,#007a6e);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,176,155,.4);">
+        <i class="fas fa-pen-nib" style="color:white;font-size:20px;"></i>
+      </div>
+      <span style="font-size:12px;font-weight:600;color:var(--text);text-align:center;">Post</span>
+    </div>
+
   </div>
 </div>
 
@@ -1560,141 +1608,151 @@ button,input,textarea{font-family:var(--font);}
 <!-- ═══ SHORTS CAMERA MODAL ═══ -->
 <div id="shortsCameraModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;background:#000;overflow:hidden;">
 
-  <!-- STEP 1: CHOICE SCREEN -->
-  <div id="scChoiceMode" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f0f0f;">
-    <div style="font-size:18px;font-weight:800;color:white;margin-bottom:40px;letter-spacing:1px;">Create Short</div>
-    <!-- Record Button -->
-    <button onclick="startCameraMode()" style="width:140px;height:140px;border-radius:50%;background:var(--red);border:6px solid rgba(255,255,255,.3);color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 0 40px rgba(255,0,0,.5);margin-bottom:40px;">
-      <i class="fas fa-circle" style="font-size:36px;"></i>
-      <span style="font-size:13px;font-weight:800;">RECORD</span>
-    </button>
-    <!-- Gallery Option -->
-    <button onclick="document.getElementById('scGalleryInput').click()" style="background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.3);color:white;border-radius:16px;padding:14px 32px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;">
-      <i class="fas fa-photo-video" style="font-size:18px;"></i> Upload from Gallery
-    </button>
-    <input type="file" id="scGalleryInput" accept="video/*" style="display:none;" onchange="handleGalleryShort(this)">
-    <!-- Close -->
-    <button onclick="closeShortsCamera()" style="position:absolute;top:50px;left:16px;background:rgba(255,255,255,.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-times"></i></button>
-  </div>
-
-  <!-- STEP 2: CAMERA RECORDING -->
-  <div id="scRecordMode" style="display:none;position:absolute;inset:0;">
-    <!-- Full screen camera -->
+  <!-- RECORDING MODE -->
+  <div id="scRecordMode" style="position:absolute;inset:0;display:block;">
+    <!-- Full screen camera feed -->
     <video id="shortsCamPreview" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" playsinline autoplay muted></video>
 
     <!-- Top bar -->
-    <div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:50px 16px 20px;background:linear-gradient(rgba(0,0,0,.6),transparent);display:flex;align-items:center;justify-content:space-between;">
-      <button onclick="backToChoice()" style="background:rgba(0,0,0,.4);border:none;color:white;width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-arrow-left"></i></button>
-      <div style="color:white;font-weight:800;font-size:15px;">Short</div>
-      <button onclick="flipShortsCamera()" style="background:rgba(0,0,0,.4);border:none;color:white;width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-sync-alt"></i></button>
+    <div style="position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:50px 16px 16px;background:linear-gradient(rgba(0,0,0,.7),transparent);">
+      <button onclick="closeShortsCamera()" style="background:none;border:none;color:white;font-size:28px;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-times"></i></button>
+      <div style="color:white;font-size:15px;font-weight:800;letter-spacing:1px;">SHORTS</div>
+      <button onclick="flipShortsCamera()" style="background:rgba(0,0,0,.4);border:none;color:white;font-size:20px;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-sync-alt"></i></button>
     </div>
 
-    <!-- Recording timer -->
-    <div id="scRecTime" style="display:none;position:absolute;top:115px;left:50%;transform:translateX(-50%);background:rgba(255,0,0,.9);color:white;border-radius:20px;padding:5px 16px;font-size:14px;font-weight:800;z-index:10;">0:00</div>
+    <!-- Recording timer badge -->
+    <div id="scRecTime" style="display:none;position:absolute;top:115px;left:50%;transform:translateX(-50%);background:rgba(255,0,0,.9);color:white;border-radius:20px;padding:5px 16px;font-size:14px;font-weight:800;z-index:10;letter-spacing:2px;">0:00</div>
 
-    <!-- Progress bar -->
-    <div style="position:absolute;top:108px;left:0;right:0;height:3px;background:rgba(255,255,255,.2);z-index:10;">
+    <!-- Progress bar top -->
+    <div style="position:absolute;top:105px;left:0;right:0;z-index:10;background:rgba(255,255,255,.2);height:3px;">
       <div id="scProgress" style="height:100%;background:#ff0000;width:0%;transition:width .1s linear;"></div>
     </div>
 
-    <!-- Duration selector -->
-    <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:10;">
-      <button onclick="setShortsTimer(15)" id="scT15" style="background:rgba(0,0,0,.5);border:2px solid white;color:white;width:46px;height:32px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">15s</button>
-      <button onclick="setShortsTimer(30)" id="scT30" style="background:rgba(0,0,0,.5);border:2px solid transparent;color:rgba(255,255,255,.6);width:46px;height:32px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">30s</button>
-      <button onclick="setShortsTimer(60)" id="scT60" style="background:rgba(0,0,0,.5);border:2px solid transparent;color:rgba(255,255,255,.6);width:46px;height:32px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">60s</button>
-      <!-- Speed -->
-      <div onclick="cycleShortsSpeed()" style="background:rgba(0,0,0,.5);border:1.5px solid rgba(255,255,255,.5);color:white;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:6px;">
-        <span id="scSpeedLbl" style="font-size:13px;font-weight:800;">1x</span>
+    <!-- Right side tools -->
+    <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:20px;align-items:center;z-index:10;">
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:center;">
+        <button onclick="setShortsTimer(15)" id="scT15" style="background:rgba(0,0,0,.5);border:2px solid white;color:white;width:44px;height:30px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">15s</button>
+        <button onclick="setShortsTimer(30)" id="scT30" style="background:rgba(0,0,0,.5);border:2px solid transparent;color:rgba(255,255,255,.7);width:44px;height:30px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">30s</button>
+        <button onclick="setShortsTimer(60)" id="scT60" style="background:rgba(0,0,0,.5);border:2px solid transparent;color:rgba(255,255,255,.7);width:44px;height:30px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">60s</button>
+      </div>
+      <div onclick="cycleShortsSpeed(this)" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="background:rgba(0,0,0,.5);border:1.5px solid rgba(255,255,255,.6);color:white;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span id="scSpeedLbl" style="font-size:14px;font-weight:800;">1x</span>
+        </div>
+        <span style="color:rgba(255,255,255,.8);font-size:9px;font-weight:600;">Speed</span>
       </div>
     </div>
 
-    <!-- Bottom record button -->
-    <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;padding:0 0 50px;background:linear-gradient(transparent,rgba(0,0,0,.7));">
-      <div style="display:flex;justify-content:center;">
-        <button id="scRecordBtn" onclick="toggleShortsRecording()" style="width:90px;height:90px;border-radius:50%;border:5px solid white;background:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,0,0,.7);">
-          <div id="scRecordIcon" style="width:38px;height:38px;border-radius:50%;background:white;transition:all .25s;"></div>
+    <!-- Bottom controls -->
+    <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;background:linear-gradient(transparent,rgba(0,0,0,.8));padding:20px 0 48px;">
+      <!-- Gallery upload button -->
+      <div style="display:flex;justify-content:center;margin-bottom:22px;">
+        <button onclick="document.getElementById('scGalleryInput').click()" style="background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:white;border-radius:24px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;">
+          <i class="fas fa-photo-video"></i> Upload from Gallery
+        </button>
+        <input type="file" id="scGalleryInput" accept="video/*" style="display:none;" onchange="handleGalleryShort(this)">
+      </div>
+      <!-- Record button -->
+      <div style="display:flex;align-items:center;justify-content:center;">
+        <button id="scRecordBtn" onclick="toggleShortsRecording()" style="width:88px;height:88px;border-radius:50%;border:5px solid white;background:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,0,0,.7);transition:all .2s;">
+          <div id="scRecordIcon" style="width:36px;height:36px;border-radius:50%;background:white;transition:all .25s;"></div>
         </button>
       </div>
-      <div style="display:flex;justify-content:center;gap:30px;margin-top:16px;">
-        <span style="color:rgba(255,255,255,.4);font-size:13px;font-weight:600;">Video</span>
+      <!-- Mode tabs -->
+      <div style="display:flex;justify-content:center;gap:28px;margin-top:18px;">
+        <span style="color:rgba(255,255,255,.45);font-size:13px;font-weight:600;">Video</span>
         <span style="color:white;font-size:14px;font-weight:800;border-bottom:3px solid var(--red);padding-bottom:3px;">Short</span>
-        <span style="color:rgba(255,255,255,.4);font-size:13px;font-weight:600;">Live</span>
+        <span style="color:rgba(255,255,255,.45);font-size:13px;font-weight:600;">Live</span>
       </div>
     </div>
   </div>
 
-  <!-- STEP 3: EDIT MODE -->
+  <!-- EDIT MODE (after recording) -->
   <div id="scEditMode" style="display:none;position:absolute;inset:0;flex-direction:column;">
     <video id="shortsRecPreview" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" playsinline loop></video>
+
+    <!-- Text overlays container -->
     <div id="scTextOverlays" style="position:absolute;inset:0;z-index:5;pointer-events:none;"></div>
 
-    <!-- Top bar -->
-    <div style="position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:50px 16px 16px;background:linear-gradient(rgba(0,0,0,.7),transparent);">
-      <button onclick="backToRecordMode()" style="background:rgba(0,0,0,.4);border:none;color:white;font-size:22px;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-arrow-left"></i></button>
-      <div style="color:white;font-size:14px;font-weight:800;">Edit</div>
-      <button onclick="doneShortRecording()" style="background:var(--red);color:white;border:none;border-radius:22px;padding:9px 22px;font-size:14px;font-weight:800;cursor:pointer;">Upload →</button>
+    <!-- Top edit bar -->
+    <div style="position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:50px 16px 16px;background:linear-gradient(rgba(0,0,0,.8),transparent);">
+      <button onclick="backToRecording()" style="background:none;border:none;color:white;font-size:24px;cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
+      <div style="color:white;font-size:14px;font-weight:800;">Edit Short</div>
+      <button onclick="doneShortRecording()" style="background:var(--red);color:white;border:none;border-radius:22px;padding:9px 20px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 2px 12px rgba(255,0,0,.5);">Next →</button>
     </div>
 
     <!-- Edit tools -->
-    <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;background:rgba(0,0,0,.92);padding:12px 8px 40px;">
-      <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;">
-        <button onclick="toggleEditPreview()" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:58px;">
-          <i class="fas fa-play" id="scPlayIcon" style="font-size:18px;color:#00c864;"></i><span>Play</span></button>
-        <button onclick="openScPanel('scTextPanel')" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:58px;">
-          <i class="fas fa-font" style="font-size:18px;color:#ffd700;"></i><span>Text</span></button>
-        <button onclick="openScPanel('scSoundPanel')" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:58px;">
-          <i class="fas fa-music" style="font-size:18px;color:#e91e8c;"></i><span>Sound</span></button>
-        <button onclick="openScPanel('scSpeedPanel')" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:58px;">
-          <i class="fas fa-tachometer-alt" style="font-size:18px;color:#4fc3f7;"></i><span>Speed</span></button>
-        <button onclick="openScPanel('scFilterPanel')" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:58px;">
-          <i class="fas fa-magic" style="font-size:18px;color:#aa44ff;"></i><span>Filter</span></button>
+    <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;background:rgba(0,0,0,.9);padding:14px 8px 40px;">
+      <!-- Tool buttons -->
+      <div style="display:flex;gap:6px;overflow-x:auto;padding:0 4px 12px;scrollbar-width:none;">
+        <button onclick="toggleEditPreview()" id="scPlayBtn" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;">
+          <i class="fas fa-play" style="font-size:18px;color:#00c864;"></i><span>Play</span>
+        </button>
+        <button onclick="openAddTextTool()" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;">
+          <i class="fas fa-font" style="font-size:18px;color:#ffd700;"></i><span>Text</span>
+        </button>
+        <button onclick="openEditSounds()" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;">
+          <i class="fas fa-music" style="font-size:18px;color:#e91e8c;"></i><span>Sound</span>
+        </button>
+        <button onclick="openEditSpeed()" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;">
+          <i class="fas fa-tachometer-alt" style="font-size:18px;color:#4fc3f7;"></i><span>Speed</span>
+        </button>
+        <button onclick="openEditFilters()" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;">
+          <i class="fas fa-magic" style="font-size:18px;color:#aa44ff;"></i><span>Filter</span>
+        </button>
       </div>
 
-      <!-- Text Panel -->
-      <div id="scTextPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 8px;">
+      <!-- Add Text Panel -->
+      <div id="scTextPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 10px;">
         <div style="font-size:12px;font-weight:700;color:white;margin-bottom:8px;">✏️ Add Text</div>
-        <input id="scTextInput" placeholder="Type text..." style="width:100%;padding:10px;background:#222;border:1px solid #444;border-radius:8px;color:white;font-size:14px;outline:none;margin-bottom:8px;box-sizing:border-box;">
-        <div style="display:flex;gap:6px;margin-bottom:8px;">
-          <div onclick="scTextColor='#ffffff'" style="width:28px;height:28px;border-radius:50%;background:#fff;cursor:pointer;border:2px solid var(--red);"></div>
-          <div onclick="scTextColor='#ff0000'" style="width:28px;height:28px;border-radius:50%;background:#ff0000;cursor:pointer;"></div>
-          <div onclick="scTextColor='#ffff00'" style="width:28px;height:28px;border-radius:50%;background:#ffff00;cursor:pointer;"></div>
-          <div onclick="scTextColor='#00ff88'" style="width:28px;height:28px;border-radius:50%;background:#00ff88;cursor:pointer;"></div>
-          <div onclick="scTextColor='#4fc3f7'" style="width:28px;height:28px;border-radius:50%;background:#4fc3f7;cursor:pointer;"></div>
-          <div onclick="scTextColor='#ff69b4'" style="width:28px;height:28px;border-radius:50%;background:#ff69b4;cursor:pointer;"></div>
-          <select id="scTextSize" style="flex:1;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:5px;font-size:11px;">
-            <option value="16px">Small</option><option value="22px" selected>Medium</option><option value="32px">Large</option><option value="44px">XL</option>
+        <input id="scTextInput" placeholder="Type your text..." style="width:100%;padding:10px 12px;background:#222;border:1.5px solid #444;border-radius:8px;color:white;font-size:14px;outline:none;margin-bottom:8px;box-sizing:border-box;">
+        <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;">
+          <span style="font-size:11px;color:#aaa;">Color:</span>
+          <div onclick="scTextColor='#ffffff'" style="width:26px;height:26px;border-radius:50%;background:#fff;cursor:pointer;border:2px solid var(--red);"></div>
+          <div onclick="scTextColor='#ff0000'" style="width:26px;height:26px;border-radius:50%;background:#ff0000;cursor:pointer;"></div>
+          <div onclick="scTextColor='#ffff00'" style="width:26px;height:26px;border-radius:50%;background:#ffff00;cursor:pointer;"></div>
+          <div onclick="scTextColor='#00ff88'" style="width:26px;height:26px;border-radius:50%;background:#00ff88;cursor:pointer;"></div>
+          <div onclick="scTextColor='#4fc3f7'" style="width:26px;height:26px;border-radius:50%;background:#4fc3f7;cursor:pointer;"></div>
+          <div onclick="scTextColor='#ff69b4'" style="width:26px;height:26px;border-radius:50%;background:#ff69b4;cursor:pointer;"></div>
+          <select id="scTextSize" style="flex:1;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:6px;font-size:11px;">
+            <option value="16px">Small</option>
+            <option value="22px" selected>Medium</option>
+            <option value="32px">Large</option>
+            <option value="44px">XLarge</option>
           </select>
         </div>
-        <button onclick="addTextOverlay()" style="width:100%;background:var(--red);color:white;border:none;border-radius:10px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;">Add ✓</button>
+        <button onclick="addTextOverlay()" style="width:100%;background:var(--red);color:white;border:none;border-radius:10px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;">Add Text ✓</button>
       </div>
 
       <!-- Sound Panel -->
-      <div id="scSoundPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 8px;">
+      <div id="scSoundPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 10px;max-height:150px;overflow-y:auto;">
         <div style="font-size:12px;font-weight:700;color:white;margin-bottom:8px;">🎵 Add Sound</div>
         <div id="scSoundsList" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;"></div>
       </div>
 
       <!-- Speed Panel -->
-      <div id="scSpeedPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 8px;">
+      <div id="scSpeedPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 10px;">
         <div style="font-size:12px;font-weight:700;color:white;margin-bottom:10px;">⚡ Speed</div>
         <div style="display:flex;gap:8px;justify-content:center;">
-          <button onclick="setEditSpeed(0.5)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;">0.5x</button>
-          <button onclick="setEditSpeed(1)" style="background:var(--red);border:none;color:white;border-radius:8px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;">1x</button>
-          <button onclick="setEditSpeed(1.5)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;">1.5x</button>
-          <button onclick="setEditSpeed(2)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;">2x</button>
+          <button onclick="setEditSpeed(0.5)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;">0.5x</button>
+          <button onclick="setEditSpeed(1)" style="background:var(--red);border:none;color:white;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;">1x</button>
+          <button onclick="setEditSpeed(1.5)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;">1.5x</button>
+          <button onclick="setEditSpeed(2)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;">2x</button>
+          <button onclick="setEditSpeed(3)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;">3x</button>
         </div>
       </div>
 
       <!-- Filter Panel -->
-      <div id="scFilterPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 8px;">
-        <div style="font-size:12px;font-weight:700;color:white;margin-bottom:10px;">✨ Filter</div>
-        <div style="display:flex;gap:8px;overflow-x:auto;">
-          <button onclick="applyEditFilter('none')" style="flex-shrink:0;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;cursor:pointer;">Normal</button>
-          <button onclick="applyEditFilter('grayscale(100%)')" style="flex-shrink:0;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;cursor:pointer;">B&W</button>
-          <button onclick="applyEditFilter('sepia(80%)')" style="flex-shrink:0;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;cursor:pointer;">Vintage</button>
-          <button onclick="applyEditFilter('brightness(1.4)')" style="flex-shrink:0;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;cursor:pointer;">Bright</button>
-          <button onclick="applyEditFilter('contrast(1.6) saturate(1.5)')" style="flex-shrink:0;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;cursor:pointer;">Vivid</button>
-          <button onclick="applyEditFilter('hue-rotate(180deg)')" style="flex-shrink:0;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;cursor:pointer;">Neon</button>
+      <div id="scFilterPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 10px;">
+        <div style="font-size:12px;font-weight:700;color:white;margin-bottom:10px;">✨ Filters</div>
+        <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
+          <button onclick="applyEditFilter('none')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Normal</button>
+          <button onclick="applyEditFilter('grayscale(100%)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">B&W</button>
+          <button onclick="applyEditFilter('sepia(80%)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Vintage</button>
+          <button onclick="applyEditFilter('brightness(1.4) contrast(1.1)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Bright</button>
+          <button onclick="applyEditFilter('contrast(1.6) saturate(1.5)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Vivid</button>
+          <button onclick="applyEditFilter('hue-rotate(180deg) saturate(2)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Neon</button>
+          <button onclick="applyEditFilter('invert(100%)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Invert</button>
         </div>
       </div>
     </div>
@@ -2001,13 +2059,51 @@ function showToast(msg){
 }
 
 // ══════════════════════════════════════════════════════
+// UPLOAD CHOICE SHEET
+// ══════════════════════════════════════════════════════
+function showUploadChoice(){
+  if(!cUser){showToast('Pehle login karein');showScreen('profile');return;}
+  const ov=document.getElementById('uploadChoiceOverlay');
+  const sh=document.getElementById('uploadChoiceSheet');
+  if(ov)ov.style.display='block';
+  if(sh){
+    sh.style.display='block';
+    // Animate in
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{sh.style.transform='translateY(0)';}));
+  }
+}
+function closeUploadChoice(){
+  const ov=document.getElementById('uploadChoiceOverlay');
+  const sh=document.getElementById('uploadChoiceSheet');
+  if(sh){
+    sh.style.transform='translateY(100%)';
+    setTimeout(()=>{if(sh)sh.style.display='none';},280);
+  }
+  if(ov)ov.style.display='none';
+}
+function openUploadDirect(type){
+  showScreen('upload');
+  setTimeout(()=>{
+    let card=null;
+    document.querySelectorAll('.type-card').forEach(c=>{
+      const t=c.querySelector('span')?.textContent?.toLowerCase()||'';
+      if(type==='video'&&(t.includes('video')||t.includes('gaming')||t.includes('music')))card=card||c;
+      else if(type==='post'&&t.includes('post'))card=c;
+      else if(type==='short'&&t.includes('short'))card=c;
+    });
+    if(card)selectType(type,card);
+  },200);
+}
+
+// ══════════════════════════════════════════════════════
 // SPLASH + AUTH
 // ══════════════════════════════════════════════════════
 function hideSplash(){
   const s=document.getElementById('splashScreen');
   if(!s)return;
+  s.style.transition='opacity .2s ease';
   s.style.opacity='0';
-  setTimeout(()=>{s.style.display='none';},500);
+  setTimeout(()=>{s.style.display='none';},200);
 }
 
 // Google redirect result handle karo
@@ -2028,29 +2124,28 @@ auth.getRedirectResult().then(async res=>{
 auth.onAuthStateChanged(async user=>{
   if(user){
     cUser=user;
-    // Load data first, then hide splash and show app
-    await loadUserData();
-    await ensureChannelExists();
-    updateHeaderAv();
-    setupOwnerNav();
+    // Show app immediately — don't wait for data
+    hideSplash();
+    document.getElementById('authScreen').style.display='none';
+    document.getElementById('mainApp').style.display='block';
+    // Load data in background
+    loadUserData().then(()=>{
+      ensureChannelExists();
+      updateHeaderAv();
+      setupOwnerNav();
+      loadUserPrefs();
+      listenNotifs();
+    });
     loadHome();
-    loadUserPrefs();
-    listenNotifs();
-    // Hide splash, show app smoothly
-    setTimeout(()=>{
-      hideSplash();
-      document.getElementById('authScreen').style.display='none';
-      document.getElementById('mainApp').style.display='block';
-    },1200);
   }else{
     cUser=null;
-    // Hide splash, show login
+    // Hide splash fast — no 2 second wait
     setTimeout(()=>{
       hideSplash();
       document.getElementById('authScreen').style.display='flex';
       document.getElementById('mainApp').style.display='none';
       checkAgeVerification();
-    },2000);
+    },600);
   }
 });
 
@@ -2177,6 +2272,13 @@ function updateProfileUI(){
     if(el2)el2.value=cUserData.channelHandle||'';
     const el3=document.getElementById('channelAbout');
     if(el3)el3.value=cUserData.channelAbout||'';
+    // Hide channel setup card — channel already exists
+    const card=document.getElementById('channelSetupCard');
+    if(card)card.style.display='none';
+  } else {
+    // Show channel setup card — no channel yet
+    const card=document.getElementById('channelSetupCard');
+    if(card)card.style.display='block';
   }
   const ca=document.getElementById('myCommAv');
   if(cUserData.photoURL){ca.innerHTML=`<img src="${cUserData.photoURL}">`;}
@@ -4902,95 +5004,123 @@ window.addEventListener('appinstalled',()=>{
 });
 
 // ══════════════════════════════════════════════════════
-// SHORTS CAMERA — Complete System
-// ══════════════════════════════════════════════════════
 let _scStream=null,_scRecorder=null,_scChunks=[],_scRecording=false;
-let _scMaxTime=15,_scElapsed=0,_scProgInt=null;
-let _scFacing="environment",_scSpeedIdx=2;
+let _scMaxTime=15,_scElapsed=0,_scTimerInt=null,_scProgInt=null;
+let _scFacing='environment',_scSpeedIdx=2;
 const SC_SPEEDS=[0.5,0.75,1,1.25,1.5];
-let scTextColor="#ffffff";
+let scTextColor='#ffffff';
 
-function openShortsCamera(){
-  const modal=document.getElementById("shortsCameraModal");
-  if(modal)modal.style.display="block";
-  showScMode("choice");
+async function openShortsCamera(){
+  if(!cUser){showToast('Pehle login karein');return;}
+  const modal=document.getElementById('shortsCameraModal');
+  if(modal)modal.style.display='block';
+  const recMode=document.getElementById('scRecordMode');
+  const editMode=document.getElementById('scEditMode');
+  if(recMode)recMode.style.display='block';
+  if(editMode)editMode.style.display='none';
+  // Clear any previous camera error message
+  const errMsg=document.getElementById('scCamErrMsg');
+  if(errMsg)errMsg.remove();
+  // Reset state
+  _scChunks=[];_scElapsed=0;_scRecording=false;
+  window._recordedShortFile=null;
+  const prog=document.getElementById('scProgress');if(prog)prog.style.width='0%';
+  const timeEl=document.getElementById('scRecTime');if(timeEl)timeEl.style.display='none';
+  const icon=document.getElementById('scRecordIcon');
+  if(icon){icon.style.borderRadius='50%';icon.style.width='36px';icon.style.height='36px';}
+  const ov=document.getElementById('scTextOverlays');if(ov)ov.innerHTML='';
+  window._scSelectedSound=null;
+  await startShortsStream();
 }
 
-function showScMode(mode){
-  document.getElementById("scChoiceMode").style.display=mode==="choice"?"flex":"none";
-  document.getElementById("scRecordMode").style.display=mode==="record"?"block":"none";
-  const em=document.getElementById("scEditMode");
-  em.style.display=mode==="edit"?"flex":"none";
-}
-
-function startCameraMode(){
-  showScMode("record");
-  startShortsStream();
-}
-
-function backToChoice(){
-  stopShortsRecording();
-  if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
-  showScMode("choice");
-}
-
-function backToRecordMode(){
-  const em=document.getElementById("scEditMode");em.style.display="none";
-  const ov=document.getElementById("scTextOverlays");if(ov)ov.innerHTML="";
-  closeAllEditPanels();
-  showScMode("record");
-  startShortsStream();
+async function startShortsStream(){
+  try{
+    if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
+    // Try ideal constraints first, fallback to basic
+    let constraints={video:{facingMode:_scFacing,width:{ideal:1080},height:{ideal:1920}},audio:true};
+    try{
+      _scStream=await navigator.mediaDevices.getUserMedia(constraints);
+    }catch(e1){
+      // Fallback: simpler constraints for older devices
+      try{
+        _scStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:_scFacing},audio:true});
+      }catch(e2){
+        // Last fallback: any camera
+        _scStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+      }
+    }
+    const prev=document.getElementById('shortsCamPreview');
+    if(prev){
+      prev.srcObject=_scStream;
+      prev.setAttribute('playsinline','');
+      prev.setAttribute('muted','');
+      prev.muted=true;
+      try{await prev.play();}catch(pe){prev.play().catch(()=>{});}
+    }
+  }catch(e){
+    showToast('📷 Camera allow karein — browser settings mein permission dein');
+    // Show helpful message inside camera modal
+    const recMode=document.getElementById('scRecordMode');
+    if(recMode){
+      const existing=document.getElementById('scCamErrMsg');
+      if(!existing){
+        const msg=document.createElement('div');
+        msg.id='scCamErrMsg';
+        msg.style.cssText='position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;z-index:20;gap:16px;padding:24px;text-align:center;';
+        msg.innerHTML=`<div style="font-size:56px;">📷</div>
+          <div style="color:white;font-size:16px;font-weight:700;">Camera Permission Chahiye</div>
+          <div style="color:#aaa;font-size:13px;line-height:1.6;">Browser mein camera allow karein ya settings mein jakar permission dein</div>
+          <button onclick="document.getElementById('scCamErrMsg').remove();startShortsStream();" style="background:var(--red);color:white;border:none;border-radius:12px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer;">Dobara Try Karein</button>
+          <button onclick="closeShortsCamera()" style="background:#333;color:white;border:none;border-radius:12px;padding:10px 24px;font-size:14px;cursor:pointer;">Cancel</button>`;
+        recMode.appendChild(msg);
+      }
+    }
+  }
 }
 
 function closeShortsCamera(){
   stopShortsRecording();
   if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
-  const modal=document.getElementById("shortsCameraModal");
-  if(modal)modal.style.display="none";
-  showScMode("choice");
-  const prog=document.getElementById("scProgress");if(prog)prog.style.width="0%";
-  const ov=document.getElementById("scTextOverlays");if(ov)ov.innerHTML="";
+  const modal=document.getElementById('shortsCameraModal');
+  if(modal)modal.style.display='none';
+  // Reset modes
+  const recMode=document.getElementById('scRecordMode');
+  const editMode=document.getElementById('scEditMode');
+  if(recMode)recMode.style.display='block';
+  if(editMode)editMode.style.display='none';
+  // Clear text overlays
+  const ov=document.getElementById('scTextOverlays');if(ov)ov.innerHTML='';
+  // Reset progress
+  const prog=document.getElementById('scProgress');if(prog)prog.style.width='0%';
+  // Clear camera error if shown
+  const errMsg=document.getElementById('scCamErrMsg');if(errMsg)errMsg.remove();
   window._scSelectedSound=null;
-  closeAllEditPanels();
-}
-
-async function startShortsStream(){
-  try{
-    if(_scStream){_scStream.getTracks().forEach(t=>t.stop());}
-    _scStream=await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:_scFacing,width:{ideal:1080},height:{ideal:1920}},
-      audio:true
-    });
-    const prev=document.getElementById("shortsCamPreview");
-    if(prev){prev.srcObject=_scStream;prev.play().catch(()=>{});}
-  }catch(e){
-    showToast("Camera access denied. Allow in browser settings.");
-    closeShortsCamera();
-  }
 }
 
 function flipShortsCamera(){
-  _scFacing=_scFacing==="environment"?"user":"environment";
+  _scFacing=_scFacing==='environment'?'user':'environment';
+  const errMsg=document.getElementById('scCamErrMsg');
+  if(errMsg)errMsg.remove();
   startShortsStream();
 }
 
 function setShortsTimer(secs){
   _scMaxTime=secs;
-  ["scT15","scT30","scT60"].forEach(id=>{
+  ['scT15','scT30','scT60'].forEach(id=>{
     const el=document.getElementById(id);
-    if(el){el.style.borderColor="transparent";el.style.color="rgba(255,255,255,.6)";}
+    if(el){el.style.borderColor='transparent';el.style.color='rgba(255,255,255,.7)';}
   });
-  const active=document.getElementById("scT"+secs);
-  if(active){active.style.borderColor="white";active.style.color="white";}
-  showToast(secs+"s selected");
+  const active=document.getElementById('scT'+secs);
+  if(active){active.style.borderColor='white';active.style.color='white';}
+  showToast(secs+'s selected');
 }
 
-function cycleShortsSpeed(){
+function cycleShortsSpeed(el){
   _scSpeedIdx=(_scSpeedIdx+1)%SC_SPEEDS.length;
   const spd=SC_SPEEDS[_scSpeedIdx];
-  const lbl=document.getElementById("scSpeedLbl");
-  if(lbl)lbl.textContent=spd+"x";
-  showToast("Speed: "+spd+"x");
+  const lbl=document.getElementById('scSpeedLbl');
+  if(lbl)lbl.textContent=spd+'x';
+  showToast('Speed: '+spd+'x');
 }
 
 function toggleShortsRecording(){
@@ -4999,30 +5129,43 @@ function toggleShortsRecording(){
 }
 
 function startShortsRecording(){
-  if(!_scStream)return showToast("Camera not ready");
+  if(!_scStream||!_scStream.active){
+    showToast('Camera ready nahi, dobara try karo...');
+    startShortsStream().then(()=>{
+      setTimeout(()=>{if(_scStream&&_scStream.active)startShortsRecording();},800);
+    });
+    return;
+  }
+  const tracks=_scStream.getTracks();
+  if(!tracks.length){showToast('Camera stream error');return;}
   _scChunks=[];_scElapsed=0;_scRecording=true;
-  const icon=document.getElementById("scRecordIcon");
-  if(icon){icon.style.borderRadius="6px";icon.style.width="30px";icon.style.height="30px";}
-  const timeEl=document.getElementById("scRecTime");
-  if(timeEl)timeEl.style.display="block";
-  // Detect best format
-  let mimeType="";
-  if(MediaRecorder.isTypeSupported("video/mp4;codecs=avc1"))mimeType="video/mp4;codecs=avc1";
-  else if(MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus"))mimeType="video/webm;codecs=vp8,opus";
-  else if(MediaRecorder.isTypeSupported("video/webm"))mimeType="video/webm";
+  const icon=document.getElementById('scRecordIcon');
+  if(icon){icon.style.borderRadius='6px';icon.style.width='28px';icon.style.height='28px';}
+  const timeEl=document.getElementById('scRecTime');
+  if(timeEl)timeEl.style.display='block';
+  // iOS/Android MediaRecorder format detection
+  let mimeType='';
+  if(MediaRecorder.isTypeSupported('video/mp4;codecs=avc1'))mimeType='video/mp4;codecs=avc1';
+  else if(MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus'))mimeType='video/webm;codecs=vp8,opus';
+  else if(MediaRecorder.isTypeSupported('video/webm'))mimeType='video/webm';
   try{
     _scRecorder=mimeType?new MediaRecorder(_scStream,{mimeType}):new MediaRecorder(_scStream);
-  }catch(e){_scRecorder=new MediaRecorder(_scStream);}
+  }catch(e){
+    try{_scRecorder=new MediaRecorder(_scStream);}
+    catch(e2){showToast('Recording supported nahi is device pe');_scRecording=false;return;}
+  }
   _scRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)_scChunks.push(e.data);};
   _scRecorder.onstop=()=>finalizeShortsRecording();
+  _scRecorder.onerror=e=>{showToast('Recording error: '+e.error?.name);_scRecording=false;};
   _scRecorder.start(100);
-  const prog=document.getElementById("scProgress");
+  showToast('Recording shuru! 🔴');
+  const prog=document.getElementById('scProgress');
   _scProgInt=setInterval(()=>{
     _scElapsed+=0.1;
     const pct=(_scElapsed/_scMaxTime)*100;
-    if(prog)prog.style.width=Math.min(pct,100)+"%";
+    if(prog)prog.style.width=Math.min(pct,100)+'%';
     const m=Math.floor(_scElapsed/60),s=Math.floor(_scElapsed%60);
-    if(timeEl)timeEl.textContent=m+":"+(s<10?"0"+s:s);
+    if(timeEl)timeEl.textContent=m+':'+(s<10?'0'+s:s);
     if(_scElapsed>=_scMaxTime)stopShortsRecording();
   },100);
 }
@@ -5031,139 +5174,170 @@ function stopShortsRecording(){
   if(!_scRecording)return;
   _scRecording=false;
   clearInterval(_scProgInt);
-  if(_scRecorder&&_scRecorder.state!=="inactive")_scRecorder.stop();
-  const icon=document.getElementById("scRecordIcon");
-  if(icon){icon.style.borderRadius="50%";icon.style.width="38px";icon.style.height="38px";}
+  clearInterval(_scTimerInt);
+  if(_scRecorder&&_scRecorder.state!=='inactive')_scRecorder.stop();
+  const icon=document.getElementById('scRecordIcon');
+  if(icon){icon.style.borderRadius='50%';icon.style.width='36px';icon.style.height='36px';}
 }
 
 function finalizeShortsRecording(){
-  const mimeType=_scRecorder?.mimeType||"video/webm";
-  const ext=mimeType.includes("mp4")?"mp4":"webm";
+  const mimeType=_scRecorder?.mimeType||'video/webm';
   const blob=new Blob(_scChunks,{type:mimeType});
+  const ext=mimeType.includes('mp4')?'mp4':'webm';
   const url=URL.createObjectURL(blob);
-  window._recordedShortFile=new File([blob],"short_"+Date.now()+"."+ext,{type:mimeType});
-  // Stop camera stream
-  if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
+  window._recordedShortFile=new File([blob],'short_'+Date.now()+'.'+ext,{type:mimeType});
   // Switch to edit mode
-  const recPrev=document.getElementById("shortsRecPreview");
-  if(recPrev){recPrev.src=url;recPrev.play().catch(()=>{});}
-  showScMode("edit");
-  showToast("Recording done! Edit and tap Upload →");
+  const recMode=document.getElementById('scRecordMode');
+  const editMode=document.getElementById('scEditMode');
+  if(recMode)recMode.style.display='none';
+  if(editMode){editMode.style.display='flex';}
+  const recPrev=document.getElementById('shortsRecPreview');
+  if(recPrev){recPrev.src=url;recPrev.play();}
+  // Stop camera
+  if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
+  showToast('Recording done! Edit and tap Next → 🎬');
 }
 
 function handleGalleryShort(input){
   const file=input.files[0];if(!file)return;
   window._recordedShortFile=file;
   const url=URL.createObjectURL(file);
-  const recPrev=document.getElementById("shortsRecPreview");
-  if(recPrev){recPrev.src=url;recPrev.play().catch(()=>{});}
-  showScMode("edit");
-  showToast("Video loaded! Edit and tap Upload →");
+  const recMode=document.getElementById('scRecordMode');
+  const editMode=document.getElementById('scEditMode');
+  if(recMode)recMode.style.display='none';
+  if(editMode)editMode.style.display='flex';
+  const recPrev=document.getElementById('shortsRecPreview');
+  if(recPrev){recPrev.src=url;recPrev.play();}
+  showToast('Video loaded! Edit and tap Next →');
 }
 
-// ── Edit tools ──
-function toggleEditPreview(){
-  const vid=document.getElementById("shortsRecPreview");
-  const icon=document.getElementById("scPlayIcon");
-  if(!vid)return;
-  if(vid.paused){vid.play();if(icon)icon.className="fas fa-pause";}
-  else{vid.pause();if(icon)icon.className="fas fa-play";}
-}
-
-function openScPanel(id){
+function backToRecording(){
+  const recMode=document.getElementById('scRecordMode');
+  const editMode=document.getElementById('scEditMode');
+  if(recMode)recMode.style.display='block';
+  if(editMode)editMode.style.display='none';
   closeAllEditPanels();
-  const p=document.getElementById(id);
-  if(p){
-    p.style.display="block";
-    if(id==="scSoundPanel")loadScSounds();
-  }
+  const ov=document.getElementById('scTextOverlays');if(ov)ov.innerHTML='';
+  startShortsStream();
 }
 
-function closeAllEditPanels(){
-  ["scTextPanel","scSoundPanel","scSpeedPanel","scFilterPanel"].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.style.display="none";
-  });
+// Edit tools
+function toggleEditPreview(){
+  const vid=document.getElementById('shortsRecPreview');
+  const btn=document.getElementById('scPlayBtn');
+  if(!vid)return;
+  if(vid.paused){vid.play();if(btn)btn.querySelector('i').className='fas fa-pause';}
+  else{vid.pause();if(btn)btn.querySelector('i').className='fas fa-play';}
+}
+
+function openAddTextTool(){
+  closeAllEditPanels();
+  const p=document.getElementById('scTextPanel');if(p)p.style.display='block';
 }
 
 function addTextOverlay(){
-  const input=document.getElementById("scTextInput");
-  const size=document.getElementById("scTextSize")?.value||"22px";
+  const input=document.getElementById('scTextInput');
+  const size=document.getElementById('scTextSize')?.value||'22px';
   const text=input?.value?.trim();
-  if(!text)return showToast("Enter text first");
-  const container=document.getElementById("scTextOverlays");
+  if(!text)return showToast('Enter text first');
+  const container=document.getElementById('scTextOverlays');
   if(!container)return;
-  const el=document.createElement("div");
-  el.style.cssText="position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);color:"+scTextColor+";font-size:"+size+";font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.9);pointer-events:all;cursor:move;user-select:none;text-align:center;padding:6px 10px;";
+  const el=document.createElement('div');
+  el.style.cssText=`position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);color:${scTextColor};font-size:${size};font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.9);pointer-events:all;cursor:move;user-select:none;text-align:center;max-width:85%;padding:6px 10px;`;
   el.textContent=text;
-  let sx,sy,ox,oy,dragging=false;
-  el.addEventListener("touchstart",e=>{
-    dragging=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+  // Touch drag
+  let isDragging=false,sx,sy,ox,oy;
+  el.addEventListener('touchstart',e=>{
+    isDragging=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;
     const r=el.getBoundingClientRect();ox=r.left+r.width/2;oy=r.top+r.height/2;
     e.preventDefault();
   },{passive:false});
-  el.addEventListener("touchmove",e=>{
-    if(!dragging)return;
+  el.addEventListener('touchmove',e=>{
+    if(!isDragging)return;
     ox+=e.touches[0].clientX-sx;oy+=e.touches[0].clientY-sy;
     sx=e.touches[0].clientX;sy=e.touches[0].clientY;
-    el.style.left=ox+"px";el.style.top=oy+"px";el.style.transform="translate(-50%,-50%)";
+    el.style.left=ox+'px';el.style.top=oy+'px';el.style.transform='translate(-50%,-50%)';
     e.preventDefault();
   },{passive:false});
-  el.addEventListener("dblclick",()=>el.remove());
+  el.addEventListener('dblclick',()=>el.remove());
   container.appendChild(el);
-  if(input)input.value="";
+  if(input)input.value='';
   closeAllEditPanels();
-  showToast("Text added! Drag to move ✏️");
+  showToast('Text added! Drag to move, double-tap to remove ✏️');
 }
 
-function loadScSounds(){
-  const list=document.getElementById("scSoundsList");
-  if(!list||!window.TRENDING_SONGS)return;
-  list.innerHTML=TRENDING_SONGS.map(s=>
-    "<div onclick="selectScSound('"+s.name.replace(/'/g,"")+"')" style="flex-shrink:0;background:#222;border:1.5px solid "+(window._scSelectedSound===s.name?"var(--red)":"#444")+";border-radius:10px;padding:8px 12px;cursor:pointer;min-width:100px;text-align:center;"><div style="font-size:18px;margin-bottom:3px;">" +s.emoji+ "</div><div style="font-size:9px;font-weight:600;color:#ccc;">" +s.name+ "</div></div>"
-  ).join("");
+function openEditSounds(){
+  closeAllEditPanels();
+  const p=document.getElementById('scSoundPanel');if(!p)return;
+  p.style.display='block';
+  const list=document.getElementById('scSoundsList');
+  if(list&&typeof TRENDING_SONGS!=='undefined'){
+    list.innerHTML=TRENDING_SONGS.map(s=>`
+      <div onclick="selectEditSound('${s.name.replace(/'/g,'')}')" style="flex-shrink:0;background:#222;border:1.5px solid ${window._scSelectedSound===s.name?'var(--red)':'#444'};border-radius:10px;padding:8px 12px;cursor:pointer;min-width:100px;text-align:center;">
+        <div style="font-size:18px;margin-bottom:3px;">${s.emoji}</div>
+        <div style="font-size:9px;font-weight:600;color:#ccc;">${s.name}</div>
+      </div>`).join('');
+  }
 }
-
-function selectScSound(name){
+function selectEditSound(name){
   window._scSelectedSound=name;
-  showToast("🎵 "+name);
+  showToast('🎵 '+name+' selected');
   closeAllEditPanels();
 }
 
+function openEditSpeed(){
+  closeAllEditPanels();
+  const p=document.getElementById('scSpeedPanel');if(p)p.style.display='block';
+}
 function setEditSpeed(spd){
-  const vid=document.getElementById("shortsRecPreview");
+  const vid=document.getElementById('shortsRecPreview');
   if(vid)vid.playbackRate=spd;
-  showToast("Speed: "+spd+"x");
+  showToast('Speed: '+spd+'x ⚡');
   closeAllEditPanels();
 }
 
-function applyEditFilter(filter){
-  const vid=document.getElementById("shortsRecPreview");
-  if(vid)vid.style.filter=filter==="none"?"":filter;
-  showToast("Filter applied ✨");
+function openEditFilters(){
   closeAllEditPanels();
+  const p=document.getElementById('scFilterPanel');if(p)p.style.display='block';
+}
+function applyEditFilter(filter){
+  const vid=document.getElementById('shortsRecPreview');
+  if(vid)vid.style.filter=filter==='none'?'':filter;
+  showToast('Filter applied ✨');
+  closeAllEditPanels();
+}
+
+function closeAllEditPanels(){
+  ['scTextPanel','scSoundPanel','scSpeedPanel','scFilterPanel'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
 }
 
 function doneShortRecording(){
-  if(!window._recordedShortFile)return showToast("No recording found");
+  if(!window._recordedShortFile)return showToast('Pehle video record karein');
   closeShortsCamera();
-  showScreen("upload");
+  showScreen('upload');
   setTimeout(()=>{
-    const shortCard=document.querySelector(".type-card:nth-child(2)");
-    if(shortCard)selectType("short",shortCard);
+    // Select "Short" type card reliably
+    document.querySelectorAll('.type-card').forEach(card=>{
+      if(card.querySelector('span')?.textContent?.toLowerCase().includes('short')){
+        selectType('short',card);
+      }
+    });
     selectedFile=window._recordedShortFile;
-    const vPrev=document.getElementById("uploadVidPrev");
-    if(vPrev){vPrev.src=URL.createObjectURL(selectedFile);vPrev.style.display="block";}
-    const ft=document.getElementById("fileText");if(ft)ft.textContent="Short ready ✅";
-    const edBtn=document.getElementById("shortEditorBtn");if(edBtn)edBtn.style.display="flex";
-    window._vidDuration="0:"+(_scElapsed<10?"0":"")+Math.floor(_scElapsed);
+    const vPrev=document.getElementById('uploadVidPrev');
+    if(vPrev){vPrev.src=URL.createObjectURL(selectedFile);vPrev.style.display='block';}
+    const ft=document.getElementById('fileText');if(ft)ft.textContent='Short ready ✅';
+    const edBtn=document.getElementById('shortEditorBtn');if(edBtn)edBtn.style.display='flex';
+    window._vidDuration='0:'+(_scElapsed<10?'0':'')+Math.floor(_scElapsed);
     if(window._scSelectedSound){
-      const info=document.getElementById("selectedSongInfo");
-      const nameEl=document.getElementById("selectedSongName");
-      if(info)info.style.display="flex";
+      const info=document.getElementById('selectedSongInfo');
+      const nameEl=document.getElementById('selectedSongName');
+      if(info)info.style.display='flex';
       if(nameEl)nameEl.textContent=window._scSelectedSound;
     }
-    showToast("Short ready! Add title and upload 🚀");
-  },300);
+    showToast('Short ready! Title add karo aur upload karo 🚀');
+  },350);
 }
 </script>
 </body>
