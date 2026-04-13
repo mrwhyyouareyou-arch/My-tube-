@@ -1,5 +1,5 @@
-// MyTube Service Worker v3.0
-const CACHE_NAME = 'mytube-v3';
+// MyTube Service Worker v4.0
+const CACHE_NAME = 'mytube-v4';
 
 self.addEventListener('install', event => {
   self.skipWaiting();
@@ -17,26 +17,21 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = event.request.url;
-  if (
-    url.includes('firestore.googleapis') ||
-    url.includes('firebase') ||
-    url.includes('cloudinary') ||
-    url.includes('googleapis.com') ||
-    url.includes('gstatic.com') ||
-    url.includes('cdnjs.cloudflare') ||
-    url.includes('fonts.googleapis')
-  ) return;
+  if (url.includes('firestore') || url.includes('firebase') ||
+      url.includes('cloudinary') || url.includes('googleapis') ||
+      url.includes('gstatic') || url.includes('cdnjs') ||
+      url.includes('fonts.')) return;
 
   event.respondWith(
     caches.match(event.request).then(cached => {
-      const fetchPromise = fetch(event.request).then(response => {
-        if (response && response.status === 200 && response.type !== 'opaque') {
+      const network = fetch(event.request).then(response => {
+        if (response && response.status === 200) {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          caches.open(CACHE_NAME).then(c => c.put(event.request, clone));
         }
         return response;
       }).catch(() => cached);
-      return cached || fetchPromise;
+      return cached || network;
     })
   );
 });
