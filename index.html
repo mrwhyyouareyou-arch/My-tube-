@@ -1755,19 +1755,24 @@ button,input,textarea{font-family:var(--font);}
 <!-- ═══ SHORT EDITOR MODAL ═══ -->
 <div id="shortEditorOverlay" onclick="closeShortEditor()" style="display:none;position:fixed;inset:0;z-index:990;background:rgba(0,0,0,.85);"></div>
 <div id="shortEditorModal" style="display:none;position:fixed;inset:0;z-index:991;background:#000;flex-direction:column;overflow:hidden;">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,0,0,.8);border-bottom:1px solid #222;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,0,0,.9);border-bottom:1px solid #222;position:relative;z-index:2;">
     <button onclick="closeShortEditor()" style="background:none;border:none;color:white;font-size:22px;cursor:pointer;"><i class="fas fa-times"></i></button>
     <div style="font-size:15px;font-weight:700;color:white;">✂️ Short Editor</div>
     <button onclick="applyShortEdits()" style="background:var(--red);color:white;border:none;border-radius:20px;padding:6px 16px;font-size:13px;font-weight:700;cursor:pointer;">Done</button>
   </div>
-  <div style="flex:1;position:relative;display:flex;align-items:center;justify-content:center;background:#111;min-height:0;">
-    <video id="editorVid" style="max-height:100%;max-width:100%;object-fit:contain;" playsinline></video>
-    <video id="editorCamera" style="display:none;position:absolute;bottom:60px;right:12px;width:80px;height:110px;object-fit:cover;border-radius:8px;border:2px solid white;" playsinline autoplay muted></video>
-    <div id="editorEmptyState" style="color:#555;text-align:center;"><i class="fas fa-film" style="font-size:48px;margin-bottom:12px;display:block;"></i><div style="font-size:14px;">Select a video to edit</div></div>
-    <div style="position:absolute;bottom:8px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:16px;">
-      <button onclick="editorVidSeek(-5)" style="background:rgba(0,0,0,.5);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:14px;"><i class="fas fa-backward"></i></button>
-      <button onclick="editorTogglePlay()" id="editorPlayBtn" style="background:rgba(0,0,0,.6);border:none;color:white;width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:18px;"><i class="fas fa-play"></i></button>
-      <button onclick="editorVidSeek(5)" style="background:rgba(0,0,0,.5);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:14px;"><i class="fas fa-forward"></i></button>
+  <!-- Full screen video preview -->
+  <div style="flex:1;position:relative;overflow:hidden;min-height:0;">
+    <video id="editorVid" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" playsinline></video>
+    <video id="editorCamera" style="display:none;position:absolute;bottom:60px;right:12px;width:80px;height:110px;object-fit:cover;border-radius:8px;border:2px solid white;z-index:5;" playsinline autoplay muted></video>
+    <div id="editorEmptyState" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#555;text-align:center;">
+      <i class="fas fa-film" style="font-size:56px;margin-bottom:16px;"></i>
+      <div style="font-size:15px;">Select a video to edit</div>
+    </div>
+    <!-- Playback controls overlay -->
+    <div style="position:absolute;bottom:16px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:20px;z-index:5;">
+      <button onclick="editorVidSeek(-5)" style="background:rgba(0,0,0,.6);border:none;color:white;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-backward"></i></button>
+      <button onclick="editorTogglePlay()" id="editorPlayBtn" style="background:rgba(255,0,0,.85);border:none;color:white;width:54px;height:54px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(255,0,0,.5);"><i class="fas fa-play"></i></button>
+      <button onclick="editorVidSeek(5)" style="background:rgba(0,0,0,.6);border:none;color:white;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-forward"></i></button>
     </div>
   </div>
   <div style="background:#111;padding:10px 8px;overflow-x:auto;">
@@ -2281,49 +2286,135 @@ function showScreen(name){
 // ══════════════════════════════════════════════════════
 // HOME FEED — Pro Algorithm
 // ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// INFINITE SCROLL — YouTube/Facebook style
+// ══════════════════════════════════════════════════════
+let _feedPage=0, _feedBatchSize=15, _feedLoading=false;
+let _feedLastDoc=null, _feedAllLoaded=false, _feedCurrentFilter='all';
+
 async function loadHome(){
   const feed=document.getElementById('homeFeed');
   feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  // Reset pagination
+  _feedPage=0; _feedLastDoc=null; _feedAllLoaded=false; allPosts=[];
+  await loadNextBatch(true);
+  setupInfiniteScroll();
+}
+
+async function loadNextBatch(isFirst=false){
+  if(_feedLoading||_feedAllLoaded)return;
+  _feedLoading=true;
+  const feed=document.getElementById('homeFeed');
+  // Show loader at bottom
+  if(!isFirst){
+    const loader=document.createElement('div');
+    loader.id='feedBottomLoader';
+    loader.className='loader';
+    loader.innerHTML='<div class="spinner"></div>';
+    feed.appendChild(loader);
+  }
   try{
-    // Fetch without complex index
-    const snap=await db.collection('posts').orderBy('time','desc').limit(200).get();
-    allPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
-    // Apply pro algorithm
-    allPosts=sortFeedByAlgorithm(allPosts,userPrefs);
-    renderFeed(allPosts);
-  }catch(e){
-    console.error('Feed err:',e.message);
-    // Ultimate fallback
-    try{
-      const snap2=await db.collection('posts').limit(200).get();
-      allPosts=snap2.docs.map(d=>({id:d.id,...d.data()}));
-      allPosts=sortFeedByAlgorithm(allPosts,userPrefs);
-      renderFeed(allPosts);
-    }catch(e2){
-      feed.innerHTML='<div class="empty-state"><i class="fas fa-wifi-slash"></i><p>Could not load. Check Firestore Rules.</p></div>';
+    let query=db.collection('posts').orderBy('time','desc').limit(_feedBatchSize);
+    if(_feedLastDoc)query=query.startAfter(_feedLastDoc);
+    let snap;
+    try{snap=await query.get();}
+    catch(e){
+      // Fallback without orderBy
+      let q2=db.collection('posts').limit(_feedBatchSize);
+      snap=await q2.get();
     }
+    // Remove bottom loader
+    const bl=document.getElementById('feedBottomLoader');if(bl)bl.remove();
+
+    if(snap.empty||snap.docs.length<_feedBatchSize){
+      _feedAllLoaded=true;
+      if(snap.empty&&isFirst){
+        feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet. Be the first to upload!</p></div>';
+        _feedLoading=false;return;
+      }
+    }
+    if(snap.docs.length>0)_feedLastDoc=snap.docs[snap.docs.length-1];
+
+    const newPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const filtered=_feedCurrentFilter==='all'?newPosts:newPosts.filter(p=>p.type===_feedCurrentFilter||p.category===_feedCurrentFilter);
+    const scored=sortFeedByAlgorithm(filtered,userPrefs);
+    allPosts=[...allPosts,...scored];
+
+    if(isFirst){
+      feed.innerHTML='';
+      // Add shorts row first if exists
+      const shorts=allPosts.filter(p=>p.type==='short').slice(0,6);
+      const nonShorts=allPosts.filter(p=>p.type!=='short');
+      if(shorts.length&&nonShorts.length>=3){
+        nonShorts.slice(0,3).forEach(p=>appendCard(p,feed));
+        feed.insertAdjacentHTML('beforeend',buildInlineShortsRow(shorts));
+        nonShorts.slice(3).forEach(p=>appendCard(p,feed));
+      }else{
+        allPosts.forEach(p=>appendCard(p,feed));
+      }
+    }else{
+      scored.forEach(p=>appendCard(p,feed));
+    }
+    if(_feedAllLoaded&&allPosts.length>0){
+      feed.insertAdjacentHTML('beforeend','<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px;">✅ All caught up!</div>');
+    }
+  }catch(e){
+    const bl=document.getElementById('feedBottomLoader');if(bl)bl.remove();
+    console.error('Feed err:',e);
+  }
+  _feedLoading=false;
+}
+
+function appendCard(p,feed){
+  const div=document.createElement('div');
+  div.innerHTML=buildCard(p);
+  if(div.firstChild)feed.appendChild(div.firstChild);
+}
+
+function setupInfiniteScroll(){
+  // Remove old listener
+  window._infiniteScrollHandler&&window.removeEventListener('scroll',window._infiniteScrollHandler);
+  const mainEl=document.querySelector('.main')||window;
+  mainEl._infiniteScrollHandler&&mainEl.removeEventListener('scroll',mainEl._infiniteScrollHandler);
+
+  const handler=()=>{
+    const el=document.querySelector('.main');
+    if(!el)return;
+    const scrolled=el.scrollTop+el.clientHeight;
+    const total=el.scrollHeight;
+    if(scrolled>total-300&&!_feedLoading&&!_feedAllLoaded){
+      loadNextBatch();
+    }
+  };
+  window._infiniteScrollHandler=handler;
+  // Listen on .main element which is the scrollable container
+  const mainDiv=document.querySelector('.main');
+  if(mainDiv){
+    mainDiv.removeEventListener('scroll',handler);
+    mainDiv.addEventListener('scroll',handler,{passive:true});
   }
 }
 
 function filterFeed(btn,filter){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
   btn.classList.add('active');
-  const f=filter==='all'?allPosts:allPosts.filter(p=>p.type===filter||p.category===filter);
-  renderFeed(f);
+  _feedCurrentFilter=filter;
+  // Reset and reload with filter
+  _feedPage=0;_feedLastDoc=null;_feedAllLoaded=false;allPosts=[];
+  const feed=document.getElementById('homeFeed');
+  feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  loadNextBatch(true);
 }
 
 function renderFeed(posts){
   const feed=document.getElementById('homeFeed');
-  if(!posts||!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet. Be the first to upload!</p></div>';return;}
-  // Inject shorts section after 3rd item (YouTube style)
+  if(!posts||!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet!</p></div>';return;}
   const shorts=posts.filter(p=>p.type==='short').slice(0,6);
   const nonShorts=posts.filter(p=>p.type!=='short');
   let html='';
   nonShorts.forEach((p,i)=>{
     html+=buildCard(p);
-    if(i===2&&shorts.length){
-      html+=buildInlineShortsRow(shorts);
-    }
+    if(i===2&&shorts.length)html+=buildInlineShortsRow(shorts);
   });
   if(!html)html=posts.map(p=>buildCard(p)).join('');
   feed.innerHTML=html;
