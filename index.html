@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>MyTube — Pakistan ka apna platform</title>
 <!-- PWA -->
-<link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#FF0000">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -555,8 +555,8 @@ button,input,textarea{font-family:var(--font);}
 .chips-wrap{-webkit-overflow-scrolling:touch;}
 
 /* Double tap heart animation */
-.heart-anim{position:fixed;pointer-events:none;z-index:9999;animation:heartPop .9s ease forwards;}
-@keyframes heartPop{0%{transform:scale(0) translate(-50%,-50%);opacity:1}40%{transform:scale(1.5) translate(-50%,-50%);opacity:1}100%{transform:scale(1) translate(-50%,-50%);opacity:0;top:-60px!important}}
+.heart-anim{position:fixed;pointer-events:none;z-index:9999;font-size:80px;animation:heartPop .8s ease forwards;}
+@keyframes heartPop{0%{transform:scale(0) translate(-50%,-50%);opacity:1}50%{transform:scale(1.4) translate(-50%,-50%);opacity:1}100%{transform:scale(1.2) translate(-50%,-50%);opacity:0}}
 
 .toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none;}
 .toast.show{opacity:1;}
@@ -1558,170 +1558,153 @@ button,input,textarea{font-family:var(--font);}
 </div>
 
 <!-- ═══ SHORTS CAMERA MODAL ═══ -->
-<div id="shortsCameraModal" style="display:none;position:fixed;inset:0;z-index:995;background:#000;flex-direction:column;overflow:hidden;">
+<div id="shortsCameraModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;background:#000;overflow:hidden;">
 
   <!-- RECORDING MODE -->
-  <div id="scRecordMode" style="position:absolute;inset:0;">
-    <!-- Full screen camera -->
-    <video id="shortsCamPreview" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" playsinline autoplay muted></video>
+  <div id="scRecordMode" style="position:absolute;inset:0;display:block;">
+    <!-- Full screen camera feed -->
+    <video id="shortsCamPreview" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" playsinline autoplay muted></video>
 
     <!-- Top bar -->
-    <div style="position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:48px 16px 14px;background:linear-gradient(rgba(0,0,0,.6),transparent);">
-      <button onclick="closeShortsCamera()" style="background:none;border:none;color:white;font-size:26px;cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-times"></i></button>
-      <div style="color:white;font-size:13px;font-weight:700;">Short</div>
-      <button onclick="flipShortsCamera()" style="background:none;border:none;color:white;font-size:22px;cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-sync-alt"></i></button>
+    <div style="position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:50px 16px 16px;background:linear-gradient(rgba(0,0,0,.7),transparent);">
+      <button onclick="closeShortsCamera()" style="background:none;border:none;color:white;font-size:28px;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-times"></i></button>
+      <div style="color:white;font-size:15px;font-weight:800;letter-spacing:1px;">SHORTS</div>
+      <button onclick="flipShortsCamera()" style="background:rgba(0,0,0,.4);border:none;color:white;font-size:20px;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-sync-alt"></i></button>
     </div>
 
-    <!-- Recording timer -->
-    <div id="scRecTime" style="display:none;position:absolute;top:110px;left:50%;transform:translateX(-50%);background:rgba(255,0,0,.85);color:white;border-radius:20px;padding:5px 16px;font-size:14px;font-weight:800;z-index:10;letter-spacing:1px;">0:00</div>
+    <!-- Recording timer badge -->
+    <div id="scRecTime" style="display:none;position:absolute;top:115px;left:50%;transform:translateX(-50%);background:rgba(255,0,0,.9);color:white;border-radius:20px;padding:5px 16px;font-size:14px;font-weight:800;z-index:10;letter-spacing:2px;">0:00</div>
 
-    <!-- Progress bar -->
-    <div style="position:absolute;top:100px;left:16px;right:16px;z-index:10;background:rgba(255,255,255,.25);border-radius:4px;height:3px;">
-      <div id="scProgress" style="height:100%;background:#ff0000;border-radius:4px;width:0%;transition:width .1s linear;"></div>
+    <!-- Progress bar top -->
+    <div style="position:absolute;top:105px;left:0;right:0;z-index:10;background:rgba(255,255,255,.2);height:3px;">
+      <div id="scProgress" style="height:100%;background:#ff0000;width:0%;transition:width .1s linear;"></div>
     </div>
 
     <!-- Right side tools -->
-    <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:18px;align-items:center;z-index:10;">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-        <button onclick="setShortsTimer(15)" id="scT15" style="background:rgba(0,0,0,.5);border:2px solid white;color:white;width:42px;height:28px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;">15s</button>
-        <button onclick="setShortsTimer(30)" id="scT30" style="background:rgba(0,0,0,.5);border:2px solid transparent;color:white;width:42px;height:28px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">30s</button>
-        <button onclick="setShortsTimer(60)" id="scT60" style="background:rgba(0,0,0,.5);border:2px solid transparent;color:white;width:42px;height:28px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">60s</button>
+    <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:20px;align-items:center;z-index:10;">
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:center;">
+        <button onclick="setShortsTimer(15)" id="scT15" style="background:rgba(0,0,0,.5);border:2px solid white;color:white;width:44px;height:30px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">15s</button>
+        <button onclick="setShortsTimer(30)" id="scT30" style="background:rgba(0,0,0,.5);border:2px solid transparent;color:rgba(255,255,255,.7);width:44px;height:30px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">30s</button>
+        <button onclick="setShortsTimer(60)" id="scT60" style="background:rgba(0,0,0,.5);border:2px solid transparent;color:rgba(255,255,255,.7);width:44px;height:30px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">60s</button>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;" onclick="cycleShortsSpeed(this)">
-        <div style="background:rgba(0,0,0,.5);border:1.5px solid rgba(255,255,255,.5);color:white;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-          <span id="scSpeedLbl" style="font-size:13px;font-weight:800;">1x</span>
+      <div onclick="cycleShortsSpeed(this)" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="background:rgba(0,0,0,.5);border:1.5px solid rgba(255,255,255,.6);color:white;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span id="scSpeedLbl" style="font-size:14px;font-weight:800;">1x</span>
         </div>
-        <span style="color:white;font-size:9px;font-weight:600;">Speed</span>
+        <span style="color:rgba(255,255,255,.8);font-size:9px;font-weight:600;">Speed</span>
       </div>
     </div>
 
     <!-- Bottom controls -->
-    <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;padding:0 0 40px;background:linear-gradient(transparent,rgba(0,0,0,.7));">
-      <!-- Upload from gallery option -->
-      <div style="display:flex;justify-content:center;margin-bottom:20px;">
-        <button onclick="document.getElementById('scGalleryInput').click()" style="background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);color:white;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">
+    <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;background:linear-gradient(transparent,rgba(0,0,0,.8));padding:20px 0 48px;">
+      <!-- Gallery upload button -->
+      <div style="display:flex;justify-content:center;margin-bottom:22px;">
+        <button onclick="document.getElementById('scGalleryInput').click()" style="background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:white;border-radius:24px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;">
           <i class="fas fa-photo-video"></i> Upload from Gallery
         </button>
         <input type="file" id="scGalleryInput" accept="video/*" style="display:none;" onchange="handleGalleryShort(this)">
       </div>
-      <!-- Record button row -->
-      <div style="display:flex;align-items:center;justify-content:space-around;padding:0 30px;">
-        <div style="width:50px;"></div>
-        <!-- Main Record Button -->
-        <button id="scRecordBtn" onclick="toggleShortsRecording()" style="width:84px;height:84px;border-radius:50%;border:5px solid white;background:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 25px rgba(255,0,0,.6);transition:all .2s;">
-          <div id="scRecordIcon" style="width:34px;height:34px;border-radius:50%;background:white;transition:all .25s;"></div>
+      <!-- Record button -->
+      <div style="display:flex;align-items:center;justify-content:center;">
+        <button id="scRecordBtn" onclick="toggleShortsRecording()" style="width:88px;height:88px;border-radius:50%;border:5px solid white;background:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,0,0,.7);transition:all .2s;">
+          <div id="scRecordIcon" style="width:36px;height:36px;border-radius:50%;background:white;transition:all .25s;"></div>
         </button>
-        <div style="width:50px;"></div>
+      </div>
+      <!-- Mode tabs -->
+      <div style="display:flex;justify-content:center;gap:28px;margin-top:18px;">
+        <span style="color:rgba(255,255,255,.45);font-size:13px;font-weight:600;">Video</span>
+        <span style="color:white;font-size:14px;font-weight:800;border-bottom:3px solid var(--red);padding-bottom:3px;">Short</span>
+        <span style="color:rgba(255,255,255,.45);font-size:13px;font-weight:600;">Live</span>
       </div>
     </div>
   </div>
 
-  <!-- EDITING MODE (after recording) -->
+  <!-- EDIT MODE (after recording) -->
   <div id="scEditMode" style="display:none;position:absolute;inset:0;flex-direction:column;">
-    <!-- Video preview fullscreen -->
-    <video id="shortsRecPreview" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" playsinline loop></video>
+    <video id="shortsRecPreview" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" playsinline loop></video>
 
     <!-- Text overlays container -->
     <div id="scTextOverlays" style="position:absolute;inset:0;z-index:5;pointer-events:none;"></div>
 
-    <!-- Top editing bar -->
-    <div style="position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:48px 16px 14px;background:linear-gradient(rgba(0,0,0,.7),transparent);">
-      <button onclick="backToRecording()" style="background:none;border:none;color:white;font-size:22px;cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
-      <div style="font-size:14px;font-weight:700;color:white;">Edit Short</div>
-      <button onclick="doneShortRecording()" style="background:var(--red);color:white;border:none;border-radius:20px;padding:8px 18px;font-size:13px;font-weight:800;cursor:pointer;">Next →</button>
+    <!-- Top edit bar -->
+    <div style="position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:50px 16px 16px;background:linear-gradient(rgba(0,0,0,.8),transparent);">
+      <button onclick="backToRecording()" style="background:none;border:none;color:white;font-size:24px;cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
+      <div style="color:white;font-size:14px;font-weight:800;">Edit Short</div>
+      <button onclick="doneShortRecording()" style="background:var(--red);color:white;border:none;border-radius:22px;padding:9px 20px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 2px 12px rgba(255,0,0,.5);">Next →</button>
     </div>
 
-    <!-- Edit tools bottom -->
-    <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;background:rgba(0,0,0,.85);padding:16px 8px 36px;">
-      <!-- Tools row -->
-      <div style="display:flex;gap:6px;justify-content:center;margin-bottom:12px;overflow-x:auto;padding:0 8px;">
-        <!-- Play/Pause -->
-        <button onclick="toggleEditPreview()" id="scPlayBtn" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px;">
+    <!-- Edit tools -->
+    <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;background:rgba(0,0,0,.9);padding:14px 8px 40px;">
+      <!-- Tool buttons -->
+      <div style="display:flex;gap:6px;overflow-x:auto;padding:0 4px 12px;scrollbar-width:none;">
+        <button onclick="toggleEditPreview()" id="scPlayBtn" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;">
           <i class="fas fa-play" style="font-size:18px;color:#00c864;"></i><span>Play</span>
         </button>
-        <!-- Add Text -->
-        <button onclick="openAddTextTool()" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px;">
+        <button onclick="openAddTextTool()" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;">
           <i class="fas fa-font" style="font-size:18px;color:#ffd700;"></i><span>Text</span>
         </button>
-        <!-- Add Sound -->
-        <button onclick="openEditSounds()" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px;">
+        <button onclick="openEditSounds()" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;">
           <i class="fas fa-music" style="font-size:18px;color:#e91e8c;"></i><span>Sound</span>
         </button>
-        <!-- Trim -->
-        <button onclick="openEditTrim()" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px;">
-          <i class="fas fa-cut" style="font-size:18px;color:#ff9600;"></i><span>Trim</span>
-        </button>
-        <!-- Speed -->
-        <button onclick="openEditSpeed()" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px;">
+        <button onclick="openEditSpeed()" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;">
           <i class="fas fa-tachometer-alt" style="font-size:18px;color:#4fc3f7;"></i><span>Speed</span>
         </button>
-        <!-- Filter -->
-        <button onclick="openEditFilters()" style="background:#1a1a1a;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px;">
+        <button onclick="openEditFilters()" style="flex-shrink:0;background:#1c1c1c;border:1px solid #333;color:white;border-radius:12px;padding:10px 14px;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;">
           <i class="fas fa-magic" style="font-size:18px;color:#aa44ff;"></i><span>Filter</span>
         </button>
       </div>
 
       <!-- Add Text Panel -->
-      <div id="scTextPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 8px 8px;">
+      <div id="scTextPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 10px;">
         <div style="font-size:12px;font-weight:700;color:white;margin-bottom:8px;">✏️ Add Text</div>
-        <input id="scTextInput" placeholder="Type your text..." style="width:100%;padding:10px 12px;background:#222;border:1.5px solid #444;border-radius:8px;color:white;font-size:14px;outline:none;margin-bottom:8px;">
-        <div style="display:flex;gap:6px;margin-bottom:8px;">
-          <div style="font-size:11px;color:#aaa;margin-right:4px;display:flex;align-items:center;">Color:</div>
-          <div onclick="scTextColor='#ffffff';document.querySelectorAll('.sc-color-btn').forEach(b=>b.style.outline='none');this.style.outline='2px solid var(--red)'" class="sc-color-btn" style="width:24px;height:24px;border-radius:50%;background:#fff;cursor:pointer;outline:2px solid var(--red);"></div>
-          <div onclick="scTextColor='#ff0000';document.querySelectorAll('.sc-color-btn').forEach(b=>b.style.outline='none');this.style.outline='2px solid var(--red)'" class="sc-color-btn" style="width:24px;height:24px;border-radius:50%;background:#ff0000;cursor:pointer;"></div>
-          <div onclick="scTextColor='#ffff00';document.querySelectorAll('.sc-color-btn').forEach(b=>b.style.outline='none');this.style.outline='2px solid var(--red)'" class="sc-color-btn" style="width:24px;height:24px;border-radius:50%;background:#ffff00;cursor:pointer;"></div>
-          <div onclick="scTextColor='#00ff88';document.querySelectorAll('.sc-color-btn').forEach(b=>b.style.outline='none');this.style.outline='2px solid var(--red)'" class="sc-color-btn" style="width:24px;height:24px;border-radius:50%;background:#00ff88;cursor:pointer;"></div>
-          <div onclick="scTextColor='#4fc3f7';document.querySelectorAll('.sc-color-btn').forEach(b=>b.style.outline='none');this.style.outline='2px solid var(--red)'" class="sc-color-btn" style="width:24px;height:24px;border-radius:50%;background:#4fc3f7;cursor:pointer;"></div>
-          <div onclick="scTextColor='#ff69b4';document.querySelectorAll('.sc-color-btn').forEach(b=>b.style.outline='none');this.style.outline='2px solid var(--red)'" class="sc-color-btn" style="width:24px;height:24px;border-radius:50%;background:#ff69b4;cursor:pointer;"></div>
-        </div>
-        <div style="display:flex;gap:6px;">
-          <select id="scTextSize" style="flex:1;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:7px;font-size:12px;">
+        <input id="scTextInput" placeholder="Type your text..." style="width:100%;padding:10px 12px;background:#222;border:1.5px solid #444;border-radius:8px;color:white;font-size:14px;outline:none;margin-bottom:8px;box-sizing:border-box;">
+        <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;">
+          <span style="font-size:11px;color:#aaa;">Color:</span>
+          <div onclick="scTextColor='#ffffff'" style="width:26px;height:26px;border-radius:50%;background:#fff;cursor:pointer;border:2px solid var(--red);"></div>
+          <div onclick="scTextColor='#ff0000'" style="width:26px;height:26px;border-radius:50%;background:#ff0000;cursor:pointer;"></div>
+          <div onclick="scTextColor='#ffff00'" style="width:26px;height:26px;border-radius:50%;background:#ffff00;cursor:pointer;"></div>
+          <div onclick="scTextColor='#00ff88'" style="width:26px;height:26px;border-radius:50%;background:#00ff88;cursor:pointer;"></div>
+          <div onclick="scTextColor='#4fc3f7'" style="width:26px;height:26px;border-radius:50%;background:#4fc3f7;cursor:pointer;"></div>
+          <div onclick="scTextColor='#ff69b4'" style="width:26px;height:26px;border-radius:50%;background:#ff69b4;cursor:pointer;"></div>
+          <select id="scTextSize" style="flex:1;background:#222;border:1px solid #444;color:white;border-radius:8px;padding:6px;font-size:11px;">
             <option value="16px">Small</option>
             <option value="22px" selected>Medium</option>
-            <option value="30px">Large</option>
-            <option value="40px">XLarge</option>
+            <option value="32px">Large</option>
+            <option value="44px">XLarge</option>
           </select>
-          <button onclick="addTextOverlay()" style="flex:2;background:var(--red);color:white;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;">Add Text ✓</button>
         </div>
+        <button onclick="addTextOverlay()" style="width:100%;background:var(--red);color:white;border:none;border-radius:10px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;">Add Text ✓</button>
       </div>
 
       <!-- Sound Panel -->
-      <div id="scSoundPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 8px 8px;max-height:160px;overflow-y:auto;">
+      <div id="scSoundPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 10px;max-height:150px;overflow-y:auto;">
         <div style="font-size:12px;font-weight:700;color:white;margin-bottom:8px;">🎵 Add Sound</div>
         <div id="scSoundsList" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;"></div>
       </div>
 
-      <!-- Trim Panel -->
-      <div id="scTrimPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 8px 8px;">
-        <div style="font-size:12px;font-weight:700;color:white;margin-bottom:8px;">✂️ Trim</div>
-        <div style="font-size:11px;color:#aaa;margin-bottom:4px;">Start: <span id="scTrimStartLbl">0s</span> | End: <span id="scTrimEndLbl">60s</span></div>
-        <input type="range" id="scTrimStart" min="0" max="60" value="0" style="width:100%;accent-color:var(--red);margin-bottom:6px;" oninput="updateScTrim()">
-        <input type="range" id="scTrimEnd" min="1" max="60" value="60" style="width:100%;accent-color:var(--red);" oninput="updateScTrim()">
-        <button onclick="applyScTrim()" style="width:100%;background:var(--red);color:white;border:none;border-radius:8px;padding:8px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;">Apply</button>
-      </div>
-
       <!-- Speed Panel -->
-      <div id="scSpeedPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 8px 8px;">
-        <div style="font-size:12px;font-weight:700;color:white;margin-bottom:8px;">⚡ Speed</div>
+      <div id="scSpeedPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 10px;">
+        <div style="font-size:12px;font-weight:700;color:white;margin-bottom:10px;">⚡ Speed</div>
         <div style="display:flex;gap:8px;justify-content:center;">
-          <button onclick="setEditSpeed(0.3)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;">0.3x</button>
-          <button onclick="setEditSpeed(0.5)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;">0.5x</button>
-          <button onclick="setEditSpeed(1)" style="background:var(--red);border:none;color:white;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;">1x</button>
-          <button onclick="setEditSpeed(1.5)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;">1.5x</button>
-          <button onclick="setEditSpeed(2)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;">2x</button>
+          <button onclick="setEditSpeed(0.5)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;">0.5x</button>
+          <button onclick="setEditSpeed(1)" style="background:var(--red);border:none;color:white;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;">1x</button>
+          <button onclick="setEditSpeed(1.5)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;">1.5x</button>
+          <button onclick="setEditSpeed(2)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;">2x</button>
+          <button onclick="setEditSpeed(3)" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;">3x</button>
         </div>
       </div>
 
       <!-- Filter Panel -->
-      <div id="scFilterPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 8px 8px;">
-        <div style="font-size:12px;font-weight:700;color:white;margin-bottom:8px;">✨ Filter</div>
+      <div id="scFilterPanel" style="display:none;background:#111;border-radius:12px;padding:12px;margin:0 4px 10px;">
+        <div style="font-size:12px;font-weight:700;color:white;margin-bottom:10px;">✨ Filters</div>
         <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
-          <button onclick="applyEditFilter('none')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Normal</button>
-          <button onclick="applyEditFilter('grayscale(100%)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">B&W</button>
-          <button onclick="applyEditFilter('sepia(80%)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Vintage</button>
-          <button onclick="applyEditFilter('brightness(1.3) contrast(1.1)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Bright</button>
-          <button onclick="applyEditFilter('contrast(1.5) saturate(1.4)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Vivid</button>
-          <button onclick="applyEditFilter('hue-rotate(180deg)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Neon</button>
+          <button onclick="applyEditFilter('none')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Normal</button>
+          <button onclick="applyEditFilter('grayscale(100%)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">B&W</button>
+          <button onclick="applyEditFilter('sepia(80%)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Vintage</button>
+          <button onclick="applyEditFilter('brightness(1.4) contrast(1.1)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Bright</button>
+          <button onclick="applyEditFilter('contrast(1.6) saturate(1.5)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Vivid</button>
+          <button onclick="applyEditFilter('hue-rotate(180deg) saturate(2)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Neon</button>
+          <button onclick="applyEditFilter('invert(100%)')" style="background:#222;border:1px solid #444;color:white;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Invert</button>
         </div>
       </div>
     </div>
@@ -2272,8 +2255,7 @@ const screenMap={
   contentPolicy:'contentPolicyScreen',
   copyright:'copyrightScreen',
   playlist:'playlistScreen',
-  playlists:'playlistsScreen',
-  playlist:'playlistScreen',
+  playlists:'playlistsScreen'
 };
 const navMap={home:'nav-home',shorts:'nav-shorts',upload:'nav-upload',subs:'nav-subs',profile:'nav-profile',owner:'nav-owner'};
 
@@ -2304,7 +2286,7 @@ async function loadHome(){
   feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
     // Fetch without complex index
-    const snap=await db.collection('posts').orderBy('time','desc').limit(50).get();
+    const snap=await db.collection('posts').orderBy('time','desc').limit(200).get();
     allPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
     // Apply pro algorithm
     allPosts=sortFeedByAlgorithm(allPosts,userPrefs);
@@ -2313,7 +2295,7 @@ async function loadHome(){
     console.error('Feed err:',e.message);
     // Ultimate fallback
     try{
-      const snap2=await db.collection('posts').limit(50).get();
+      const snap2=await db.collection('posts').limit(200).get();
       allPosts=snap2.docs.map(d=>({id:d.id,...d.data()}));
       allPosts=sortFeedByAlgorithm(allPosts,userPrefs);
       renderFeed(allPosts);
@@ -2373,12 +2355,12 @@ async function openFeedShort(postId){
   if(!sfPosts||sfPosts.length===0){
     // Load shorts first
     try{
-      const snap=await db.collection('posts').orderBy('time','desc').limit(60).get();
+      const snap=await db.collection('posts').orderBy('time','desc').limit(200).get();
       sfPosts=snap.docs.filter(d=>d.data().type==='short').map(d=>({id:d.id,...d.data()}));
       allSfPosts=[...sfPosts];
     }catch(e){
       // Try without orderBy
-      const snap=await db.collection('posts').limit(60).get();
+      const snap=await db.collection('posts').limit(200).get();
       sfPosts=snap.docs.filter(d=>d.data().type==='short').map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.time-a.time);
       allSfPosts=[...sfPosts];
     }
@@ -2515,7 +2497,7 @@ async function loadShorts(){
   const grid=document.getElementById('shortsGrid');
   grid.innerHTML='<div class="loader" style="grid-column:1/-1;"><div class="spinner"></div></div>';
   try{
-    const snap=await db.collection('posts').orderBy('time','desc').limit(60).get();
+    const snap=await db.collection('posts').orderBy('time','desc').limit(200).get();
     sfPosts=snap.docs.filter(d=>d.data().type==='short').map(d=>({id:d.id,...d.data()}));
     sfPosts=sortFeedByAlgorithm(sfPosts,userPrefs);
     allSfPosts=[...sfPosts];
@@ -2659,21 +2641,22 @@ function handleSfTap(e){
   }
 }
 
-// Multiple colored heart emojis for double tap
-const HEART_EMOJIS=['❤️','🧡','💛','💚','💙','💜','🖤','🤍','💗','💖','💝','💓'];
-
 function showDoubleTapHeart(x,y){
-  const count=6+Math.floor(Math.random()*5);
+  const count=5+Math.floor(Math.random()*4);
   for(let i=0;i<count;i++){
-    const emoji=HEART_EMOJIS[Math.floor(Math.random()*HEART_EMOJIS.length)];
+    const color=HEART_COLORS[Math.floor(Math.random()*HEART_COLORS.length)];
     const el=document.createElement('div');
     el.className='heart-anim';
-    const ox=(Math.random()-0.5)*120;
-    const oy=(Math.random()-0.5)*100;
-    el.style.cssText=`left:${x+ox}px;top:${y+oy}px;font-size:${24+Math.random()*28}px;animation-delay:${i*0.07}s;animation-duration:${0.8+Math.random()*0.4}s;`;
-    el.textContent=emoji;
+    const ox=(Math.random()-0.5)*100;
+    const oy=(Math.random()-0.5)*80;
+    el.style.left=(x+ox)+'px';
+    el.style.top=(y+oy)+'px';
+    el.style.color=color;
+    el.style.fontSize=(18+Math.random()*18)+'px';
+    el.style.animationDelay=(i*0.06)+'s';
+    el.innerHTML='❤️';
     document.body.appendChild(el);
-    setTimeout(()=>el.remove(),1200+i*70);
+    setTimeout(()=>el.remove(),950+i*60);
   }
 }
 function prevShort(){if(sfCurrentIdx>0)playShortAt(sfCurrentIdx-1);}
@@ -3321,68 +3304,65 @@ async function loadComments(postId){
   const list=document.getElementById('commList');
   list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
-    const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('time','desc').limit(50).get();
+    const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('time','desc').limit(200).get();
     document.getElementById('commTitle').textContent=`Comments (${snap.size})`;
     if(snap.empty){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet. Be first! 💬</div>';return;}
-    // Populate _allComments for filter
-    _allComments=snap.docs.map(d=>{
+    list.innerHTML=snap.docs.map(d=>{
       const c=d.data();
-      return {id:d.id,author:c.authorName||'User',text:c.text,time:c.time,photoURL:c.authorPhoto||'',likes:c.likes||0};
-    });
-    renderCommentsList(_allComments, list);
+      const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
+      return `<div class="comm-item">
+        <div class="comm-av">${av}</div>
+        <div class="comm-body">
+          <div class="comm-author">${c.authorName||'User'}</div>
+          <div class="comm-text">${c.text}</div>
+          <div class="comm-time">${getTimeAgo(c.time)}</div>
+          <button onclick="setReply('@${(c.authorName||'user').replace(/[^a-z0-9]/gi,'')}')" style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;padding:2px 0;">Reply</button>
+        </div></div>`;
+    }).join('');
   }catch(e){
     // Fallback without orderBy
     try{
-      const snap2=await db.collection('posts').doc(postId).collection('comments').limit(50).get();
+      const snap2=await db.collection('posts').doc(postId).collection('comments').limit(200).get();
       const sorted=snap2.docs.sort((a,b)=>b.data().time-a.data().time);
       document.getElementById('commTitle').textContent=`Comments (${sorted.length})`;
-      _allComments=sorted.map(d=>{
+      list.innerHTML=sorted.map(d=>{
         const c=d.data();
-        return {id:d.id,author:c.authorName||'User',text:c.text,time:c.time,photoURL:c.authorPhoto||'',likes:c.likes||0};
-      });
-      renderCommentsList(_allComments, list);
+        const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
+        return `<div class="comm-item"><div class="comm-av">${av}</div><div class="comm-body"><div class="comm-author">${c.authorName||'User'}</div><div class="comm-text">${c.text}</div><div class="comm-time">${getTimeAgo(c.time)}</div></div></div>`;
+      }).join('')||'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet!</div>';
     }catch(e2){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';}
   }
-}
-
-function renderCommentsList(comments, listEl){
-  const list=listEl||document.getElementById('commList');
-  if(!list)return;
-  list.innerHTML=comments.map(c=>{
-    const av=c.photoURL?`<img src="${c.photoURL}">`:(c.author||'U')[0].toUpperCase();
-    return `<div class="comm-item">
-      <div class="comm-av">${av}</div>
-      <div class="comm-body">
-        <div class="comm-author">${c.author||'User'}</div>
-        <div class="comm-text">${c.text||''}</div>
-        <div class="comm-time">${getTimeAgo(c.time)}</div>
-        <button onclick="setReply('@${(c.author||'user').replace(/[^a-z0-9]/gi,'')}')" style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;padding:2px 0;">Reply</button>
-      </div></div>`;
-  }).join('')||'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet!</div>';
 }
 
 async function loadRelated(postId, postType, category){
   const list=document.getElementById('relatedList');
   if(!list)return;
-  list.innerHTML='<div style="color:var(--text3);font-size:12px;">Loading...</div>';
+  list.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px 0;">Loading...</div>';
   try{
-    const snap=await db.collection('posts').orderBy('time','desc').limit(20).get();
+    let snap;
+    try{snap=await db.collection('posts').orderBy('rankScore','desc').limit(30).get();}
+    catch(e){snap=await db.collection('posts').orderBy('time','desc').limit(30).get();}
     let related=snap.docs.map(d=>({id:d.id,...d.data()}))
       .filter(p=>p.id!==postId)
-      .map(p=>({...p,_rel:(p.category===category||p.type===postType?10:0)+(p.rankScore||0)}))
-      .sort((a,b)=>b._rel-a._rel)
-      .slice(0,8);
+      .sort((a,b)=>{
+        const sa=(a.category===category||a.type===postType?20:0)+(a.rankScore||0);
+        const sb=(b.category===category||b.type===postType?20:0)+(b.rankScore||0);
+        return sb-sa;
+      })
+      .slice(0,12);
     if(!related.length){list.innerHTML='';return;}
     list.innerHTML=related.map(p=>{
-      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-      const av=p.authorPhoto?`<img src="${p.authorPhoto}">`:(p.authorName||'U')[0].toUpperCase();
-      return `<div onclick="openPost('${p.id}')" style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;">
-        <div style="width:100px;height:60px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
-          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<i class="fas fa-video" style="font-size:18px;color:var(--text3);"></i>'}
+      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_300/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      return `<div onclick="openPost('${p.id}')" style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="width:120px;height:68px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<i class="fas fa-play-circle" style="font-size:24px;color:var(--text3);"></i>'}
+          ${p.type==='short'?'<div style="position:absolute;top:4px;left:4px;background:var(--red);color:white;font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px;">SHORT</div>':''}
+          ${p.duration?`<div style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.85);color:white;font-size:9px;font-weight:600;padding:2px 4px;border-radius:3px;">${p.duration}</div>`:''}
         </div>
         <div style="flex:1;min-width:0;">
-          <div style="font-size:12px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
-          <div style="font-size:10px;color:var(--text2);margin-top:3px;">${p.authorName||''} • ${getTimeAgo(p.time)}</div>
+          <div style="font-size:12px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--text);">${p.title||'Untitled'}</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:4px;">${p.authorName||'Unknown'}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;">👁️${p.views||0} • ${getTimeAgo(p.time)}</div>
         </div>
       </div>`;
     }).join('');
@@ -3910,20 +3890,13 @@ async function loadOwnerDash(){
       db.collection('users').get(),
       db.collection('posts').get()
     ]);
-    let channels=0,totalLikes=0,totalViews=0,totalShorts=0;
+    let channels=0,totalLikes=0,totalViews=0;
     usersSnap.forEach(d=>{if(d.data().channelName||d.data().hasChannel)channels++;});
-    postsSnap.forEach(d=>{
-      const p=d.data();
-      totalLikes+=p.likes||0;
-      totalViews+=p.views||0;
-      if(p.type==='short')totalShorts++;
-    });
+    postsSnap.forEach(d=>{totalLikes+=d.data().likes||0;totalViews+=d.data().views||0;});
     document.getElementById('owUsers').textContent=usersSnap.size;
     document.getElementById('owChannels').textContent=channels;
     document.getElementById('owVideos').textContent=postsSnap.size;
     document.getElementById('owLikes').textContent=totalLikes;
-    const ovEl=document.getElementById('owViews');if(ovEl)ovEl.textContent=totalViews;
-    const osEl=document.getElementById('owShorts');if(osEl)osEl.textContent=totalShorts;
     const users=usersSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.lastSeen||0)-(a.lastSeen||0));
     if(ul)ul.innerHTML=users.map(u=>{
       const av=u.photoURL?`<img src="${u.photoURL}" style="width:100%;height:100%;object-fit:cover;">`:(u.name||'U')[0].toUpperCase();
@@ -4257,18 +4230,7 @@ function filterComments(type,btn){
   let sorted=[..._allComments];
   if(type==='newest')sorted.sort((a,b)=>(b.time||0)-(a.time||0));
   else if(type==='top')sorted.sort((a,b)=>(b.likes||0)-(a.likes||0));
-  else if(type==='topics'){
-    // Group by keyword
-    const groups={};
-    sorted.forEach(c=>{
-      const words=(c.text||'').toLowerCase().split(/\s+/).filter(w=>w.length>3);
-      const key=words[0]||'other';
-      if(!groups[key])groups[key]=[];
-      groups[key].push(c);
-    });
-    sorted=Object.values(groups).flat();
-  }
-  renderCommentsList(sorted);
+  list.innerHTML=sorted.map(c=>renderCommentHTML(c)).join('');
 }
 
 function renderCommentHTML(c){
@@ -4341,22 +4303,15 @@ let currentPlaylistId=null,currentPlaylistName='';
 
 async function loadMyPlaylists(){
   if(!cUser)return;
-  // Use correct ID: myPlaylistsGrid (from HTML)
-  const list=document.getElementById('myPlaylistsGrid');
+  const list=document.getElementById('myPlaylistsList');
   if(!list)return;
   list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
-    let snap;
-    try{
-      snap=await db.collection('playlists').where('ownerId','==',cUser.uid).orderBy('time','desc').get();
-    }catch(idxErr){
-      // Fallback if index not created yet
-      snap=await db.collection('playlists').where('ownerId','==',cUser.uid).get();
-    }
-    if(snap.empty){list.innerHTML='<div class="empty-state"><i class="fas fa-list-ul"></i><p>No playlists yet. Create one!</p></div>';return;}
+    const snap=await db.collection('playlists').where('ownerId','==',cUser.uid).orderBy('time','desc').get();
+    if(snap.empty){list.innerHTML='<div class="empty-state"><i class="fas fa-list-ul"></i><p>No playlists yet</p></div>';return;}
     list.innerHTML=snap.docs.map(d=>{
       const pl=d.data();
-      return `<div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--border);margin-bottom:10px;cursor:pointer;" onclick="openPlaylist('${d.id}','${(pl.name||'').replace(/'/g,"\\'")}')">
+      return `<div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--border);margin-bottom:10px;cursor:pointer;" onclick="openPlaylist('${d.id}','${(pl.name||'').replace(/'/g,'')}')">
         <div style="width:52px;height:52px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-list-ul" style="color:var(--red);font-size:20px;"></i></div>
         <div style="flex:1;min-width:0;">
           <div style="font-size:14px;font-weight:600;">${pl.name||'Untitled'}</div>
@@ -4370,11 +4325,12 @@ async function loadMyPlaylists(){
 
 function openPlaylist(id,name){
   currentPlaylistId=id;currentPlaylistName=name;
-  // Use correct screen: playlistScreen (from HTML)
-  const titleEl=document.getElementById('playlistTitle');
-  if(titleEl)titleEl.textContent=name||'Playlist';
-  showScreen('playlist');
-  loadPlaylistVideos(id);
+  const screen=document.getElementById('playlistDetailScreen');
+  if(screen){
+    document.getElementById('playlistDetailTitle').textContent=name||'Playlist';
+    showScreen('playlistDetail');
+    loadPlaylistVideos(id);
+  }
 }
 
 async function loadPlaylistVideos(id){
@@ -4433,54 +4389,30 @@ async function saveToPlaylist(){
   if(!cUser||!currentPostId)return showToast('Login karein!');
   try{
     const snap=await db.collection('playlists').where('ownerId','==',cUser.uid).get();
+    if(snap.empty){
+      const name=prompt('No playlists found. Create one:');
+      if(!name)return;
+      await db.collection('playlists').add({name,ownerId:cUser.uid,videoIds:[currentPostId],time:Date.now()});
+      showToast('Added to new playlist "'+name+'" ✅');return;
+    }
     const ex=document.getElementById('plSheet');if(ex)ex.remove();
     const exo=document.getElementById('plSheetOv');if(exo)exo.remove();
     const ov=document.createElement('div');ov.id='plSheetOv';
-    ov.style.cssText='position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.6);';
+    ov.style.cssText='position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);';
     document.body.appendChild(ov);
     const sheet=document.createElement('div');sheet.id='plSheet';
-    sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9001;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 36px;max-height:65vh;overflow-y:auto;';
-
-    const closeSheet=()=>{
-      const s=document.getElementById('plSheet');if(s)s.remove();
-      const o=document.getElementById('plSheetOv');if(o)o.remove();
-    };
-
-    let innerHtml=`<div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;"></div>
-      <div style="font-size:16px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
-        <span>💾 Save to Playlist</span>
-        <i class="fas fa-times" style="cursor:pointer;color:var(--text2);font-size:18px;" onclick="document.getElementById('plSheet').remove();document.getElementById('plSheetOv').remove();"></i>
+    sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:501;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 28px;max-height:60vh;overflow-y:auto;';
+    sheet.innerHTML=`<div style="font-size:16px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;"><span>💾 Save to Playlist</span><i class="fas fa-times" style="cursor:pointer;color:var(--text2);" onclick="document.getElementById('plSheet').remove();document.getElementById('plSheetOv').remove();"></i></div>`+
+      snap.docs.map(d=>`<div onclick="addToExistingPlaylist('${d.id}','${(d.data().name||'').replace(/'/g,'')}');document.getElementById('plSheet').remove();document.getElementById('plSheetOv').remove();" style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;cursor:pointer;margin-bottom:6px;background:var(--bg3);">
+        <i class="fas fa-list-ul" style="color:var(--red);font-size:16px;"></i>
+        <span style="font-size:14px;font-weight:600;">${d.data().name||'Untitled'}</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:auto;">${d.data().videoIds?.length||0} videos</span>
+      </div>`).join('')+
+      `<div onclick="(async()=>{const n=prompt('New playlist name:');if(n){await db.collection('playlists').add({name:n,ownerId:cUser.uid,videoIds:[currentPostId],time:Date.now()});showToast('Created & saved! ✅');}document.getElementById('plSheet').remove();document.getElementById('plSheetOv').remove();})()" style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;cursor:pointer;margin-top:6px;border:2px dashed var(--border);">
+        <i class="fas fa-plus" style="color:var(--text3);font-size:16px;"></i>
+        <span style="font-size:14px;color:var(--text2);">Create new playlist</span>
       </div>`;
-
-    if(snap.empty){
-      innerHtml+=`<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No playlists yet. Create one below!</div>`;
-    }else{
-      innerHtml+=snap.docs.map(d=>{
-        const pl=d.data();
-        return `<div onclick="addToExistingPlaylist('${d.id}','${(pl.name||'').replace(/'/g,"\\'")}');document.getElementById('plSheet').remove();document.getElementById('plSheetOv').remove();"
-          style="display:flex;align-items:center;gap:12px;padding:13px;border-radius:12px;cursor:pointer;margin-bottom:8px;background:var(--bg3);border:1px solid var(--border);">
-          <div style="width:42px;height:42px;border-radius:8px;background:rgba(255,0,0,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <i class="fas fa-list-ul" style="color:var(--red);font-size:16px;"></i>
-          </div>
-          <div style="flex:1;">
-            <div style="font-size:14px;font-weight:600;">${pl.name||'Untitled'}</div>
-            <div style="font-size:11px;color:var(--text3);">${pl.videoIds?.length||0} videos</div>
-          </div>
-          <i class="fas fa-plus-circle" style="color:var(--red);font-size:18px;"></i>
-        </div>`;
-      }).join('');
-    }
-
-    innerHtml+=`<div onclick="(async()=>{const n=prompt('New playlist name:');if(!n||!n.trim())return;await db.collection('playlists').add({name:n.trim(),ownerId:cUser.uid,videoIds:[currentPostId],time:Date.now()});showToast('Created & saved! ✅');document.getElementById('plSheet')?.remove();document.getElementById('plSheetOv')?.remove();})()"
-      style="display:flex;align-items:center;gap:12px;padding:13px;border-radius:12px;cursor:pointer;margin-top:4px;border:2px dashed var(--border);">
-      <div style="width:42px;height:42px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <i class="fas fa-plus" style="color:var(--text2);font-size:16px;"></i>
-      </div>
-      <span style="font-size:14px;color:var(--text2);font-weight:500;">Create new playlist</span>
-    </div>`;
-
-    sheet.innerHTML=innerHtml;
-    ov.onclick=closeSheet;
+    ov.onclick=()=>{sheet.remove();ov.remove();};
     document.body.appendChild(sheet);
   }catch(e){showToast('Error: '+e.message);}
 }
@@ -4840,8 +4772,8 @@ function ctxReport(){
 // ══════════════════════════════════════════════════════
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg=>{console.log('SW registered',reg.scope);})
+    navigator.serviceWorker.register('./sw.js',{scope:'./'})
+      .then(reg=>{console.log('SW registered ✅',reg.scope);})
       .catch(e=>console.log('SW error:',e));
   });
 }
@@ -4850,8 +4782,8 @@ let _pwaPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();
   _pwaPrompt=e;
-  // Show install banner immediately
-  setTimeout(()=>showPwaInstallBanner(),3000);
+  // Show install banner after 5 seconds
+  setTimeout(()=>showPwaInstallBanner(),5000);
 });
 
 function showPwaInstallBanner(){
@@ -4888,21 +4820,20 @@ window.addEventListener('appinstalled',()=>{
   _pwaPrompt=null;
 });
 
-
-// ══════════════════════════════════════════════════════
-// SHORTS CAMERA — Full Recording + Editing + Text
 // ══════════════════════════════════════════════════════
 let _scStream=null,_scRecorder=null,_scChunks=[],_scRecording=false;
-let _scMaxTime=15,_scElapsed=0,_scProgInt=null;
+let _scMaxTime=15,_scElapsed=0,_scTimerInt=null,_scProgInt=null;
 let _scFacing='environment',_scSpeedIdx=2;
+const SC_SPEEDS=[0.5,0.75,1,1.25,1.5];
 let scTextColor='#ffffff';
-const SC_SPEEDS=[0.3,0.5,1,1.5,2];
 
 async function openShortsCamera(){
   const modal=document.getElementById('shortsCameraModal');
-  if(modal)modal.style.display='flex';
-  document.getElementById('scRecordMode').style.display='block';
-  document.getElementById('scEditMode').style.display='none';
+  if(modal)modal.style.display='block';
+  const recMode=document.getElementById('scRecordMode');
+  const editMode=document.getElementById('scEditMode');
+  if(recMode)recMode.style.display='block';
+  if(editMode)editMode.style.display='none';
   await startShortsStream();
 }
 
@@ -4916,7 +4847,7 @@ async function startShortsStream(){
     const prev=document.getElementById('shortsCamPreview');
     if(prev){prev.srcObject=_scStream;prev.play();}
   }catch(e){
-    showToast('Camera access denied. Allow camera permission in browser settings.');
+    showToast('Camera access denied. Allow in browser settings.');
     closeShortsCamera();
   }
 }
@@ -4926,11 +4857,16 @@ function closeShortsCamera(){
   if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
   const modal=document.getElementById('shortsCameraModal');
   if(modal)modal.style.display='none';
-  // Reset
+  // Reset modes
   const recMode=document.getElementById('scRecordMode');
   const editMode=document.getElementById('scEditMode');
   if(recMode)recMode.style.display='block';
   if(editMode)editMode.style.display='none';
+  // Clear text overlays
+  const ov=document.getElementById('scTextOverlays');if(ov)ov.innerHTML='';
+  // Reset progress
+  const prog=document.getElementById('scProgress');if(prog)prog.style.width='0%';
+  window._scSelectedSound=null;
 }
 
 function flipShortsCamera(){
@@ -4942,11 +4878,11 @@ function setShortsTimer(secs){
   _scMaxTime=secs;
   ['scT15','scT30','scT60'].forEach(id=>{
     const el=document.getElementById(id);
-    if(el)el.style.borderColor='transparent';
+    if(el){el.style.borderColor='transparent';el.style.color='rgba(255,255,255,.7)';}
   });
   const active=document.getElementById('scT'+secs);
-  if(active)active.style.borderColor='white';
-  showToast('Max: '+secs+'s');
+  if(active){active.style.borderColor='white';active.style.color='white';}
+  showToast(secs+'s selected');
 }
 
 function cycleShortsSpeed(el){
@@ -4969,17 +4905,13 @@ function startShortsRecording(){
   if(icon){icon.style.borderRadius='6px';icon.style.width='28px';icon.style.height='28px';}
   const timeEl=document.getElementById('scRecTime');
   if(timeEl)timeEl.style.display='block';
+  // iOS/Android MediaRecorder format detection
+  let mimeType='';
+  if(MediaRecorder.isTypeSupported('video/mp4;codecs=avc1'))mimeType='video/mp4;codecs=avc1';
+  else if(MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus'))mimeType='video/webm;codecs=vp8,opus';
+  else if(MediaRecorder.isTypeSupported('video/webm'))mimeType='video/webm';
   try{
-    // iOS Safari supports mp4, Android supports webm
-    let mimeType = '';
-    if(MediaRecorder.isTypeSupported('video/mp4;codecs=avc1')){
-      mimeType='video/mp4;codecs=avc1';
-    }else if(MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')){
-      mimeType='video/webm;codecs=vp8,opus';
-    }else if(MediaRecorder.isTypeSupported('video/webm')){
-      mimeType='video/webm';
-    }
-    _scRecorder=mimeType ? new MediaRecorder(_scStream,{mimeType}) : new MediaRecorder(_scStream);
+    _scRecorder=mimeType?new MediaRecorder(_scStream,{mimeType}):new MediaRecorder(_scStream);
   }catch(e){_scRecorder=new MediaRecorder(_scStream);}
   _scRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)_scChunks.push(e.data);};
   _scRecorder.onstop=()=>finalizeShortsRecording();
@@ -4999,39 +4931,28 @@ function stopShortsRecording(){
   if(!_scRecording)return;
   _scRecording=false;
   clearInterval(_scProgInt);
+  clearInterval(_scTimerInt);
   if(_scRecorder&&_scRecorder.state!=='inactive')_scRecorder.stop();
   const icon=document.getElementById('scRecordIcon');
-  if(icon){icon.style.borderRadius='50%';icon.style.width='34px';icon.style.height='34px';}
+  if(icon){icon.style.borderRadius='50%';icon.style.width='36px';icon.style.height='36px';}
 }
 
 function finalizeShortsRecording(){
-  const blob=new Blob(_scChunks,{type:'video/webm'});
+  const mimeType=_scRecorder?.mimeType||'video/webm';
+  const blob=new Blob(_scChunks,{type:mimeType});
+  const ext=mimeType.includes('mp4')?'mp4':'webm';
   const url=URL.createObjectURL(blob);
-  window._recordedShortFile=new File([blob],'short_'+Date.now()+'.webm',{type:'video/webm'});
+  window._recordedShortFile=new File([blob],'short_'+Date.now()+'.'+ext,{type:mimeType});
   // Switch to edit mode
   const recMode=document.getElementById('scRecordMode');
   const editMode=document.getElementById('scEditMode');
   if(recMode)recMode.style.display='none';
-  if(editMode)editMode.style.display='flex';
+  if(editMode){editMode.style.display='flex';}
   const recPrev=document.getElementById('shortsRecPreview');
   if(recPrev){recPrev.src=url;recPrev.play();}
-  // Reset progress
-  const prog=document.getElementById('scProgress');if(prog)prog.style.width='0%';
+  // Stop camera
+  if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
   showToast('Recording done! Edit and tap Next → 🎬');
-}
-
-function backToRecording(){
-  const recMode=document.getElementById('scRecordMode');
-  const editMode=document.getElementById('scEditMode');
-  if(recMode)recMode.style.display='block';
-  if(editMode)editMode.style.display='none';
-  // Clear text overlays
-  const overlays=document.getElementById('scTextOverlays');
-  if(overlays)overlays.innerHTML='';
-  // Close all panels
-  ['scTextPanel','scSoundPanel','scTrimPanel','scSpeedPanel','scFilterPanel'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.style.display='none';
-  });
 }
 
 function handleGalleryShort(input){
@@ -5047,7 +4968,17 @@ function handleGalleryShort(input){
   showToast('Video loaded! Edit and tap Next →');
 }
 
-// Edit mode functions
+function backToRecording(){
+  const recMode=document.getElementById('scRecordMode');
+  const editMode=document.getElementById('scEditMode');
+  if(recMode)recMode.style.display='block';
+  if(editMode)editMode.style.display='none';
+  closeAllEditPanels();
+  const ov=document.getElementById('scTextOverlays');if(ov)ov.innerHTML='';
+  startShortsStream();
+}
+
+// Edit tools
 function toggleEditPreview(){
   const vid=document.getElementById('shortsRecPreview');
   const btn=document.getElementById('scPlayBtn');
@@ -5065,35 +4996,31 @@ function addTextOverlay(){
   const input=document.getElementById('scTextInput');
   const size=document.getElementById('scTextSize')?.value||'22px';
   const text=input?.value?.trim();
-  if(!text)return showToast('Enter some text first');
+  if(!text)return showToast('Enter text first');
   const container=document.getElementById('scTextOverlays');
   if(!container)return;
   const el=document.createElement('div');
-  el.style.cssText=`position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);color:${scTextColor};font-size:${size};font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.8);pointer-events:all;cursor:move;user-select:none;text-align:center;max-width:90%;padding:8px 12px;`;
+  el.style.cssText=`position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);color:${scTextColor};font-size:${size};font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.9);pointer-events:all;cursor:move;user-select:none;text-align:center;max-width:85%;padding:6px 10px;`;
   el.textContent=text;
-  // Make draggable
-  let isDragging=false,startX,startY,origX,origY;
+  // Touch drag
+  let isDragging=false,sx,sy,ox,oy;
   el.addEventListener('touchstart',e=>{
-    isDragging=true;
-    startX=e.touches[0].clientX;startY=e.touches[0].clientY;
-    const rect=el.getBoundingClientRect();
-    origX=rect.left;origY=rect.top;
+    isDragging=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+    const r=el.getBoundingClientRect();ox=r.left+r.width/2;oy=r.top+r.height/2;
     e.preventDefault();
   },{passive:false});
   el.addEventListener('touchmove',e=>{
     if(!isDragging)return;
-    const dx=e.touches[0].clientX-startX;
-    const dy=e.touches[0].clientY-startY;
-    el.style.left=(origX+dx+(el.offsetWidth/2))+'px';
-    el.style.top=(origY+dy+(el.offsetHeight/2))+'px';
-    el.style.transform='translate(-50%,-50%)';
+    ox+=e.touches[0].clientX-sx;oy+=e.touches[0].clientY-sy;
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+    el.style.left=ox+'px';el.style.top=oy+'px';el.style.transform='translate(-50%,-50%)';
     e.preventDefault();
   },{passive:false});
   el.addEventListener('dblclick',()=>el.remove());
   container.appendChild(el);
   if(input)input.value='';
   closeAllEditPanels();
-  showToast('Text added! Drag to position. Double-tap to remove.');
+  showToast('Text added! Drag to move, double-tap to remove ✏️');
 }
 
 function openEditSounds(){
@@ -5101,40 +5028,18 @@ function openEditSounds(){
   const p=document.getElementById('scSoundPanel');if(!p)return;
   p.style.display='block';
   const list=document.getElementById('scSoundsList');
-  if(list&&window.TRENDING_SONGS){
-    list.innerHTML=(TRENDING_SONGS||[]).map(s=>`
-      <div onclick="selectEditSound('${s.name}')" style="flex-shrink:0;background:#222;border:1.5px solid #444;border-radius:10px;padding:8px 12px;cursor:pointer;min-width:100px;text-align:center;">
-        <div style="font-size:16px;margin-bottom:3px;">${s.emoji}</div>
+  if(list&&typeof TRENDING_SONGS!=='undefined'){
+    list.innerHTML=TRENDING_SONGS.map(s=>`
+      <div onclick="selectEditSound('${s.name.replace(/'/g,'')}')" style="flex-shrink:0;background:#222;border:1.5px solid ${window._scSelectedSound===s.name?'var(--red)':'#444'};border-radius:10px;padding:8px 12px;cursor:pointer;min-width:100px;text-align:center;">
+        <div style="font-size:18px;margin-bottom:3px;">${s.emoji}</div>
         <div style="font-size:9px;font-weight:600;color:#ccc;">${s.name}</div>
       </div>`).join('');
   }
 }
 function selectEditSound(name){
-  showToast('Sound: '+name+' selected 🎵');
   window._scSelectedSound=name;
+  showToast('🎵 '+name+' selected');
   closeAllEditPanels();
-}
-
-function openEditTrim(){
-  closeAllEditPanels();
-  const p=document.getElementById('scTrimPanel');if(p)p.style.display='block';
-  const vid=document.getElementById('shortsRecPreview');
-  const dur=Math.floor(vid?.duration||_scMaxTime);
-  const endEl=document.getElementById('scTrimEnd');
-  if(endEl){endEl.max=dur;endEl.value=dur;}
-  updateScTrim();
-}
-function updateScTrim(){
-  const s=parseInt(document.getElementById('scTrimStart')?.value||0);
-  const e=parseInt(document.getElementById('scTrimEnd')?.value||60);
-  const sl=document.getElementById('scTrimStartLbl');const el=document.getElementById('scTrimEndLbl');
-  if(sl)sl.textContent=s+'s';if(el)el.textContent=e+'s';
-}
-function applyScTrim(){
-  const s=parseInt(document.getElementById('scTrimStart')?.value||0);
-  const vid=document.getElementById('shortsRecPreview');
-  if(vid)vid.currentTime=s;
-  showToast('Trim set ✂️');closeAllEditPanels();
 }
 
 function openEditSpeed(){
@@ -5144,7 +5049,8 @@ function openEditSpeed(){
 function setEditSpeed(spd){
   const vid=document.getElementById('shortsRecPreview');
   if(vid)vid.playbackRate=spd;
-  showToast('Speed: '+spd+'x');closeAllEditPanels();
+  showToast('Speed: '+spd+'x ⚡');
+  closeAllEditPanels();
 }
 
 function openEditFilters(){
@@ -5154,11 +5060,12 @@ function openEditFilters(){
 function applyEditFilter(filter){
   const vid=document.getElementById('shortsRecPreview');
   if(vid)vid.style.filter=filter==='none'?'':filter;
-  showToast('Filter applied ✨');closeAllEditPanels();
+  showToast('Filter applied ✨');
+  closeAllEditPanels();
 }
 
 function closeAllEditPanels(){
-  ['scTextPanel','scSoundPanel','scTrimPanel','scSpeedPanel','scFilterPanel'].forEach(id=>{
+  ['scTextPanel','scSoundPanel','scSpeedPanel','scFilterPanel'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.style.display='none';
   });
 }
@@ -5173,9 +5080,8 @@ function doneShortRecording(){
     selectedFile=window._recordedShortFile;
     const vPrev=document.getElementById('uploadVidPrev');
     if(vPrev){vPrev.src=URL.createObjectURL(selectedFile);vPrev.style.display='block';}
-    document.getElementById('fileText').textContent='Short ready ✅';
-    const edBtn=document.getElementById('shortEditorBtn');
-    if(edBtn)edBtn.style.display='flex';
+    const ft=document.getElementById('fileText');if(ft)ft.textContent='Short ready ✅';
+    const edBtn=document.getElementById('shortEditorBtn');if(edBtn)edBtn.style.display='flex';
     window._vidDuration='0:'+(_scElapsed<10?'0':'')+Math.floor(_scElapsed);
     if(window._scSelectedSound){
       const info=document.getElementById('selectedSongInfo');
