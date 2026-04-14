@@ -12,7 +12,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="MyTube">
 <!-- PWA fast launch -->
-<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta http-equiv="Cache-Control" content="max-age=3600">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" as="style">
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style">
+<link rel="preload" href="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" as="script">
+<link rel="prefetch" href="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+<link rel="prefetch" href="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://www.gstatic.com">
 <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
@@ -235,6 +240,12 @@ button,input,textarea{font-family:var(--font);}
 .post-img-rm{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.75);border:none;color:white;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .add-img-btn{width:76px;height:76px;border:2px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);font-size:20px;}
 .add-img-btn input{display:none;}
+/* Privacy buttons */
+.privacy-btn{flex:1;padding:9px 6px;background:var(--bg3);border:1.5px solid var(--border);color:var(--text2);border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .2s;}
+.privacy-btn.active{background:rgba(255,0,0,.1);border-color:var(--red);color:var(--text);}
+/* Heart animation multi-color */
+.heart-anim{position:fixed;pointer-events:none;z-index:9999;font-size:28px;animation:heartFly .9s ease-out forwards;}
+@keyframes heartFly{0%{opacity:1;transform:scale(0.5) translateY(0);}50%{opacity:1;transform:scale(1.4) translateY(-40px);}100%{opacity:0;transform:scale(1) translateY(-90px);}}
 
 /* ═══ DASHBOARD ═══ */
 .dash-screen{padding:16px 14px;}
@@ -802,6 +813,15 @@ button,input,textarea{font-family:var(--font);}
           </div>
           <!-- Short Editor Button — shows only for shorts -->
           <button id="shortEditorBtn" onclick="openShortEditor(selectedFile)" style="display:none;width:100%;padding:12px;background:#1a1a1a;border:2px solid var(--red);color:white;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;display:none;align-items:center;justify-content:center;gap:8px;"><i class="fas fa-film" style="color:var(--red);"></i> Open Short Editor ✂️</button>
+          <!-- Privacy Setting -->
+          <div style="margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;"><i class="fas fa-lock" style="color:var(--red);margin-right:5px;"></i> Visibility</div>
+            <div style="display:flex;gap:8px;">
+              <button class="privacy-btn active" id="privPublic" onclick="setPrivacy('public',this)"><i class="fas fa-globe"></i> Public</button>
+              <button class="privacy-btn" id="privUnlisted" onclick="setPrivacy('unlisted',this)"><i class="fas fa-link"></i> Unlisted</button>
+              <button class="privacy-btn" id="privPrivate" onclick="setPrivacy('private',this)"><i class="fas fa-lock"></i> Private</button>
+            </div>
+          </div>
           <button class="btn-red" id="uploadBtn" onclick="doUpload()"><i class="fas fa-upload"></i> Upload</button>
         </div>
       </div>
@@ -881,8 +901,15 @@ button,input,textarea{font-family:var(--font);}
             <div style="font-size:13px;font-weight:700;">My Content</div>
             <button onclick="showScreen('upload')" style="background:var(--red);color:white;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;"><i class="fas fa-plus"></i> Upload</button>
           </div>
-          <div id="dVideos2" style="font-size:12px;color:var(--text2);margin-bottom:10px;"></div>
-          <div id="myContentList"><div class="loader"><div class="spinner"></div></div></div>
+          <!-- Videos section -->
+          <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i class="fas fa-video" style="color:var(--red);"></i> Videos</div>
+          <div id="myVideosList"><div class="loader"><div class="spinner"></div></div></div>
+          <!-- Shorts section -->
+          <div style="font-size:12px;font-weight:700;color:var(--text2);margin:16px 0 8px;display:flex;align-items:center;gap:6px;"><i class="fas fa-film" style="color:var(--red);"></i> Shorts</div>
+          <div id="myShortsList"><div class="loader"><div class="spinner"></div></div></div>
+          <!-- Posts section -->
+          <div style="font-size:12px;font-weight:700;color:var(--text2);margin:16px 0 8px;display:flex;align-items:center;gap:6px;"><i class="fas fa-pen" style="color:var(--red);"></i> Posts</div>
+          <div id="myPostsList"><div class="loader"><div class="spinner"></div></div></div>
         </div>
 
         <!-- ANALYTICS TAB -->
@@ -993,6 +1020,10 @@ button,input,textarea{font-family:var(--font);}
         <div class="prof-section">
           <div class="prof-sec-title">About</div>
           <div id="profAboutText" style="font-size:13px;color:var(--text2);line-height:1.6;">No bio yet.</div>
+          <div id="profChannelMeta" style="margin-top:10px;display:none;">
+            <div id="profJoinedDate" style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;margin-bottom:4px;"><i class="fas fa-calendar-alt" style="color:var(--red);"></i> Channel created: <span id="profJoinedVal">—</span></div>
+            <div id="profLocation" style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;"><i class="fas fa-map-marker-alt" style="color:var(--red);"></i> Pakistan 🇵🇰</div>
+          </div>
         </div>
         <!-- Gallery + History shortcuts -->
         <div class="prof-section" style="margin-top:16px;display:flex;gap:8px;">
@@ -1469,6 +1500,7 @@ button,input,textarea{font-family:var(--font);}
       <button class="sf-act" id="sfDislikeBtn" onclick="sfDislike()" style="color:white;"><i class="fas fa-thumbs-down"></i><span>Dislike</span></button>
       <button class="sf-act" onclick="sfCommentOpen()"><i class="fas fa-comment"></i><span id="sfCommentCount">0</span></button>
       <button class="sf-act" onclick="sfShare()"><i class="fas fa-share"></i><span>Share</span></button>
+      <button class="sf-act" onclick="sfDownload()"><i class="fas fa-download"></i><span>Save</span></button>
     </div>
     <div class="sf-info">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
@@ -1508,7 +1540,10 @@ button,input,textarea{font-family:var(--font);}
     <div class="sheet-title">Edit Profile</div>
     <input class="inp" id="editName" placeholder="Display Name">
     <input class="inp" id="editHandle" placeholder="@username">
-    <input class="inp" id="editAbout" placeholder="Bio">
+    <input class="inp" id="editAbout" placeholder="Bio / Description">
+    <input class="inp" id="editLocation" placeholder="Location (e.g. Lahore, Pakistan)">
+    <input class="inp" id="editWebsite" placeholder="Website link (optional)">
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Channel active since: <span id="editChannelDate" style="color:var(--text2);">—</span></div>
     <button class="btn-red" onclick="saveEditProfile()">Save Changes</button>
     <button class="btn-outline" style="margin-top:8px;" onclick="closeModal('editModal')">Cancel</button>
   </div>
@@ -1656,9 +1691,13 @@ button,input,textarea{font-family:var(--font);}
         </button>
         <input type="file" id="scGalleryInput" accept="video/*" style="display:none;" onchange="handleGalleryShort(this)">
       </div>
-      <!-- Record button -->
+      <!-- Record button — tap to start/stop OR press & hold -->
       <div style="display:flex;justify-content:center;margin-bottom:18px;">
-        <button id="scRecordBtn" onclick="toggleShortsRecording()" style="width:88px;height:88px;border-radius:50%;border:5px solid white;background:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,0,0,.7);">
+        <button id="scRecordBtn"
+          ontouchstart="scBtnTouchStart(event)"
+          ontouchend="scBtnTouchEnd(event)"
+          onclick="scBtnClick(event)"
+          style="width:88px;height:88px;border-radius:50%;border:5px solid white;background:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,0,0,.7);-webkit-user-select:none;user-select:none;">
           <div id="scRecordIcon" style="width:38px;height:38px;border-radius:50%;background:white;transition:all .25s;"></div>
         </button>
       </div>
@@ -1943,6 +1982,7 @@ let allPosts=[], uploadType='', selectedFile=null, thumbFile=null, postImgFiles=
 let sfPosts=[], sfCurrentIdx=0, sfCurrentId=null;
 let galleryPosts=[], galleryFilter='all', currentGalleryPost=null;
 let selectedSong=null;
+let _uploadPrivacy='public';
 // Trending songs list (royalty-free style)
 const TRENDING_SONGS=[
   {id:'s1',name:'Husn - Anuv Jain',emoji:'🎵',url:''},
@@ -2267,6 +2307,30 @@ function updateProfileUI(){
   document.getElementById('profHandle').textContent=cUserData.handle||'@user';
   document.getElementById('profEmail').textContent=cUser?.email||'';
   document.getElementById('profAboutText').textContent=cUserData.about||'No bio yet.';
+  // Show channel meta (date, location)
+  const metaEl=document.getElementById('profChannelMeta');
+  const joinedEl=document.getElementById('profJoinedVal');
+  if(metaEl&&joinedEl){
+    const ct=cUserData?.createdAt?.toMillis?.()||cUserData?.createdAt||null;
+    if(ct){
+      joinedEl.textContent=new Date(ct).toLocaleDateString('en-PK',{year:'numeric',month:'long'});
+      metaEl.style.display='block';
+    }
+  }
+  // Website link
+  const existingWebEl=document.getElementById('profWebsite');
+  if(!existingWebEl&&cUserData.website){
+    const aboutEl=document.getElementById('profAboutText');
+    if(aboutEl){
+      const wDiv=document.createElement('div');
+      wDiv.id='profWebsite';
+      wDiv.style.cssText='font-size:12px;margin-top:6px;';
+      wDiv.innerHTML=`<a href="${cUserData.website}" target="_blank" rel="noopener" style="color:var(--red);text-decoration:none;"><i class="fas fa-link"></i> ${cUserData.website.replace(/^https?:\/\//,'')}</a>`;
+      aboutEl.after(wDiv);
+    }
+  }else if(existingWebEl){
+    existingWebEl.innerHTML=cUserData.website?`<a href="${cUserData.website}" target="_blank" rel="noopener" style="color:var(--red);text-decoration:none;"><i class="fas fa-link"></i> ${cUserData.website.replace(/^https?:\/\//,'')}</a>`:'';
+  }
   const pic=document.getElementById('profPicEl');
   if(cUserData.photoURL){pic.innerHTML=`<img src="${cUserData.photoURL}">`;}
   else{pic.textContent=(cUserData.name||'U')[0].toUpperCase();}
@@ -2277,17 +2341,18 @@ function updateProfileUI(){
     if(el2)el2.value=cUserData.channelHandle||'';
     const el3=document.getElementById('channelAbout');
     if(el3)el3.value=cUserData.channelAbout||'';
-    // Hide channel setup card — channel already exists
     const card=document.getElementById('channelSetupCard');
     if(card)card.style.display='none';
   } else {
-    // Show channel setup card — no channel yet
     const card=document.getElementById('channelSetupCard');
     if(card)card.style.display='block';
   }
   const ca=document.getElementById('myCommAv');
-  if(cUserData.photoURL){ca.innerHTML=`<img src="${cUserData.photoURL}">`;}
-  else{ca.textContent=(cUserData.name||'U')[0].toUpperCase();}
+  if(ca){
+    if(cUserData.photoURL){ca.innerHTML=`<img src="${cUserData.photoURL}">`;}
+    else{ca.textContent=(cUserData.name||'U')[0].toUpperCase();}
+  }
+  updateHeaderAv();
 }
 
 function updateEmailChannelUI(){
@@ -2433,7 +2498,15 @@ async function loadNextBatch(isFirst=false){
     if(snap.docs.length>0)_feedLastDoc=snap.docs[snap.docs.length-1];
 
     const newPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
-    const filtered=_feedCurrentFilter==='all'?newPosts:newPosts.filter(p=>p.type===_feedCurrentFilter||p.category===_feedCurrentFilter);
+    // Filter: show public posts + own unlisted/private
+    const visiblePosts=newPosts.filter(p=>{
+      const priv=p.privacy||'public';
+      if(priv==='public')return true;
+      if(priv==='unlisted')return true; // unlisted visible via link
+      if(priv==='private')return p.authorId===cUser?.uid; // only owner sees private
+      return true;
+    });
+    const filtered=_feedCurrentFilter==='all'?visiblePosts:visiblePosts.filter(p=>p.type===_feedCurrentFilter||p.category===_feedCurrentFilter);
     const scored=sortFeedByAlgorithm(filtered,userPrefs);
     allPosts=[...allPosts,...scored];
 
@@ -2604,7 +2677,7 @@ function buildPostCard(p){
     <div class="post-acts">
       <button class="post-act" id="qlike_${p.id}" onclick="quickLike('${p.id}',this,event)"><i class="fas fa-thumbs-up"></i> ${p.likes||0}</button>
       <button class="post-act" onclick="openPost('${p.id}');event.stopPropagation()"><i class="fas fa-comment"></i> ${p.comments||0}</button>
-      <button class="post-act" onclick="sharePost('${p.url||''}');event.stopPropagation()"><i class="fas fa-share"></i> Share</button>
+      <button class="post-act" onclick="sharePostProperly('${p.id}','${(p.title||'').replace(/'/g,'')}','${p.url||''}');event.stopPropagation()"><i class="fas fa-share"></i> Share</button>
       ${p.authorId!==cUser?.uid?`<button class="post-act" onclick="quickSubscribe('${p.authorId}','${p.authorName||''}',this,event)"><i class="fas fa-user-plus"></i></button>`:''}
     </div>
   </div>`;
@@ -2619,7 +2692,7 @@ async function quickLike(id,btn,e){
   _liking[id]=true;setTimeout(()=>delete _liking[id],1500);
   try{
     const ref=db.collection('posts').doc(id);
-    const doc=await ref.get();const p=doc.data();
+    const doc=await ref.get();if(!doc.exists)return;const p=doc.data();
     const liked=(p.likedBy||[]).includes(cUser.uid);
     if(liked){
       await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
@@ -2660,15 +2733,21 @@ async function filterShorts(filter,btn){
   if(btn)btn.classList.add('active');
   const grid=document.getElementById('shortsGrid');
   if(!allSfPosts.length){await loadShorts();return;}
-  let filtered=allSfPosts;
+  // Apply privacy filter first
+  const visibleBase=allSfPosts.filter(p=>{
+    const priv=p.privacy||'public';
+    if(priv==='private')return p.authorId===cUser?.uid;
+    return true;
+  });
+  let filtered=visibleBase;
   if(filter==='subs'&&cUser){
     const snap=await db.collection('subscriptions').where('from','==',cUser.uid).get();
     const aids=snap.docs.map(d=>d.data().to);
-    filtered=allSfPosts.filter(p=>aids.includes(p.authorId));
+    filtered=visibleBase.filter(p=>aids.includes(p.authorId));
   }else if(filter==='trending'){
-    filtered=[...allSfPosts].sort((a,b)=>(b.likes||0)-(a.likes||0));
+    filtered=[...visibleBase].sort((a,b)=>(b.likes||0)-(a.likes||0));
   }else if(filter!=='all'){
-    filtered=allSfPosts.filter(p=>p.category===filter||p.tags?.includes(filter));
+    filtered=visibleBase.filter(p=>p.category===filter||p.tags?.includes(filter));
   }
   sfPosts=[...filtered];
   if(!sfPosts.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-film"></i><p>No shorts in this category</p></div>';return;}
@@ -2686,7 +2765,13 @@ async function loadShorts(){
   grid.innerHTML='<div class="loader" style="grid-column:1/-1;"><div class="spinner"></div></div>';
   try{
     const snap=await db.collection('posts').orderBy('time','desc').limit(200).get();
-    sfPosts=snap.docs.filter(d=>d.data().type==='short').map(d=>({id:d.id,...d.data()}));
+    sfPosts=snap.docs.filter(d=>{
+      const p=d.data();
+      if(p.type!=='short')return false;
+      const priv=p.privacy||'public';
+      if(priv==='private')return p.authorId===cUser?.uid;
+      return true;
+    }).map(d=>({id:d.id,...d.data()}));
     sfPosts=sortFeedByAlgorithm(sfPosts,userPrefs);
     allSfPosts=[...sfPosts];
     if(!sfPosts.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-film"></i><p>No shorts yet!</p></div>';return;}
@@ -2735,7 +2820,7 @@ function playShortAt(idx){
   const pf=document.getElementById('sfProgFill');
   pf.style.width='0%';
   setTimeout(()=>{pf.style.transition='width 6s linear';pf.style.width='100%';},100);
-  db.collection('posts').doc(p.id).update({views:firebase.firestore.FieldValue.increment(1),rankScore:firebase.firestore.FieldValue.increment(2)}).catch(()=>{});
+  trackUniqueView(p.id);
   updateUserPrefs(p);
   // Check subscribe status
   if(p.authorId&&cUser&&p.authorId!==cUser.uid){
@@ -2830,22 +2915,8 @@ function handleSfTap(e){
 }
 
 function showDoubleTapHeart(x,y){
-  const count=5+Math.floor(Math.random()*4);
-  for(let i=0;i<count;i++){
-    const color=HEART_COLORS[Math.floor(Math.random()*HEART_COLORS.length)];
-    const el=document.createElement('div');
-    el.className='heart-anim';
-    const ox=(Math.random()-0.5)*100;
-    const oy=(Math.random()-0.5)*80;
-    el.style.left=(x+ox)+'px';
-    el.style.top=(y+oy)+'px';
-    el.style.color=color;
-    el.style.fontSize=(18+Math.random()*18)+'px';
-    el.style.animationDelay=(i*0.06)+'s';
-    el.innerHTML='❤️';
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),950+i*60);
-  }
+  // Use the new multi-color emoji heart system
+  spawnHearts(x,y,6);
 }
 function prevShort(){if(sfCurrentIdx>0)playShortAt(sfCurrentIdx-1);}
 function nextShort(){if(sfCurrentIdx<sfPosts.length-1)playShortAt(sfCurrentIdx+1);}
@@ -2869,7 +2940,7 @@ async function sfLike(){
   if(!cUser||!sfCurrentId)return;
   try{
     const ref=db.collection('posts').doc(sfCurrentId);
-    const doc=await ref.get();const p=doc.data();
+    const doc=await ref.get();if(!doc.exists)return;const p=doc.data();
     const liked=(p.likedBy||[]).includes(cUser.uid);
     if(liked){
       await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid),rankScore:firebase.firestore.FieldValue.increment(-10)});
@@ -2911,7 +2982,11 @@ async function sfDislike(){
 
 function sfCommentOpen(){openPost(sfCurrentId);closeShortFS();}
 
-function sfShare(){navigator.clipboard.writeText(sfPosts[sfCurrentIdx]?.url||'').then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));}
+function sfShare(){
+  const p=sfPosts[sfCurrentIdx];
+  if(!p)return;
+  sharePostProperly(p.id, p.title||'', p.url||'');
+}
 
 // ══════════════════════════════════════════════════════
 // UPLOAD
@@ -2929,7 +3004,13 @@ function selectType(type,el){
   const edBtn=document.getElementById('shortEditorBtn');if(edBtn)edBtn.style.display='none';
   selectedFile=null;thumbFile=null;postImgFiles=[];selectedSong=null;clearSong();
   const catSel=document.getElementById('uploadCategory');if(catSel)catSel.value='';
+  // Reset privacy to public each time
+  _uploadPrivacy='public';
+  document.querySelectorAll('.privacy-btn').forEach(b=>b.classList.remove('active'));
+  const pb=document.getElementById('privPublic');if(pb)pb.classList.add('active');
   const icon=document.getElementById('fileIcon');
+  const musicWrap=document.getElementById('musicSelectorWrap');
+  if(musicWrap)musicWrap.style.display='none';
   if(type==='post'){
     document.getElementById('fileDrop').style.display='none';
     document.getElementById('postImgsWrap').style.display='block';
@@ -2940,7 +3021,7 @@ function selectType(type,el){
     fi.accept='video/*';if(icon)icon.className='fas fa-video';
     document.getElementById('fileText').textContent='Select Video';
     document.getElementById('thumbBoxWrap').style.display='block';
-    document.getElementById('musicSelectorWrap').style.display='block';
+    if(musicWrap)musicWrap.style.display='block';
     renderTrendingSongs();
     if(type==='short'&&edBtn){edBtn.style.display='flex';}
   }
@@ -3025,7 +3106,9 @@ async function doUpload(){
       likes:0,likedBy:[],views:0,comments:0,reactions:{},
       rankScore:initialScore,time:Date.now(),
       duration:window._vidDuration||'',
-      bgMusic:selectedSong?selectedSong.name:''
+      bgMusic:selectedSong?selectedSong.name:'',
+      privacy:_uploadPrivacy||'public',
+      searchTerms:extractSearchTerms({title,desc,tags:tags.split(',').map(t=>t.trim()),category:document.getElementById('uploadCategory')?.value||uploadType,type:uploadType})
     });
     showToast('✅ Uploaded successfully!');
     resetUploadForm();btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';
@@ -3059,6 +3142,10 @@ function resetUploadForm(){
   document.getElementById('postImgGrid').innerHTML=`<div class="add-img-btn" onclick="document.getElementById('postImgFile').click()"><i class="fas fa-plus"></i><input type="file" id="postImgFile" accept="image/*" multiple onchange="addPostImages(this)"></div>`;
   selectedFile=null;thumbFile=null;postImgFiles=[];selectedSong=null;clearSong();
   const catSel=document.getElementById('uploadCategory');if(catSel)catSel.value='';
+  // Reset privacy
+  _uploadPrivacy='public';
+  document.querySelectorAll('.privacy-btn').forEach(b=>b.classList.remove('active'));
+  const pb=document.getElementById('privPublic');if(pb)pb.classList.add('active');
 }
 
 // ══════════════════════════════════════════════════════
@@ -3071,6 +3158,7 @@ async function openPost(id){
   document.getElementById('commList').innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
     const doc=await db.collection('posts').doc(id).get();
+    if(!doc.exists){showToast('Video not found or deleted');return;}
     const p=doc.data();currentPostData={id,...p};
     updateUserPrefs(p);
     addToHistory(p);
@@ -3134,12 +3222,8 @@ async function openPost(id){
         sb.style.display=p.authorId===cUser.uid?'none':'block';
       });
     }
-    // View tracking - once per session
-    const vKey='viewed_'+id;
-    if(!sessionStorage.getItem(vKey)){
-      sessionStorage.setItem(vKey,'1');
-      db.collection('posts').doc(id).update({views:firebase.firestore.FieldValue.increment(1),rankScore:firebase.firestore.FieldValue.increment(2)}).catch(()=>{});
-    }
+    // View tracking — unique per user per video via Firestore
+    trackUniqueView(id);
     loadComments(id);
     loadRelated(id, p.type, p.category||p.type);
     startWatchTimer(id);
@@ -3273,7 +3357,7 @@ async function toggleLike(){
   if(_liking['pl'])return;_liking['pl']=true;setTimeout(()=>delete _liking['pl'],1500);
   try{
     const ref=db.collection('posts').doc(currentPostId);
-    const doc=await ref.get();const p=doc.data();
+    const doc=await ref.get();if(!doc.exists)return;const p=doc.data();
     const liked=(p.likedBy||[]).includes(cUser.uid);
     if(liked){
       await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid),rankScore:firebase.firestore.FieldValue.increment(-10)});
@@ -3302,7 +3386,7 @@ async function reactEmoji(emoji,btn){
   if(!cUser||!currentPostId)return;
   try{
     const ref=db.collection('posts').doc(currentPostId);
-    const doc=await ref.get();const p=doc.data();
+    const doc=await ref.get();if(!doc.exists)return;const p=doc.data();
     const r=p.reactions||{};
     const users=r[emoji+'_u']||[];
     const reacted=users.includes(cUser.uid);
@@ -3560,8 +3644,25 @@ async function loadRelated(postId, postType, category){
 function setReply(mention){
   const inp=document.getElementById('commInput');
   if(!inp)return;
-  inp.value=mention+' ';
+  inp.value='@'+mention.replace(/^@/,'')+' ';
   inp.focus();
+  inp.scrollIntoView({behavior:'smooth',block:'center'});
+  // Style to show replying state
+  const replyBar=document.getElementById('replyIndicator');
+  if(!replyBar){
+    const bar=document.createElement('div');
+    bar.id='replyIndicator';
+    bar.style.cssText='font-size:11px;color:var(--text3);padding:4px 0;display:flex;align-items:center;gap:6px;';
+    bar.innerHTML=`<i class="fas fa-reply" style="color:var(--red);"></i> Replying to @${mention.replace(/^@/,'')} <button onclick="clearReply()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;margin-left:auto;">×</button>`;
+    inp.parentElement.insertBefore(bar,inp);
+  }
+}
+
+function clearReply(){
+  const inp=document.getElementById('commInput');
+  if(inp)inp.value='';
+  const bar=document.getElementById('replyIndicator');
+  if(bar)bar.remove();
 }
 
 async function postComment(){
@@ -3569,10 +3670,14 @@ async function postComment(){
   const input=document.getElementById('commInput');
   const text=input.value.trim();if(!text)return;
   input.value='';
+  const bar=document.getElementById('replyIndicator');if(bar)bar.remove();
   try{
+    // Extract @mention for reply notification
+    const mentionMatch=text.match(/^@(\w+)/);
     await db.collection('posts').doc(currentPostId).collection('comments').add({
       text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
-      authorPhoto:cUserData?.photoURL||'',time:Date.now()
+      authorPhoto:cUserData?.photoURL||'',time:Date.now(),
+      replyTo:mentionMatch?mentionMatch[1]:null
     });
     await db.collection('posts').doc(currentPostId).update({
       comments:firebase.firestore.FieldValue.increment(1),
@@ -3769,21 +3874,23 @@ async function loadDashboard(){
         stEl.innerHTML=`<div style="color:#ffd700;font-size:14px;font-weight:700;">🏆 You reached all milestones! (${subs} subs)</div>`;
       }
     }
-    // My content
+    // My content (legacy fallback - main display is now in content tab sections)
     myPosts.sort((a,b)=>b.time-a.time);
     const cl=document.getElementById('myContentList');
-    if(!myPosts.length){cl.innerHTML='<div class="empty-state"><i class="fas fa-upload"></i><p>No content yet!</p></div>';return;}
-    cl.innerHTML=myPosts.map(p=>{
-      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-      return `<div class="my-vid-item">
-        <div class="my-vid-thumb">${th?`<img src="${th}">`:'<i class="fas fa-video" style="color:var(--text3);font-size:18px;"></i>'}</div>
-        <div class="my-vid-info">
-          <div class="my-vid-title">${p.title||'Untitled'}</div>
-          <div class="my-vid-stats">❤️${p.likes||0} 👁️${p.views||0} 💬${p.comments||0} • ${getTimeAgo(p.time)}</div>
-        </div>
-        <button class="my-vid-del" onclick="deletePost('${p.id}',event)"><i class="fas fa-trash-alt"></i></button>
-      </div>`;
-    }).join('');
+    if(cl){
+      if(!myPosts.length){cl.innerHTML='<div class="empty-state"><i class="fas fa-upload"></i><p>No content yet!</p></div>';}
+      else{cl.innerHTML=myPosts.map(p=>{
+        const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+        return `<div class="my-vid-item">
+          <div class="my-vid-thumb">${th?`<img src="${th}">`:'<i class="fas fa-video" style="color:var(--text3);font-size:18px;"></i>'}</div>
+          <div class="my-vid-info">
+            <div class="my-vid-title">${p.title||'Untitled'}</div>
+            <div class="my-vid-stats">❤️${p.likes||0} 👁️${p.views||0} 💬${p.comments||0} • ${getTimeAgo(p.time)}</div>
+          </div>
+          <button class="my-vid-del" onclick="deletePost('${p.id}',event)"><i class="fas fa-trash-alt"></i></button>
+        </div>`;
+      }).join('');}
+    }
     // Subs list
     const subsSnap=await db.collection('subscriptions').where('to','==',cUser.uid).limit(20).get();
     const sl=document.getElementById('subsList');
@@ -3827,6 +3934,16 @@ function openEditModal(){
   document.getElementById('editName').value=cUserData?.name||'';
   document.getElementById('editHandle').value=cUserData?.handle||'';
   document.getElementById('editAbout').value=cUserData?.about||'';
+  const locEl=document.getElementById('editLocation');
+  if(locEl)locEl.value=cUserData?.location||'';
+  const webEl=document.getElementById('editWebsite');
+  if(webEl)webEl.value=cUserData?.website||'';
+  // Show channel creation date
+  const dateEl=document.getElementById('editChannelDate');
+  if(dateEl){
+    const ct=cUserData?.createdAt?.toMillis?.()||cUserData?.createdAt||null;
+    dateEl.textContent=ct?new Date(ct).toLocaleDateString('en-PK',{year:'numeric',month:'long',day:'numeric'}):'—';
+  }
   document.getElementById('editModal').classList.add('open');
 }
 
@@ -3834,10 +3951,12 @@ async function saveEditProfile(){
   const name=document.getElementById('editName').value.trim();
   const handle=document.getElementById('editHandle').value.trim();
   const about=document.getElementById('editAbout').value.trim();
+  const location=document.getElementById('editLocation')?.value.trim()||'';
+  const website=document.getElementById('editWebsite')?.value.trim()||'';
   if(!name)return showToast('Name required!');
   try{
-    await db.collection('users').doc(cUser.uid).update({name,handle,about});
-    cUserData={...cUserData,name,handle,about};
+    await db.collection('users').doc(cUser.uid).update({name,handle,about,location,website});
+    cUserData={...cUserData,name,handle,about,location,website};
     updateProfileUI();updateHeaderAv();updateEmailChannelUI();
     closeModal('editModal');showToast('Profile updated! ✅');
   }catch(e){showToast('Error saving');}
@@ -4042,23 +4161,33 @@ async function doSearch(q){
   const results=document.getElementById('searchResults');
   results.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
-    const snap=await db.collection('posts').orderBy('time','desc').limit(100).get();
-    const ql=query.toLowerCase();
+    const snap=await db.collection('posts').orderBy('time','desc').limit(200).get();
+    const ql=query.toLowerCase().replace(/^#/,'');
     let posts=snap.docs.map(d=>({id:d.id,...d.data()}))
       .filter(p=>{
+        // Skip private posts (not yours)
+        if((p.privacy==='private')&&p.authorId!==cUser?.uid)return false;
         const inTitle=(p.title||'').toLowerCase().includes(ql);
         const inDesc=(p.desc||'').toLowerCase().includes(ql);
         const inCat=(p.category||'').toLowerCase().includes(ql);
         const inAuthor=(p.authorName||'').toLowerCase().includes(ql);
-        const inTags=(p.tags||[]).some(t=>t.toLowerCase().includes(ql));
-        return inTitle||inDesc||inCat||inAuthor||inTags;
+        const inTags=(p.tags||[]).some(t=>t.toLowerCase().replace(/^#/,'').includes(ql));
+        // Check precomputed searchTerms (hashtags, keywords)
+        const inSearchTerms=(p.searchTerms||[]).some(t=>(t||'').toLowerCase().includes(ql));
+        // Check hashtags embedded in title
+        const hashTagsInTitle=[...(p.title||'').matchAll(/#(\w+)/g)].map(m=>m[1].toLowerCase());
+        const inHashTags=hashTagsInTitle.some(h=>h.includes(ql));
+        return inTitle||inDesc||inCat||inAuthor||inTags||inSearchTerms||inHashTags;
       });
-    // Sort by algorithm + relevance
+    // Sort by relevance + algorithm score
     posts=posts.map(p=>{
       let relevance=0;
-      if((p.title||'').toLowerCase().includes(ql))relevance+=20;
+      const titleLow=(p.title||'').toLowerCase();
+      if(titleLow.startsWith(ql))relevance+=30;
+      else if(titleLow.includes(ql))relevance+=20;
       if((p.category||'').toLowerCase().includes(ql))relevance+=15;
-      if((p.tags||[]).some(t=>t.toLowerCase().includes(ql)))relevance+=10;
+      if((p.tags||[]).some(t=>t.toLowerCase().replace(/^#/,'').includes(ql)))relevance+=12;
+      if((p.searchTerms||[]).some(t=>(t||'').toLowerCase().includes(ql)))relevance+=10;
       return {...p,_searchScore:(p.rankScore||0)+relevance};
     }).sort((a,b)=>b._searchScore-a._searchScore);
     if(!posts.length){results.innerHTML=`<div class="empty-state"><i class="fas fa-search"></i><p>No results for "${query}"</p></div>`;return;}
@@ -4296,7 +4425,7 @@ function switchStudioTab(tab){
   // Load content if needed
   if(tab==='analytics')updateAnalyticsTab();
   if(tab==='audience')updateAudienceTab();
-  if(tab==='content')document.getElementById('myContentList').innerHTML.includes('spinner')?loadMyContent():null;
+  if(tab==='content')loadMyContentSections();
 }
 
 function updateAnalyticsTab(){
@@ -4530,7 +4659,8 @@ function openPlaylist(id,name){
   currentPlaylistId=id;currentPlaylistName=name;
   const screen=document.getElementById('playlistDetailScreen');
   if(screen){
-    document.getElementById('playlistDetailTitle').textContent=name||'Playlist';
+    const ptEl=document.getElementById('playlistDetailTitle')||document.getElementById('playlistTitle');
+    if(ptEl)ptEl.textContent=name||'Playlist';
     showScreen('playlistDetail');
     loadPlaylistVideos(id);
   }
@@ -5199,6 +5329,256 @@ function loadScSounds(){
     </div>`
   ).join('');
 }
+
+// ══════════════════════════════════════════════════════
+// SHORTS CAMERA — PRESS & HOLD TO RECORD
+// ══════════════════════════════════════════════════════
+let _scHoldTimer=null,_scHoldActive=false,_scTouchUsed=false;
+
+function scBtnTouchStart(e){
+  e.preventDefault(); // prevents onclick from firing after touch
+  _scHoldActive=true;
+  _scTouchUsed=true;
+  if(!_scRecording){
+    startShortsRecording();
+  }
+}
+function scBtnTouchEnd(e){
+  e.preventDefault();
+  _scHoldActive=false;
+  if(_scRecording){
+    stopShortsRecording();
+  }
+  // Reset touch flag after short delay
+  setTimeout(()=>{_scTouchUsed=false;},300);
+}
+function scBtnClick(e){
+  // Skip if already handled by touch (mobile)
+  if(_scTouchUsed)return;
+  if(_scRecording){stopShortsRecording();}
+  else{startShortsRecording();}
+}
+
+// ══════════════════════════════════════════════════════
+// SHORTS DOWNLOAD
+// ══════════════════════════════════════════════════════
+function sfDownload(){
+  const p=sfPosts[sfCurrentIdx];
+  if(!p||!p.url)return showToast('No video to download');
+  showToast('Downloading...');
+  const a=document.createElement('a');
+  a.href=p.url;
+  a.download=(p.title||'short')+'.mp4';
+  a.target='_blank';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// ══════════════════════════════════════════════════════
+// PRIVACY SYSTEM
+// ══════════════════════════════════════════════════════
+function setPrivacy(val,btn){
+  _uploadPrivacy=val;
+  document.querySelectorAll('.privacy-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════
+// DOUBLE-TAP HEARTS — Multi-color, continuous while holding
+// ══════════════════════════════════════════════════════
+const HEART_MULTI=['❤️','💜','💛','💚','💙','🧡','🤍','💖','💗'];
+let _dtLastTap=0,_dtHoldInt=null;
+let _dtTouchX=0,_dtTouchY=0; // live position tracked by touchmove
+
+function setupDoubleTapHearts(){
+  const sfEl=document.getElementById('shortFS');
+  if(!sfEl)return;
+
+  // Track live finger position
+  sfEl.addEventListener('touchmove',function(e){
+    if(e.touches[0]){
+      _dtTouchX=e.touches[0].clientX;
+      _dtTouchY=e.touches[0].clientY;
+    }
+  },{passive:true});
+
+  sfEl.addEventListener('touchstart',function(e){
+    // Ignore buttons
+    if(e.target.closest('button,.sf-act,.sf-close,.sf-nav'))return;
+    const now=Date.now();
+    const diff=now-_dtLastTap;
+    _dtLastTap=now;
+    // Capture initial position
+    _dtTouchX=e.touches[0].clientX;
+    _dtTouchY=e.touches[0].clientY;
+
+    if(diff<300&&diff>0){
+      // Double tap — spawn hearts and like
+      spawnHearts(_dtTouchX,_dtTouchY,3);
+      sfLike();
+      // Keep spawning while finger is held
+      clearInterval(_dtHoldInt);
+      _dtHoldInt=setInterval(()=>{
+        spawnHearts(_dtTouchX,_dtTouchY,2);
+      },140);
+    }
+  },{passive:true});
+
+  sfEl.addEventListener('touchend',function(){
+    if(_dtHoldInt){clearInterval(_dtHoldInt);_dtHoldInt=null;}
+  },{passive:true});
+
+  sfEl.addEventListener('touchcancel',function(){
+    if(_dtHoldInt){clearInterval(_dtHoldInt);_dtHoldInt=null;}
+  },{passive:true});
+}
+
+function spawnHearts(x,y,count){
+  for(let i=0;i<count;i++){
+    const em=HEART_MULTI[Math.floor(Math.random()*HEART_MULTI.length)];
+    const el=document.createElement('div');
+    el.className='heart-anim';
+    el.style.left=(x+(Math.random()-0.5)*80)+'px';
+    el.style.top=(y+(Math.random()-0.5)*60)+'px';
+    el.style.animationDelay=(i*0.07)+'s';
+    el.style.fontSize=(22+Math.random()*18)+'px';
+    el.textContent=em;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),950+i*70);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// UNIQUE VIEW COUNT — per user per video (Firestore-based)
+// ══════════════════════════════════════════════════════
+async function trackUniqueView(postId){
+  if(!cUser||!postId)return;
+  try{
+    const viewRef=db.collection('views').doc(cUser.uid+'_'+postId);
+    const exists=await viewRef.get();
+    if(!exists.exists){
+      await viewRef.set({uid:cUser.uid,postId,time:Date.now()});
+      await db.collection('posts').doc(postId).update({
+        views:firebase.firestore.FieldValue.increment(1),
+        rankScore:firebase.firestore.FieldValue.increment(2)
+      }).catch(()=>{});
+    }
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════════════
+// DASHBOARD — Load videos/shorts/posts separately
+// ══════════════════════════════════════════════════════
+async function loadMyContentSections(){
+  if(!cUser)return;
+  const [vEl,sEl,pEl]=['myVideosList','myShortsList','myPostsList'].map(id=>document.getElementById(id));
+  [vEl,sEl,pEl].forEach(el=>{if(el)el.innerHTML='<div class="loader"><div class="spinner"></div></div>';});
+  try{
+    let snap;
+    try{
+      snap=await db.collection('posts').where('authorId','==',cUser.uid).orderBy('time','desc').get();
+    }catch(e){
+      // Fallback if index not ready
+      snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
+    }
+    const all=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.time||0)-(a.time||0));
+    const videos=all.filter(p=>p.type==='video'||p.type==='gaming'||p.type==='music');
+    const shorts=all.filter(p=>p.type==='short');
+    const posts=all.filter(p=>p.type==='post'||p.type==='image');
+
+    function renderItem(p){
+      const priv=p.privacy||'public';
+      const privIcon=priv==='private'?'🔒':priv==='unlisted'?'🔗':'🌐';
+      return `<div style="display:flex;gap:10px;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;" onclick="openPost('${p.id}')">
+        <div style="width:80px;height:52px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;position:relative;">
+          ${p.thumbURL?`<img src="${p.thumbURL}" style="width:100%;height:100%;object-fit:cover;">`:`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-${p.type==='short'?'film':'video'}" style="color:var(--text3);font-size:18px;"></i></div>`}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:600;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title||'Untitled'}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:3px;">👁 ${p.views||0} &nbsp; ❤️ ${p.likes||0} &nbsp; 💬 ${p.comments||0}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;">CTR: ${p.views>0?Math.min(100,Math.round(((p.likes||0)/(p.views||1))*100)):0}% &nbsp; ${privIcon} ${priv}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
+          <button onclick="togglePostPrivacy('${p.id}','${priv}',this);event.stopPropagation();" style="background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer;">${privIcon}</button>
+          <button onclick="ctxDeleteContent('${p.id}');event.stopPropagation();" style="background:none;border:none;color:#ff4444;cursor:pointer;font-size:13px;"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`;
+    }
+
+    if(vEl)vEl.innerHTML=videos.length?videos.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-video"></i><p>No videos yet</p></div>';
+    if(sEl)sEl.innerHTML=shorts.length?shorts.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-film"></i><p>No shorts yet</p></div>';
+    if(pEl)pEl.innerHTML=posts.length?posts.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-pen"></i><p>No posts yet</p></div>';
+  }catch(e){
+    console.error('loadMyContentSections:',e);
+    [vEl,sEl,pEl].forEach(el=>{if(el)el.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading content</p></div>';});
+  }
+}
+
+async function togglePostPrivacy(postId,current,btn){
+  const order=['public','unlisted','private'];
+  const icons={'public':'🌐','unlisted':'🔗','private':'🔒'};
+  const next=order[(order.indexOf(current)+1)%order.length];
+  try{
+    await db.collection('posts').doc(postId).update({privacy:next});
+    if(btn)btn.textContent=icons[next];
+    showToast('Visibility: '+next+' '+icons[next]);
+  }catch(e){showToast('Error updating');}
+}
+
+async function ctxDeleteContent(postId){
+  if(!confirm('Delete this content?'))return;
+  try{
+    await db.collection('posts').doc(postId).delete();
+    showToast('Deleted ✅');
+    loadMyContentSections();
+  }catch(e){showToast('Error: '+e.message);}
+}
+
+// ══════════════════════════════════════════════════════
+// SAVE EDIT PROFILE — extended fields
+// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// POST SHARE FIX — share post text/link properly
+// ══════════════════════════════════════════════════════
+function sharePostProperly(postId,title,url){
+  const shareUrl=url||`${location.origin}${location.pathname}?post=${postId}`;
+  const text=`${title||'Check this out'} - MyTube Pakistan 🇵🇰`;
+  if(navigator.share){
+    navigator.share({title:title||'MyTube',text,url:shareUrl}).catch(()=>{
+      navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));
+    });
+  }else{
+    navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// HASHTAG SEARCH — make titles & tags searchable for FYP
+// ══════════════════════════════════════════════════════
+function extractSearchTerms(post){
+  const terms=new Set();
+  const title=(post.title||'').toLowerCase();
+  const desc=(post.desc||'').toLowerCase();
+  const tags=post.tags||[];
+  // Add each word from title
+  title.split(/\s+/).filter(w=>w.length>2).forEach(w=>terms.add(w));
+  // Add hashtags from title & desc
+  [...title.matchAll(/#(\w+)/g),...desc.matchAll(/#(\w+)/g)].forEach(m=>terms.add(m[1]));
+  // Add tags
+  tags.forEach(t=>terms.add(t.toLowerCase().replace(/^#/,'')));
+  // Add category
+  if(post.category)terms.add(post.category);
+  if(post.type)terms.add(post.type);
+  return [...terms].slice(0,20);
+}
+
+// ══════════════════════════════════════════════════════
+// INIT NEW FEATURES
+// ══════════════════════════════════════════════════════
+setTimeout(()=>{
+  setupDoubleTapHearts();
+},800);
 
 function loadScEditSounds(){
   const list=document.getElementById('scEditSoundsList');
