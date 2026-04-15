@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>MyTube — Pakistan ka apna platform</title>
+<title>StreamsMax — Pakistan ka apna platform</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#FF0000">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MyTube">
+<meta name="apple-mobile-web-app-title" content="StreamsMax">
 <!-- PWA fast launch -->
 <meta http-equiv="Cache-Control" content="max-age=3600">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" as="style">
@@ -24,8 +24,8 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <!-- SEO -->
-<meta name="description" content="MyTube — Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.">
-<meta property="og:title" content="MyTube — Pakistan ka apna platform">
+<meta name="description" content="StreamsMax — Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.">
+<meta property="og:title" content="StreamsMax — Pakistan ka apna platform">
 <meta property="og:description" content="Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!">
 <meta property="og:type" content="website">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -33,6 +33,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.20.2.js"></script>
 <style>
 /* ═══ 50 THEMES ═══ */
 :root{
@@ -85,8 +86,10 @@ button,input,textarea{font-family:var(--font);}
 .header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);}
 .logo-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0;cursor:pointer;}
 .logo-icon{width:30px;height:21px;flex-shrink:0;}
-.logo-text{font-size:18px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
+.logo-text{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
 .logo-text span{color:var(--red);}
+.logo-text .streams{color:var(--text);}
+.logo-text .max{color:var(--red);font-size:18px;}
 .search-bar{flex:1;display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:22px;overflow:hidden;transition:border-color .2s;}
 .search-bar.focused{border-color:var(--red);}
 .search-bar input{flex:1;padding:8px 12px;background:none;border:none;outline:none;color:var(--text);font-size:13px;}
@@ -124,6 +127,8 @@ button,input,textarea{font-family:var(--font);}
 .auth-brand svg{margin-bottom:8px;}
 .auth-brand h1{font-size:28px;font-weight:800;margin-bottom:4px;}
 .auth-brand h1 span{color:var(--red);}
+.auth-brand h1 .streams{color:var(--text);}
+.auth-brand h1 .max{color:var(--red);}
 .auth-brand p{color:var(--text2);font-size:13px;}
 .auth-card{width:100%;max-width:360px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px 20px;}
 .auth-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:20px;}
@@ -600,7 +605,7 @@ button,input,textarea{font-family:var(--font);}
 <div id="authScreen" class="auth-screen" style="display:none;">
   <div class="auth-brand">
     <svg width="50" height="36" viewBox="0 0 50 36"><rect width="50" height="36" rx="8" fill="#FF0000"/><polygon points="19,8 19,28 38,18" fill="white"/></svg>
-    <h1>My<span>Tube</span></h1>
+    <h1><span class="streams">Streams</span><span class="max">MAX</span></h1>
     <p>Pakistan ka apna platform 🇵🇰</p>
   </div>
   <div class="auth-card">
@@ -665,7 +670,7 @@ button,input,textarea{font-family:var(--font);}
   <div class="side-item" onclick="showScreen('terms');closeSideMenu()"><i class="fas fa-file-contract"></i><span>Terms of Service</span></div>
   <div class="side-item" onclick="showScreen('copyright');closeSideMenu()"><i class="fas fa-copyright"></i><span>Copyright</span></div>
   <div class="side-footer">
-    <p>© 2025 MyTube Pakistan<br>All rights reserved.<br><span style="color:var(--red);">▶ MyTube</span> v5.0</p>
+    <p>© 2025 StreamsMax Pakistan<br>All rights reserved.<br><span style="color:var(--red);">▶ StreamsMax</span> v5.0</p>
   </div>
 </div>
 
@@ -673,7 +678,7 @@ button,input,textarea{font-family:var(--font);}
   <div class="header">
     <div class="logo-wrap" onclick="openSideMenu()">
       <svg class="logo-icon" viewBox="0 0 30 21"><rect width="30" height="21" rx="5" fill="#FF0000"/><polygon points="11,5 11,16 22,10.5" fill="white"/></svg>
-      <div class="logo-text">My<span>Tube</span></div>
+      <div class="logo-text"><span class="streams">Streams</span><span class="max">MAX</span></div>
     </div>
     <div class="search-bar" id="searchBarEl">
       <input type="text" id="searchInput" placeholder="Search..." oninput="onSearchInput(this.value)" onfocus="searchFocus()" onblur="searchBlur()">
@@ -720,8 +725,8 @@ button,input,textarea{font-family:var(--font);}
         <div style="display:flex;align-items:center;gap:7px;">
           <i class="fas fa-film" style="color:var(--red);font-size:17px;"></i> Shorts
         </div>
-        <button onclick="openShortsCamera()" style="background:var(--red);color:white;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
-          <i class="fas fa-circle" style="font-size:10px;"></i> Record
+        <button onclick="openUploadDirect('short')" style="background:var(--red);color:white;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <i class="fas fa-upload" style="font-size:10px;"></i> Upload Short
         </button>
       </div>
       <div style="display:flex;gap:8px;padding:0 14px 8px;overflow-x:auto;" id="shortFilterChips">
@@ -848,48 +853,94 @@ button,input,textarea{font-family:var(--font);}
 
         <!-- OVERVIEW TAB -->
         <div id="studio-overview">
-          <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Last 28 days</div>
-          <div class="stats-grid">
-            <div class="stat-card"><div class="stat-ico"><i class="fas fa-eye"></i></div><div class="stat-num" id="dViews">0</div><div class="stat-lbl">Views</div></div>
-            <div class="stat-card"><div class="stat-ico"><i class="fas fa-clock"></i></div><div class="stat-num" id="dWatchTime">0m</div><div class="stat-lbl">Watch Time</div></div>
-            <div class="stat-card"><div class="stat-ico"><i class="fas fa-users"></i></div><div class="stat-num" id="dSubs">0</div><div class="stat-lbl">Subscribers</div></div>
-            <div class="stat-card"><div class="stat-ico"><i class="fas fa-dollar-sign"></i></div><div class="stat-num" id="dRevenue">$0</div><div class="stat-lbl">Est. Revenue</div></div>
+          <!-- Period selector -->
+          <div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;">
+            <button class="chip active" id="dashPeriod7" onclick="setDashPeriod(7,this)" style="border-radius:20px;white-space:nowrap;">7 days</button>
+            <button class="chip" id="dashPeriod28" onclick="setDashPeriod(28,this)" style="border-radius:20px;white-space:nowrap;">28 days</button>
+            <button class="chip" id="dashPeriodAll" onclick="setDashPeriod(0,this)" style="border-radius:20px;white-space:nowrap;">All time</button>
           </div>
-          <!-- Latest video performance -->
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:14px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Latest Video Performance</div>
-            <div id="latestVideoPerfEl">
-              <div style="color:var(--text3);font-size:12px;">No videos yet</div>
+
+          <!-- Key Metrics (YouTube style with trend arrows) -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;">
+              <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Views</div>
+              <div style="font-size:24px;font-weight:800;" id="dViews">0</div>
+              <div style="font-size:11px;margin-top:4px;" id="dViewsTrend"><span style="color:var(--text3);">—</span></div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;">
+              <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Watch Time</div>
+              <div style="font-size:24px;font-weight:800;" id="dWatchTime">0m</div>
+              <div style="font-size:11px;margin-top:4px;" id="dWatchTrend"><span style="color:var(--text3);">—</span></div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;">
+              <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Subscribers</div>
+              <div style="font-size:24px;font-weight:800;" id="dSubs">0</div>
+              <div style="font-size:11px;margin-top:4px;" id="dSubsTrend"><span style="color:var(--text3);">—</span></div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;">
+              <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Est. Revenue</div>
+              <div style="font-size:24px;font-weight:800;" id="dRevenue">$0</div>
+              <div style="font-size:11px;margin-top:4px;"><span style="color:var(--text3);">—</span></div>
             </div>
           </div>
-          <div class="analytics-wrap">
-            <div class="analytics-title"><i class="fas fa-chart-line"></i> Quick Stats</div>
+
+          <!-- Views line chart -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div>
+                <div style="font-size:13px;font-weight:700;">📈 Views Over Time</div>
+                <div style="font-size:10px;color:var(--text3);" id="dashChartSubtitle">Per-video (last 7)</div>
+              </div>
+              <div style="font-size:11px;color:var(--text2);" id="dashTotalViews">Total: 0</div>
+            </div>
+            <!-- SVG line chart -->
+            <div style="position:relative;height:90px;" id="dashLineChartWrap">
+              <svg id="dashLineChart" width="100%" height="90" style="overflow:visible;"></svg>
+            </div>
+            <div id="dashViewsLabels" style="display:flex;gap:5px;margin-top:6px;font-size:8px;color:var(--text3);overflow:hidden;"></div>
+          </div>
+
+          <!-- Impressions + CTR row -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:12px;">
+              <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">Impressions</div>
+              <div style="font-size:18px;font-weight:800;" id="dImpressions">0</div>
+              <div style="font-size:10px;color:var(--text3);margin-top:2px;">Total reach</div>
+              <div id="dashImpressionsChart" style="display:flex;align-items:flex-end;gap:3px;height:40px;margin-top:8px;"></div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:12px;">
+              <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">Click-through Rate</div>
+              <div style="font-size:18px;font-weight:800;" id="aCTR">0%</div>
+              <div style="font-size:10px;color:var(--text3);margin-top:2px;">Likes ÷ Views</div>
+              <div style="margin-top:8px;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;">
+                <div id="dashCTRBar" style="height:100%;background:linear-gradient(90deg,var(--red),#ff6644);border-radius:3px;width:0%;transition:width .5s;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video performance details -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px;">🎬 Latest Video Performance</div>
+            <div id="latestVideoPerfEl"><div style="color:var(--text3);font-size:12px;">No videos yet</div></div>
+          </div>
+
+          <!-- Quick Stats grid -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px;"><i class="fas fa-chart-line" style="color:var(--red);margin-right:6px;"></i>Analytics</div>
             <div class="an-grid">
-              <div class="an-card"><div class="an-num" id="aCTR">0%</div><div class="an-lbl">CTR</div></div>
               <div class="an-card"><div class="an-num" id="aAvgViews">0</div><div class="an-lbl">Avg Views</div></div>
               <div class="an-card"><div class="an-num" id="aEngagement">0%</div><div class="an-lbl">Engagement</div></div>
               <div class="an-card"><div class="an-num" id="aScore">0</div><div class="an-lbl">Rank Score</div></div>
-              <div class="an-card"><div class="an-num" id="aBest">-</div><div class="an-lbl">Best Post</div></div>
               <div class="an-card"><div class="an-num" id="aGrowth">0%</div><div class="an-lbl">Growth %</div></div>
+              <div class="an-card"><div class="an-num" id="aBest">-</div><div class="an-lbl">Best Post</div></div>
+              <div class="an-card"><div class="an-num" id="dVideoCount">0</div><div class="an-lbl">Videos</div></div>
             </div>
           </div>
-          <!-- VIEWS CHART -->
+
+          <!-- Subscriber Milestones -->
           <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:4px;">📊 Views Chart</div>
-            <div style="font-size:10px;color:var(--text3);margin-bottom:12px;">Per-video performance (last 7)</div>
-            <div id="dashViewsChart" style="display:flex;align-items:flex-end;gap:5px;height:80px;"></div>
-            <div id="dashViewsLabels" style="display:flex;gap:5px;margin-top:5px;font-size:8px;color:var(--text3);overflow:hidden;"></div>
-          </div>
-          <!-- IMPRESSIONS CHART -->
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:4px;">🎯 Impressions</div>
-            <div style="font-size:10px;color:var(--text3);margin-bottom:12px;">Likes + Views combo trend</div>
-            <div id="dashImpressionsChart" style="display:flex;align-items:flex-end;gap:5px;height:60px;"></div>
-          </div>
-          <!-- SUBSCRIBERS TREND -->
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:8px;">👥 Subscriber Milestones</div>
-            <div id="dashSubsTrend" style="font-size:13px;color:var(--text2);"></div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px;">🏆 Subscriber Milestones</div>
+            <div id="dashSubsTrend"></div>
           </div>
           <div class="sec-title">👥 Subscribers</div>
           <div id="subsList"><div style="color:var(--text3);font-size:12px;padding:8px 0;">No subscribers yet</div></div>
@@ -1088,7 +1139,7 @@ button,input,textarea{font-family:var(--font);}
     <div id="themesScreen" class="screen">
       <div class="themes-screen">
         <h2>🎨 Themes</h2>
-        <p>Choose your MyTube look</p>
+        <p>Choose your StreamsMax look</p>
         <div class="themes-grid" id="themesGrid"></div>
       </div>
     </div>
@@ -1129,7 +1180,7 @@ button,input,textarea{font-family:var(--font);}
           <h2 style="font-size:18px;font-weight:700;">Privacy Policy</h2>
         </div>
         <div style="font-size:13px;line-height:1.8;color:var(--text2);">
-          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">MyTube Privacy Policy</p>
+          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">StreamsMax Privacy Policy</p>
           <p style="color:var(--text3);font-size:11px;margin-bottom:16px;">Last updated: April 2025</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">1. Information We Collect</p>
@@ -1148,13 +1199,13 @@ button,input,textarea{font-family:var(--font);}
           <p style="margin-bottom:14px;">We use browser local storage to save your theme preference, watch history, and search history. This data stays on your device and is not shared.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">6. Content Policy</p>
-          <p style="margin-bottom:14px;">Users are responsible for content they upload. MyTube reserves the right to remove content that violates our community guidelines including spam, harassment, or illegal content.</p>
+          <p style="margin-bottom:14px;">Users are responsible for content they upload. StreamsMax reserves the right to remove content that violates our community guidelines including spam, harassment, or illegal content.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">7. Contact Us</p>
-          <p style="margin-bottom:14px;">For privacy concerns, contact us through the MyTube platform. We respond within 48 hours.</p>
+          <p style="margin-bottom:14px;">For privacy concerns, contact us through the StreamsMax platform. We respond within 48 hours.</p>
 
           <div style="background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.2);border-radius:10px;padding:12px;margin-top:16px;">
-            <p style="font-size:12px;color:var(--text);">By using MyTube, you agree to this Privacy Policy. We may update this policy and will notify users of significant changes.</p>
+            <p style="font-size:12px;color:var(--text);">By using StreamsMax, you agree to this Privacy Policy. We may update this policy and will notify users of significant changes.</p>
           </div>
         </div>
       </div>
@@ -1168,32 +1219,32 @@ button,input,textarea{font-family:var(--font);}
           <h2 style="font-size:18px;font-weight:700;">Terms of Service</h2>
         </div>
         <div style="font-size:13px;line-height:1.8;color:var(--text2);">
-          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">MyTube Terms of Service</p>
+          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">StreamsMax Terms of Service</p>
           <p style="color:var(--text3);font-size:11px;margin-bottom:16px;">Effective: April 2025</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">1. Acceptance of Terms</p>
-          <p style="margin-bottom:14px;">By accessing or using MyTube, you agree to be bound by these Terms of Service. If you do not agree, please do not use the platform.</p>
+          <p style="margin-bottom:14px;">By accessing or using StreamsMax, you agree to be bound by these Terms of Service. If you do not agree, please do not use the platform.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">2. User Accounts</p>
-          <p style="margin-bottom:14px;">You must be 13 years or older to use MyTube. You are responsible for maintaining the security of your account and all activities that occur under it.</p>
+          <p style="margin-bottom:14px;">You must be 13 years or older to use StreamsMax. You are responsible for maintaining the security of your account and all activities that occur under it.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">3. Content Guidelines</p>
           <p style="margin-bottom:14px;">You may not upload content that is illegal, harmful, threatening, abusive, defamatory, or violates anyone's rights. Spam, fake accounts, and bot activity are strictly prohibited.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">4. Intellectual Property</p>
-          <p style="margin-bottom:14px;">You retain ownership of content you create. By uploading to MyTube, you grant us a license to display and distribute your content on the platform.</p>
+          <p style="margin-bottom:14px;">You retain ownership of content you create. By uploading to StreamsMax, you grant us a license to display and distribute your content on the platform.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">5. Live Streaming Requirements</p>
           <p style="margin-bottom:14px;">Live streaming requires meeting minimum thresholds: 40 videos, 50 shorts, 100 likes on one video, and 100 subscribers. These requirements ensure platform quality.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">6. Termination</p>
-          <p style="margin-bottom:14px;">MyTube reserves the right to suspend or terminate accounts that violate these terms, with or without notice.</p>
+          <p style="margin-bottom:14px;">StreamsMax reserves the right to suspend or terminate accounts that violate these terms, with or without notice.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">7. Limitation of Liability</p>
-          <p style="margin-bottom:14px;">MyTube is provided "as is." We are not liable for any damages arising from your use of the platform.</p>
+          <p style="margin-bottom:14px;">StreamsMax is provided "as is." We are not liable for any damages arising from your use of the platform.</p>
 
           <div style="background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.2);border-radius:10px;padding:12px;margin-top:16px;">
-            <p style="font-size:12px;color:var(--text);">These terms govern your use of MyTube. Continued use constitutes acceptance of any updates to these terms.</p>
+            <p style="font-size:12px;color:var(--text);">These terms govern your use of StreamsMax. Continued use constitutes acceptance of any updates to these terms.</p>
           </div>
         </div>
       </div>
@@ -1208,7 +1259,7 @@ button,input,textarea{font-family:var(--font);}
         </div>
         <div style="background:rgba(255,150,0,.08);border:1px solid rgba(255,150,0,.3);border-radius:12px;padding:14px;margin-bottom:20px;display:flex;gap:10px;align-items:center;">
           <i class="fas fa-gavel" style="color:#ff9600;font-size:22px;flex-shrink:0;"></i>
-          <p style="font-size:13px;color:var(--text);font-weight:600;">MyTube is committed to keeping the platform safe and positive.</p>
+          <p style="font-size:13px;color:var(--text);font-weight:600;">StreamsMax is committed to keeping the platform safe and positive.</p>
         </div>
         <div style="font-size:13px;line-height:1.8;color:var(--text2);">
           <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:16px;">Community Guidelines</p>
@@ -1234,7 +1285,7 @@ button,input,textarea{font-family:var(--font);}
           </div>
 
           <div style="background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.2);border-radius:10px;padding:12px;margin-top:8px;">
-            <p style="font-size:12px;color:var(--text);">MyTube reserves the right to remove any content or account at its discretion to maintain a safe platform for all users.</p>
+            <p style="font-size:12px;color:var(--text);">StreamsMax reserves the right to remove any content or account at its discretion to maintain a safe platform for all users.</p>
           </div>
         </div>
       </div>
@@ -1248,18 +1299,18 @@ button,input,textarea{font-family:var(--font);}
           <h2 style="font-size:18px;font-weight:700;">Copyright Policy</h2>
         </div>
         <div style="font-size:13px;line-height:1.8;color:var(--text2);">
-          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">MyTube Copyright Policy</p>
+          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">StreamsMax Copyright Policy</p>
 
           <div style="background:rgba(255,0,0,.08);border-radius:12px;padding:14px;margin-bottom:16px;display:flex;gap:10px;">
             <i class="fas fa-copyright" style="color:var(--red);font-size:20px;flex-shrink:0;margin-top:2px;"></i>
-            <p style="color:var(--text);">MyTube respects intellectual property rights and expects users to do the same.</p>
+            <p style="color:var(--text);">StreamsMax respects intellectual property rights and expects users to do the same.</p>
           </div>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">What is Copyright Infringement?</p>
           <p style="margin-bottom:14px;">Uploading content that you do not own or have permission to use — including music, videos, images, or other creative works — is copyright infringement.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">DMCA Policy</p>
-          <p style="margin-bottom:14px;">MyTube follows DMCA (Digital Millennium Copyright Act) guidelines. Copyright holders can report infringing content and we will review and act accordingly.</p>
+          <p style="margin-bottom:14px;">StreamsMax follows DMCA (Digital Millennium Copyright Act) guidelines. Copyright holders can report infringing content and we will review and act accordingly.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">What Happens to Violators?</p>
           <p style="margin-bottom:14px;">• First violation: Warning issued<br>• Second violation: Content removed, channel restricted<br>• Third violation: Account permanently suspended</p>
@@ -1274,7 +1325,7 @@ button,input,textarea{font-family:var(--font);}
           <p style="margin-bottom:14px;">Use the Report button on any video to report copyright violations. Our team reviews all reports within 72 hours.</p>
 
           <div style="background:rgba(0,200,100,.06);border:1px solid rgba(0,200,100,.2);border-radius:10px;padding:12px;margin-top:16px;">
-            <p style="font-size:12px;color:var(--text);"><i class="fas fa-check-circle" style="color:#00c864;margin-right:6px;"></i>Protect your original content by uploading it on MyTube. Your content is your property.</p>
+            <p style="font-size:12px;color:var(--text);"><i class="fas fa-check-circle" style="color:#00c864;margin-right:6px;"></i>Protect your original content by uploading it on StreamsMax. Your content is your property.</p>
           </div>
         </div>
       </div>
@@ -1320,36 +1371,176 @@ button,input,textarea{font-family:var(--font);}
     <!-- OWNER -->
     <div id="ownerScreen" class="screen">
       <div class="owner-screen">
-        <div class="owner-hdr"><h2>Admin Panel</h2><span class="owner-badge">OWNER</span></div>
-        <div class="owner-stats" style="grid-template-columns:1fr 1fr 1fr;">
-          <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,150,255,.15);color:#0096ff;"><i class="fas fa-users"></i></div><div class="ow-num" id="owUsers">0</div><div class="ow-lbl">Total Users</div></div>
-          <div class="ow-stat"><div class="ow-ico" style="background:rgba(255,0,0,.1);color:var(--red);"><i class="fas fa-tv"></i></div><div class="ow-num" id="owChannels">0</div><div class="ow-lbl">Channels</div></div>
-          <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,200,100,.15);color:#00c864;"><i class="fas fa-video"></i></div><div class="ow-num" id="owVideos">0</div><div class="ow-lbl">Videos</div></div>
-          <div class="ow-stat"><div class="ow-ico" style="background:rgba(255,150,0,.15);color:#ff9600;"><i class="fas fa-heart"></i></div><div class="ow-num" id="owLikes">0</div><div class="ow-lbl">Total Likes</div></div>
-          <div class="ow-stat"><div class="ow-ico" style="background:rgba(100,100,255,.15);color:#6464ff;"><i class="fas fa-eye"></i></div><div class="ow-num" id="owViews">0</div><div class="ow-lbl">Total Views</div></div>
-          <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,200,200,.15);color:#00c8c8;"><i class="fas fa-film"></i></div><div class="ow-num" id="owShorts">0</div><div class="ow-lbl">Shorts</div></div>
+        <div class="owner-hdr">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:40px;height:40px;background:linear-gradient(135deg,#ff0000,#cc0000);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-crown" style="color:#ffd700;font-size:18px;"></i>
+            </div>
+            <div>
+              <h2 style="font-size:16px;margin:0;">StreamsMax Admin</h2>
+              <div style="font-size:10px;color:var(--text3);">Owner Control Panel</div>
+            </div>
+          </div>
+          <span class="owner-badge">OWNER</span>
         </div>
-        <div class="owner-sec-title">All Users</div>
-        <div id="ownerUsersList"><div class="loader"><div class="spinner"></div></div></div>
+
+        <!-- Owner Tabs -->
+        <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:16px;overflow-x:auto;">
+          <button class="studio-tab active" id="otab-overview" onclick="switchOwnerTab('overview')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-chart-line"></i> Overview</button>
+          <button class="studio-tab" id="otab-reports" onclick="switchOwnerTab('reports')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-flag"></i> Reports</button>
+          <button class="studio-tab" id="otab-users" onclick="switchOwnerTab('users')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-users"></i> Users</button>
+          <button class="studio-tab" id="otab-guidelines" onclick="switchOwnerTab('guidelines')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-shield-alt"></i> Guidelines</button>
+        </div>
+
+        <!-- OVERVIEW TAB -->
+        <div id="owner-overview">
+          <div class="owner-stats" style="grid-template-columns:1fr 1fr 1fr;">
+            <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,150,255,.15);color:#0096ff;"><i class="fas fa-users"></i></div><div class="ow-num" id="owUsers">0</div><div class="ow-lbl">Users</div></div>
+            <div class="ow-stat"><div class="ow-ico" style="background:rgba(255,0,0,.1);color:var(--red);"><i class="fas fa-tv"></i></div><div class="ow-num" id="owChannels">0</div><div class="ow-lbl">Channels</div></div>
+            <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,200,100,.15);color:#00c864;"><i class="fas fa-video"></i></div><div class="ow-num" id="owVideos">0</div><div class="ow-lbl">Videos</div></div>
+            <div class="ow-stat"><div class="ow-ico" style="background:rgba(255,150,0,.15);color:#ff9600;"><i class="fas fa-heart"></i></div><div class="ow-num" id="owLikes">0</div><div class="ow-lbl">Likes</div></div>
+            <div class="ow-stat"><div class="ow-ico" style="background:rgba(100,100,255,.15);color:#6464ff;"><i class="fas fa-eye"></i></div><div class="ow-num" id="owViews">0</div><div class="ow-lbl">Views</div></div>
+            <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,200,200,.15);color:#00c8c8;"><i class="fas fa-film"></i></div><div class="ow-num" id="owShorts">0</div><div class="ow-lbl">Shorts</div></div>
+          </div>
+          <!-- Platform Growth Chart -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:4px;">📊 Platform Activity</div>
+            <div style="font-size:10px;color:var(--text3);margin-bottom:12px;">Total posts per content type</div>
+            <div id="ownerActivityChart" style="display:flex;align-items:flex-end;gap:8px;height:70px;margin-bottom:6px;"></div>
+            <div id="ownerActivityLabels" style="display:flex;gap:8px;font-size:9px;color:var(--text3);"></div>
+          </div>
+          <!-- Live Streams Active -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px;">🔴 Active Live Streams</div>
+            <div id="ownerLiveList"><div style="font-size:12px;color:var(--text3);">No active streams</div></div>
+          </div>
+        </div>
+
+        <!-- REPORTS TAB -->
+        <div id="owner-reports" style="display:none;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
+            <span>🚩 Pending Reports</span>
+            <span id="owReportCount" style="background:var(--red);color:white;border-radius:20px;padding:2px 10px;font-size:11px;">0</span>
+          </div>
+          <div id="ownerReportsList"><div class="loader"><div class="spinner"></div></div></div>
+        </div>
+
+        <!-- USERS TAB -->
+        <div id="owner-users" style="display:none;">
+          <div style="margin-bottom:12px;">
+            <input class="inp" id="ownerSearchUser" placeholder="🔍 Search user by name/email..." oninput="ownerSearchUsers(this.value)" style="margin-bottom:0;">
+          </div>
+          <div id="ownerUsersList"><div class="loader"><div class="spinner"></div></div></div>
+        </div>
+
+        <!-- GUIDELINES TAB -->
+        <div id="owner-guidelines" style="display:none;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:12px;">⚖️ Community Guidelines Manager</div>
+          <!-- Add new guideline -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:14px;">
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">Add New Rule</div>
+            <select id="guidelineCategory" class="inp" style="margin-bottom:8px;">
+              <option value="content">🎬 Content Rules</option>
+              <option value="behavior">👥 Behavior Rules</option>
+              <option value="safety">🛡️ Safety Rules</option>
+              <option value="legal">⚖️ Legal Rules</option>
+            </select>
+            <input class="inp" id="guidelineTitle" placeholder="Rule title" style="margin-bottom:8px;">
+            <textarea class="inp" id="guidelineDesc" placeholder="Rule description..." style="height:70px;resize:none;"></textarea>
+            <button onclick="addGuideline()" style="width:100%;padding:10px;background:var(--red);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;"><i class="fas fa-plus"></i> Add Rule</button>
+          </div>
+          <!-- Existing guidelines -->
+          <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">Current Rules</div>
+          <div id="guidelinesList"><div class="loader"><div class="spinner"></div></div></div>
+        </div>
+
       </div>
     </div>
 
     <!-- LIVE -->
     <div id="liveScreen" class="screen">
       <div class="live-screen">
-        <h2>🔴 Go Live</h2>
+        <!-- Live Header -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="width:10px;height:10px;background:var(--red);border-radius:50%;animation:blink 1.2s infinite;"></div>
+          <h2 style="margin:0;font-size:18px;">Go Live</h2>
+        </div>
+
+        <!-- Requirements locked -->
         <div class="live-req-card" id="liveLocked">
           <h3><i class="fas fa-lock" style="color:var(--red);"></i> Requirements</h3>
           <p>Reach these milestones to unlock live streaming</p>
           <div id="liveReqList"></div>
         </div>
+
+        <!-- Live Setup (owner always sees this) -->
         <div class="live-setup-card" id="liveSetup" style="display:none;">
-          <h3>Stream Setup</h3>
-          <div class="live-ind"><div class="live-dot"></div><span class="live-badge">LIVE</span><span style="font-size:12px;color:var(--text2);margin-left:6px;">Ready!</span></div>
-          <input class="inp" id="liveTitle" placeholder="Stream Title">
-          <input class="inp" id="liveCat" placeholder="Category">
-          <button class="btn-red" onclick="startLive()"><i class="fas fa-circle"></i> Start Live Stream</button>
+          <h3>🎙️ Stream Setup</h3>
+          <div class="live-ind"><div class="live-dot"></div><span class="live-badge">READY</span><span style="font-size:12px;color:var(--text2);margin-left:6px;">Agora Connected</span></div>
+          <input class="inp" id="liveTitle" placeholder="Stream Title *">
+          <input class="inp" id="liveCat" placeholder="Category (e.g. Gaming, Talk Show)">
+          <div style="margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">📡 Stream Quality</div>
+            <div style="display:flex;gap:8px;">
+              <button class="privacy-btn active" id="liveQ720" onclick="setLiveQuality('720p',this)">720p</button>
+              <button class="privacy-btn" id="liveQ1080" onclick="setLiveQuality('1080p',this)">1080p</button>
+              <button class="privacy-btn" id="liveQAuto" onclick="setLiveQuality('auto',this)">Auto</button>
+            </div>
+          </div>
+          <button class="btn-red" id="startLiveBtn" onclick="startAgoraLive()">
+            <i class="fas fa-circle" style="animation:blink 1.2s infinite;"></i> Start Live Stream
+          </button>
         </div>
+
+        <!-- Active Live View (after going live) -->
+        <div id="liveActiveView" style="display:none;">
+          <div style="position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:16/9;margin-bottom:12px;">
+            <div id="localVideoContainer" style="width:100%;height:100%;"></div>
+            <!-- Live badge -->
+            <div style="position:absolute;top:10px;left:10px;background:var(--red);color:white;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;display:flex;align-items:center;gap:5px;">
+              <div style="width:7px;height:7px;background:white;border-radius:50%;animation:blink 1s infinite;"></div> LIVE
+            </div>
+            <!-- Viewer count -->
+            <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);color:white;font-size:11px;padding:4px 8px;border-radius:6px;">
+              <i class="fas fa-eye" style="margin-right:4px;"></i><span id="liveViewerCount">0</span>
+            </div>
+            <!-- Duration -->
+            <div style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.7);color:white;font-size:11px;padding:4px 8px;border-radius:6px;">
+              <i class="fas fa-clock" style="margin-right:4px;"></i><span id="liveDuration">00:00</span>
+            </div>
+          </div>
+          <!-- Live Controls -->
+          <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <button id="liveMuteBtn" onclick="toggleLiveMic()" style="flex:1;padding:10px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;">
+              <i class="fas fa-microphone"></i> Mic On
+            </button>
+            <button id="liveCamBtn" onclick="toggleLiveCam()" style="flex:1;padding:10px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;">
+              <i class="fas fa-video"></i> Cam On
+            </button>
+            <button onclick="flipLiveCamera()" style="flex:1;padding:10px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;">
+              <i class="fas fa-sync-alt"></i> Flip
+            </button>
+          </div>
+          <!-- Live Chat -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:12px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px;">💬 Live Chat</div>
+            <div id="liveChatMessages" style="height:160px;overflow-y:auto;margin-bottom:8px;display:flex;flex-direction:column;gap:6px;"></div>
+            <div style="display:flex;gap:6px;">
+              <input class="inp" id="liveChatInput" placeholder="Say something..." style="flex:1;margin-bottom:0;padding:8px 12px;">
+              <button onclick="sendLiveChat()" style="background:var(--red);color:white;border:none;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+          <button onclick="endAgoraLive()" style="width:100%;padding:12px;background:#1a1a1a;border:2px solid var(--red);color:var(--red);border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">
+            <i class="fas fa-stop-circle"></i> End Stream
+          </button>
+        </div>
+
+        <!-- Watch Live (viewer mode) -->
+        <div id="liveWatchView" style="display:none;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;">📡 Live Streams</div>
+          <div id="liveStreamsList"><div class="loader"><div class="spinner"></div></div></div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1371,10 +1562,10 @@ button,input,textarea{font-family:var(--font);}
   <!-- YouTube-style icon row -->
   <div style="display:flex;justify-content:space-around;align-items:flex-start;padding:18px 8px 4px;">
 
-    <!-- Short / Camera -->
-    <div onclick="closeUploadChoice();openShortsCamera();" style="display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;min-width:72px;" ontouchstart="this.style.opacity='.6'" ontouchend="this.style.opacity='1'">
+    <!-- Short / Gallery Upload -->
+    <div onclick="closeUploadChoice();openUploadDirect('short');" style="display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;min-width:72px;" ontouchstart="this.style.opacity='.6'" ontouchend="this.style.opacity='1'">
       <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#ff416c,#ff4b2b);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(255,65,108,.45);">
-        <i class="fas fa-circle-notch" style="color:white;font-size:22px;"></i>
+        <i class="fas fa-film" style="color:white;font-size:22px;"></i>
       </div>
       <span style="font-size:12px;font-weight:600;color:var(--text);text-align:center;">Short</span>
     </div>
@@ -1832,7 +2023,7 @@ button,input,textarea{font-family:var(--font);}
   <div style="background:var(--bg2);border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;">
     <div style="font-size:44px;margin-bottom:12px;">🔞</div>
     <div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px;">Age Verification</div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">MyTube is for users <b style="color:var(--text);">18 years and older</b> only. By continuing, you confirm that you are at least 18 years of age.</div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">StreamsMax is for users <b style="color:var(--text);">18 years and older</b> only. By continuing, you confirm that you are at least 18 years of age.</div>
     <div style="background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.2);border-radius:10px;padding:12px;margin-bottom:20px;font-size:12px;color:var(--text2);">
       <i class="fas fa-shield-alt" style="color:var(--red);margin-right:6px;"></i>
       This platform may contain mature content. Parental guidance advised.
@@ -1920,9 +2111,16 @@ const FB = {
   messagingSenderId:"948348267378",
   appId:"1:948348267378:web:2dd25f59a9f510a8694beb"
 };
-const CLOUD="dyrjyet9o", PRESET="mytube_upload";
+const CLOUD="dyrjyet9o", PRESET="streamsmax_upload";
 const OWNER_EMAIL="mrwhyyouareyou@gmail.com";
 const LIVE_REQS={videos:40,shorts:50,likesOnOneVideo:100,subscribers:100};
+// Agora Live Streaming Config
+const AGORA_APP_ID="a7388a9f1d5c42b1b3c5f69af29223a3";
+const AGORA_TOKEN="007eJxTYGCZEtOn0rEzttq/umW6epD7Lu81F1Ym1i3Rm/XowBYGJnEFhkRzYwuLRMs0wxTTZBOjJMMk42TTNDPLxDQjSyMj40TjXJ17mQ2BjAyKWhuZGBkgEMTnZAguKUpNzFWoUGBgAABqDh78";
+const AGORA_CHANNEL="streamsmax-live";
+let _agoraClient=null, _agoraLocalAudio=null, _agoraLocalVideo=null;
+let _liveActive=false, _liveDurInt=null, _liveDurSecs=0;
+let _liveMicOn=true, _liveCamOn=true, _liveQuality='720p';
 
 firebase.initializeApp(FB);
 const auth=firebase.auth(), db=firebase.firestore();
@@ -3448,8 +3646,8 @@ async function toggleSubscribe(){
 function shareVideo(){
   if(!currentPostData)return;
   const url=currentPostData.url||location.href;
-  const title=currentPostData.title||'Watch on MyTube';
-  const text=`${title} - MyTube Pakistan 🇵🇰`;
+  const title=currentPostData.title||'Watch on StreamsMax';
+  const text=`${title} - StreamsMax Pakistan 🇵🇰`;
   if(navigator.share){
     navigator.share({title,text,url}).catch(()=>showShareSheet(url,title));
   }else{
@@ -3739,169 +3937,223 @@ async function loadNotifs(){
 // ══════════════════════════════════════════════════════
 // DASHBOARD
 // ══════════════════════════════════════════════════════
+let _dashPeriodDays=7;
+function setDashPeriod(days,btn){
+  _dashPeriodDays=days;
+  document.querySelectorAll('#dashPeriod7,#dashPeriod28,#dashPeriodAll').forEach(b=>{if(b)b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  loadDashboard();
+}
+
 async function loadDashboard(){
   if(!cUser)return;
   document.getElementById('dashWelcome').textContent='Welcome, '+(cUserData?.name||'Creator')+'!';
-  // Studio avatar
   const stAv=document.getElementById('studioAvatar');
   if(stAv){if(cUserData?.photoURL)stAv.innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;else stAv.textContent=(cUserData?.name||'U')[0].toUpperCase();}
   const stCh=document.getElementById('studioChannelName');
   if(stCh)stCh.textContent=cUserData?.channelName||cUserData?.name||'My Channel';
-  // Studio header
-  const stAvEl=document.getElementById('studioAvatar');
-  if(stAvEl){if(cUserData?.photoURL)stAvEl.innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;else stAvEl.textContent=(cUserData?.name||'U')[0].toUpperCase();}
-  const stChEl=document.getElementById('studioChannelName');
-  if(stChEl)stChEl.textContent=cUserData?.channelName||cUserData?.name||'My Channel';
   try{
     const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
     let likes=0,views=0,vids=0,comments=0,maxLikes=0,bestTitle='';
     const myPosts=[];
     let watchTimeSecs=0;
+    const now=Date.now();
+    const periodMs=_dashPeriodDays>0?_dashPeriodDays*24*3600*1000:Infinity;
     snap.forEach(d=>{
-      const p=d.data();
-      likes+=p.likes||0;
-      views+=p.views||0;
-      vids++;
-      comments+=p.comments||0;
-      watchTimeSecs+=p.watchTime||0;
+      const p={id:d.id,...d.data()};
+      myPosts.push(p);
+      const inPeriod=_dashPeriodDays===0||(now-(p.time||0))<periodMs;
+      if(inPeriod){
+        likes+=p.likes||0;
+        views+=p.views||0;
+        comments+=p.comments||0;
+        watchTimeSecs+=p.watchTime||0;
+        vids++;
+      }
       if((p.likes||0)>maxLikes){maxLikes=p.likes||0;bestTitle=p.title||'N/A';}
-      myPosts.push({id:d.id,...p});
     });
+    myPosts.sort((a,b)=>b.time-a.time);
     const ud=await db.collection('users').doc(cUser.uid).get();
     const subs=ud.exists?(ud.data().subscribers||0):0;
-    document.getElementById('dVideos') && (document.getElementById('dVideos').textContent=vids);
+
+    // Update counts
     document.getElementById('dSubs').textContent=subs;
-    document.getElementById('dLikes') && (document.getElementById('dLikes').textContent=likes);
-    document.getElementById('dViews').textContent=views;
+    document.getElementById('dViews').textContent=views>=1000?Math.round(views/100)/10+'K':views;
     const watchMins=Math.round(watchTimeSecs/60);
     const wtEl=document.getElementById('dWatchTime');if(wtEl)wtEl.textContent=watchMins>60?Math.round(watchMins/60)+'h':watchMins+'m';
-    // Revenue estimate (₨0.5 per 1000 views = very rough)
     const revEl=document.getElementById('dRevenue');if(revEl)revEl.textContent='₨'+(Math.round(views*0.5/1000*100)/100).toFixed(2);
-    const d2El=document.getElementById('dVideos2');if(d2El)d2El.textContent=vids+' videos • '+likes+' total likes';
-    // Latest video performance
-    const lpEl=document.getElementById('latestVideoPerfEl');
-    if(lpEl&&myPosts.length){
-      const latest=myPosts[0];
-      const th=latest.thumbURL||(latest.url?latest.url.replace('/upload/','/upload/so_1,w_120/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-      const score=latest.rankScore||0;
-      const typical_views=Math.max(1,Math.round(views/Math.max(vids,1)));
-      const isAbove=latest.views>=typical_views;
-      lpEl.innerHTML=`<div style="display:flex;gap:10px;margin-bottom:12px;">
-        <div style="width:80px;height:50px;border-radius:7px;overflow:hidden;background:var(--bg3);flex-shrink:0;">
-          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:''}
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:12px;font-weight:600;">${latest.title||'Untitled'}</div>
-          <div style="font-size:10px;color:var(--text2);">Rank Score: <b>${score}</b></div>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
-        <span style="font-size:12px;color:var(--text2);">Ranking by views</span>
-        <span style="font-size:12px;font-weight:600;">${myPosts.indexOf(latest)+1} of ${vids}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
-        <span style="font-size:12px;color:var(--text2);">Views</span>
-        <span style="font-size:12px;font-weight:700;">${latest.views||0} <span style="color:${isAbove?'#00c864':'#ff4444'};font-size:10px;">${isAbove?'↑':'↓'}</span></span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;">
-        <span style="font-size:12px;color:var(--text2);">Likes</span>
-        <span style="font-size:12px;font-weight:700;">${latest.likes||0}</span>
-      </div>`;
-    }
-    document.getElementById('profVideos').textContent=vids;
-    document.getElementById('profSubs').textContent=subs;
-    document.getElementById('profLikes').textContent=likes;
+    const impEl=document.getElementById('dImpressions');if(impEl)impEl.textContent=views>=1000?Math.round((views+likes*3)/100)/10+'K':views+likes*3;
+    const vcountEl=document.getElementById('dVideoCount');if(vcountEl)vcountEl.textContent=myPosts.length;
+
+    // Trend arrows — compare first half vs second half of period posts
+    const half=Math.floor(myPosts.length/2);
+    const recentViews=myPosts.slice(0,half).reduce((a,p)=>a+(p.views||0),0);
+    const olderViews=myPosts.slice(half).reduce((a,p)=>a+(p.views||0),0);
+    const viewsUp=recentViews>=olderViews;
+    const viewsDiff=olderViews>0?Math.round(Math.abs(recentViews-olderViews)/olderViews*100):0;
+    const trendEl=document.getElementById('dViewsTrend');
+    if(trendEl)trendEl.innerHTML=`<span style="color:${viewsUp?'#00c864':'#ff4444'};font-weight:700;">${viewsUp?'↑':'↓'} ${viewsDiff}%</span> <span style="color:var(--text3);">vs prev period</span>`;
+    const subTrendEl=document.getElementById('dSubsTrend');
+    if(subTrendEl)subTrendEl.innerHTML=`<span style="color:${subs>0?'#00c864':'var(--text3)'};font-weight:700;">${subs>0?'↑':''} ${subs} total</span>`;
+    const wtTrendEl=document.getElementById('dWatchTrend');
+    if(wtTrendEl)wtTrendEl.innerHTML=`<span style="color:var(--text2);">${watchMins} min total</span>`;
+
+    // Profile stats
+    document.getElementById('profVideos') && (document.getElementById('profVideos').textContent=myPosts.length);
+    document.getElementById('profSubs') && (document.getElementById('profSubs').textContent=subs);
+    document.getElementById('profLikes') && (document.getElementById('profLikes').textContent=myPosts.reduce((a,p)=>a+(p.likes||0),0));
+
     // Analytics
-    const ctr=vids>0?Math.min(100,Math.round((likes/Math.max(views,1))*100)):0;
-    const avgV=vids>0?Math.round(views/vids):0;
-    const eng=vids>0?Math.min(100,Math.round(((likes+comments)/Math.max(views,1))*100)):0;
+    const totalViews=myPosts.reduce((a,p)=>a+(p.views||0),0);
+    const totalLikes=myPosts.reduce((a,p)=>a+(p.likes||0),0);
+    const ctr=myPosts.length>0?Math.min(100,Math.round((totalLikes/Math.max(totalViews,1))*100)):0;
+    const avgV=myPosts.length>0?Math.round(totalViews/myPosts.length):0;
+    const eng=myPosts.length>0?Math.min(100,Math.round(((totalLikes+comments)/Math.max(totalViews,1))*100)):0;
     const totalScore=myPosts.reduce((a,p)=>a+(p.rankScore||0),0);
-    const growth=subs>0?Math.round((likes/Math.max(subs,1))*100):0;
+    const growth=subs>0?Math.round((totalLikes/Math.max(subs,1))*100):0;
     document.getElementById('aCTR').textContent=ctr+'%';
-    // Mini bar chart
-    const chartEl=document.getElementById('miniChart');
-    if(chartEl&&myPosts.length){
-      const last7=myPosts.slice(0,7);
-      const maxV=Math.max(...last7.map(p=>p.views||0),1);
-      const colors=['#ff0000','#ff4444','#ff6666','#ff8888','#ffaaaa','#cc0000','#aa0000'];
-      chartEl.innerHTML=last7.map((p,i)=>{
-        const pct=Math.max(4,Math.round(((p.views||0)/maxV)*100));
-        return `<div title="${p.title||'Post'}: ${p.views||0} views" onclick="openPost('${p.id}')" style="flex:1;background:${colors[i]||'var(--red)'};height:${pct}%;border-radius:4px 4px 0 0;cursor:pointer;min-height:4px;transition:height .3s;" ></div>`;
-      }).join('');
-    }
     document.getElementById('aAvgViews').textContent=avgV;
     document.getElementById('aEngagement').textContent=eng+'%';
     document.getElementById('aScore').textContent=totalScore;
     document.getElementById('aBest').textContent=bestTitle.substring(0,8)||'-';
     document.getElementById('aGrowth').textContent=growth+'%';
-    // Views Chart (last 7 posts)
-    const vcEl=document.getElementById('dashViewsChart');
+    // CTR bar
+    const ctrBar=document.getElementById('dashCTRBar');if(ctrBar)ctrBar.style.width=ctr+'%';
+    document.getElementById('dashTotalViews') && (document.getElementById('dashTotalViews').textContent='Total: '+totalViews);
+
+    // SVG Line Chart — views per post
+    const last7=myPosts.slice(0,7).reverse();
+    const svgEl=document.getElementById('dashLineChart');
     const vlEl=document.getElementById('dashViewsLabels');
-    if(vcEl&&myPosts.length){
-      const last7=myPosts.slice(0,7);
+    if(svgEl&&last7.length){
+      const W=svgEl.getBoundingClientRect().width||300;
+      const H=90;
       const maxV=Math.max(...last7.map(p=>p.views||0),1);
-      vcEl.innerHTML=last7.map((p,i)=>{
-        const pct=Math.max(4,Math.round(((p.views||0)/maxV)*100));
-        return `<div title="${p.title||'Post'}: ${p.views||0} views" onclick="openPost('${p.id}')" style="flex:1;background:var(--red);height:${pct}%;border-radius:4px 4px 0 0;cursor:pointer;min-height:4px;transition:height .5s;opacity:${0.5+i*0.07};"></div>`;
-      }).join('');
-      if(vlEl)vlEl.innerHTML=last7.map(p=>`<div style="flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${p.views||0}</div>`).join('');
+      const pts=last7.map((p,i)=>{
+        const x=last7.length>1?i*(W/(last7.length-1)):W/2;
+        const y=H-Math.max(8,Math.round(((p.views||0)/maxV)*(H-10)));
+        return {x,y,views:p.views||0,title:p.title||'',id:p.id};
+      });
+      const pathD=pts.map((p,i)=>(i===0?`M ${p.x},${p.y}`:`L ${p.x},${p.y}`)).join(' ');
+      // Area fill
+      const areaD=pathD+` L ${pts[pts.length-1].x},${H} L ${pts[0].x},${H} Z`;
+      svgEl.innerHTML=`
+        <defs>
+          <linearGradient id="lgr" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--red)" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="var(--red)" stop-opacity="0.03"/>
+          </linearGradient>
+        </defs>
+        <path d="${areaD}" fill="url(#lgr)" />
+        <path d="${pathD}" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        ${pts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="5" fill="var(--red)" stroke="var(--bg)" stroke-width="2" style="cursor:pointer;" onclick="openPost('${p.id}')"><title>${p.title}: ${p.views} views</title></circle>`).join('')}
+        ${pts.map(p=>`<text x="${p.x}" y="${p.y-10}" text-anchor="middle" font-size="9" fill="var(--text2)">${p.views>=1000?Math.round(p.views/100)/10+'K':p.views}</text>`).join('')}
+      `;
+      if(vlEl)vlEl.innerHTML=last7.map(p=>`<div style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;">${(p.title||'').substring(0,6)||'—'}</div>`).join('');
     }
-    // Impressions Chart (likes+views combo)
+
+    // Impressions mini chart
     const icEl=document.getElementById('dashImpressionsChart');
     if(icEl&&myPosts.length){
-      const last7=myPosts.slice(0,7);
-      const maxI=Math.max(...last7.map(p=>(p.views||0)+(p.likes||0)*5),1);
-      icEl.innerHTML=last7.map((p,i)=>{
+      const l7=myPosts.slice(0,7);
+      const maxI=Math.max(...l7.map(p=>(p.views||0)+(p.likes||0)*5),1);
+      icEl.innerHTML=l7.map((p,i)=>{
         const val=(p.views||0)+(p.likes||0)*5;
-        const pct=Math.max(4,Math.round((val/maxI)*100));
-        return `<div style="flex:1;background:linear-gradient(to top,#0096ff,#00c8ff);height:${pct}%;border-radius:4px 4px 0 0;min-height:4px;opacity:${0.5+i*0.07};"></div>`;
+        const pct=Math.max(8,Math.round((val/maxI)*100));
+        return `<div style="flex:1;background:linear-gradient(to top,#0096ff,#00c8ff);height:${pct}%;border-radius:3px 3px 0 0;min-height:4px;opacity:${0.5+i*0.07};"></div>`;
       }).join('');
     }
+
+    // Latest video performance
+    const lpEl=document.getElementById('latestVideoPerfEl');
+    if(lpEl&&myPosts.length){
+      const latest=myPosts[0];
+      const th=latest.thumbURL||(latest.url?latest.url.replace('/upload/','/upload/so_1,w_120/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      const typical_views=Math.max(1,Math.round(totalViews/Math.max(myPosts.length,1)));
+      const isAbove=(latest.views||0)>=typical_views;
+      const perfPct=typical_views>0?Math.min(200,Math.round(((latest.views||0)/typical_views)*100)):0;
+      lpEl.innerHTML=`
+        <div style="display:flex;gap:10px;margin-bottom:12px;">
+          <div style="width:80px;height:50px;border-radius:7px;overflow:hidden;background:var(--bg3);flex-shrink:0;">${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play" style="color:var(--text3);"></i></div>'}</div>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:700;">${latest.title||'Untitled'}</div>
+            <div style="font-size:10px;color:var(--text2);margin-top:2px;">${getTimeAgo(latest.time)}</div>
+            <div style="font-size:10px;font-weight:600;margin-top:4px;color:${isAbove?'#00c864':'#ff4444'};">${isAbove?'↑ Above':'↓ Below'} average (${perfPct}%)</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+          ${[['👁️','Views',latest.views||0],['❤️','Likes',latest.likes||0],['💬','Comments',latest.comments||0]].map(([icon,lbl,val])=>`
+            <div style="text-align:center;padding:8px;background:var(--bg3);border-radius:8px;">
+              <div style="font-size:16px;font-weight:800;">${val}</div>
+              <div style="font-size:10px;color:var(--text3);">${icon} ${lbl}</div>
+            </div>`).join('')}
+        </div>
+        <!-- Performance bar -->
+        <div style="margin-top:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px;"><span>Performance vs channel avg</span><span>${perfPct}%</span></div>
+          <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;">
+            <div style="height:100%;width:${Math.min(100,perfPct)}%;background:${isAbove?'#00c864':'var(--red)'};border-radius:3px;transition:width .5s;"></div>
+          </div>
+        </div>`;
+    }
+
     // Subscriber milestones
     const stEl=document.getElementById('dashSubsTrend');
     if(stEl){
-      const milestones=[10,50,100,500,1000,5000,10000];
+      const milestones=[10,50,100,500,1000,5000,10000,100000];
       const next=milestones.find(m=>m>subs)||null;
       const prev=milestones.filter(m=>m<=subs).pop()||0;
       if(next){
-        const pct=Math.round(((subs-prev)/(next-prev))*100);
-        stEl.innerHTML=`<div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Next milestone: <b style="color:var(--text);">${next} subscribers</b></div>
-          <div style="background:var(--bg3);border-radius:6px;height:8px;overflow:hidden;">
-            <div style="background:var(--red);height:100%;width:${pct}%;border-radius:6px;transition:width .5s;"></div>
+        const pct=Math.min(100,Math.round(((subs-prev)/Math.max(next-prev,1))*100));
+        stEl.innerHTML=`
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div style="font-size:22px;font-weight:800;">${subs}</div>
+            <div style="font-size:11px;color:var(--text2);">subscribers<br>next goal: <b style="color:var(--text);">${next}</b></div>
           </div>
-          <div style="font-size:11px;color:var(--text3);margin-top:4px;">${subs}/${next} (${pct}%)</div>`;
+          <div style="background:var(--bg3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:4px;">
+            <div style="background:linear-gradient(90deg,var(--red),#ff6644);height:100%;width:${pct}%;border-radius:6px;transition:width .5s;"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text3);">${subs}/${next} (${pct}%)</div>`;
       }else{
-        stEl.innerHTML=`<div style="color:#ffd700;font-size:14px;font-weight:700;">🏆 You reached all milestones! (${subs} subs)</div>`;
+        stEl.innerHTML=`<div style="color:#ffd700;font-size:14px;font-weight:700;">🏆 Legend! ${subs}+ subs</div>`;
       }
     }
-    // My content (legacy fallback - main display is now in content tab sections)
-    myPosts.sort((a,b)=>b.time-a.time);
+
+    // My content list
     const cl=document.getElementById('myContentList');
     if(cl){
       if(!myPosts.length){cl.innerHTML='<div class="empty-state"><i class="fas fa-upload"></i><p>No content yet!</p></div>';}
       else{cl.innerHTML=myPosts.map(p=>{
         const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+        const avgForThis=myPosts.length>0?totalViews/myPosts.length:0;
+        const isGood=(p.views||0)>=avgForThis;
         return `<div class="my-vid-item">
           <div class="my-vid-thumb">${th?`<img src="${th}">`:'<i class="fas fa-video" style="color:var(--text3);font-size:18px;"></i>'}</div>
           <div class="my-vid-info">
             <div class="my-vid-title">${p.title||'Untitled'}</div>
             <div class="my-vid-stats">❤️${p.likes||0} 👁️${p.views||0} 💬${p.comments||0} • ${getTimeAgo(p.time)}</div>
+            <div style="font-size:10px;color:${isGood?'#00c864':'#ff7777'};">${isGood?'↑ Above avg':'↓ Below avg'}</div>
           </div>
           <button class="my-vid-del" onclick="deletePost('${p.id}',event)"><i class="fas fa-trash-alt"></i></button>
         </div>`;
       }).join('');}
     }
+
     // Subs list
     const subsSnap=await db.collection('subscriptions').where('to','==',cUser.uid).limit(20).get();
     const sl=document.getElementById('subsList');
-    if(subsSnap.empty){sl.innerHTML='<div style="color:var(--text3);font-size:12px;padding:6px 0;">No subscribers yet</div>';return;}
-    const uids=subsSnap.docs.map(d=>d.data().from);
-    const udocs=await Promise.all(uids.map(uid=>db.collection('users').doc(uid).get()));
-    sl.innerHTML=udocs.map(d=>{
-      if(!d.exists)return '';const u=d.data();
-      const av=u.photoURL?`<img src="${u.photoURL}">`:(u.name||'U')[0].toUpperCase();
-      return `<div class="sub-item"><div class="sub-av">${av}</div><div><div style="font-size:13px;font-weight:600;">${u.name||'User'}</div><div style="font-size:11px;color:var(--text2);">${u.handle||''}</div></div></div>`;
-    }).join('');
+    if(sl){
+      if(subsSnap.empty){sl.innerHTML='<div style="color:var(--text3);font-size:12px;padding:6px 0;">No subscribers yet</div>';}
+      else{
+        const uids=subsSnap.docs.map(d=>d.data().from);
+        const udocs=await Promise.all(uids.map(uid=>db.collection('users').doc(uid).get()));
+        sl.innerHTML=udocs.map(d=>{
+          if(!d.exists)return '';const u=d.data();
+          const av=u.photoURL?`<img src="${u.photoURL}">`:(u.name||'U')[0].toUpperCase();
+          return `<div class="sub-item"><div class="sub-av">${av}</div><div><div style="font-size:13px;font-weight:600;">${u.name||'User'}</div><div style="font-size:11px;color:var(--text2);">${u.handle||''}</div></div></div>`;
+        }).join('');
+      }
+    }
   }catch(e){console.error(e);}
 }
 
@@ -4198,42 +4450,254 @@ async function doSearch(q){
 // ══════════════════════════════════════════════════════
 // OWNER DASHBOARD
 // ══════════════════════════════════════════════════════
+function switchOwnerTab(tab){
+  ['overview','reports','users','guidelines'].forEach(t=>{
+    const el=document.getElementById('owner-'+t);
+    const btn=document.getElementById('otab-'+t);
+    if(el)el.style.display=t===tab?'block':'none';
+    if(btn)btn.classList.toggle('active',t===tab);
+  });
+  if(tab==='reports')loadOwnerReports();
+  if(tab==='users')loadOwnerUsers();
+  if(tab==='guidelines')loadOwnerGuidelines();
+}
+
 async function loadOwnerDash(){
   if(!cUser||cUser.email!==OWNER_EMAIL)return;
-  const ul=document.getElementById('ownerUsersList');
-  if(ul)ul.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
     const [usersSnap,postsSnap]=await Promise.all([
       db.collection('users').get(),
       db.collection('posts').get()
     ]);
-    let channels=0,totalLikes=0,totalViews=0;
+    let channels=0,totalLikes=0,totalViews=0,shorts=0;
     usersSnap.forEach(d=>{if(d.data().channelName||d.data().hasChannel)channels++;});
-    postsSnap.forEach(d=>{totalLikes+=d.data().likes||0;totalViews+=d.data().views||0;});
+    postsSnap.forEach(d=>{
+      totalLikes+=d.data().likes||0;totalViews+=d.data().views||0;
+      if(d.data().type==='short')shorts++;
+    });
     document.getElementById('owUsers').textContent=usersSnap.size;
     document.getElementById('owChannels').textContent=channels;
     document.getElementById('owVideos').textContent=postsSnap.size;
     document.getElementById('owLikes').textContent=totalLikes;
+    document.getElementById('owViews').textContent=totalViews;
+    document.getElementById('owShorts').textContent=shorts;
+    // Activity chart (by type)
+    const types=['video','short','post','image','gaming','music'];
+    const counts=types.map(t=>postsSnap.docs.filter(d=>d.data().type===t).length);
+    const maxC=Math.max(...counts,1);
+    const colors=['#ff0000','#0096ff','#00c864','#ffd700','#9b59b6','#ff6600'];
+    const chartEl=document.getElementById('ownerActivityChart');
+    const labEl=document.getElementById('ownerActivityLabels');
+    if(chartEl){
+      chartEl.innerHTML=types.map((t,i)=>`<div title="${t}: ${counts[i]}" style="flex:1;background:${colors[i]};height:${Math.max(4,Math.round((counts[i]/maxC)*100))}%;border-radius:4px 4px 0 0;min-height:4px;"></div>`).join('');
+    }
+    if(labEl){
+      labEl.innerHTML=types.map((t,i)=>`<div style="flex:1;text-align:center;">${counts[i]}<br>${t}</div>`).join('');
+    }
+    // Live streams
+    const liveSnap=await db.collection('posts').where('type','==','live').where('isLive','==',true).get();
+    const liveEl=document.getElementById('ownerLiveList');
+    if(liveEl){
+      if(liveSnap.empty){liveEl.innerHTML='<div style="font-size:12px;color:var(--text3);">No active streams</div>';}
+      else{
+        liveEl.innerHTML=liveSnap.docs.map(d=>{
+          const p=d.data();
+          return `<div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg3);border-radius:8px;margin-bottom:6px;">
+            <div style="width:8px;height:8px;background:var(--red);border-radius:50%;animation:blink 1s infinite;flex-shrink:0;"></div>
+            <div style="flex:1;font-size:12px;font-weight:600;">${p.authorName||'User'}: ${p.title||'Live'}</div>
+            <button onclick="ownerEndStream('${d.id}')" style="background:none;border:1px solid var(--red);color:var(--red);border-radius:6px;padding:4px 8px;font-size:10px;cursor:pointer;">End</button>
+          </div>`;
+        }).join('');
+      }
+    }
+    // Load reports badge
+    const repSnap=await db.collection('reports').where('status','==','pending').get();
+    const badge=document.getElementById('owReportCount');
+    if(badge)badge.textContent=repSnap.size;
+  }catch(e){console.error(e);}
+}
+
+async function loadOwnerUsers(){
+  const ul=document.getElementById('ownerUsersList');
+  if(!ul)return;
+  ul.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const usersSnap=await db.collection('users').get();
     const users=usersSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.lastSeen||0)-(a.lastSeen||0));
-    if(ul)ul.innerHTML=users.map(u=>{
-      const av=u.photoURL?`<img src="${u.photoURL}" style="width:100%;height:100%;object-fit:cover;">`:(u.name||'U')[0].toUpperCase();
-      const ls=u.lastSeen?getTimeAgo(u.lastSeen):'Never';
-      const active=u.lastSeen&&(Date.now()-u.lastSeen)<3*24*3600*1000;
-      const isOwner=u.email===OWNER_EMAIL;
-      return `<div class="ou-item">
-        <div class="ou-av" style="overflow:hidden;">${av}</div>
-        <div class="ou-info">
-          <div class="ou-name">${u.name||'User'}${isOwner?' 👑':''}</div>
-          <div class="ou-meta">${u.email||''} • ${ls}</div>
-          ${u.channelName?`<div style="font-size:10px;color:var(--red);">📺 ${u.channelName}</div>`:''}
+    renderOwnerUsers(users);
+  }catch(e){ul.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>Error loading users</p></div>';}
+}
+
+function renderOwnerUsers(users){
+  const ul=document.getElementById('ownerUsersList');
+  if(!ul)return;
+  if(!users.length){ul.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>No users yet</p></div>';return;}
+  ul.innerHTML=users.map(u=>{
+    const av=u.photoURL?`<img src="${u.photoURL}" style="width:100%;height:100%;object-fit:cover;">`:(u.name||'U')[0].toUpperCase();
+    const ls=u.lastSeen?getTimeAgo(u.lastSeen):'Never';
+    const active=u.lastSeen&&(Date.now()-u.lastSeen)<3*24*3600*1000;
+    const isOwner=u.email===OWNER_EMAIL;
+    return `<div class="ou-item">
+      <div class="ou-av" style="overflow:hidden;">${av}</div>
+      <div class="ou-info">
+        <div class="ou-name">${u.name||'User'}${isOwner?' 👑':''}</div>
+        <div class="ou-meta">${u.email||''} • ${ls}</div>
+        ${u.channelName?`<div style="font-size:10px;color:var(--red);">📺 ${u.channelName}</div>`:''}
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <span style="display:block;font-size:10px;color:${active?'#00c864':'var(--text3)'};">${active?'🟢 Active':'⚫ Offline'}</span>
+        <span style="font-size:10px;color:var(--text3);">${u.subscribers||0} subs</span>
+        ${!isOwner?`<button onclick="ownerBanUser('${u.id}','${(u.name||'User').replace(/'/g,'')}',event)" style="background:none;border:1px solid #ff4444;color:#ff4444;border-radius:6px;padding:3px 7px;font-size:9px;cursor:pointer;margin-top:4px;">Ban</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function ownerSearchUsers(query){
+  const q=query.toLowerCase().trim();
+  if(!q){loadOwnerUsers();return;}
+  db.collection('users').get().then(snap=>{
+    const all=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const filtered=all.filter(u=>(u.name||'').toLowerCase().includes(q)||(u.email||'').toLowerCase().includes(q));
+    renderOwnerUsers(filtered);
+  });
+}
+
+async function ownerBanUser(uid,name,e){
+  if(e)e.stopPropagation();
+  if(!confirm(`Ban user "${name}"? They won't be able to login.`))return;
+  try{
+    await db.collection('users').doc(uid).update({banned:true,bannedAt:Date.now()});
+    showToast(`User "${name}" banned ✅`);
+    loadOwnerUsers();
+  }catch(err){showToast('Error banning user');}
+}
+
+async function ownerEndStream(postId){
+  if(!confirm('Force end this live stream?'))return;
+  try{
+    await db.collection('posts').doc(postId).update({isLive:false,endedAt:Date.now()});
+    showToast('Stream ended ✅');
+    loadOwnerDash();
+  }catch(e){showToast('Error ending stream');}
+}
+
+async function loadOwnerReports(){
+  const el=document.getElementById('ownerReportsList');
+  if(!el)return;
+  el.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('reports').where('status','==','pending').orderBy('time','desc').limit(50).get();
+    const badge=document.getElementById('owReportCount');
+    if(badge)badge.textContent=snap.size;
+    if(snap.empty){el.innerHTML='<div class="empty-state"><i class="fas fa-check-circle" style="color:#00c864;"></i><p>No pending reports 🎉</p></div>';return;}
+    el.innerHTML=snap.docs.map(d=>{
+      const r={id:d.id,...d.data()};
+      return `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="width:28px;height:28px;background:rgba(255,0,0,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-flag" style="color:var(--red);font-size:12px;"></i></div>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:700;">${r.reason||'No reason'}</div>
+            <div style="font-size:10px;color:var(--text3);">${getTimeAgo(r.time)}</div>
+          </div>
         </div>
-        <div style="text-align:right;flex-shrink:0;">
-          <span class="ou-badge ${active?'badge-active':''}" style="display:block;font-size:10px;">${active?'🟢 Active':'⚫ Offline'}</span>
-          <span style="font-size:10px;color:var(--text3);">${u.subscribers||0} subs</span>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:10px;padding:6px 8px;background:var(--bg3);border-radius:6px;">Post ID: ${r.postId||'N/A'}</div>
+        <div style="display:flex;gap:6px;">
+          <button onclick="ownerReviewReport('${r.id}','${r.postId||''}','remove')" style="flex:1;padding:8px;background:var(--red);color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-trash"></i> Remove Post</button>
+          <button onclick="ownerReviewReport('${r.id}','${r.postId||''}','dismiss')" style="flex:1;padding:8px;background:var(--bg3);color:var(--text2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;"><i class="fas fa-times"></i> Dismiss</button>
         </div>
       </div>`;
-    }).join('')||'<div class="empty-state"><i class="fas fa-users"></i><p>No users yet</p></div>';
-  }catch(e){console.error(e);if(ul)ul.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
+    }).join('');
+  }catch(e){
+    // Fallback without orderBy
+    try{
+      const s2=await db.collection('reports').where('status','==','pending').limit(50).get();
+      if(s2.empty){el.innerHTML='<div class="empty-state"><i class="fas fa-check-circle" style="color:#00c864;"></i><p>No pending reports 🎉</p></div>';return;}
+      el.innerHTML=s2.docs.map(d=>{
+        const r={id:d.id,...d.data()};
+        return `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;">
+          <div style="font-size:12px;font-weight:700;margin-bottom:6px;">${r.reason||'No reason'}</div>
+          <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">Post: ${r.postId||'N/A'}</div>
+          <div style="display:flex;gap:6px;">
+            <button onclick="ownerReviewReport('${r.id}','${r.postId||''}','remove')" style="flex:1;padding:8px;background:var(--red);color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">Remove Post</button>
+            <button onclick="ownerReviewReport('${r.id}','${r.postId||''}','dismiss')" style="flex:1;padding:8px;background:var(--bg3);color:var(--text2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;">Dismiss</button>
+          </div>
+        </div>`;
+      }).join('');
+    }catch(e2){el.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading reports</p></div>';}
+  }
+}
+
+async function ownerReviewReport(reportId,postId,action){
+  try{
+    await db.collection('reports').doc(reportId).update({status:action==='remove'?'resolved':'dismissed',reviewedAt:Date.now()});
+    if(action==='remove'&&postId){
+      await db.collection('posts').doc(postId).delete();
+      showToast('Post removed & report resolved ✅');
+    }else{
+      showToast('Report dismissed ✅');
+    }
+    loadOwnerReports();
+  }catch(e){showToast('Error: '+e.message);}
+}
+
+async function loadOwnerGuidelines(){
+  const el=document.getElementById('guidelinesList');
+  if(!el)return;
+  el.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  // Default built-in guidelines
+  const defaults=[
+    {id:'d1',category:'content',title:'No Nudity or Sexual Content',desc:'Content showing nudity, explicit sexual acts, or pornography is strictly prohibited.',builtin:true},
+    {id:'d2',category:'behavior',title:'No Harassment or Bullying',desc:'Users must not harass, bully, or threaten other users in any form.',builtin:true},
+    {id:'d3',category:'safety',title:'No Harmful or Dangerous Content',desc:'Content that promotes self-harm, violence, or dangerous activities is not allowed.',builtin:true},
+    {id:'d4',category:'legal',title:'No Copyright Infringement',desc:'Do not upload content that violates copyright laws. Only upload content you own or have rights to.',builtin:true},
+    {id:'d5',category:'content',title:'No Spam or Misleading Content',desc:'Spam, fake news, clickbait, and misleading thumbnails/titles are not allowed.',builtin:true},
+    {id:'d6',category:'safety',title:'No Child Safety Violations',desc:'Any content exploiting or endangering minors is strictly forbidden and will be reported to authorities.',builtin:true},
+  ];
+  try{
+    const snap=await db.collection('guidelines').orderBy('time','desc').get().catch(()=>({docs:[]}));
+    const custom=snap.docs.map(d=>({id:d.id,...d.data(),builtin:false}));
+    const all=[...defaults,...custom];
+    const cats={content:'🎬 Content',behavior:'👥 Behavior',safety:'🛡️ Safety',legal:'⚖️ Legal'};
+    const catColors={content:'rgba(255,0,0,.1)',behavior:'rgba(0,150,255,.1)',safety:'rgba(0,200,100,.1)',legal:'rgba(255,200,0,.1)'};
+    const catTextColors={content:'#ff4444',behavior:'#0096ff',safety:'#00c864',legal:'#ffaa00'};
+    el.innerHTML=all.map(g=>`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;">
+      <div style="display:flex;align-items:flex-start;gap:10px;">
+        <div style="padding:4px 8px;background:${catColors[g.category]||'var(--bg3)'};color:${catTextColors[g.category]||'var(--text2)'};border-radius:6px;font-size:10px;font-weight:700;white-space:nowrap;flex-shrink:0;">${cats[g.category]||g.category}</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:4px;">${g.title}</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.5;">${g.desc}</div>
+        </div>
+        ${!g.builtin?`<button onclick="deleteGuideline('${g.id}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;flex-shrink:0;padding:0;">×</button>`:'<span style="font-size:9px;color:var(--text3);flex-shrink:0;margin-top:2px;">Built-in</span>'}
+      </div>
+    </div>`).join('');
+  }catch(e){
+    el.innerHTML='<div class="empty-state"><i class="fas fa-shield-alt"></i><p>Error loading guidelines</p></div>';
+  }
+}
+
+async function addGuideline(){
+  if(!cUser||cUser.email!==OWNER_EMAIL)return;
+  const cat=document.getElementById('guidelineCategory')?.value||'content';
+  const title=document.getElementById('guidelineTitle')?.value?.trim();
+  const desc=document.getElementById('guidelineDesc')?.value?.trim();
+  if(!title||!desc)return showToast('Title and description required!');
+  try{
+    await db.collection('guidelines').add({category:cat,title,desc,addedBy:cUser.uid,time:Date.now()});
+    showToast('Rule added ✅');
+    document.getElementById('guidelineTitle').value='';
+    document.getElementById('guidelineDesc').value='';
+    loadOwnerGuidelines();
+  }catch(e){showToast('Error adding rule: '+e.message);}
+}
+
+async function deleteGuideline(id){
+  if(!confirm('Delete this rule?'))return;
+  try{
+    await db.collection('guidelines').doc(id).delete();
+    showToast('Rule deleted ✅');
+    loadOwnerGuidelines();
+  }catch(e){showToast('Error deleting rule');}
 }
 
 // ══════════════════════════════════════════════════════
@@ -4241,11 +4705,14 @@ async function loadOwnerDash(){
 // ══════════════════════════════════════════════════════
 async function loadLiveScreen(){
   if(!cUser)return;
+  // Always show live streams for viewers
+  document.getElementById('liveWatchView').style.display='block';
+  loadLiveStreams();
   // Owner always has live access
   if(cUser.email===OWNER_EMAIL){
     document.getElementById('liveLocked').style.display='none';
     document.getElementById('liveSetup').style.display='block';
-    // Show owner badge
+    document.getElementById('liveWatchView').style.display='none'; // owner sees setup, not watch
     const setupCard=document.getElementById('liveSetup');
     if(setupCard&&!setupCard.querySelector('.owner-live-badge')){
       const badge=document.createElement('div');
@@ -4280,18 +4747,233 @@ async function loadLiveScreen(){
     }).join('');
     document.getElementById('liveLocked').style.display=allDone?'none':'block';
     document.getElementById('liveSetup').style.display=allDone?'block':'none';
+    if(allDone)document.getElementById('liveWatchView').style.display='none';
   }catch(e){console.error(e);}
 }
 
-function startLive(){
+function setLiveQuality(q,btn){
+  _liveQuality=q;
+  document.querySelectorAll('#liveQ720,#liveQ1080,#liveQAuto').forEach(b=>{if(b)b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+}
+
+async function startAgoraLive(){
   const title=document.getElementById('liveTitle').value.trim();
   if(!title)return showToast('Stream title required!');
-  db.collection('posts').add({
-    title,type:'live',isLive:true,
-    authorId:cUser.uid,authorName:cUserData?.name||'',authorPhoto:cUserData?.photoURL||'',
-    likes:0,views:0,comments:0,rankScore:50,time:Date.now()
-  }).then(()=>showToast('🔴 Live started! ✅')).catch(()=>showToast('Error starting live'));
+  if(!cUser)return showToast('Login karein!');
+  const btn=document.getElementById('startLiveBtn');
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Connecting...';}
+  try{
+    // Init Agora client
+    if(typeof AgoraRTC==='undefined'){
+      if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-circle"></i> Start Live Stream';}
+      return showToast('Agora SDK loading, try again in a moment...');
+    }
+    _agoraClient=AgoraRTC.createClient({mode:'live',codec:'vp8'});
+    await _agoraClient.setClientRole('host');
+    // Video quality settings
+    const videoConfig={
+      '720p':{width:1280,height:720,frameRate:30,bitrateMin:1000,bitrateMax:3000},
+      '1080p':{width:1920,height:1080,frameRate:30,bitrateMin:2000,bitrateMax:5000},
+      'auto':{width:{ideal:1280},height:{ideal:720},frameRate:30}
+    }[_liveQuality]||{width:1280,height:720,frameRate:30};
+
+    _agoraLocalAudio=await AgoraRTC.createMicrophoneAudioTrack();
+    _agoraLocalVideo=await AgoraRTC.createCameraVideoTrack({encoderConfig:videoConfig});
+
+    // Use dynamic channel per streamer
+    const channelName=`streamsmax_${cUser.uid.substring(0,8)}`;
+    await _agoraClient.join(AGORA_APP_ID, channelName, AGORA_TOKEN, cUser.uid);
+    await _agoraClient.publish([_agoraLocalAudio, _agoraLocalVideo]);
+
+    // Show local video
+    const container=document.getElementById('localVideoContainer');
+    if(container)_agoraLocalVideo.play(container);
+
+    // Save to Firestore
+    const liveDoc=await db.collection('posts').add({
+      title,type:'live',isLive:true,agoraChannel:channelName,
+      authorId:cUser.uid,authorName:cUserData?.name||'',
+      authorPhoto:cUserData?.photoURL||'',category:document.getElementById('liveCat')?.value||'live',
+      likes:0,views:0,comments:0,rankScore:999,time:Date.now()
+    });
+    window._currentLiveDocId=liveDoc.id;
+    _liveActive=true;
+    _liveDurSecs=0;
+    _liveDurInt=setInterval(()=>{
+      _liveDurSecs++;
+      const m=Math.floor(_liveDurSecs/60).toString().padStart(2,'0');
+      const s=(_liveDurSecs%60).toString().padStart(2,'0');
+      const el=document.getElementById('liveDuration');
+      if(el)el.textContent=m+':'+s;
+    },1000);
+
+    // Listen for viewer count
+    _agoraClient.on('user-joined',()=>updateLiveViewers());
+    _agoraClient.on('user-left',()=>updateLiveViewers());
+
+    // Switch UI
+    document.getElementById('liveSetup').style.display='none';
+    document.getElementById('liveLocked').style.display='none';
+    document.getElementById('liveActiveView').style.display='block';
+    showToast('🔴 You are LIVE! ✅');
+
+    // Start live chat listener
+    startLiveChatListener(liveDoc.id);
+  }catch(e){
+    console.error('Live error:',e);
+    showToast('Live start failed: '+(e.message||'Check permissions'));
+    if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-circle"></i> Start Live Stream';}
+    cleanupAgora();
+  }
 }
+
+function updateLiveViewers(){
+  const count=_agoraClient?.remoteUsers?.length||0;
+  const el=document.getElementById('liveViewerCount');
+  if(el)el.textContent=count;
+  if(window._currentLiveDocId){
+    db.collection('posts').doc(window._currentLiveDocId).update({views:count}).catch(()=>{});
+  }
+}
+
+async function toggleLiveMic(){
+  if(!_agoraLocalAudio)return;
+  _liveMicOn=!_liveMicOn;
+  await _agoraLocalAudio.setEnabled(_liveMicOn);
+  const btn=document.getElementById('liveMuteBtn');
+  if(btn)btn.innerHTML=_liveMicOn?'<i class="fas fa-microphone"></i> Mic On':'<i class="fas fa-microphone-slash"></i> Mic Off';
+  if(btn)btn.style.borderColor=_liveMicOn?'var(--border)':'var(--red)';
+}
+
+async function toggleLiveCam(){
+  if(!_agoraLocalVideo)return;
+  _liveCamOn=!_liveCamOn;
+  await _agoraLocalVideo.setEnabled(_liveCamOn);
+  const btn=document.getElementById('liveCamBtn');
+  if(btn)btn.innerHTML=_liveCamOn?'<i class="fas fa-video"></i> Cam On':'<i class="fas fa-video-slash"></i> Cam Off';
+  if(btn)btn.style.borderColor=_liveCamOn?'var(--border)':'var(--red)';
+}
+
+async function flipLiveCamera(){
+  if(!_agoraLocalVideo)return showToast('Camera not active');
+  try{
+    await _agoraLocalVideo.setDevice(undefined);
+    showToast('Camera flipped 🔄');
+  }catch(e){showToast('Flip not supported on this device');}
+}
+
+async function endAgoraLive(){
+  if(!confirm('End live stream?'))return;
+  clearInterval(_liveDurInt);
+  if(window._currentLiveDocId){
+    await db.collection('posts').doc(window._currentLiveDocId).update({isLive:false,endedAt:Date.now()}).catch(()=>{});
+  }
+  cleanupAgora();
+  document.getElementById('liveActiveView').style.display='none';
+  document.getElementById('liveSetup').style.display='block';
+  const btn=document.getElementById('startLiveBtn');
+  if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-circle" style="animation:blink 1.2s infinite;"></i> Start Live Stream';}
+  showToast('Stream ended 🔴 Thanks for going live!');
+}
+
+function cleanupAgora(){
+  try{
+    _agoraLocalAudio?.close();
+    _agoraLocalVideo?.close();
+    _agoraClient?.leave();
+  }catch(e){}
+  _agoraLocalAudio=null;_agoraLocalVideo=null;_agoraClient=null;_liveActive=false;
+}
+
+function startLiveChatListener(liveId){
+  db.collection('posts').doc(liveId).collection('comments')
+    .orderBy('time','desc').limit(50)
+    .onSnapshot(snap=>{
+      const msgs=snap.docs.map(d=>d.data()).reverse();
+      const chatEl=document.getElementById('liveChatMessages');
+      if(!chatEl)return;
+      chatEl.innerHTML=msgs.map(m=>{
+        const av=(m.authorName||'U')[0].toUpperCase();
+        return `<div style="display:flex;align-items:flex-start;gap:6px;">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;flex-shrink:0;">${av}</div>
+          <div><span style="font-size:11px;font-weight:700;color:var(--text);">${m.authorName||'User'}</span> <span style="font-size:11px;color:var(--text2);">${m.text}</span></div>
+        </div>`;
+      }).join('');
+      chatEl.scrollTop=chatEl.scrollHeight;
+    });
+}
+
+async function sendLiveChat(){
+  if(!cUser||!window._currentLiveDocId)return;
+  const inp=document.getElementById('liveChatInput');
+  const text=inp?.value?.trim();if(!text)return;
+  inp.value='';
+  try{
+    await db.collection('posts').doc(window._currentLiveDocId).collection('comments').add({
+      text,authorId:cUser.uid,authorName:cUserData?.name||'User',
+      authorPhoto:cUserData?.photoURL||'',time:Date.now()
+    });
+  }catch(e){showToast('Could not send message');}
+}
+
+// ── Load live streams for viewers ──
+async function loadLiveStreams(){
+  const el=document.getElementById('liveStreamsList');
+  if(!el)return;
+  try{
+    const snap=await db.collection('posts').where('type','==','live').where('isLive','==',true).limit(20).get();
+    if(snap.empty){el.innerHTML='<div class="empty-state"><i class="fas fa-satellite-dish"></i><p>No live streams right now</p></div>';return;}
+    el.innerHTML=snap.docs.map(d=>{
+      const p={id:d.id,...d.data()};
+      return `<div onclick="watchLiveStream('${p.id}','${p.agoraChannel||''}')" style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;">
+        <div style="position:relative;">
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:18px;color:white;font-weight:700;">${(p.authorName||'L')[0]}</div>
+          <div style="position:absolute;bottom:-2px;right:-2px;background:var(--red);color:white;font-size:8px;font-weight:700;padding:1px 4px;border-radius:4px;">LIVE</div>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title||'Live Stream'}</div>
+          <div style="font-size:11px;color:var(--text2);">by ${p.authorName||'User'}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;"><i class="fas fa-eye" style="color:var(--red);margin-right:3px;"></i>${p.views||0} watching</div>
+        </div>
+        <i class="fas fa-play-circle" style="color:var(--red);font-size:22px;"></i>
+      </div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div class="empty-state"><i class="fas fa-satellite-dish"></i><p>Could not load streams</p></div>';}
+}
+
+async function watchLiveStream(postId, channelName){
+  showToast('🔴 Joining live stream...');
+  try{
+    if(typeof AgoraRTC==='undefined')return showToast('Agora SDK not loaded');
+    const viewer=AgoraRTC.createClient({mode:'live',codec:'vp8'});
+    await viewer.setClientRole('audience');
+    await viewer.join(AGORA_APP_ID, channelName, AGORA_TOKEN, null);
+    viewer.on('user-published', async(user, mediaType)=>{
+      await viewer.subscribe(user, mediaType);
+      if(mediaType==='video'){
+        // Show in a fullscreen overlay
+        const ov=document.createElement('div');
+        ov.id='liveViewOv';
+        ov.style.cssText='position:fixed;inset:0;z-index:2000;background:#000;display:flex;flex-direction:column;';
+        ov.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(0,0,0,.8);">
+          <div style="width:8px;height:8px;background:var(--red);border-radius:50%;animation:blink 1s infinite;"></div>
+          <span style="color:white;font-size:13px;font-weight:700;">LIVE</span>
+          <button onclick="document.getElementById('liveViewOv').remove();viewer.leave();" style="margin-left:auto;background:none;border:none;color:white;font-size:22px;cursor:pointer;">✕</button>
+        </div>
+        <div id="remoteVideoWrap" style="flex:1;"></div>`;
+        document.body.appendChild(ov);
+        user.videoTrack.play(document.getElementById('remoteVideoWrap'));
+      }
+      if(mediaType==='audio')user.audioTrack.play();
+    });
+    // Increment views
+    db.collection('posts').doc(postId).update({views:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
+  }catch(e){showToast('Could not join stream: '+(e.message||''));}
+}
+
+// ── startLive legacy (still called from old code) ──
+function startLive(){startAgoraLive();}
 
 // ══════════════════════════════════════════════════════
 // MODALS
@@ -4399,7 +5081,7 @@ function loadChannelAbout(){
   el.innerHTML=`<div style="padding:16px 0;">
     <div style="font-size:14px;line-height:1.7;color:var(--text2);">${about||'No description'}</div>
     <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
-      <div style="font-size:12px;color:var(--text3);">Joined MyTube</div>
+      <div style="font-size:12px;color:var(--text3);">Joined StreamsMax</div>
       <div style="font-size:13px;font-weight:600;">Pakistan 🇵🇰</div>
     </div>
   </div>`;
@@ -5130,7 +5812,7 @@ function showPwaInstallBanner(){
       <svg width="22" height="16" viewBox="0 0 50 36"><rect width="50" height="36" rx="8" fill="white"/><polygon points="19,8 19,28 38,18" fill="#FF0000"/></svg>
     </div>
     <div style="flex:1;">
-      <div style="font-size:13px;font-weight:700;color:white;">Install MyTube App</div>
+      <div style="font-size:13px;font-weight:700;color:white;">Install StreamsMax App</div>
       <div style="font-size:11px;color:#aaa;">Home screen pe add karo — free!</div>
     </div>
     <button onclick="installPwa()" style="background:var(--red);color:white;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;">Install</button>
@@ -5143,13 +5825,13 @@ async function installPwa(){
   if(!_pwaPrompt)return;
   _pwaPrompt.prompt();
   const result=await _pwaPrompt.userChoice;
-  if(result.outcome==='accepted'){showToast('MyTube install ho gayi! 🎉');}
+  if(result.outcome==='accepted'){showToast('StreamsMax install ho gayi! 🎉');}
   _pwaPrompt=null;
   const banner=document.getElementById('pwaBanner');if(banner)banner.remove();
 }
 
 window.addEventListener('appinstalled',()=>{
-  showToast('MyTube successfully installed! 🎉');
+  showToast('StreamsMax successfully installed! 🎉');
   _pwaPrompt=null;
 });
 
@@ -5543,9 +6225,9 @@ async function ctxDeleteContent(postId){
 // ══════════════════════════════════════════════════════
 function sharePostProperly(postId,title,url){
   const shareUrl=url||`${location.origin}${location.pathname}?post=${postId}`;
-  const text=`${title||'Check this out'} - MyTube Pakistan 🇵🇰`;
+  const text=`${title||'Check this out'} - StreamsMax Pakistan 🇵🇰`;
   if(navigator.share){
-    navigator.share({title:title||'MyTube',text,url:shareUrl}).catch(()=>{
+    navigator.share({title:title||'StreamsMax',text,url:shareUrl}).catch(()=>{
       navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));
     });
   }else{
