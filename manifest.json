@@ -1,11 +1,11 @@
 {
-  "name": "MyTube — Pakistan ka apna platform",
-  "short_name": "MyTube",
-  "description": "Pakistan ka apna video sharing platform.",
-  "start_url": ".",
+  "name": "Stream x — Pakistan ka apna platform",
+  "short_name": "Stream x",
+  "description": "Stream x — Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.",
+  "start_url": "/",
   "scope": ".",
   "display": "standalone",
-  "background_color": "#0f0f0f",
+  "background_color": "#000000",
   "theme_color": "#FF0000",
   "orientation": "portrait-primary",
   "icons": [
