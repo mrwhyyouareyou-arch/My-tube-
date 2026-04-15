@@ -1,4 +1,14 @@
-"icons": [
+{
+  "name": "Stream x - Pakistan ka apna platform",
+  "short_name": "Stream x",
+  "description": "Stream x - Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.",
+  "start_url": "/My-tube-/",
+  "scope": "/My-tube-/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FF0000",
+  "orientation": "portrait-primary",
+  "icons": [
     {
       "src": "icon-192.svg",
       "sizes": "192x192",
@@ -12,3 +22,6 @@
       "purpose": "any maskable"
     }
   ],
+  "categories": ["entertainment", "social"],
+  "lang": "en-PK"
+}
