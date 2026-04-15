@@ -1,7 +1,7 @@
 {
-  "name": "Stream x — Pakistan ka apna platform",
+  "name": "Stream x - Pakistan ka apna platform",
   "short_name": "Stream x",
-  "description": "Stream x — Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.",
+  "description": "Stream x - Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.",
   "start_url": "/",
   "scope": ".",
   "display": "standalone",
@@ -10,15 +10,15 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "icon-192.svg",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.svg",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
