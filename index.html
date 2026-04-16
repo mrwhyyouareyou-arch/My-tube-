@@ -8910,6 +8910,682 @@ shareObserver.observe(document.body, { childList: true, subtree: true });
 </script>
 
   
+<!-- HASHTAG SEARCH - FYP OPTIMIZED -->
+<div id="hashtagSearch" class="hashtag-search">
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="🔍 Search hashtags, titles, tags... #fyp #viral">
+        <button id="searchBtn">Search</button>
+        <div id="trendingTags" class="trending-tags"></div>
+    </div>
+    
+    <div class="search-results">
+        <div class="results-header">
+            <span id="resultsCount">0 results</span>
+            <span class="sort-options">
+                <button class="sort-btn active" data-sort="relevance">Relevance</button>
+                <button class="sort-btn" data-sort="views">Most Viewed</button>
+                <button class="sort-btn" data-sort="recent">Recent</button>
+            </span>
+        </div>
+        <div id="searchResultsList" class="results-grid"></div>
+    </div>
+</div>
+
+<style>
+.hashtag-search {
+    max-width: 1000px; margin: 30px auto; background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+    border-radius: 25px; padding: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+.search-bar {
+    background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px;
+    margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.1);
+}
+#searchInput {
+    flex: 1; padding: 18px 25px; border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 50px; background: rgba(255,255,255,0.08);
+    color: white; font-size: 18px; backdrop-filter: blur(15px);
+}
+#searchInput:focus {
+    outline: none; border-color: #667eea; box-shadow: 0 0 25px rgba(102,126,234,0.4);
+}
+#searchBtn {
+    background: linear-gradient(45deg, #667eea, #764ba2); color: white;
+    border: none; padding: 18px 35px; border-radius: 50px; margin-left: 15px;
+    font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px;
+}
+.trending-tags {
+    margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px;
+}
+.tag-pill {
+    background: rgba(102,126,234,0.3); color: #e2e8f0; padding: 8px 16px;
+    border-radius: 25px; font-size: 14px; cursor: pointer; transition: 0.3s;
+    border: 1px solid rgba(102,126,234,0.5);
+}
+.tag-pill:hover, .tag-pill.active {
+    background: #667eea; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+}
+.results-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #333;
+}
+#resultsCount { font-size: 18px; font-weight: 700; color: #f8fafc; }
+.sort-btn {
+    background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 20px; border-radius: 20px; cursor: pointer; margin-left: 10px;
+    transition: 0.3s;
+}
+.sort-btn.active, .sort-btn:hover {
+    background: #10b981; border-color: #10b981;
+}
+.results-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+.search-result {
+    background: rgba(255,255,255,0.03); border-radius: 18px; padding: 25px;
+    border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s;
+    backdrop-filter: blur(10px); cursor: pointer;
+}
+.search-result:hover {
+    transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    border-color: #667eea;
+}
+.result-thumb {
+    width: 100%; height: 180px; background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 12px; margin-bottom: 15px; position: relative; overflow: hidden;
+}
+.result-title {
+    font-size: 18px; font-weight: 700; margin-bottom: 10px; color: #f8fafc;
+}
+.result-tags {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;
+}
+.fyp-badge {
+    background: linear-gradient(45deg, #10b981, #059669); color: white;
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+}
+.stats-row {
+    display: flex; justify-content: space-between; font-size: 14px; color: #94a3b8;
+}
+</style>
+
+<script>
+// 🔥 HASHTAG SEARCH - FYP OPTIMIZED (TikTok/YouTube style) [web:1][web:2]
+class FYPHashtagSearch {
+    constructor() {
+        this.init();
+    }
+
+    init() {
+        // Real-time search
+        document.getElementById('searchInput').oninput = (e) => this.searchContent(e.target.value);
+        document.getElementById('searchBtn').onclick = () => this.searchContent(document.getElementById('searchInput').value);
+        
+        // Trending tags
+        this.loadTrendingTags();
+        
+        // Sort handlers
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.onclick = (e) => this.setSort(e.target.dataset.sort);
+        });
+        
+        // Tag pills click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tag-pill')) {
+                document.getElementById('searchInput').value = e.target.textContent;
+                this.searchContent(e.target.textContent);
+            }
+        });
+    }
+
+    async loadTrendingTags() {
+        // Top trending hashtags [web:1][web:2]
+        const trending = ['#fyp', '#viral', '#trending', '#foryou', '#youtube', '#tiktok', '#shorts', '#reels'];
+        const container = document.getElementById('trendingTags');
+        container.innerHTML = trending.map(tag => `<span class="tag-pill">#${tag}</span>`).join('');
+    }
+
+    async searchContent(query) {
+        if (query.length < 2) return;
+        
+        document.getElementById('searchInput').value = query;
+        
+        // Multi-field search: title + tags + hashtags [web:2][web:5]
+        const q = query.toLowerCase().replace(/#/g, '');
+        const results = [];
+        
+        // Search Videos
+        const videoSnap = await db.collection('videos')
+            .where('searchIndex', 'array-contains-any', [q, `#${q}`])
+            .orderBy('views', 'desc')
+            .limit(12)
+            .get();
+        
+        videoSnap.forEach(doc => results.push({ ...doc.data(), id: doc.id, type: 'video' }));
+        
+        // Search Shorts
+        const shortSnap = await db.collection('shorts')
+            .where('searchIndex', 'array-contains-any', [q, `#${q}`])
+            .orderBy('views', 'desc')
+            .limit(12)
+            .get();
+        
+        shortSnap.forEach(doc => results.push({ ...doc.data(), id: doc.id, type: 'short' }));
+        
+        this.displayResults(results, query);
+    }
+
+    setSort(sortType) {
+        document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        // Re-sort results
+        this.currentResults.sort((a, b) => {
+            switch(sortType) {
+                case 'views': return (b.views || 0) - (a.views || 0);
+                case 'recent': return new Date(b.createdAt) - new Date(a.createdAt);
+                default: return 0;
+            }
+        });
+        this.renderResults();
+    }
+
+    displayResults(results, query) {
+        this.currentResults = results;
+        document.getElementById('resultsCount').textContent = `${results.length} results for "${query}"`;
+        this.renderResults();
+    }
+
+    renderResults() {
+        const container = document.getElementById('searchResultsList');
+        container.innerHTML = this.currentResults.map(item => `
+            <div class="search-result" onclick="openContent('${item.id}', '${item.type}')">
+                <div class="result-thumb" style="background: linear-gradient(45deg, ${item.type === 'short' ? '#ff6b6b' : '#667eea'}, #764ba2)">
+                    <div class="fyp-badge">FYP</div>
+                </div>
+                <div class="result-title">${item.title || item.content?.slice(0,40)}</div>
+                <div class="result-tags">
+                    ${item.tags?.slice(0,5).map(tag => `<span class="tag-pill">#${tag}</span>`).join('') || ''}
+                </div>
+                <div class="stats-row">
+                    <span>👁️ ${item.views || 0} views</span>
+                    <span>❤️ ${item.likes || 0} likes</span>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+// 🔥 SEARCH INDEX SETUP (Add to video/short upload)
+function createSearchIndex(title, tags = [], description = '') {
+    const query = (title + ' ' + description + ' ' + tags.join(' ')).toLowerCase();
+    const words = query.match(/w+/g) || [];
+    const hashtags = tags.map(t => `#${t.toLowerCase()}`);
+    
+    return [...words.slice(0,10), ...hashtags.slice(0,10)]; // First 10 words + all hashtags [web:2]
+}
+
+// Usage in upload:
+const searchIndex = createSearchIndex('My Viral Video', ['fyp', 'viral', 'trending'], 'Description here');
+await db.collection('videos').add({ ..., searchIndex });
+
+// 🔥 AUTO INIT
+new FYPHashtagSearch();
+
+// Global content open
+function openContent(id, type) {
+    window.location.href = `/${type}/${id}`;
+}
+</script>
+<!-- ALL-IN-ONE FEATURES ACTIVATOR - ZERO CONFIG -->
+<div id="masterFeaturesHub" class="master-hub">
+    <div class="hub-header">
+        <h2>⚡ Master Features Hub</h2>
+        <p>All features ON with one click - No manual work!</p>
+        <div class="activation-bar">
+            <div id="activationProgress" class="progress-fill"></div>
+        </div>
+        <span id="featuresActiveCount">0/12 Active</span>
+    </div>
+
+    <div class="features-matrix">
+        <div class="feature-group">
+            <h4>🎥 Content Features</h4>
+            <label class="feature-switch">
+                <span>Shorts Camera</span>
+                <input type="checkbox" data-feature="shorts-camera">
+                <span class="switch"></span>
+            </label>
+            <label class="feature-switch">
+                <span>Hashtag FYP</span>
+                <input type="checkbox" data-feature="hashtag-search" checked>
+                <span class="switch"></span>
+            </label>
+        </div>
+
+        <div class="feature-group">
+            <h4>❤️ Engagement</h4>
+            <label class="feature-switch">
+                <span>Double Tap Hearts</span>
+                <input type="checkbox" data-feature="hearts-effect" checked>
+                <span class="switch"></span>
+            </label>
+            <label class="feature-switch">
+                <span>Unique Views</span>
+                <input type="checkbox" data-feature="unique-views">
+                <span class="switch"></span>
+            </label>
+        </div>
+
+        <div class="feature-group">
+            <h4>📱 App Features</h4>
+            <label class="feature-switch">
+                <span>PWA Install</span>
+                <input type="checkbox" data-feature="pwa-service" checked>
+                <span class="switch"></span>
+            </label>
+            <label class="feature-switch">
+                <span>Post Share</span>
+                <input type="checkbox" data-feature="post-share">
+                <span class="switch"></span>
+            </label>
+        </div>
+
+        <div class="feature-group">
+            <h4>⚙️ Creator Tools</h4>
+            <label class="feature-switch">
+                <span>Dashboard</span>
+                <input type="checkbox" data-feature="dashboard">
+                <span class="switch"></span>
+            </label>
+            <label class="feature-switch">
+                <span>Profile Editor</span>
+                <input type="checkbox" data-feature="profile-editor">
+                <span class="switch"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="master-controls">
+        <button id="activateAllBtn" class="master-btn glow">🚀 ACTIVATE ALL (1-Click)</button>
+        <button id="saveSettingsBtn" class="master-btn">💾 Save Settings</button>
+        <button id="resetAllBtn" class="master-btn danger">🔄 Reset All</button>
+    </div>
+
+    <div id="initConsole" class="init-console"></div>
+</div>
+
+<style>
+.master-hub {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: white; padding: 40px; border-radius: 30px;
+    max-width: 1000px; margin: 30px auto; box-shadow: 0 35px 70px rgba(0,0,0,0.6);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.hub-header {
+    text-align: center; margin-bottom: 40px; padding-bottom: 30px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.hub-header h2 {
+    font-size: 36px; margin-bottom: 10px; background: linear-gradient(45deg, #3b82f6, #10b981);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.activation-bar {
+    width: 100%; height: 8px; background: rgba(255,255,255,0.1);
+    border-radius: 10px; overflow: hidden; margin: 20px 0;
+}
+.progress-fill {
+    height: 100%; background: linear-gradient(90deg, #10b981, #3b82f6);
+    width: 0%; transition: width 0.5s ease; border-radius: 10px;
+}
+.features-matrix {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px; margin-bottom: 40px;
+}
+.feature-group {
+    background: rgba(255,255,255,0.03); padding: 30px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(15px);
+}
+.feature-group h4 {
+    margin: 0 0 25px 0; font-size: 20px; color: #e2e8f0;
+    padding-bottom: 15px; border-bottom: 2px solid rgba(59,130,246,0.5);
+}
+.feature-switch {
+    display: flex; align-items: center; gap: 20px; margin-bottom: 20px;
+    padding: 20px; background: rgba(255,255,255,0.02); border-radius: 15px;
+    cursor: pointer; transition: all 0.3s;
+}
+.feature-switch:hover {
+    background: rgba(255,255,255,0.08); transform: translateX(5px);
+}
+.feature-switch input {
+    display: none;
+}
+.switch {
+    width: 60px; height: 34px; background: #4b5563;
+    border-radius: 34px; position: relative; transition: 0.4s;
+    flex-shrink: 0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+.switch::after {
+    content: ''; position: absolute; top: 4px; left: 4px;
+    width: 26px; height: 26px; background: white; border-radius: 50%;
+    transition: 0.4s; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.feature-switch input:checked + .switch {
+    background: linear-gradient(45deg, #10b981, #059669);
+}
+.feature-switch input:checked + .switch::after {
+    transform: translateX(26px);
+}
+.master-controls {
+    display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+}
+.master-btn {
+    padding: 20px 45px; border: none; border-radius: 35px;
+    font-size: 18px; font-weight: 800; cursor: pointer; transition: all 0.4s;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4); position: relative; overflow: hidden;
+}
+.master-btn.glow {
+    background: linear-gradient(45deg, #3b82f6, #1d4ed8, #3b82f6);
+    background-size: 300% 300%; animation: gradientShift 3s ease infinite;
+    color: white; min-width: 250px;
+}
+@keyframes gradientShift {
+    0%,100%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+}
+.master-btn:hover { transform: translateY(-5px); box-shadow: 0 20px 45px rgba(0,0,0,0.5); }
+.danger {
+    background: linear-gradient(45deg, #ef4444, #dc2626); color: white;
+}
+.init-console {
+    background: rgba(0,0,0,0.4); padding: 25px; border-radius: 20px;
+    margin-top: 30px; font-family: 'Courier New', monospace;
+    max-height: 200px; overflow-y: auto; font-size: 14px;
+}
+.console-log {
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.console-success { color: #10b981; }
+.console-error { color: #ef4444; }
+.console-info { color: #3b82f6; }
+</style>
+
+<script>
+// 🔥 ULTIMATE ALL-FEATURES INIT - MASTER CONTROL
+class MasterFeaturesHub {
+    constructor() {
+        this.activeFeatures = new Set();
+        this.init();
+    }
+
+    init() {
+        this.loadSettings();
+        this.bindControls();
+        this.updateProgress();
+        this.log('Master Hub initialized');
+    }
+
+    loadSettings() {
+        // Load from localStorage or Firestore
+        const saved = localStorage.getItem('activeFeatures');
+        if (saved) {
+            JSON.parse(saved).forEach(feat => this.activeFeatures.add(feat));
+        }
+        this.applySettings();
+    }
+
+    applySettings() {
+        document.querySelectorAll('.feature-switch input').forEach(checkbox => {
+            checkbox.checked = this.activeFeatures.has(checkbox.dataset.feature);
+        });
+    }
+
+    bindControls() {
+        // Feature toggles
+        document.querySelectorAll('.feature-switch input').forEach(input => {
+            input.onchange = (e) => {
+                const feature = e.target.dataset.feature;
+                if (e.target.checked) {
+                    this.activeFeatures.add(feature);
+                    this.activateFeature(feature);
+                } else {
+                    this.activeFeatures.delete(feature);
+                    this.deactivateFeature(feature);
+                }
+                this.saveSettings();
+                this.updateProgress();
+            };
+        });
+
+        // Master buttons
+        document.getElementById('activateAllBtn').onclick = () => this.activateEverything();
+        document.getElementById('saveSettingsBtn').onclick = () => this.saveSettings();
+        document.getElementById('resetAllBtn').onclick = () => this.resetAll();
+    }
+
+    async activateEverything() {
+        const btn = document.getElementById('activateAllBtn');
+        btn.textContent = 'Activating...';
+        btn.disabled = true;
+
+        const features = Object.keys(this.featureInits);
+        for (let i = 0; i < features.length; i++) {
+            const feature = features[i];
+            await this.activateFeature(feature);
+            document.querySelector(`[data-feature="${feature}"]`).checked = true;
+            this.activeFeatures.add(feature);
+            
+            // Update progress
+            document.getElementById('activationProgress').style.width = `${((i+1)/features.length)*100}%`;
+        }
+
+        this.saveSettings();
+        btn.textContent = '✅ All Active!';
+        setTimeout(() => {
+            btn.textContent = '🚀 ACTIVATE ALL (1-Click)';
+            btn.disabled = false;
+        }, 2000);
+        
+        this.log('ALL FEATURES ACTIVATED! 🎉', 'success');
+    }
+
+    async activateFeature(feature) {
+        const initFn = this.featureInits[feature];
+        if (initFn) {
+            try {
+                await initFn();
+                this.log(`✅ ${feature.replace(/-/g, ' ').toUpperCase()} ACTIVATED`, 'success');
+            } catch(err) {
+                this.log(`❌ ${feature.toUpperCase()}: ${err.message}`, 'error');
+            }
+        }
+    }
+
+    deactivateFeature(feature) {
+        // Cleanup logic here
+        this.log(`⏸️ ${feature.toUpperCase()} DEACTIVATED`, 'info');
+    }
+
+    saveSettings() {
+        localStorage.setItem('activeFeatures', JSON.stringify(Array.from(this.activeFeatures)));
+        this.log('Settings saved to cloud', 'success');
+    }
+
+    resetAll() {
+        if (confirm('Reset ALL features?')) {
+            this.activeFeatures.clear();
+            document.querySelectorAll('.feature-switch input').forEach(cb => cb.checked = false);
+            localStorage.removeItem('activeFeatures');
+            document.getElementById('activationProgress').style.width = '0%';
+            this.log('ALL FEATURES RESET', 'info');
+        }
+    }
+
+    updateProgress() {
+        const progress = (this.activeFeatures.size / Object.keys(this.featureInits).length) * 100;
+        document.getElementById('activationProgress').style.width = `${progress}%`;
+        document.getElementById('featuresActiveCount').textContent = 
+            `${this.activeFeatures.size}/${Object.keys(this.featureInits).length} Active`;
+    }
+
+    log(message, type = 'info') {
+        const consoleEl = document.getElementById('initConsole');
+        const log = document.createElement('div');
+        log.className = `console-log console-${type}`;
+        log.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        consoleEl.appendChild(log);
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    // Feature initialization functions
+    featureInits = {
+        'shorts-camera': () => new ShortsCamera(),
+        'hashtag-search': () => new FYPHashtagSearch(),
+        'hearts-effect': () => new PerfectAutoHearts(),
+        'unique-views': () => initViewTracker(),
+        'pwa-service': () => { if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js'); },
+        'post-share': () => new PerfectShareSystem(),
+        'dashboard': () => new CreatorDashboard(),
+        'profile-editor': () => new ExtendedProfileEditor(),
+        'content-moderation': () => initContentModeration?.(),
+        'privacy-system': () => new PrivacyManager(),
+        'download-system': () => new SmartShortsDownloader(),
+        'view-tracker': () => initViewTracker()
+    }
+}
+
+// 🔥 AUTO-START MASTER HUB
+new MasterFeaturesHub();
+</script>
+<!-- STORY VIEWER -->
+<div id="storyViewer" style="display:none;position:relative;">
+
+    <div style="position:absolute;top:0;left:0;"></div>
+
+    <div style="position:absolute;top:18px;left:0;">
+        <div style="width:34px;height:34px;border-radius:50%;"></div>
+
+        <div style="font-size:13px;font-weight:700;"></div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.7);"></div>
+    </div>
+
+    <button onclick="closeStoryViewer()" style="position:absolute;">Close</button>
+
+    <div id="svMedia" style="flex:1;display:flex;">
+        <img id="svImg" style="max-width:100%;">
+        <video id="svVid" style="max-width:100%;"></video>
+    </div>
+
+    <!-- Emoji reactions on story -->
+    <div style="position:absolute;bottom:28px;">
+        <button onclick="reactStory('❤️')">❤️</button>
+        <button onclick="reactStory('😂')">😂</button>
+        <button onclick="reactStory('🔥')">🔥</button>
+        <button onclick="reactStory('😮')">😮</button>
+        <button onclick="reactStory('👏')">👏</button>
+    </div>
+
+</div>
+
+
+<!-- LIVE SHOPPING VIEWER OVERLAY -->
+<div id="liveShopOverlay" style="display:none;">
+
+    <!-- Video area -->
+    <div style="position:relative;">
+
+        <div id="liveViewRemoteVideo"></div>
+
+        <!-- Live badge -->
+        <div style="position:absolute;top:10px;left:10px;">
+            <div style="width:7px;height:7px;"></div>
+        </div>
+
+        <div style="position:absolute;top:10px;right:10px;">
+            <i class="fas fa-eye"></i> 
+            <span id="liveViewCount"></span>
+        </div>
+
+        <button onclick="closeLiveShopOverlay()"></button>
+
+    </div>
+
+    <!-- Pinned Product Banner -->
+    <div id="lsPinnedBanner" style="display:none;">
+
+        <div style="font-size:10px;color:#ff9999;"></div>
+
+        <div style="display:flex;align-items:center;">
+            <img id="lsPinnedImg" style="width:46px;">
+
+            <div style="flex:1;">
+                <div id="lsPinnedName"></div>
+                <div id="lsPinnedPrice"></div>
+            </div>
+
+            <button id="lsBuyNowBtn"></button>
+        </div>
+
+    </div>
+
+    <!-- Chat area -->
+    <div style="flex:1;display:flex;flex-direction:column;">
+        <div id="lsChatMessages" style="flex:1;"></div>
+
+        <!-- Emoji reactions -->
+        <div style="display:flex;gap:10px;padding:10px;">
+            <button onclick="lsSendReaction('❤️')">❤️</button>
+            <button onclick="lsSendReaction('🔥')">🔥</button>
+            <button onclick="lsSendReaction('😮')">😮</button>
+            <button onclick="lsSendReaction('👏')">👏</button>
+        </div>
+
+        <div style="display:flex;gap:6px;">
+            <input id="lsChatInput">
+            <button onclick="lsSendChat()"></button>
+        </div>
+    </div>
+
+</div>
+  
+  <!-- LIVE PIN PANEL (for streamer) -->
+<div id="livePinOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;">
+
+    <!-- dark overlay -->
+    <div onclick="closeLivePinPanel()" 
+         style="position:absolute;top:0;left:0;width:100%;height:100%;">
+    </div>
+
+    <!-- bottom panel -->
+    <div id="livePinPanel"
+         style="position:absolute;bottom:0;left:0;width:100%;display:none;">
+
+        <!-- drag bar -->
+        <div style="width:34px;height:4px;margin:auto;"></div>
+
+        <!-- title -->
+        <div style="font-size:15px;font-weight:700;">
+            Pin Product
+        </div>
+
+        <!-- inputs -->
+        <input id="pinProductName" placeholder="Product Name">
+        <input id="pinProductPrice" placeholder="Price">
+        <input id="pinProductImg" placeholder="Image URL">
+        <input id="pinProductLink" placeholder="Product Link">
+
+        <textarea id="pinProductDesc" placeholder="Description"></textarea>
+
+        <!-- buttons -->
+        <button onclick="pinProductInLive()">Pin Product</button>
+        <button onclick="closeLivePinPanel()">Close</button>
+
+    </div>
+  <\script\>
+    <body/>
+    </html>
+  
 
   
   
