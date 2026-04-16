@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Stream x — Pakistan ka Apna Platform</title>
+<title>Stream x</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#FF0000">
@@ -73,14 +73,8 @@
 /* NEON */
 [data-theme="neon"]{--bg:#000;--bg2:#030a00;--bg3:#051200;--card:#030a00;--text:#ccff44;--text2:#88cc00;--text3:#448800;--border:#0a2000;--accent:#ccff00;--red:#ccff00;--red2:#aadd00;}
 
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;transition:background .2s,color .2s;overflow-x:hidden;will-change:auto;}
-/* GPU acceleration for smooth scroll */
-.main,.player-screen,.sf,.channel-page{-webkit-overflow-scrolling:touch;will-change:scroll-position;}
-/* Faster screen transitions */
-.screen{animation:none!important;}
-.yt-card{animation:fadeUp .2s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden;}
 button,input,textarea{font-family:var(--font);}
 
 /* SCROLLBAR */
@@ -292,8 +286,7 @@ button,input,textarea{font-family:var(--font);}
 
 /* ═══ PROFILE ═══ */
 .prof-screen{padding-bottom:20px;}
-.prof-cover{height:140px;background:linear-gradient(135deg,#1a0000,#4a0000,#1a0000);position:relative;overflow:hidden;}
-.prof-cover img{width:100%;height:100%;object-fit:cover;display:block;}
+.prof-cover{height:110px;background:linear-gradient(135deg,#1a0000,#4a0000,#1a0000);position:relative;}
 .prof-info{padding:0 14px;display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:-36px;margin-bottom:16px;}
 .prof-pic-wrap{position:relative;margin-bottom:10px;}
 .prof-pic{width:76px;height:76px;border-radius:50%;background:var(--red);border:3px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:white;overflow:hidden;}
@@ -376,15 +369,12 @@ button,input,textarea{font-family:var(--font);}
 .gm-del{border-color:var(--red);color:var(--red);}
 
 /* ═══ VIDEO PLAYER ═══ */
-.player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;}
 .player-screen.open{display:flex;}
-.player-back{position:fixed;top:10px;left:10px;z-index:210;width:34px;height:34px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;}
-.player-vid-wrap{background:#000;width:100%;position:sticky;top:0;z-index:205;flex-shrink:0;}
-.player-vid-wrap video{width:100%;height:auto;max-height:56.25vw;min-height:210px;object-fit:contain;display:block;}
+.player-back{position:absolute;top:10px;left:10px;z-index:10;width:34px;height:34px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.player-vid-wrap{background:#000;width:100%;position:relative;flex-shrink:0;min-height:220px;max-height:100vw;}
+.player-vid-wrap video{width:100%;height:auto;max-height:100vw;object-fit:contain;display:block;}
 .player-vid-wrap img{width:100%;height:100%;object-fit:contain;}
-.vid-buffer-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.15);z-index:5;}
-.vid-buffer-fill{height:100%;background:rgba(255,255,255,.4);width:0%;transition:width .4s;}
-.vid-play-fill{position:absolute;top:0;left:0;height:100%;background:var(--red);width:0%;}
 .player-info{padding:12px 14px 0;}
 .player-title{font-size:15px;font-weight:700;line-height:1.4;}
 .player-meta{font-size:11px;color:var(--text2);margin-top:4px;}
@@ -460,8 +450,6 @@ button,input,textarea{font-family:var(--font);}
 .ou-info{flex:1;}
 .ou-name{font-size:13px;font-weight:600;}
 .ou-meta{font-size:11px;color:var(--text2);margin-top:2px;}
-.trust-bar{height:3px;border-radius:2px;background:var(--border);margin-top:4px;overflow:hidden;}
-.trust-fill{height:100%;border-radius:2px;}
 .ou-badge{font-size:10px;padding:2px 7px;border-radius:5px;font-weight:600;}
 .badge-active{background:rgba(0,200,100,.15);color:#00c864;}
 .badge-ch{background:rgba(255,0,0,.1);color:var(--red);}
@@ -599,7 +587,7 @@ button,input,textarea{font-family:var(--font);}
 
 <!-- ═══ SPLASH SCREEN ═══ -->
 <div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .2s ease;">
-  <svg width="90" height="70" viewBox="0 0 50 38" style="animation:splashPulse 1.2s ease infinite alternate;filter:drop-shadow(0 4px 16px rgba(255,0,0,.6))"><defs><radialGradient id="sg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff6666"/><stop offset="100%" stop-color="#cc0000"/></radialGradient></defs><ellipse cx="25" cy="19" rx="24" ry="17" fill="#050505" stroke="#ff0000" stroke-width="1.5"/><ellipse cx="25" cy="19" rx="14" ry="10" fill="none" stroke="#ff3333" stroke-width="1.2"/><circle cx="25" cy="19" r="7" fill="url(#sg)"/><circle cx="25" cy="19" r="3" fill="white" opacity=".9"/><circle cx="27" cy="17" r="1.2" fill="white" opacity=".5"/><line x1="2" y1="19" x2="11" y2="19" stroke="#ff0000" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="19" x2="48" y2="19" stroke="#ff0000" stroke-width="1.5" stroke-linecap="round"/></svg>
+  <svg width="80" height="58" viewBox="0 0 50 36" style="animation:splashPulse 1s ease infinite alternate;"><rect width="50" height="36" rx="8" fill="#FF0000"/><polygon points="19,8 19,28 38,18" fill="white"/></svg>
   <div style="font-size:32px;font-weight:800;color:white;margin-top:14px;letter-spacing:-1px;"><span style="color:#FF0000;">Stream</span> x</div>
   <div style="font-size:13px;color:#aaa;margin-top:6px;">Pakistan ka apna platform 🇵🇰</div>
   <div style="position:absolute;bottom:60px;display:flex;align-items:center;gap:8px;">
@@ -616,7 +604,7 @@ button,input,textarea{font-family:var(--font);}
 <!-- ═══ AUTH ═══ -->
 <div id="authScreen" class="auth-screen" style="display:none;">
   <div class="auth-brand">
-    <svg width="60" height="44" viewBox="0 0 50 38" style="filter:drop-shadow(0 3px 10px rgba(255,0,0,.5))"><defs><radialGradient id="ag" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff5555"/><stop offset="100%" stop-color="#cc0000"/></radialGradient></defs><ellipse cx="25" cy="19" rx="24" ry="17" fill="#080808" stroke="#ff0000" stroke-width="1.5"/><ellipse cx="25" cy="19" rx="14" ry="10" fill="none" stroke="#ff2222" stroke-width="1"/><circle cx="25" cy="19" r="7" fill="url(#ag)"/><circle cx="25" cy="19" r="3" fill="white" opacity=".9"/><circle cx="27" cy="17" r="1.2" fill="white" opacity=".5"/><line x1="2" y1="19" x2="11" y2="19" stroke="#ff0000" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="19" x2="48" y2="19" stroke="#ff0000" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <svg width="50" height="36" viewBox="0 0 50 36"><rect width="50" height="36" rx="8" fill="#FF0000"/><polygon points="19,8 19,28 38,18" fill="white"/></svg>
     <h1><span class="streams">Stream</span> <span class="max">x</span></h1>
     <p>Pakistan ka apna platform 🇵🇰</p>
   </div>
@@ -624,7 +612,6 @@ button,input,textarea{font-family:var(--font);}
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthTab('login',this)">Login</button>
       <button class="auth-tab" onclick="switchAuthTab('signup',this)">Sign Up</button>
-      <button class="auth-tab" onclick="switchAuthTab('phone',this)">📱 Phone</button>
     </div>
     <div id="loginForm">
       <input class="inp" id="loginEmail" type="email" placeholder="Email address">
@@ -636,32 +623,6 @@ button,input,textarea{font-family:var(--font);}
       <input class="inp" id="signupEmail" type="email" placeholder="Email address">
       <input class="inp" id="signupPass" type="password" placeholder="Password (min 6)">
       <button class="btn-red" id="signupBtn" onclick="doSignup()">Create Account</button>
-    </div>
-    <!-- PHONE OTP FORM -->
-    <div id="phoneForm" style="display:none;">
-      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;text-align:center;">🔒 One Phone = One Account<br>Fake accounts se protection</div>
-      <div id="phoneStep1">
-        <div style="display:flex;gap:6px;">
-          <select id="phoneCountry" class="inp" style="width:90px;flex-shrink:0;padding:11px 6px;">
-            <option value="+92">🇵🇰 +92</option>
-            <option value="+1">🇺🇸 +1</option>
-            <option value="+44">🇬🇧 +44</option>
-            <option value="+91">🇮🇳 +91</option>
-            <option value="+971">🇦🇪 +971</option>
-            <option value="+966">🇸🇦 +966</option>
-          </select>
-          <input class="inp" id="phoneNumber" type="tel" placeholder="3001234567" style="flex:1;">
-        </div>
-        <div id="recaptcha-container" style="margin:10px 0;"></div>
-        <button class="btn-red" id="sendOtpBtn" onclick="sendOTP()"><i class="fas fa-paper-plane"></i> Send OTP</button>
-      </div>
-      <div id="phoneStep2" style="display:none;">
-        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;text-align:center;" id="otpSentMsg">OTP sent to your number</div>
-        <input class="inp" id="otpInput" type="number" placeholder="Enter 6-digit OTP" maxlength="6">
-        <input class="inp" id="phoneUserName" placeholder="Your Full Name" style="margin-top:6px;">
-        <button class="btn-red" id="verifyOtpBtn" onclick="verifyOTP()"><i class="fas fa-check"></i> Verify & Login</button>
-        <button onclick="document.getElementById('phoneStep1').style.display='block';document.getElementById('phoneStep2').style.display='none';" style="width:100%;background:none;border:none;color:var(--text2);font-size:12px;cursor:pointer;padding:8px;">← Back</button>
-      </div>
     </div>
     <div style="display:flex;align-items:center;gap:10px;margin:12px 0;">
       <div style="flex:1;height:1px;background:var(--border);"></div>
@@ -681,15 +642,14 @@ button,input,textarea{font-family:var(--font);}
 <div class="side-menu-overlay" id="sideOverlay" onclick="closeSideMenu()"></div>
 <div class="side-menu" id="sideMenu">
   <div class="side-menu-header">
-    <svg width="26" height="20" viewBox="0 0 26 20"><defs><radialGradient id="mg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff5555"/><stop offset="100%" stop-color="#cc0000"/></radialGradient></defs><ellipse cx="13" cy="10" rx="12" ry="8.5" fill="#080808" stroke="#ff0000" stroke-width="1"/><circle cx="13" cy="10" r="4.5" fill="url(#mg)"/><circle cx="13" cy="10" r="1.8" fill="white" opacity=".9"/></svg>
-    <span>Stream<b>x</b></span>
+    <svg width="26" height="18" viewBox="0 0 26 18"><rect width="26" height="18" rx="4" fill="#FF0000"/><polygon points="10,4 10,14 20,9" fill="white"/></svg>
+    <span>My<b>Tube</b></span>
   </div>
   <div class="side-item" onclick="showScreen('home');closeSideMenu()"><i class="fas fa-home"></i><span>Home</span></div>
   <div class="side-item" onclick="showScreen('shorts');closeSideMenu()"><i class="fas fa-film"></i><span>Shorts</span></div>
   <div class="side-item" onclick="showScreen('subs');closeSideMenu()"><i class="fas fa-th-large"></i><span>Subscriptions</span></div>
   <div class="side-item" onclick="showScreen('history');closeSideMenu()"><i class="fas fa-history"></i><span>History</span></div>
   <div class="side-item" onclick="showScreen('gallery');closeSideMenu()"><i class="fas fa-images"></i><span>My Gallery</span></div>
-  <div class="side-item" onclick="showScreen('downloads');closeSideMenu()"><i class="fas fa-download" style="color:var(--red);"></i><span>Downloads</span></div>
   <div class="side-divider"></div>
   <div class="side-section-title">Explore</div>
   <div class="side-item" onclick="filterFeed(document.querySelector('.chip'),'trending');closeSideMenu();showScreen('home')"><i class="fas fa-fire" style="color:#ff6600;"></i><span>Trending</span></div>
@@ -717,7 +677,7 @@ button,input,textarea{font-family:var(--font);}
   <!-- Header -->
   <div class="header">
     <div class="logo-wrap" onclick="openSideMenu()">
-      <svg class="logo-icon" viewBox="0 0 32 22" style="filter:drop-shadow(0 2px 6px rgba(255,0,0,.5))"><defs><radialGradient id="eg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff4444"/><stop offset="100%" stop-color="#cc0000"/></radialGradient></defs><ellipse cx="16" cy="11" rx="15" ry="10" fill="#0a0a0a" stroke="#ff0000" stroke-width="1.2"/><ellipse cx="16" cy="11" rx="9" ry="6.5" fill="none" stroke="#ff2222" stroke-width="1"/><circle cx="16" cy="11" r="4" fill="url(#eg)"/><circle cx="16" cy="11" r="1.8" fill="white" opacity=".95"/><circle cx="17.2" cy="10" r=".8" fill="white" opacity=".6"/><line x1="2" y1="11" x2="7" y2="11" stroke="#ff0000" stroke-width="1.2" stroke-linecap="round"/><line x1="25" y1="11" x2="30" y2="11" stroke="#ff0000" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <svg class="logo-icon" viewBox="0 0 30 21"><rect width="30" height="21" rx="5" fill="#FF0000"/><polygon points="11,5 11,16 22,10.5" fill="white"/></svg>
       <div class="logo-text"><span class="streams">Stream</span> <span class="max">x</span></div>
     </div>
     <div class="search-bar" id="searchBarEl">
@@ -737,20 +697,6 @@ button,input,textarea{font-family:var(--font);}
   <div class="main">
     <!-- HOME -->
     <div id="homeScreen" class="screen active">
-      <!-- STORIES BAR -->
-      <div id="storiesBar" style="padding:10px 12px 4px;overflow-x:auto;white-space:nowrap;display:flex;gap:10px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
-        <!-- Your story -->
-        <div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;" onclick="createStory()">
-          <div style="width:54px;height:54px;border-radius:50%;background:var(--bg3);border:2px dashed var(--red);display:flex;align-items:center;justify-content:center;position:relative;">
-            <div id="myStoryThumb" style="width:100%;height:100%;border-radius:50%;overflow:hidden;display:none;"><img id="myStoryImg" style="width:100%;height:100%;object-fit:cover;"></div>
-            <i class="fas fa-plus" style="color:var(--red);font-size:18px;" id="myStoryPlusIcon"></i>
-            <input type="file" id="storyFileInput" accept="image/*,video/*" style="display:none;" onchange="handleStoryUpload(this)">
-          </div>
-          <span style="font-size:9px;color:var(--text2);max-width:54px;overflow:hidden;text-overflow:ellipsis;">Your Story</span>
-        </div>
-        <!-- Others stories rendered here -->
-        <div id="storiesList" style="display:contents;"></div>
-      </div>
       <div class="chips-wrap">
         <div class="chips" id="chipsRow">
           <button class="chip active" onclick="filterFeed(this,'all')">All</button>
@@ -771,14 +717,6 @@ button,input,textarea{font-family:var(--font);}
         </div>
       </div>
       <div class="feed" id="homeFeed"><div class="loader"><div class="spinner"></div></div></div>
-      <!-- AI Product Recommendations Row -->
-      <div id="aiProductsRow" style="display:none;padding:0 12px 12px;">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:7px;">
-          <i class="fas fa-robot" style="color:var(--red);font-size:14px;"></i> AI Picks For You
-          <span style="font-size:10px;color:var(--text3);font-weight:400;margin-left:auto;">Based on your taste</span>
-        </div>
-        <div id="aiProductsList" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;"></div>
-      </div>
     </div>
 
     <!-- SHORTS -->
@@ -787,8 +725,8 @@ button,input,textarea{font-family:var(--font);}
         <div style="display:flex;align-items:center;gap:7px;">
           <i class="fas fa-film" style="color:var(--red);font-size:17px;"></i> Shorts
         </div>
-        <button onclick="openShortsCamera()" style="background:var(--red);color:white;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
-          <i class="fas fa-circle" style="font-size:10px;animation:blink 1.2s infinite;"></i> Record
+        <button onclick="openUploadDirect('short')" style="background:var(--red);color:white;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <i class="fas fa-upload" style="font-size:10px;"></i> Upload Short
         </button>
       </div>
       <div style="display:flex;gap:8px;padding:0 14px 8px;overflow-x:auto;" id="shortFilterChips">
@@ -1092,10 +1030,7 @@ button,input,textarea{font-family:var(--font);}
     <!-- PROFILE -->
     <div id="profileScreen" class="screen">
       <div class="prof-screen">
-        <div class="prof-cover" id="profCover" onclick="document.getElementById('bannerInput').click()" style="cursor:pointer;position:relative;">
-          <input type="file" id="bannerInput" accept="image/*" style="display:none;" onchange="uploadBannerPic(this)">
-          <div id="bannerEditHint" style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.6);color:white;font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;"><i class="fas fa-camera" style="font-size:9px;"></i> Change Cover</div>
-        </div>
+        <div class="prof-cover" id="profCover"></div>
         <div class="prof-info">
           <div class="prof-pic-wrap">
             <div class="prof-pic" id="profPicEl">?</div>
@@ -1137,22 +1072,14 @@ button,input,textarea{font-family:var(--font);}
           <div class="prof-sec-title">About</div>
           <div id="profAboutText" style="font-size:13px;color:var(--text2);line-height:1.6;">No bio yet.</div>
           <div id="profChannelMeta" style="margin-top:10px;display:none;">
-            <div id="profJoinedDate" style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;margin-bottom:6px;"><i class="fas fa-calendar-alt" style="color:var(--red);"></i> Joined: <span id="profJoinedVal">—</span></div>
-            <div id="profLocation" style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;margin-bottom:6px;" id="profLocationRow"><i class="fas fa-map-marker-alt" style="color:var(--red);"></i> <span id="profLocationVal">Pakistan 🇵🇰</span> <button onclick="editLocation()" style="background:none;border:none;color:var(--red);font-size:10px;cursor:pointer;padding:0 4px;"><i class="fas fa-edit"></i></button></div>
-            <div style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;margin-bottom:6px;"><i class="fas fa-eye" style="color:var(--red);"></i> Total Views: <span id="profTotalViews" style="font-weight:700;color:var(--text);">0</span></div>
+            <div id="profJoinedDate" style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;margin-bottom:4px;"><i class="fas fa-calendar-alt" style="color:var(--red);"></i> Channel created: <span id="profJoinedVal">—</span></div>
+            <div id="profLocation" style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;"><i class="fas fa-map-marker-alt" style="color:var(--red);"></i> Pakistan 🇵🇰</div>
           </div>
         </div>
-        <!-- Gallery + History + Downloads shortcuts -->
-        <div class="prof-section" style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="btn-red" onclick="showScreen('gallery')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-width:90px;"><i class="fas fa-images"></i> Gallery</button>
-          <button onclick="showScreen('history')" style="flex:1;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-width:90px;"><i class="fas fa-history"></i> History</button>
-          <button onclick="showScreen('downloads')" style="flex:1;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-width:90px;"><i class="fas fa-download" style="color:var(--red);"></i> Downloads</button>
-        </div>
-        <!-- Channel Share -->
-        <div class="prof-section" style="margin-top:10px;">
-          <button onclick="shareMyChannel()" style="width:100%;padding:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-            <i class="fas fa-share-alt" style="color:var(--red);"></i> Share My Channel
-          </button>
+        <!-- Gallery + History shortcuts -->
+        <div class="prof-section" style="margin-top:16px;display:flex;gap:8px;">
+          <button class="btn-red" onclick="showScreen('gallery')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;"><i class="fas fa-images"></i> Gallery</button>
+          <button onclick="showScreen('history')" style="flex:1;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><i class="fas fa-history"></i> History</button>
         </div>
 
         <!-- Settings & Legal -->
@@ -1230,21 +1157,6 @@ button,input,textarea{font-family:var(--font);}
           <button class="gtab" onclick="filterGallery('post',this)">Posts</button>
         </div>
         <div class="gallery-grid" id="galleryGrid"><div class="loader" style="grid-column:1/-1;"><div class="spinner"></div></div></div>
-      </div>
-    </div>
-
-    <!-- DOWNLOADS -->
-    <div id="downloadsScreen" class="screen">
-      <div style="padding:16px 14px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <button onclick="showScreen('profile')" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:18px;"><i class="fas fa-arrow-left"></i></button>
-            <h2 style="font-size:18px;font-weight:700;margin:0;"><i class="fas fa-download" style="color:var(--red);margin-right:8px;"></i>Downloads</h2>
-          </div>
-          <button onclick="if(confirm('Sab downloads clear karein?')){localStorage.removeItem('sx_downloads');loadDownloads();showToast('Downloads cleared');}" style="background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer;">Clear All</button>
-        </div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">📱 Offline mein bhi dekh sakte hain saved videos</div>
-        <div id="downloadsList"><div class="loader"><div class="spinner"></div></div></div>
       </div>
     </div>
 
@@ -1478,7 +1390,6 @@ button,input,textarea{font-family:var(--font);}
           <button class="studio-tab" id="otab-reports" onclick="switchOwnerTab('reports')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-flag"></i> Reports</button>
           <button class="studio-tab" id="otab-users" onclick="switchOwnerTab('users')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-users"></i> Users</button>
           <button class="studio-tab" id="otab-guidelines" onclick="switchOwnerTab('guidelines')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-shield-alt"></i> Guidelines</button>
-          <button class="studio-tab" id="otab-copyright" onclick="switchOwnerTab('copyright')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-copyright" style="color:#ff6600;"></i> Copyright <span id="owCopyrightBadge" style="display:none;background:var(--red);color:white;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:4px;">0</span></button>
         </div>
 
         <!-- OVERVIEW TAB -->
@@ -1520,18 +1431,6 @@ button,input,textarea{font-family:var(--font);}
             <input class="inp" id="ownerSearchUser" placeholder="🔍 Search user by name/email..." oninput="ownerSearchUsers(this.value)" style="margin-bottom:0;">
           </div>
           <div id="ownerUsersList"><div class="loader"><div class="spinner"></div></div></div>
-        </div>
-
-        <!-- COPYRIGHT ALERTS TAB -->
-        <div id="owner-copyright" style="display:none;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-            <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;"><i class="fas fa-copyright" style="color:#ff6600;"></i> Copyright Reports</div>
-            <span id="owCopyrightCount" style="background:var(--red);color:white;border-radius:20px;padding:2px 10px;font-size:11px;">0</span>
-          </div>
-          <div style="background:rgba(255,100,0,.08);border:1px solid rgba(255,100,0,.2);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--text2);">
-            <i class="fas fa-bell" style="color:#ff6600;margin-right:6px;"></i>Jab bhi koi copyright report aayegi, aapko yahan instantly nazar aayegi.
-          </div>
-          <div id="ownerCopyrightList"><div class="loader"><div class="spinner"></div></div></div>
         </div>
 
         <!-- GUIDELINES TAB -->
@@ -1631,16 +1530,6 @@ button,input,textarea{font-family:var(--font);}
               <button onclick="sendLiveChat()" style="background:var(--red);color:white;border:none;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
             </div>
           </div>
-          <!-- LIVE SHOPPING — PIN PRODUCTS -->
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:12px;margin-bottom:12px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
-              <span>🛍️ Live Shopping</span>
-              <button onclick="openLivePinPanel()" style="background:var(--red);color:white;border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-thumbtack"></i> Pin Product</button>
-            </div>
-            <div id="livePinnedItems" style="display:flex;flex-direction:column;gap:8px;">
-              <div style="font-size:11px;color:var(--text3);">No pinned items yet. Pin products for viewers to buy!</div>
-            </div>
-          </div>
           <button onclick="endAgoraLive()" style="width:100%;padding:12px;background:#1a1a1a;border:2px solid var(--red);color:var(--red);border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">
             <i class="fas fa-stop-circle"></i> End Stream
           </button>
@@ -1648,10 +1537,7 @@ button,input,textarea{font-family:var(--font);}
 
         <!-- Watch Live (viewer mode) -->
         <div id="liveWatchView" style="display:none;">
-          <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
-            <span>📡 Live Streams</span>
-            <button onclick="loadLiveStreams()" style="background:none;border:none;color:var(--text2);font-size:12px;cursor:pointer;"><i class="fas fa-sync-alt"></i> Refresh</button>
-          </div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;">📡 Live Streams</div>
           <div id="liveStreamsList"><div class="loader"><div class="spinner"></div></div></div>
         </div>
 
@@ -1715,15 +1601,11 @@ button,input,textarea{font-family:var(--font);}
 <!-- ═══ VIDEO PLAYER ═══ -->
 <div class="player-screen" id="playerScreen">
   <button class="player-back" onclick="closePlayer()"><i class="fas fa-arrow-left"></i></button>
-  <div class="player-vid-wrap" id="playerVidWrap">
-    <video id="playerVid" controls playsinline webkit-playsinline></video>
-    <div class="vid-buffer-bar"><div class="vid-buffer-fill" id="vidBufferFill"></div><div class="vid-play-fill" id="vidPlayFill"></div></div>
-    <div style="position:absolute;bottom:8px;right:8px;display:flex;gap:6px;z-index:6;">
-      <button onclick="showQualityMenu()" style="background:rgba(0,0,0,.7);border:none;color:white;border-radius:6px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer;" id="qualityBtn">⚙️ Auto</button>
-      <button onclick="toggleFullscreen()" style="background:rgba(0,0,0,.6);border:none;color:white;border-radius:6px;padding:5px 8px;font-size:13px;cursor:pointer;">
-        <i class="fas fa-expand" id="fsIcon"></i>
-      </button>
-    </div>
+  <div class="player-vid-wrap" id="playerVidWrap" style="position:relative;">
+    <video id="playerVid" controls playsinline></video>
+    <button onclick="toggleFullscreen()" style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:6px;padding:5px 8px;font-size:13px;cursor:pointer;z-index:5;">
+      <i class="fas fa-expand" id="fsIcon"></i>
+    </button>
   </div>
   <div class="player-info">
     <div class="player-title" id="playerTitle">Loading...</div>
@@ -2218,111 +2100,6 @@ button,input,textarea{font-family:var(--font);}
 </div>
 
 <script>
-
-// ═══════════════════════════════════════════════
-// OFFLINE VIDEO CACHE — IndexedDB (YouTube-style)
-// Videos stored as blob URLs, playable offline
-// ═══════════════════════════════════════════════
-const SX_DB_NAME = 'streamx_offline';
-const SX_DB_VER = 1;
-let _sxDB = null;
-
-function openSXDB(){
-  return new Promise((res,rej)=>{
-    if(_sxDB){ res(_sxDB); return; }
-    const req = indexedDB.open(SX_DB_NAME, SX_DB_VER);
-    req.onupgradeneeded = e => {
-      const db = e.target.result;
-      if(!db.objectStoreNames.contains('videos'))
-        db.createObjectStore('videos',{keyPath:'id'});
-      if(!db.objectStoreNames.contains('meta'))
-        db.createObjectStore('meta',{keyPath:'id'});
-    };
-    req.onsuccess = e => { _sxDB=e.target.result; res(_sxDB); };
-    req.onerror = () => rej(req.error);
-  });
-}
-
-async function saveVideoOffline(post){
-  if(!post||!post.url) return;
-  showToast('📥 Downloading for offline... please wait');
-  try{
-    const db = await openSXDB();
-    // Fetch video as blob
-    const resp = await fetch(post.url);
-    if(!resp.ok) throw new Error('Fetch failed');
-    const blob = await resp.blob();
-    const tx = db.transaction(['videos','meta'],'readwrite');
-    tx.objectStore('videos').put({id:post.id, blob, savedAt:Date.now()});
-    tx.objectStore('meta').put({
-      id:post.id, title:post.title||'Untitled',
-      thumbURL:post.thumbURL||'', type:post.type||'video',
-      duration:post.duration||'', authorName:post.authorName||'',
-      url:post.url, savedAt:Date.now()
-    });
-    // Also save to downloads list (for UI)
-    const dl = getDownloads();
-    if(!dl.find(d=>d.id===post.id)){
-      dl.unshift({
-        id:post.id, title:post.title||'Untitled',
-        url:post.url, thumbURL:post.thumbURL||'',
-        type:post.type||'video', duration:post.duration||'',
-        authorName:post.authorName||'', savedAt:Date.now(),
-        offline:true
-      });
-      if(dl.length>50) dl.pop();
-      saveDownloads(dl);
-    }
-    showToast('✅ Saved for offline viewing!');
-  }catch(e){
-    showToast('❌ Download failed: '+e.message);
-  }
-}
-
-async function getOfflineVideoBlob(postId){
-  try{
-    const db = await openSXDB();
-    return new Promise((res,rej)=>{
-      const tx = db.transaction('videos','readonly');
-      const req = tx.objectStore('videos').get(postId);
-      req.onsuccess = () => res(req.result?.blob || null);
-      req.onerror = () => res(null);
-    });
-  }catch(e){ return null; }
-}
-
-async function getAllOfflineMeta(){
-  try{
-    const db = await openSXDB();
-    return new Promise((res)=>{
-      const tx = db.transaction('meta','readonly');
-      const req = tx.objectStore('meta').getAll();
-      req.onsuccess = () => res(req.result||[]);
-      req.onerror = () => res([]);
-    });
-  }catch(e){ return []; }
-}
-
-async function deleteOfflineVideo(postId){
-  try{
-    const db = await openSXDB();
-    const tx = db.transaction(['videos','meta'],'readwrite');
-    tx.objectStore('videos').delete(postId);
-    tx.objectStore('meta').delete(postId);
-    const dl = getDownloads().filter(d=>d.id!==postId);
-    saveDownloads(dl);
-    showToast('🗑️ Removed from offline storage');
-    loadDownloads();
-  }catch(e){ showToast('Error deleting'); }
-}
-
-async function getOfflineStorageSize(){
-  try{
-    const meta = await getAllOfflineMeta();
-    return meta.length;
-  }catch(e){ return 0; }
-}
-
 // ══════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════
@@ -2344,131 +2121,6 @@ const AGORA_CHANNEL="stream x-live";
 let _agoraClient=null, _agoraLocalAudio=null, _agoraLocalVideo=null;
 let _liveActive=false, _liveDurInt=null, _liveDurSecs=0;
 let _liveMicOn=true, _liveCamOn=true, _liveQuality='720p';
-
-
-// ═══════════════════════════════════════════════════════
-// 🧠 AI RECOMMENDATION ENGINE
-// Tracks: watch time, clicks, likes, category preferences
-// Scores videos per user in real-time
-// ═══════════════════════════════════════════════════════
-const AI = {
-  // Store user behavior locally + Firestore
-  async trackBehavior(action, data){
-    if(!window.cUser) return;
-    const uid = cUser.uid;
-    const key = 'sx_ai_'+uid;
-    let prefs;
-    try{ prefs = JSON.parse(localStorage.getItem(key)||'{}'); }catch(e){ prefs={}; }
-    const now = Date.now();
-    if(action==='watch'){
-      // Track category preference
-      const cat = data.category||data.type||'general';
-      prefs.cats = prefs.cats||{};
-      prefs.cats[cat] = (prefs.cats[cat]||0) + (data.secs||5);
-      prefs.lastWatch = now;
-      prefs.watchCount = (prefs.watchCount||0)+1;
-      // Track liked authors
-      if(data.authorId){
-        prefs.authors = prefs.authors||{};
-        prefs.authors[data.authorId] = (prefs.authors[data.authorId]||0)+1;
-      }
-    } else if(action==='like'){
-      prefs.likedCats = prefs.likedCats||{};
-      prefs.likedCats[data.category||'general'] = (prefs.likedCats[data.category||'general']||0)+1;
-    } else if(action==='search'){
-      prefs.searches = prefs.searches||[];
-      prefs.searches.unshift(data.query);
-      prefs.searches = prefs.searches.slice(0,20);
-    } else if(action==='purchase'){
-      prefs.boughtCats = prefs.boughtCats||{};
-      prefs.boughtCats[data.category||'general'] = (prefs.boughtCats[data.category||'general']||0)+1;
-    }
-    localStorage.setItem(key, JSON.stringify(prefs));
-    // Async sync to Firestore (no await — non-blocking)
-    db.collection('userPrefs').doc(uid).set(prefs,{merge:true}).catch(()=>{});
-  },
-
-  // Get user preferences
-  getPrefs(){
-    if(!window.cUser) return {};
-    try{ return JSON.parse(localStorage.getItem('sx_ai_'+cUser.uid)||'{}'); }
-    catch(e){ return {}; }
-  },
-
-  // Score a post for this user (higher = more relevant)
-  scorePost(p, prefs){
-    let score = p.rankScore || 0;
-    const cats = prefs.cats||{};
-    const likedCats = prefs.likedCats||{};
-    const authors = prefs.authors||{};
-    // Category affinity
-    const cat = p.category||p.type||'general';
-    score += (cats[cat]||0) * 0.05;     // watch time in category
-    score += (likedCats[cat]||0) * 3;   // liked videos in category
-    score += (authors[p.authorId]||0) * 2; // watched this creator before
-    // Freshness boost
-    const ageH = (Date.now()-(p.time||0))/3600000;
-    score += Math.max(0, 48-ageH) * 0.5;
-    // Engagement velocity
-    const vel = ageH>0 ? (p.likes||0)/Math.max(ageH,1) : 0;
-    score += vel * 10;
-    return Math.round(score);
-  },
-
-  // Sort feed with AI scores
-  sortFeed(posts){
-    const prefs = this.getPrefs();
-    return [...posts].sort((a,b)=>this.scorePost(b,prefs)-this.scorePost(a,prefs));
-  },
-
-  // Get top categories for user
-  topCategories(n=5){
-    const prefs = this.getPrefs();
-    const cats = {...(prefs.cats||{}), ...(prefs.likedCats||{})};
-    return Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0]);
-  },
-
-  // Load AI-personalized feed from Firestore
-  async getPersonalizedFeed(limit=30){
-    const prefs = this.getPrefs();
-    const topCats = this.topCategories(5);
-    let posts = [];
-    try{
-      // Fetch mixed content
-      const snap = await db.collection('posts')
-        .where('privacy','==','public')
-        .orderBy('rankScore','desc')
-        .limit(limit*2).get().catch(async()=>{
-          return db.collection('posts').orderBy('time','desc').limit(limit*2).get();
-        });
-      posts = snap.docs.map(d=>({id:d.id,...d.data()}))
-        .filter(p=>!p.shadowBanned);
-      // Score and sort
-      posts = this.sortFeed(posts).slice(0,limit);
-    }catch(e){
-      try{
-        const snap2 = await db.collection('posts').limit(limit).get();
-        posts = snap2.docs.map(d=>({id:d.id,...d.data()})).filter(p=>!p.shadowBanned);
-      }catch(e2){}
-    }
-    return posts;
-  },
-
-  // AI product recommendations based on watch history
-  async getProductRecs(){
-    const topCats = this.topCategories(3);
-    const prefs = this.getPrefs();
-    try{
-      let q = db.collection('marketplace');
-      if(topCats.length) q = q.where('category','in',topCats.slice(0,3));
-      const snap = await q.limit(10).get().catch(()=>db.collection('marketplace').limit(10).get());
-      return snap.docs.map(d=>({id:d.id,...d.data()}));
-    }catch(e){ return []; }
-  }
-};
-
-// Override feed loading with AI
-const _origLoadNextBatch = typeof loadNextBatch !== 'undefined' ? loadNextBatch : null;
 
 firebase.initializeApp(FB);
 const auth=firebase.auth(), db=firebase.firestore();
@@ -2692,15 +2344,10 @@ function openUploadDirect(type){
 function hideSplash(){
   const s=document.getElementById('splashScreen');
   if(!s)return;
-  s.style.transition='opacity .15s ease';
+  s.style.transition='opacity .2s ease';
   s.style.opacity='0';
-  setTimeout(()=>{s.style.display='none';},150);
+  setTimeout(()=>{s.style.display='none';},200);
 }
-// Fast splash - hide after max 1.5s regardless
-setTimeout(()=>{
-  const s=document.getElementById('splashScreen');
-  if(s&&s.style.opacity!=='0'){hideSplash();}
-},1500);
 
 // Google redirect result handle karo
 auth.getRedirectResult().then(async res=>{
@@ -2733,8 +2380,6 @@ auth.onAuthStateChanged(async user=>{
       listenNotifs();
     });
     loadHome();
-    setTimeout(loadStories, 800);
-    setTimeout(loadAIProductRecs, 2000);
   }else{
     cUser=null;
     // Hide splash fast — no 2 second wait
@@ -2860,7 +2505,7 @@ function updateProfileUI(){
   document.getElementById('profHandle').textContent=cUserData.handle||'@user';
   document.getElementById('profEmail').textContent=cUser?.email||'';
   document.getElementById('profAboutText').textContent=cUserData.about||'No bio yet.';
-  // Show channel meta (date, location, total views)
+  // Show channel meta (date, location)
   const metaEl=document.getElementById('profChannelMeta');
   const joinedEl=document.getElementById('profJoinedVal');
   if(metaEl&&joinedEl){
@@ -2868,29 +2513,7 @@ function updateProfileUI(){
     if(ct){
       joinedEl.textContent=new Date(ct).toLocaleDateString('en-PK',{year:'numeric',month:'long'});
       metaEl.style.display='block';
-    } else {
-      metaEl.style.display='block';
     }
-  }
-  // Banner cover
-  if(cUserData?.bannerURL){
-    const cover = document.getElementById('profCover');
-    if(cover){
-      cover.style.backgroundImage = `url(${cUserData.bannerURL})`;
-      cover.style.backgroundSize = 'cover';
-      cover.style.backgroundPosition = 'center';
-    }
-  }
-  // Location
-  const locVal = document.getElementById('profLocationVal');
-  if(locVal) locVal.textContent = cUserData.location || 'Pakistan 🇵🇰';
-  // Total views — sum all posts views
-  if(cUser){
-    db.collection('posts').where('authorId','==',cUser.uid).get().then(snap=>{
-      const totalViews = snap.docs.reduce((s,d)=>s+(d.data().views||0),0);
-      const tvEl = document.getElementById('profTotalViews');
-      if(tvEl) tvEl.textContent = totalViews >= 1000 ? (totalViews/1000).toFixed(1)+'K' : totalViews;
-    }).catch(()=>{});
   }
   // Website link
   const existingWebEl=document.getElementById('profWebsite');
@@ -3013,12 +2636,10 @@ function showScreen(name){
   if(name==='notif')loadNotifs();
   if(name==='subs')loadSubsFeed();
   if(name==='owner')loadOwnerDash();
-  if(name==='live'){loadLiveScreen();setTimeout(loadLiveStreams,400);}
+  if(name==='live')loadLiveScreen();
   if(name==='themes')renderThemeGrid();
   if(name==='gallery')loadGallery();
-  if(name==='downloads')loadDownloads();
   if(name==='history')loadHistory();
-  if(name==='home')setTimeout(loadStories,500);
   if(name==='playlists')loadMyPlaylists();
 }
 
@@ -3156,10 +2777,8 @@ function filterFeed(btn,filter){
 function renderFeed(posts){
   const feed=document.getElementById('homeFeed');
   if(!posts||!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet!</p></div>';return;}
-  // AI sort
-  const aiSorted = AI.sortFeed(posts);
-  const shorts=aiSorted.filter(p=>p.type==='short').slice(0,6);
-  const nonShorts=aiSorted.filter(p=>p.type!=='short');
+  const shorts=posts.filter(p=>p.type==='short').slice(0,6);
+  const nonShorts=posts.filter(p=>p.type!=='short');
   let html='';
   nonShorts.forEach((p,i)=>{
     html+=buildCard(p);
@@ -3210,7 +2829,6 @@ async function openFeedShort(postId){
 }
 
 function buildCard(p){
-  if(p.shadowBanned) return ''; // hide shadow banned
   if(p.type==='post')return buildPostCard(p);
   // YouTube-style video card
   let thumb='';
@@ -3650,11 +3268,6 @@ function addPostImages(input){
 async function doUpload(){
   if(!cUser)return showToast('Login karein!');
   const title=document.getElementById('uploadTitle').value.trim();
-  // Rate limit check
-  const canUpload = await checkUploadLimit();
-  if(!canUpload) return;
-  // Duplicate check
-  if(title && await checkDuplicateUpload(title, '')) return;
   const desc=document.getElementById('uploadDesc').value.trim();
   const tags=document.getElementById('uploadTags').value.trim();
   if(!title)return showToast('Title required!');
@@ -3695,17 +3308,7 @@ async function doUpload(){
       privacy:_uploadPrivacy||'public',
       searchTerms:extractSearchTerms({title,desc,tags:tags.split(',').map(t=>t.trim()),category:document.getElementById('uploadCategory')?.value||uploadType,type:uploadType})
     });
-    // Check if goes to review queue
-    const inReview = await shouldGoToReviewQueue();
-    if(inReview){
-      await db.collection('posts').doc().set && true; // already added
-      showToast('📋 Upload in review queue! Will be visible soon.');
-      // Update trust score positively
-      updateTrustScore(+2, 'upload_activity');
-    } else {
-      showToast('✅ Uploaded successfully!');
-      updateTrustScore(+1, 'upload_activity');
-    }
+    showToast('✅ Uploaded successfully!');
     resetUploadForm();btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';
     setTimeout(()=>showScreen('home'),1000);
   }catch(e){
@@ -3757,8 +3360,6 @@ async function openPost(id){
     const p=doc.data();currentPostData={id,...p};
     updateUserPrefs(p);
     addToHistory(p);
-    // AI behavior tracking
-    AI.trackBehavior('watch',{category:p.category||p.type,authorId:p.authorId,secs:5});
     const vid=document.getElementById('playerVid');
     const wrap=document.getElementById('playerVidWrap');
     wrap.style.backgroundImage='';wrap.style.display='block';vid.style.display='block';
@@ -3772,16 +3373,8 @@ async function openPost(id){
     }else{
       if(p.url){
         vid.src='';
-        // Try offline cache first
-        const offlineBlob = await getOfflineVideoBlob(id).catch(()=>null);
-        if(offlineBlob){
-          vid.src = URL.createObjectURL(offlineBlob);
-          showToast('📥 Playing offline copy');
-        } else {
-          vid.src=p.url;
-        }
+        vid.src=p.url;
         vid.load();
-        initBufferTracking();
         vid.play().catch(()=>{
           // Show play button if autoplay blocked
           let po=document.getElementById('playOverlay');
@@ -3908,698 +3501,6 @@ async function createShortFromTrim(){
   }catch(e){showToast('Error creating short');}
 }
 
-// ══════════════════════════════════════════════════════
-// VIDEO QUALITY MENU
-// ══════════════════════════════════════════════════════
-let _currentVideoSrc = '';
-let _currentQuality = 'auto';
-const QUALITY_LABELS = ['Auto','360p','480p','720p','1080p','4K'];
-
-function showQualityMenu(){
-  const existing = document.getElementById('qualityMenuSheet');
-  if(existing){ existing.remove(); document.getElementById('qualityMenuOv')?.remove(); return; }
-  const ov = document.createElement('div');
-  ov.id = 'qualityMenuOv';
-  ov.style.cssText = 'position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.5);';
-  ov.onclick = () => { ov.remove(); document.getElementById('qualityMenuSheet')?.remove(); };
-  document.body.appendChild(ov);
-
-  const sheet = document.createElement('div');
-  sheet.id = 'qualityMenuSheet';
-  sheet.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:601;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 36px;';
-  sheet.innerHTML = `
-    <div style="width:34px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;"></div>
-    <div style="font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i class="fas fa-cog" style="color:var(--red);"></i> Video Quality</div>
-    ${QUALITY_LABELS.map(q=>`
-      <div onclick="setQuality('${q}')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer;">
-        <span style="font-size:14px;font-weight:${q===_currentQuality?'700':'400'};color:${q===_currentQuality?'var(--red)':'var(--text)'};">${q==='Auto'?'🔄 Auto (Recommended)':q==='4K'?'⭐ 4K Ultra HD':q==='1080p'?'🔵 1080p Full HD':q==='720p'?'🟢 720p HD':q}</span>
-        ${q===_currentQuality?'<i class="fas fa-check" style="color:var(--red);"></i>':''}
-      </div>`).join('')}
-    <div style="font-size:11px;color:var(--text3);margin-top:12px;">💡 Auto adjusts to your network speed</div>
-  `;
-  document.body.appendChild(sheet);
-}
-
-function setQuality(q){
-  _currentQuality = q;
-  const btn = document.getElementById('qualityBtn');
-  if(btn) btn.textContent = '⚙️ ' + q;
-  document.getElementById('qualityMenuSheet')?.remove();
-  document.getElementById('qualityMenuOv')?.remove();
-  // For Cloudinary URLs, append quality transform
-  const vid = document.getElementById('playerVid');
-  if(!vid || !currentPostData?.url) return;
-  let url = currentPostData.url;
-  if(q !== 'Auto' && url.includes('cloudinary.com')){
-    const qMap = {'360p':'h_360','480p':'h_480','720p':'h_720','1080p':'h_1080','4K':'h_2160'};
-    const transform = qMap[q] || '';
-    if(transform){
-      const currentTime = vid.currentTime;
-      url = url.replace('/upload/', `/upload/${transform},q_auto:good/`);
-      vid.src = url;
-      vid.load();
-      vid.currentTime = currentTime;
-      vid.play().catch(()=>{});
-    }
-  }
-  showToast('Quality: ' + q);
-}
-
-// ══════════════════════════════════════════════════════
-// BUFFER PROGRESS BAR (YouTube style)
-// ══════════════════════════════════════════════════════
-function initBufferTracking(){
-  const vid = document.getElementById('playerVid');
-  if(!vid) return;
-  vid.addEventListener('progress', updateBuffer);
-  vid.addEventListener('timeupdate', updateBuffer);
-}
-
-function updateBuffer(){
-  const vid = document.getElementById('playerVid');
-  const bufFill = document.getElementById('vidBufferFill');
-  const playFill = document.getElementById('vidPlayFill');
-  if(!vid || !bufFill || !playFill) return;
-  if(vid.duration && vid.buffered.length){
-    const buffered = vid.buffered.end(vid.buffered.length - 1);
-    bufFill.style.width = (buffered / vid.duration * 100) + '%';
-  }
-  if(vid.duration){
-    playFill.style.width = (vid.currentTime / vid.duration * 100) + '%';
-  }
-}
-
-// ══════════════════════════════════════════════════════
-// DOWNLOADS — Save videos locally & show in Downloads screen
-// ══════════════════════════════════════════════════════
-function getDownloads(){
-  try{ return JSON.parse(localStorage.getItem('sx_downloads')||'[]'); }
-  catch(e){ return []; }
-}
-
-function saveDownloads(arr){
-  try{ localStorage.setItem('sx_downloads', JSON.stringify(arr)); }catch(e){}
-}
-
-function downloadVideo(){
-  if(!currentPostData || !currentPostData.url) return showToast('No downloadable content');
-  const p = currentPostData;
-  // Save to downloads list
-  const dl = getDownloads();
-  const exists = dl.find(d => d.id === p.id);
-  if(!exists){
-    dl.unshift({
-      id: p.id,
-      title: p.title || 'Untitled',
-      url: p.url,
-      thumbURL: p.thumbURL || '',
-      type: p.type || 'video',
-      duration: p.duration || '',
-      authorName: p.authorName || '',
-      savedAt: Date.now()
-    });
-    if(dl.length > 50) dl.pop(); // max 50
-    saveDownloads(dl);
-    showToast('✅ Saved to Downloads!');
-  } else {
-    showToast('Already in Downloads 📥');
-  }
-  // Also trigger browser download
-  const a = document.createElement('a');
-  a.href = p.url;
-  a.download = (p.title||'video').replace(/[^a-z0-9]/gi,'_');
-  a.target = '_blank';
-  a.rel = 'noopener';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
-
-async function loadDownloads(){
-  const list = document.getElementById('downloadsList');
-  if(!list) return;
-  list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
-  // Merge IndexedDB meta with localStorage list
-  const idbMeta = await getAllOfflineMeta().catch(()=>[]);
-  const dl = getDownloads();
-  idbMeta.forEach(m=>{
-    if(!dl.find(d=>d.id===m.id)) dl.push({...m, offline:true});
-  });
-  dl.sort((a,b)=>b.savedAt-a.savedAt);
-  if(!dl.length){
-    list.innerHTML = '<div class="empty-state"><i class="fas fa-download"></i><p>No downloaded videos yet.<br>Tap Download on any video!</p></div>';
-    return;
-  }
-  const sizeCount = await getOfflineStorageSize();
-  list.insertAdjacentHTML('beforebegin',`<div style="font-size:11px;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i class="fas fa-hdd" style="color:var(--red);"></i> ${sizeCount} video(s) saved offline — plays without internet</div>`);
-  list.innerHTML = dl.map((p,i) => {
-    const th = p.thumbURL || (p.url ? p.url.replace('/upload/','/upload/so_1,w_300/').replace(/\.(mp4|mov|webm)$/,'.jpg') : '');
-    const sizeMB = '—';
-    return `<div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
-      <div onclick="openDownloadedVideo('${p.id}','${p.url.replace(/'/g,'')}','${(p.title||'').replace(/'/g,'')}','${(p.thumbURL||'').replace(/'/g,'')}')" style="width:110px;height:62px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;cursor:pointer;position:relative;">
-        ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play" style="color:var(--text3);font-size:20px;"></i></div>'}
-        ${p.duration?`<div style="position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,.85);color:white;font-size:8px;font-weight:600;padding:1px 4px;border-radius:2px;">${p.duration}</div>`:''}
-      </div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-size:12px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
-        <div style="font-size:10px;color:var(--text3);margin-top:4px;">${p.authorName||''} • ${getTimeAgo(p.savedAt)}</div>
-        <div style="display:flex;gap:8px;margin-top:6px;">
-          <button onclick="openDownloadedVideo('${p.id}','${p.url.replace(/'/g,'')}','${(p.title||'').replace(/'/g,'')}','${(p.thumbURL||'').replace(/'/g,'')}')" style="background:var(--red);color:white;border:none;border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;"><i class="fas fa-play"></i> Play</button>
-          ${p.offline?'<span style="background:rgba(0,200,100,.15);color:#00c864;border-radius:5px;padding:2px 6px;font-size:9px;font-weight:700;"><i class="fas fa-wifi-slash" style="font-size:8px;"></i> Offline</span>':''}
-          <button onclick="shareDownloaded('${p.url.replace(/'/g,'')}','${(p.title||'').replace(/'/g,'')}')" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:600;cursor:pointer;"><i class="fas fa-share"></i> Share</button>
-          <button onclick="deleteDownload(${i})" style="background:rgba(255,0,0,.1);color:var(--red);border:1px solid rgba(255,0,0,.2);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:600;cursor:pointer;"><i class="fas fa-trash"></i></button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function openDownloadedVideo(id, url, title, thumbURL){
-  if(id && id !== 'undefined'){
-    openPost(id);
-  } else {
-    // Play directly if no post ID
-    const ps = document.getElementById('playerScreen');
-    ps.classList.add('open'); ps.scrollTop=0;
-    const vid = document.getElementById('playerVid');
-    const wrap = document.getElementById('playerVidWrap');
-    vid.src = url; vid.load(); vid.play().catch(()=>{});
-    document.getElementById('playerTitle').textContent = title || 'Downloaded Video';
-    document.getElementById('playerMeta').textContent = '📥 Downloaded';
-    if(wrap) wrap.style.backgroundImage='';
-    vid.style.display='block';
-  }
-}
-
-function shareDownloaded(url, title){
-  if(navigator.share){
-    navigator.share({title: title||'Stream x video', url: url}).catch(()=>{});
-  } else {
-    navigator.clipboard.writeText(url).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Share: '+url.substring(0,40)));
-  }
-}
-
-function deleteDownload(index, postId){
-  if(postId){ deleteOfflineVideo(postId); return; }
-  const dl = getDownloads();
-  const item = dl[index];
-  if(item?.id) deleteOfflineVideo(item.id).catch(()=>{});
-  dl.splice(index, 1);
-  saveDownloads(dl);
-  loadDownloads();
-  showToast('🗑️ Removed from Downloads');
-}
-
-// ══════════════════════════════════════════════════════
-// CHANNEL SHARE
-// ══════════════════════════════════════════════════════
-function shareMyChannel(){
-  if(!cUser || !cUserData) return showToast('Login karein pehle');
-  const handle = cUserData.channelHandle || cUserData.handle || ('@'+(cUserData.name||'user').toLowerCase().replace(/[^a-z0-9]/g,''));
-  const channelUrl = location.origin + location.pathname + '?channel=' + encodeURIComponent(handle);
-  const text = `${cUserData.name||'My Channel'} ko Stream x per follow karo! ${channelUrl}`;
-  if(navigator.share){
-    navigator.share({ title: cUserData.name||'My Channel', text: text, url: channelUrl }).catch(()=>{});
-  } else {
-    showShareSheet(channelUrl, text, cUserData.name||'My Channel');
-  }
-}
-
-// ══════════════════════════════════════════════════════
-// EDIT LOCATION
-// ══════════════════════════════════════════════════════
-async function editLocation(){
-  const cur = cUserData?.location || 'Pakistan';
-  const newLoc = prompt('Apni location enter karein:', cur);
-  if(!newLoc || !newLoc.trim()) return;
-  try{
-    await db.collection('users').doc(cUser.uid).update({ location: newLoc.trim() });
-    if(cUserData) cUserData.location = newLoc.trim();
-    const el = document.getElementById('profLocationVal');
-    if(el) el.textContent = newLoc.trim();
-    showToast('Location updated ✅');
-  }catch(e){ showToast('Error updating location'); }
-}
-
-// ══════════════════════════════════════════════════════
-// PHONE OTP AUTH
-// ══════════════════════════════════════════════════════
-let _confirmResult = null;
-
-function switchAuthTab(tab, el){
-  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
-  if(el) el.classList.add('active');
-  document.getElementById('loginForm').style.display = tab==='login'?'block':'none';
-  document.getElementById('signupForm').style.display = tab==='signup'?'block':'none';
-  document.getElementById('phoneForm').style.display = tab==='phone'?'block':'none';
-  document.getElementById('authErr').textContent = '';
-  if(tab==='phone') initRecaptcha();
-}
-
-function initRecaptcha(){
-  if(window._rcInit) return;
-  window._rcInit = true;
-  try{
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container',{
-      size:'normal', callback:()=>{ document.getElementById('sendOtpBtn').disabled=false; }
-    });
-    window.recaptchaVerifier.render().catch(()=>{});
-  }catch(e){}
-}
-
-async function sendOTP(){
-  const code = document.getElementById('phoneCountry').value;
-  const num = document.getElementById('phoneNumber').value.trim();
-  if(!num || num.length < 7) return setAuthErr('Valid phone number enter karein');
-  const fullNum = code + num;
-  const btn = document.getElementById('sendOtpBtn');
-  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-  try{
-    // Check if phone already used (one phone = one account)
-    const existing = await db.collection('users').where('phone', '==', fullNum).limit(1).get();
-    if(!existing.empty){
-      // Allow login for existing phone
-    }
-    _confirmResult = await auth.signInWithPhoneNumber(fullNum, window.recaptchaVerifier);
-    document.getElementById('phoneStep1').style.display = 'none';
-    document.getElementById('phoneStep2').style.display = 'block';
-    document.getElementById('otpSentMsg').textContent = 'OTP sent to ' + fullNum;
-    showToast('OTP sent! ✅');
-  }catch(e){
-    setAuthErr('OTP send failed: ' + (e.message||'Try again'));
-    btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
-    window._rcInit = false;
-    try{ window.recaptchaVerifier.clear(); }catch(ex){}
-  }
-}
-
-async function verifyOTP(){
-  const code = document.getElementById('otpInput').value.trim();
-  const name = document.getElementById('phoneUserName').value.trim() || 'User';
-  if(!code || code.length < 6) return setAuthErr('6-digit OTP enter karein');
-  if(!_confirmResult) return setAuthErr('Pehle OTP send karein');
-  const btn = document.getElementById('verifyOtpBtn');
-  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-  try{
-    const result = await _confirmResult.confirm(code);
-    const u = result.user;
-    const doc = await db.collection('users').doc(u.uid).get();
-    if(!doc.exists){
-      await db.collection('users').doc(u.uid).set({
-        name, phone: u.phoneNumber,
-        handle: '@'+name.toLowerCase().replace(/[^a-z0-9]/g,'').substring(0,20),
-        about:'', photoURL:'', subscribers:0, trustScore:50,
-        createdAt:Date.now(), lastSeen:Date.now()
-      });
-    }
-    showToast('✅ Phone verified! Welcome ' + name);
-  }catch(e){
-    setAuthErr('Wrong OTP or expired. Try again');
-    btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Verify & Login';
-  }
-}
-
-// ══════════════════════════════════════════════════════
-// TRUST SCORE SYSTEM
-// ══════════════════════════════════════════════════════
-async function getUserTrustScore(){
-  if(!cUser) return 0;
-  try{
-    const doc = await db.collection('users').doc(cUser.uid).get();
-    return doc.data()?.trustScore || 50;
-  }catch(e){ return 50; }
-}
-
-async function updateTrustScore(delta, reason){
-  if(!cUser) return;
-  try{
-    const ref = db.collection('users').doc(cUser.uid);
-    const doc = await ref.get();
-    const current = doc.data()?.trustScore || 50;
-    const newScore = Math.max(0, Math.min(100, current + delta));
-    await ref.update({ trustScore: newScore });
-    // Log reason
-    if(delta < 0){
-      await db.collection('trustLogs').add({
-        uid:cUser.uid, delta, reason, score:newScore, time:Date.now()
-      }).catch(()=>{});
-    }
-    if(cUserData) cUserData.trustScore = newScore;
-  }catch(e){}
-}
-
-function getTrustLabel(score){
-  if(score >= 80) return { label:'Trusted', color:'#00c864', icon:'fas fa-shield-alt' };
-  if(score >= 60) return { label:'Good', color:'#0096ff', icon:'fas fa-thumbs-up' };
-  if(score >= 40) return { label:'New User', color:'#ff9600', icon:'fas fa-user' };
-  return { label:'Restricted', color:'#ff4444', icon:'fas fa-exclamation-triangle' };
-}
-
-// ══════════════════════════════════════════════════════
-// RATE LIMITING — Upload, Comment spam prevention
-// ══════════════════════════════════════════════════════
-async function checkUploadLimit(){
-  if(!cUser) return false;
-  const trust = await getUserTrustScore();
-  const maxPerDay = trust >= 80 ? 20 : trust >= 60 ? 10 : trust >= 40 ? 5 : 2;
-  const today = new Date().toDateString();
-  const key = 'sx_ul_' + cUser.uid + '_' + today;
-  const count = parseInt(localStorage.getItem(key) || '0');
-  if(count >= maxPerDay){
-    showToast(`⚠️ Daily upload limit (${maxPerDay}) reached. Come back tomorrow!`);
-    return false;
-  }
-  localStorage.setItem(key, count+1);
-  return true;
-}
-
-function checkCommentLimit(){
-  const key = 'sx_cm_' + (cUser?.uid||'x');
-  const data = JSON.parse(localStorage.getItem(key) || '{"count":0,"ts":0}');
-  const now = Date.now();
-  if(now - data.ts > 60000){ data.count=0; data.ts=now; }
-  if(data.count >= 5){
-    showToast('⏱️ Comment limit — 1 minute wait');
-    return false;
-  }
-  data.count++;
-  localStorage.setItem(key, JSON.stringify(data));
-  return true;
-}
-
-// ══════════════════════════════════════════════════════
-// SHADOW BAN SYSTEM
-// ══════════════════════════════════════════════════════
-async function checkShadowBan(uid){
-  try{
-    const doc = await db.collection('users').doc(uid).get();
-    return doc.data()?.shadowBanned || false;
-  }catch(e){ return false; }
-}
-
-async function applyShadowBan(uid, reason){
-  if(!cUser || cUser.email !== OWNER_EMAIL) return;
-  try{
-    await db.collection('users').doc(uid).update({ shadowBanned:true, shadowReason:reason, shadowAt:Date.now() });
-    showToast('Shadow ban applied ✅');
-    // Reduce all their post rankScores to near zero
-    const posts = await db.collection('posts').where('authorId','==',uid).get();
-    const batch = db.batch();
-    posts.docs.forEach(d => batch.update(d.ref, { rankScore:-999, shadowBanned:true }));
-    await batch.commit();
-  }catch(e){ showToast('Error: '+e.message); }
-}
-
-async function removeShadowBan(uid){
-  if(!cUser || cUser.email !== OWNER_EMAIL) return;
-  try{
-    await db.collection('users').doc(uid).update({ shadowBanned:false });
-    showToast('Shadow ban removed ✅');
-  }catch(e){}
-}
-
-// ══════════════════════════════════════════════════════
-// UPLOAD REVIEW QUEUE (new users = review mode)
-// ══════════════════════════════════════════════════════
-async function shouldGoToReviewQueue(){
-  if(!cUser) return false;
-  const trust = await getUserTrustScore();
-  if(trust < 40) return true;
-  // New account (< 7 days)
-  const doc = await db.collection('users').doc(cUser.uid).get().catch(()=>null);
-  if(!doc) return false;
-  const created = doc.data()?.createdAt || Date.now();
-  const daysSince = (Date.now() - created) / 86400000;
-  return daysSince < 3; // First 3 days = review queue
-}
-
-// ══════════════════════════════════════════════════════
-// DUPLICATE CONTENT DETECTION
-// ══════════════════════════════════════════════════════
-async function checkDuplicateUpload(title, url){
-  if(!cUser) return false;
-  try{
-    // Simple title-based duplicate check for same user
-    const snap = await db.collection('posts')
-      .where('authorId','==',cUser.uid)
-      .where('title','==',title)
-      .limit(1).get().catch(()=>({ empty:true }));
-    if(!snap.empty){
-      showToast('⚠️ Same title ki video already upload hai!');
-      return true;
-    }
-    return false;
-  }catch(e){ return false; }
-}
-
-// ══════════════════════════════════════════════════════
-// ENGAGEMENT MONITORING — fake views/CTR detection
-// ══════════════════════════════════════════════════════
-async function trackUniqueView(postId){
-  if(!cUser || !postId) return;
-  const key = 'sx_vw_' + postId + '_' + cUser.uid;
-  if(localStorage.getItem(key)) return; // Already counted
-  localStorage.setItem(key, '1');
-  try{
-    await db.collection('posts').doc(postId).update({
-      views: firebase.firestore.FieldValue.increment(1),
-      rankScore: firebase.firestore.FieldValue.increment(2)
-    });
-    // Track for analytics
-    await db.collection('viewEvents').add({
-      postId, uid:cUser.uid, time:Date.now(),
-      userAgent: navigator.userAgent.substring(0,100)
-    }).catch(()=>{});
-  }catch(e){}
-}
-
-// ══════════════════════════════════════════════════════
-// BANNER / COVER PHOTO UPLOAD
-// ══════════════════════════════════════════════════════
-async function uploadBannerPic(input){
-  const file = input.files[0];
-  if(!file || !cUser) return;
-  if(file.size > 5*1024*1024) return showToast('Banner max 5MB');
-  showToast('Uploading banner...');
-  try{
-    const url = await uploadCloud(file, `https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`);
-    await db.collection('users').doc(cUser.uid).update({ bannerURL: url });
-    if(cUserData) cUserData.bannerURL = url;
-    const cover = document.getElementById('profCover');
-    if(cover){
-      cover.style.backgroundImage = `url(${url})`;
-      cover.style.backgroundSize = 'cover';
-      cover.style.backgroundPosition = 'center';
-    }
-    showToast('✅ Cover photo updated!');
-  }catch(e){ showToast('Upload failed: ' + e.message); }
-}
-
-// ══════════════════════════════════════════════════════
-// STORIES SYSTEM — 24h expiry, Instagram style
-// ══════════════════════════════════════════════════════
-let _svStories = [], _svIdx = 0, _svTimer = null;
-
-async function loadStories(){
-  const bar = document.getElementById('storiesList');
-  if(!bar) return;
-  try{
-    const cutoff = Date.now() - 86400000; // 24 hours
-    const snap = await db.collection('stories')
-      .where('expiresAt','>',Date.now())
-      .orderBy('expiresAt','desc')
-      .limit(20).get().catch(async()=>{
-        return await db.collection('stories').orderBy('time','desc').limit(20).get();
-      });
-    const stories = snap.docs.map(d=>({id:d.id,...d.data()}))
-      .filter(s=>s.expiresAt > Date.now() && s.authorId !== cUser?.uid);
-    if(!stories.length){ bar.innerHTML=''; return; }
-    // Group by author
-    const byAuthor = {};
-    stories.forEach(s=>{
-      if(!byAuthor[s.authorId]) byAuthor[s.authorId]=[];
-      byAuthor[s.authorId].push(s);
-    });
-    bar.innerHTML = Object.values(byAuthor).map(authorStories=>{
-      const s = authorStories[0];
-      const seen = localStorage.getItem('sx_story_'+s.id);
-      const thumb = s.thumbURL || s.mediaURL || '';
-      const ring = seen ? 'border:2px solid var(--text3)' : 'border:2px solid var(--red)';
-      return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;" onclick="openStoryViewer(${JSON.stringify(authorStories).replace(/"/g,'&quot;')},0)">
-        <div style="width:54px;height:54px;border-radius:50%;${ring};overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center;">
-          ${thumb ? `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover;">` : `<span style="font-size:22px;font-weight:700;color:white;">${(s.authorName||'U')[0]}</span>`}
-        </div>
-        <span style="font-size:9px;color:var(--text2);max-width:54px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${(s.authorName||'').split(' ')[0]}</span>
-      </div>`;
-    }).join('');
-    // Check my story
-    if(cUser){
-      const mySnap = await db.collection('stories').where('authorId','==',cUser.uid).where('expiresAt','>',Date.now()).limit(1).get().catch(()=>({empty:true}));
-      if(!mySnap.empty){
-        const myS = mySnap.docs[0].data();
-        const plus = document.getElementById('myStoryPlusIcon');
-        const myThumb = document.getElementById('myStoryThumb');
-        const myImg = document.getElementById('myStoryImg');
-        if(plus) plus.style.display='none';
-        if(myThumb && myImg){ myThumb.style.display='block'; myImg.src = myS.thumbURL||myS.mediaURL||''; }
-      }
-    }
-  }catch(e){ bar.innerHTML=''; }
-}
-
-function createStory(){
-  document.getElementById('storyFileInput').click();
-}
-
-async function handleStoryUpload(input){
-  const file = input.files[0];
-  if(!file || !cUser) return;
-  if(file.size > 50*1024*1024) return showToast('Story max 50MB');
-  showToast('Uploading story...');
-  try{
-    const isVideo = file.type.startsWith('video/');
-    const ep = isVideo
-      ? `https://api.cloudinary.com/v1_1/${CLOUD}/video/upload`
-      : `https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`;
-    const url = await uploadCloud(file, ep);
-    let thumb = url;
-    if(isVideo) thumb = url.replace('/upload/','/upload/so_0,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg');
-    await db.collection('stories').add({
-      mediaURL: url, thumbURL: thumb,
-      mediaType: isVideo ? 'video' : 'image',
-      authorId: cUser.uid,
-      authorName: cUserData?.name || cUser.email,
-      authorPhoto: cUserData?.photoURL || '',
-      time: Date.now(),
-      expiresAt: Date.now() + 86400000, // 24 hours
-      views:0, reactions:{}
-    });
-    showToast('✅ Story uploaded! Expires in 24h');
-    loadStories();
-    // Update my story preview
-    const plus = document.getElementById('myStoryPlusIcon');
-    const myThumb = document.getElementById('myStoryThumb');
-    const myImg = document.getElementById('myStoryImg');
-    if(plus) plus.style.display='none';
-    if(myThumb && myImg){ myThumb.style.display='block'; myImg.src=thumb; }
-  }catch(e){ showToast('Story upload failed: '+e.message); }
-}
-
-function openStoryViewer(stories, idx){
-  if(!stories || !stories.length) return;
-  _svStories = typeof stories === 'string' ? JSON.parse(stories.replace(/&quot;/g,'"')) : stories;
-  _svIdx = idx || 0;
-  const viewer = document.getElementById('storyViewer');
-  viewer.style.display = 'flex';
-  showStory(_svIdx);
-}
-
-function showStory(idx){
-  if(idx >= _svStories.length){ closeStoryViewer(); return; }
-  _svIdx = idx;
-  const s = _svStories[idx];
-  // Mark seen
-  localStorage.setItem('sx_story_'+s.id, '1');
-  // Track view
-  if(s.id && cUser){
-    db.collection('stories').doc(s.id).update({views:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
-  }
-  // Media
-  const img = document.getElementById('svImg');
-  const vid = document.getElementById('svVid');
-  if(s.mediaType === 'video'){
-    img.style.display='none'; vid.style.display='block';
-    vid.src = s.mediaURL || ''; vid.load(); vid.play().catch(()=>{});
-  } else {
-    vid.style.display='none'; img.style.display='block';
-    img.src = s.mediaURL || s.thumbURL || '';
-  }
-  // Author info
-  document.getElementById('svAuthorName').textContent = s.authorName || 'User';
-  document.getElementById('svStoryTime').textContent = getTimeAgo(s.time) + ' ago • ' + (idx+1)+'/'+_svStories.length;
-  // Author pic
-  const picEl = document.getElementById('svAuthorPic');
-  if(s.authorPhoto) picEl.innerHTML = `<img src="${s.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-  else picEl.innerHTML = `<div style="width:100%;height:100%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;border-radius:50%;">${(s.authorName||'U')[0]}</div>`;
-  // Progress bars
-  const barsEl = document.getElementById('storyProgressBars');
-  barsEl.innerHTML = _svStories.map((_,i)=>`<div style="flex:1;height:3px;background:rgba(255,255,255,${i<idx?'0.9':i===idx?'0.5':'0.3'});border-radius:2px;overflow:hidden;"><div id="spb${i}" style="height:100%;background:white;width:${i<idx?'100':i===idx?'0':'0'}%;transition:width linear;"></div></div>`).join('');
-  // Auto progress (5s per story image, video duration for video)
-  clearTimeout(_svTimer);
-  const dur = s.mediaType === 'video' ? 15000 : 5000;
-  const pb = document.getElementById('spb'+idx);
-  if(pb){ pb.style.transition=`width ${dur/1000}s linear`; setTimeout(()=>{pb.style.width='100%';},50); }
-  _svTimer = setTimeout(()=>nextStory(), dur);
-}
-
-function nextStory(){ clearTimeout(_svTimer); showStory(_svIdx+1); }
-function prevStory(){ clearTimeout(_svTimer); showStory(Math.max(0,_svIdx-1)); }
-
-function closeStoryViewer(){
-  clearTimeout(_svTimer);
-  document.getElementById('storyViewer').style.display='none';
-  document.getElementById('svVid').pause();
-  loadStories(); // refresh rings
-}
-
-function reactStory(emoji){
-  const s = _svStories[_svIdx];
-  if(!s || !s.id) return;
-  db.collection('stories').doc(s.id).update({[`reactions.${emoji}`]:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
-  showToast(emoji + ' reaction sent!');
-}
-
-// ══════════════════════════════════════════════════════
-// DASHBOARD IMPRESSIONS + FULL ANALYTICS
-// ══════════════════════════════════════════════════════
-async function loadDashboardImpressions(posts){
-  const totalViews = posts.reduce((s,p)=>s+(p.views||0),0);
-  const totalLikes = posts.reduce((s,p)=>s+(p.likes||0),0);
-  const totalComments = posts.reduce((s,p)=>s+(p.comments||0),0);
-  const impressions = Math.round(totalViews * 1.8); // estimated impressions
-  const ctr = totalViews > 0 ? Math.min(99, Math.round((totalLikes/totalViews)*100)) : 0;
-  const watchTimeMins = posts.reduce((s,p)=>s+(p.watchTime||0),0) / 60;
-
-  // Update all dashboard elements
-  const set = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
-  set('dViews', fmt(totalViews));
-  set('dSubs', fmt(cUserData?.subscribers||0));
-  set('dWatchTime', Math.round(watchTimeMins)+'m');
-  set('dImpressions', fmt(impressions));
-  set('aCTR', ctr+'%');
-  set('an-views', fmt(totalViews));
-  set('an-ctr2', ctr+'%');
-  set('aAvgViews', posts.length ? Math.round(totalViews/posts.length) : 0);
-  set('aEngagement', totalViews>0 ? Math.round(((totalLikes+totalComments)/totalViews)*100)+'%' : '0%');
-  set('dVideoCount', posts.length);
-  
-  const ctrBar = document.getElementById('dashCTRBar');
-  if(ctrBar) ctrBar.style.width = Math.min(100,ctr*3)+'%';
-
-  // Impressions mini chart
-  const impChart = document.getElementById('dashImpressionsChart');
-  if(impChart && posts.length){
-    const last7 = posts.slice(0,7).reverse();
-    const maxV = Math.max(...last7.map(p=>p.views||0), 1);
-    impChart.innerHTML = last7.map(p=>{
-      const h = Math.max(4, Math.round(((p.views||0)/maxV)*38));
-      return `<div style="flex:1;background:rgba(255,0,0,.${3+Math.round((p.views||0)/maxV*5)});border-radius:2px;height:${h}px;"></div>`;
-    }).join('');
-  }
-
-  // CTR trend indicators
-  const viewsTrend = document.getElementById('dViewsTrend');
-  if(viewsTrend) viewsTrend.innerHTML = totalViews>0 ? `<span style="color:#00c864;">↑ ${fmt(totalViews)} total</span>` : '<span style="color:var(--text3);">—</span>';
-  const subsTrend = document.getElementById('dSubsTrend');
-  if(subsTrend) subsTrend.innerHTML = `<span style="color:#00c864;">↑ ${cUserData?.subscribers||0}</span>`;
-}
-
-function fmt(n){
-  if(n >= 1000000) return (n/1000000).toFixed(1)+'M';
-  if(n >= 1000) return (n/1000).toFixed(1)+'K';
-  return String(n||0);
-}
-
 function toggleFullscreen(){
   const vid=document.getElementById('playerVid');
   if(!vid)return;
@@ -4664,7 +3565,6 @@ async function toggleLike(){
       await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid),rankScore:firebase.firestore.FieldValue.increment(10)});
       document.getElementById('likeCount').textContent=(p.likes||0)+1;
       document.getElementById('likeBtn').classList.add('liked');
-      AI.trackBehavior('like',{category:p.category||p.type});
       sendNotif(p.authorId,'like',`${cUserData?.name||'Someone'} liked "${p.title||'your video'}"`,currentPostId);
     }
   }catch(e){showToast('Error');}
@@ -4965,7 +3865,6 @@ function clearReply(){
 
 async function postComment(){
   if(!cUser||!currentPostId)return;
-  if(!checkCommentLimit()) return;
   const input=document.getElementById('commInput');
   const text=input.value.trim();if(!text)return;
   input.value='';
@@ -5007,25 +3906,6 @@ function listenNotifs(){
     .onSnapshot(snap=>{
       document.getElementById('notifDot').style.display=snap.empty?'none':'block';
     },()=>{});
-  // Owner: listen for copyright reports in real-time
-  if(cUser.email===OWNER_EMAIL){
-    db.collection('ownerAlerts').where('type','==','copyright').where('status','==','pending')
-      .onSnapshot(snap=>{
-        const badge=document.getElementById('owCopyrightBadge');
-        if(badge){
-          badge.textContent=snap.size;
-          badge.style.display=snap.size>0?'inline':'none';
-        }
-        // Show toast for new reports
-        snap.docChanges().forEach(change=>{
-          if(change.type==='added'){
-            const r=change.doc.data();
-            showToast('🚨 New copyright report from '+( r.reporterName||'User'));
-            document.getElementById('notifDot').style.display='block';
-          }
-        });
-      },()=>{});
-  }
 }
 
 async function loadNotifs(){
@@ -5093,7 +3973,6 @@ async function loadDashboard(){
       if((p.likes||0)>maxLikes){maxLikes=p.likes||0;bestTitle=p.title||'N/A';}
     });
     myPosts.sort((a,b)=>b.time-a.time);
-    loadDashboardImpressions(myPosts);
     const ud=await db.collection('users').doc(cUser.uid).get();
     const subs=ud.exists?(ud.data().subscribers||0):0;
 
@@ -5572,7 +4451,7 @@ async function doSearch(q){
 // OWNER DASHBOARD
 // ══════════════════════════════════════════════════════
 function switchOwnerTab(tab){
-  ['overview','reports','users','guidelines','copyright'].forEach(t=>{
+  ['overview','reports','users','guidelines'].forEach(t=>{
     const el=document.getElementById('owner-'+t);
     const btn=document.getElementById('otab-'+t);
     if(el)el.style.display=t===tab?'block':'none';
@@ -5581,56 +4460,6 @@ function switchOwnerTab(tab){
   if(tab==='reports')loadOwnerReports();
   if(tab==='users')loadOwnerUsers();
   if(tab==='guidelines')loadOwnerGuidelines();
-  if(tab==='copyright')loadOwnerCopyrightAlerts();
-}
-
-async function loadOwnerCopyrightAlerts(){
-  if(!cUser||cUser.email!==OWNER_EMAIL)return;
-  const list=document.getElementById('ownerCopyrightList');
-  if(!list)return;
-  list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
-  try{
-    const snap=await db.collection('ownerAlerts').where('type','==','copyright').orderBy('time','desc').limit(50).get().catch(async()=>{
-      return await db.collection('ownerAlerts').where('type','==','copyright').get();
-    });
-    const docs=snap.docs.sort((a,b)=>b.data().time-a.data().time);
-    const cnt=document.getElementById('owCopyrightCount');
-    const badge=document.getElementById('owCopyrightBadge');
-    if(cnt)cnt.textContent=docs.length;
-    if(badge){badge.textContent=docs.length;badge.style.display=docs.length?'inline':'none';}
-    if(!docs.length){list.innerHTML='<div class="empty-state"><i class="fas fa-check-circle" style="color:#00c864;"></i><p>No copyright reports! 🎉</p></div>';return;}
-    list.innerHTML=docs.map(d=>{
-      const r=d.data();
-      return `<div style="background:var(--card);border:1px solid rgba(255,100,0,.3);border-radius:12px;padding:12px 14px;margin-bottom:10px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-          <div style="width:8px;height:8px;background:#ff6600;border-radius:50%;flex-shrink:0;"></div>
-          <span style="font-size:12px;font-weight:700;color:#ff6600;">COPYRIGHT REPORT</span>
-          <span style="font-size:10px;color:var(--text3);margin-left:auto;">${getTimeAgo(r.time)}</span>
-        </div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">Post: <b style="color:var(--text);">${r.postId||'—'}</b></div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">Reporter: <b style="color:var(--text);">${r.reporterName||'Unknown'}</b></div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">Reason: <b style="color:var(--text);">${r.reason||'—'}</b></div>
-        <div style="display:flex;gap:8px;">
-          <button onclick="reviewCopyrightAlert('${d.id}','${r.postId||''}','delete')" style="flex:1;padding:8px;background:rgba(255,0,0,.1);color:var(--red);border:1px solid rgba(255,0,0,.3);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-trash"></i> Remove Post</button>
-          <button onclick="reviewCopyrightAlert('${d.id}','${r.postId||''}','dismiss')" style="flex:1;padding:8px;background:var(--bg3);color:var(--text2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-check"></i> Dismiss</button>
-        </div>
-      </div>`;
-    }).join('');
-  }catch(e){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load copyright alerts</p>';}
-}
-
-async function reviewCopyrightAlert(alertId, postId, action){
-  try{
-    if(action==='delete'&&postId){
-      if(!confirm('Is post ko permanently delete karein?'))return;
-      await db.collection('posts').doc(postId).delete().catch(()=>{});
-      showToast('Post removed ✅');
-    }else{
-      showToast('Report dismissed ✅');
-    }
-    await db.collection('ownerAlerts').doc(alertId).delete().catch(()=>{});
-    loadOwnerCopyrightAlerts();
-  }catch(e){showToast('Error: '+e.message);}
 }
 
 async function loadOwnerDash(){
@@ -6847,4 +5676,727 @@ async function confirmDeleteAccount(){
   if(!confirm('Last warning: ALL your data will be deleted forever. Continue?'))return;
   try{
     showToast('Deleting your account...');
-    // Delete all user
+    // Delete all user posts
+    const posts=await db.collection('posts').where('authorId','==',cUser.uid).get();
+    const batch=db.batch();
+    posts.forEach(d=>batch.delete(d.ref));
+    // Delete subscriptions
+    const subs=await db.collection('subscriptions').where('from','==',cUser.uid).get();
+    subs.forEach(d=>batch.delete(d.ref));
+    const subs2=await db.collection('subscriptions').where('to','==',cUser.uid).get();
+    subs2.forEach(d=>batch.delete(d.ref));
+    // Delete user doc
+    batch.delete(db.collection('users').doc(cUser.uid));
+    batch.delete(db.collection('channels').doc(cUser.uid));
+    await batch.commit();
+    // Delete Firebase Auth user
+    await cUser.delete();
+    closeDeleteAccountSheet();
+    showToast('Account deleted. Goodbye! 👋');
+    setTimeout(()=>location.reload(),2000);
+  }catch(e){
+    if(e.code==='auth/requires-recent-login'){
+      showToast('Please logout and login again to delete account');
+    }else{
+      showToast('Error: '+e.message);
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// AGE VERIFICATION
+// ══════════════════════════════════════════════════════
+function checkAgeVerification(){
+  const verified=localStorage.getItem('mt_age_verified');
+  if(!verified){
+    const ov=document.getElementById('ageVerifOverlay');
+    if(ov)ov.style.display='flex';
+  }
+}
+function confirmAge(){
+  localStorage.setItem('mt_age_verified','yes');
+  const ov=document.getElementById('ageVerifOverlay');
+  if(ov)ov.style.display='none';
+}
+function denyAge(){
+  showToast('This platform is for 18+ users only.');
+  setTimeout(()=>{window.location.href='https://www.google.com';},1500);
+}
+
+// ══════════════════════════════════════════════════════
+// CONTENT MODERATION — Auto-flag & Report system
+// ══════════════════════════════════════════════════════
+const BANNED_WORDS=['spam','fake','cheat','hack','nude','xxx','porn','sex','vulgar'];
+
+function moderateContent(text){
+  if(!text)return true;
+  const lower=text.toLowerCase();
+  return !BANNED_WORDS.some(w=>lower.includes(w));
+}
+
+async function submitReport(postId,reason,reportedUserId){
+  if(!cUser)return showToast('Login karein to report karein');
+  try{
+    await db.collection('reports').add({
+      postId,reason,
+      reportedBy:cUser.uid,
+      reportedUser:reportedUserId||'',
+      time:Date.now(),
+      status:'pending'
+    });
+    showToast('Report submitted. We will review within 24hrs ✅');
+    // Auto-flag post if 5+ reports
+    const rSnap=await db.collection('reports').where('postId','==',postId).where('status','==','pending').get();
+    if(rSnap.size>=5){
+      await db.collection('posts').doc(postId).update({flagged:true,flagReason:'Multiple user reports'});
+      showToast('Content flagged for review');
+    }
+  }catch(e){showToast('Error submitting report');}
+}
+
+// Override ctxReport to use proper system
+function ctxReport(){
+  closeCtxMenu();
+  if(!ctxPostId)return;
+  const ex=document.getElementById('reportSheet');if(ex)ex.remove();
+  const exo=document.getElementById('reportOv');if(exo)exo.remove();
+  const ov=document.createElement('div');
+  ov.id='reportOv';
+  ov.style.cssText='position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.6);';
+  document.body.appendChild(ov);
+  const sheet=document.createElement('div');
+  sheet.id='reportSheet';
+  sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:801;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 32px;';
+  const reasons=['Spam or misleading','Nudity or sexual content','Hate speech','Violence or dangerous acts','Harassment or bullying','Copyright violation','Child safety concern','Other'];
+  sheet.innerHTML=`
+    <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;"></div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:14px;">🚩 Report Content</div>
+    ${reasons.map(r=>`
+      <div onclick="submitReport('${ctxPostId}','${r}','');document.getElementById('reportSheet').remove();document.getElementById('reportOv').remove();"
+        style="padding:13px 0;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;display:flex;align-items:center;gap:10px;">
+        <i class="fas fa-flag" style="color:var(--red);font-size:13px;"></i>${r}
+      </div>`).join('')}
+    <button onclick="document.getElementById('reportSheet').remove();document.getElementById('reportOv').remove();" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:14px;">Cancel</button>
+  `;
+  ov.onclick=()=>{sheet.remove();ov.remove();};
+  document.body.appendChild(sheet);
+}
+
+// ══════════════════════════════════════════════════════
+// PWA — Service Worker + Install Prompt
+// ══════════════════════════════════════════════════════
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js',{scope:'./'})
+      .then(reg=>{console.log('SW registered ✅',reg.scope);})
+      .catch(e=>console.log('SW error:',e));
+  });
+}
+
+let _pwaPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  _pwaPrompt=e;
+  // Show install banner after 5 seconds
+  setTimeout(()=>showPwaInstallBanner(),5000);
+});
+
+function showPwaInstallBanner(){
+  if(!_pwaPrompt)return;
+  const ex=document.getElementById('pwaBanner');if(ex)return;
+  const banner=document.createElement('div');
+  banner.id='pwaBanner';
+  banner.style.cssText='position:fixed;bottom:72px;left:12px;right:12px;z-index:1100;background:linear-gradient(135deg,#1a1a1a,#2a0000);border:1.5px solid var(--red);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(255,0,0,.2);animation:fadeUp .3s ease;';
+  banner.innerHTML=`
+    <div style="width:40px;height:40px;background:var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg width="22" height="16" viewBox="0 0 50 36"><rect width="50" height="36" rx="8" fill="white"/><polygon points="19,8 19,28 38,18" fill="#FF0000"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div style="font-size:13px;font-weight:700;color:white;">Install Stream x App</div>
+      <div style="font-size:11px;color:#aaa;">Home screen pe add karo — free!</div>
+    </div>
+    <button onclick="installPwa()" style="background:var(--red);color:white;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;">Install</button>
+    <button onclick="document.getElementById('pwaBanner').remove()" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:18px;padding:2px 4px;">×</button>
+  `;
+  document.body.appendChild(banner);
+}
+
+async function installPwa(){
+  if(!_pwaPrompt)return;
+  _pwaPrompt.prompt();
+  const result=await _pwaPrompt.userChoice;
+  if(result.outcome==='accepted'){showToast('Stream x install ho gayi! 🎉');}
+  _pwaPrompt=null;
+  const banner=document.getElementById('pwaBanner');if(banner)banner.remove();
+}
+
+window.addEventListener('appinstalled',()=>{
+  showToast('Stream x successfully installed! 🎉');
+  _pwaPrompt=null;
+});
+
+// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// SHORTS CAMERA SYSTEM
+// ══════════════════════════════════════════════════════
+let _scStream=null,_scRecorder=null,_scChunks=[],_scRecording=false;
+let _scMaxTime=15,_scElapsed=0,_scProgInt=null;
+let _scFacing='environment',_scSpeedIdx=2;
+const SC_SPEEDS=[0.5,0.75,1,1.25,1.5];
+let scTextColor='#ffffff';
+
+function openShortsCamera(){
+  const modal=document.getElementById('shortsCameraModal');
+  if(modal)modal.style.display='block';
+  // Show record mode
+  const rm=document.getElementById('scRecordMode');
+  const em=document.getElementById('scEditMode');
+  if(rm)rm.style.display='flex';
+  if(em)em.style.display='none';
+  startShortsStream();
+  // Load trending sounds
+  setTimeout(loadScSounds,500);
+}
+
+async function startShortsStream(){
+  try{
+    if(_scStream){_scStream.getTracks().forEach(t=>t.stop());}
+    _scStream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:_scFacing,width:{ideal:1080},height:{ideal:1920}},
+      audio:true
+    });
+    const prev=document.getElementById('shortsCamPreview');
+    if(prev){prev.srcObject=_scStream;prev.play().catch(()=>{});}
+  }catch(e){
+    showToast('Camera access denied. Allow in browser settings.');
+    closeShortsCamera();
+  }
+}
+
+function closeShortsCamera(){
+  stopShortsRecording();
+  if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
+  const modal=document.getElementById('shortsCameraModal');
+  if(modal)modal.style.display='none';
+  // Reset
+  const prog=document.getElementById('scProgress');if(prog)prog.style.width='0%';
+  const ov=document.getElementById('scTextOverlays');if(ov)ov.innerHTML='';
+  window._scSelectedSound=null;window._scAudioBlob=null;
+  closeAllEditPanels();
+  const sp=document.getElementById('scSoundQuickPanel');if(sp)sp.style.display='none';
+}
+
+function backToRecordMode(){
+  const rm=document.getElementById('scRecordMode');
+  const em=document.getElementById('scEditMode');
+  if(rm)rm.style.display='flex';
+  if(em)em.style.display='none';
+  const ov=document.getElementById('scTextOverlays');if(ov)ov.innerHTML='';
+  closeAllEditPanels();
+  startShortsStream();
+}
+
+function flipShortsCamera(){
+  _scFacing=_scFacing==='environment'?'user':'environment';
+  startShortsStream();
+}
+
+function setShortsTimer(secs){
+  _scMaxTime=secs;
+  ['scT15','scT30','scT60'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.style.borderColor='transparent';el.style.color='rgba(255,255,255,.6)';}
+  });
+  const active=document.getElementById('scT'+secs);
+  if(active){active.style.borderColor='white';active.style.color='white';}
+  showToast(secs+'s selected');
+}
+
+function cycleShortsSpeed(){
+  _scSpeedIdx=(_scSpeedIdx+1)%SC_SPEEDS.length;
+  const spd=SC_SPEEDS[_scSpeedIdx];
+  const lbl=document.getElementById('scSpeedLbl');
+  if(lbl)lbl.textContent=spd+'x';
+  showToast('Speed: '+spd+'x');
+}
+
+function toggleShortsRecording(){
+  if(_scRecording)stopShortsRecording();
+  else startShortsRecording();
+}
+
+function startShortsRecording(){
+  if(!_scStream)return showToast('Camera not ready');
+  _scChunks=[];_scElapsed=0;_scRecording=true;
+  const icon=document.getElementById('scRecordIcon');
+  if(icon){icon.style.borderRadius='6px';icon.style.width='30px';icon.style.height='30px';}
+  const timeEl=document.getElementById('scRecTime');
+  if(timeEl)timeEl.style.display='block';
+  let mimeType='';
+  if(MediaRecorder.isTypeSupported('video/mp4;codecs=avc1'))mimeType='video/mp4;codecs=avc1';
+  else if(MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus'))mimeType='video/webm;codecs=vp8,opus';
+  else if(MediaRecorder.isTypeSupported('video/webm'))mimeType='video/webm';
+  try{_scRecorder=mimeType?new MediaRecorder(_scStream,{mimeType}):new MediaRecorder(_scStream);}
+  catch(e){_scRecorder=new MediaRecorder(_scStream);}
+  _scRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)_scChunks.push(e.data);};
+  _scRecorder.onstop=()=>finalizeShortsRecording();
+  _scRecorder.start(100);
+  const prog=document.getElementById('scProgress');
+  _scProgInt=setInterval(()=>{
+    _scElapsed+=0.1;
+    const pct=(_scElapsed/_scMaxTime)*100;
+    if(prog)prog.style.width=Math.min(pct,100)+'%';
+    const m=Math.floor(_scElapsed/60),s=Math.floor(_scElapsed%60);
+    if(timeEl)timeEl.textContent=m+':'+(s<10?'0'+s:s);
+    if(_scElapsed>=_scMaxTime)stopShortsRecording();
+  },100);
+}
+
+function stopShortsRecording(){
+  if(!_scRecording)return;
+  _scRecording=false;
+  clearInterval(_scProgInt);
+  if(_scRecorder&&_scRecorder.state!=='inactive')_scRecorder.stop();
+  const icon=document.getElementById('scRecordIcon');
+  if(icon){icon.style.borderRadius='50%';icon.style.width='38px';icon.style.height='38px';}
+}
+
+function finalizeShortsRecording(){
+  const mimeType=_scRecorder?.mimeType||'video/webm';
+  const ext=mimeType.includes('mp4')?'mp4':'webm';
+  const blob=new Blob(_scChunks,{type:mimeType});
+  window._recordedShortFile=new File([blob],'short_'+Date.now()+'.'+ext,{type:mimeType});
+  if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
+  const url=URL.createObjectURL(blob);
+  const recPrev=document.getElementById('shortsRecPreview');
+  if(recPrev){recPrev.src=url;recPrev.play().catch(()=>{});}
+  // Switch to edit mode
+  const rm=document.getElementById('scRecordMode');
+  const em=document.getElementById('scEditMode');
+  if(rm)rm.style.display='none';
+  if(em)em.style.display='flex';
+  // Load edit sounds
+  loadScEditSounds();
+  showToast('Done! Edit and tap Upload →');
+}
+
+function handleGalleryShort(input){
+  const file=input.files[0];if(!file)return;
+  window._recordedShortFile=file;
+  const url=URL.createObjectURL(file);
+  const recPrev=document.getElementById('shortsRecPreview');
+  if(recPrev){recPrev.src=url;recPrev.play().catch(()=>{});}
+  const rm=document.getElementById('scRecordMode');
+  const em=document.getElementById('scEditMode');
+  if(rm)rm.style.display='none';
+  if(em)em.style.display='flex';
+  loadScEditSounds();
+  showToast('Video loaded! Edit and Upload →');
+}
+
+// Sound system
+function openScSoundQuick(){
+  const p=document.getElementById('scSoundQuickPanel');
+  if(p)p.style.display='block';
+  loadScSounds();
+}
+
+function loadScSounds(){
+  const list=document.getElementById('scSoundTrending');
+  if(!list||typeof TRENDING_SONGS==='undefined')return;
+  list.innerHTML=TRENDING_SONGS.map(s=>
+    `<div onclick="selectScSound('${s.name.replace(/'/g,'')}',this)" style="flex-shrink:0;background:#1c1c1c;border:1.5px solid ${window._scSelectedSound===s.name?'var(--red)':'#444'};border-radius:12px;padding:10px 14px;cursor:pointer;min-width:110px;text-align:center;">
+      <div style="font-size:20px;margin-bottom:4px;">${s.emoji}</div>
+      <div style="font-size:10px;font-weight:600;color:#ccc;">${s.name}</div>
+    </div>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// SHORTS CAMERA — PRESS & HOLD TO RECORD
+// ══════════════════════════════════════════════════════
+let _scHoldTimer=null,_scHoldActive=false,_scTouchUsed=false;
+
+function scBtnTouchStart(e){
+  e.preventDefault(); // prevents onclick from firing after touch
+  _scHoldActive=true;
+  _scTouchUsed=true;
+  if(!_scRecording){
+    startShortsRecording();
+  }
+}
+function scBtnTouchEnd(e){
+  e.preventDefault();
+  _scHoldActive=false;
+  if(_scRecording){
+    stopShortsRecording();
+  }
+  // Reset touch flag after short delay
+  setTimeout(()=>{_scTouchUsed=false;},300);
+}
+function scBtnClick(e){
+  // Skip if already handled by touch (mobile)
+  if(_scTouchUsed)return;
+  if(_scRecording){stopShortsRecording();}
+  else{startShortsRecording();}
+}
+
+// ══════════════════════════════════════════════════════
+// SHORTS DOWNLOAD
+// ══════════════════════════════════════════════════════
+function sfDownload(){
+  const p=sfPosts[sfCurrentIdx];
+  if(!p||!p.url)return showToast('No video to download');
+  showToast('Downloading...');
+  const a=document.createElement('a');
+  a.href=p.url;
+  a.download=(p.title||'short')+'.mp4';
+  a.target='_blank';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// ══════════════════════════════════════════════════════
+// PRIVACY SYSTEM
+// ══════════════════════════════════════════════════════
+function setPrivacy(val,btn){
+  _uploadPrivacy=val;
+  document.querySelectorAll('.privacy-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════
+// DOUBLE-TAP HEARTS — Multi-color, continuous while holding
+// ══════════════════════════════════════════════════════
+const HEART_MULTI=['❤️','💜','💛','💚','💙','🧡','🤍','💖','💗'];
+let _dtLastTap=0,_dtHoldInt=null;
+let _dtTouchX=0,_dtTouchY=0; // live position tracked by touchmove
+
+function setupDoubleTapHearts(){
+  const sfEl=document.getElementById('shortFS');
+  if(!sfEl)return;
+
+  // Track live finger position
+  sfEl.addEventListener('touchmove',function(e){
+    if(e.touches[0]){
+      _dtTouchX=e.touches[0].clientX;
+      _dtTouchY=e.touches[0].clientY;
+    }
+  },{passive:true});
+
+  sfEl.addEventListener('touchstart',function(e){
+    // Ignore buttons
+    if(e.target.closest('button,.sf-act,.sf-close,.sf-nav'))return;
+    const now=Date.now();
+    const diff=now-_dtLastTap;
+    _dtLastTap=now;
+    // Capture initial position
+    _dtTouchX=e.touches[0].clientX;
+    _dtTouchY=e.touches[0].clientY;
+
+    if(diff<300&&diff>0){
+      // Double tap — spawn hearts and like
+      spawnHearts(_dtTouchX,_dtTouchY,3);
+      sfLike();
+      // Keep spawning while finger is held
+      clearInterval(_dtHoldInt);
+      _dtHoldInt=setInterval(()=>{
+        spawnHearts(_dtTouchX,_dtTouchY,2);
+      },140);
+    }
+  },{passive:true});
+
+  sfEl.addEventListener('touchend',function(){
+    if(_dtHoldInt){clearInterval(_dtHoldInt);_dtHoldInt=null;}
+  },{passive:true});
+
+  sfEl.addEventListener('touchcancel',function(){
+    if(_dtHoldInt){clearInterval(_dtHoldInt);_dtHoldInt=null;}
+  },{passive:true});
+}
+
+function spawnHearts(x,y,count){
+  for(let i=0;i<count;i++){
+    const em=HEART_MULTI[Math.floor(Math.random()*HEART_MULTI.length)];
+    const el=document.createElement('div');
+    el.className='heart-anim';
+    el.style.left=(x+(Math.random()-0.5)*80)+'px';
+    el.style.top=(y+(Math.random()-0.5)*60)+'px';
+    el.style.animationDelay=(i*0.07)+'s';
+    el.style.fontSize=(22+Math.random()*18)+'px';
+    el.textContent=em;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),950+i*70);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// UNIQUE VIEW COUNT — per user per video (Firestore-based)
+// ══════════════════════════════════════════════════════
+async function trackUniqueView(postId){
+  if(!cUser||!postId)return;
+  try{
+    const viewRef=db.collection('views').doc(cUser.uid+'_'+postId);
+    const exists=await viewRef.get();
+    if(!exists.exists){
+      await viewRef.set({uid:cUser.uid,postId,time:Date.now()});
+      await db.collection('posts').doc(postId).update({
+        views:firebase.firestore.FieldValue.increment(1),
+        rankScore:firebase.firestore.FieldValue.increment(2)
+      }).catch(()=>{});
+    }
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════════════
+// DASHBOARD — Load videos/shorts/posts separately
+// ══════════════════════════════════════════════════════
+async function loadMyContentSections(){
+  if(!cUser)return;
+  const [vEl,sEl,pEl]=['myVideosList','myShortsList','myPostsList'].map(id=>document.getElementById(id));
+  [vEl,sEl,pEl].forEach(el=>{if(el)el.innerHTML='<div class="loader"><div class="spinner"></div></div>';});
+  try{
+    let snap;
+    try{
+      snap=await db.collection('posts').where('authorId','==',cUser.uid).orderBy('time','desc').get();
+    }catch(e){
+      // Fallback if index not ready
+      snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
+    }
+    const all=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.time||0)-(a.time||0));
+    const videos=all.filter(p=>p.type==='video'||p.type==='gaming'||p.type==='music');
+    const shorts=all.filter(p=>p.type==='short');
+    const posts=all.filter(p=>p.type==='post'||p.type==='image');
+
+    function renderItem(p){
+      const priv=p.privacy||'public';
+      const privIcon=priv==='private'?'🔒':priv==='unlisted'?'🔗':'🌐';
+      return `<div style="display:flex;gap:10px;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;" onclick="openPost('${p.id}')">
+        <div style="width:80px;height:52px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;position:relative;">
+          ${p.thumbURL?`<img src="${p.thumbURL}" style="width:100%;height:100%;object-fit:cover;">`:`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-${p.type==='short'?'film':'video'}" style="color:var(--text3);font-size:18px;"></i></div>`}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:600;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title||'Untitled'}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:3px;">👁 ${p.views||0} &nbsp; ❤️ ${p.likes||0} &nbsp; 💬 ${p.comments||0}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;">CTR: ${p.views>0?Math.min(100,Math.round(((p.likes||0)/(p.views||1))*100)):0}% &nbsp; ${privIcon} ${priv}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
+          <button onclick="togglePostPrivacy('${p.id}','${priv}',this);event.stopPropagation();" style="background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer;">${privIcon}</button>
+          <button onclick="ctxDeleteContent('${p.id}');event.stopPropagation();" style="background:none;border:none;color:#ff4444;cursor:pointer;font-size:13px;"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`;
+    }
+
+    if(vEl)vEl.innerHTML=videos.length?videos.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-video"></i><p>No videos yet</p></div>';
+    if(sEl)sEl.innerHTML=shorts.length?shorts.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-film"></i><p>No shorts yet</p></div>';
+    if(pEl)pEl.innerHTML=posts.length?posts.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-pen"></i><p>No posts yet</p></div>';
+  }catch(e){
+    console.error('loadMyContentSections:',e);
+    [vEl,sEl,pEl].forEach(el=>{if(el)el.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading content</p></div>';});
+  }
+}
+
+async function togglePostPrivacy(postId,current,btn){
+  const order=['public','unlisted','private'];
+  const icons={'public':'🌐','unlisted':'🔗','private':'🔒'};
+  const next=order[(order.indexOf(current)+1)%order.length];
+  try{
+    await db.collection('posts').doc(postId).update({privacy:next});
+    if(btn)btn.textContent=icons[next];
+    showToast('Visibility: '+next+' '+icons[next]);
+  }catch(e){showToast('Error updating');}
+}
+
+async function ctxDeleteContent(postId){
+  if(!confirm('Delete this content?'))return;
+  try{
+    await db.collection('posts').doc(postId).delete();
+    showToast('Deleted ✅');
+    loadMyContentSections();
+  }catch(e){showToast('Error: '+e.message);}
+}
+
+// ══════════════════════════════════════════════════════
+// SAVE EDIT PROFILE — extended fields
+// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// POST SHARE FIX — share post text/link properly
+// ══════════════════════════════════════════════════════
+function sharePostProperly(postId,title,url){
+  const shareUrl=url||`${location.origin}${location.pathname}?post=${postId}`;
+  const text=`${title||'Check this out'} - Stream x Pakistan 🇵🇰`;
+  if(navigator.share){
+    navigator.share({title:title||'Stream x',text,url:shareUrl}).catch(()=>{
+      navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));
+    });
+  }else{
+    navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// HASHTAG SEARCH — make titles & tags searchable for FYP
+// ══════════════════════════════════════════════════════
+function extractSearchTerms(post){
+  const terms=new Set();
+  const title=(post.title||'').toLowerCase();
+  const desc=(post.desc||'').toLowerCase();
+  const tags=post.tags||[];
+  // Add each word from title
+  title.split(/\s+/).filter(w=>w.length>2).forEach(w=>terms.add(w));
+  // Add hashtags from title & desc
+  [...title.matchAll(/#(\w+)/g),...desc.matchAll(/#(\w+)/g)].forEach(m=>terms.add(m[1]));
+  // Add tags
+  tags.forEach(t=>terms.add(t.toLowerCase().replace(/^#/,'')));
+  // Add category
+  if(post.category)terms.add(post.category);
+  if(post.type)terms.add(post.type);
+  return [...terms].slice(0,20);
+}
+
+// ══════════════════════════════════════════════════════
+// INIT NEW FEATURES
+// ══════════════════════════════════════════════════════
+setTimeout(()=>{
+  setupDoubleTapHearts();
+},800);
+
+function loadScEditSounds(){
+  const list=document.getElementById('scEditSoundsList');
+  if(!list||typeof TRENDING_SONGS==='undefined')return;
+  list.innerHTML=TRENDING_SONGS.map(s=>
+    `<div onclick="selectScSound('${s.name.replace(/'/g,'')}',this)" style="flex-shrink:0;background:#1c1c1c;border:1.5px solid ${window._scSelectedSound===s.name?'var(--red)':'#444'};border-radius:12px;padding:8px 12px;cursor:pointer;min-width:100px;text-align:center;">
+      <div style="font-size:16px;margin-bottom:3px;">${s.emoji}</div>
+      <div style="font-size:9px;font-weight:600;color:#ccc;">${s.name}</div>
+    </div>`
+  ).join('');
+}
+
+function selectScSound(name,el){
+  window._scSelectedSound=name;
+  // Update UI
+  document.querySelectorAll('#scSoundTrending > div, #scEditSoundsList > div').forEach(d=>{d.style.borderColor='#444';});
+  if(el)el.style.borderColor='var(--red)';
+  // Show selected bar
+  const bar=document.getElementById('scSelectedSoundBar');
+  const nm=document.getElementById('scSelectedSoundName');
+  if(bar)bar.style.display='flex';
+  if(nm)nm.textContent=name;
+  showToast('🎵 '+name+' selected');
+}
+
+function clearScSound(){
+  window._scSelectedSound=null;
+  window._scAudioBlob=null;
+  const bar=document.getElementById('scSelectedSoundBar');
+  if(bar)bar.style.display='none';
+  loadScSounds();
+  loadScEditSounds();
+  showToast('Sound removed');
+}
+
+function handleScAudio(input){
+  const file=input.files[0];if(!file)return;
+  window._scAudioBlob=URL.createObjectURL(file);
+  window._scSelectedSound=file.name;
+  const bar=document.getElementById('scSelectedSoundBar');
+  const nm=document.getElementById('scSelectedSoundName');
+  if(bar)bar.style.display='flex';
+  if(nm)nm.textContent=file.name;
+  showToast('🎵 Audio selected: '+file.name);
+  const sp=document.getElementById('scSoundQuickPanel');if(sp)sp.style.display='none';
+  closeAllEditPanels();
+}
+
+// Edit tools
+function toggleEditPreview(){
+  const vid=document.getElementById('shortsRecPreview');
+  const icon=document.getElementById('scPlayIcon');
+  if(!vid)return;
+  if(vid.paused){vid.play();if(icon)icon.className='fas fa-pause';}
+  else{vid.pause();if(icon)icon.className='fas fa-play';}
+}
+
+function openScPanel(id){
+  closeAllEditPanels();
+  const p=document.getElementById(id);
+  if(p){p.style.display='block';if(id==='scEditSoundPanel')loadScEditSounds();}
+}
+
+function closeAllEditPanels(){
+  ['scTextPanel','scEditSoundPanel','scSpeedPanel','scFilterPanel'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
+}
+
+function addTextOverlay(){
+  const input=document.getElementById('scTextInput');
+  const size=document.getElementById('scTextSize')?.value||'22px';
+  const text=input?.value?.trim();
+  if(!text)return showToast('Enter text first');
+  const container=document.getElementById('scTextOverlays');
+  if(!container)return;
+  const el=document.createElement('div');
+  el.style.cssText='position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);color:'+scTextColor+';font-size:'+size+';font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.9);pointer-events:all;cursor:move;user-select:none;text-align:center;padding:6px 10px;';
+  el.textContent=text;
+  let sx,sy,ox,oy,drag=false;
+  el.addEventListener('touchstart',e=>{
+    drag=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+    const r=el.getBoundingClientRect();ox=r.left+r.width/2;oy=r.top+r.height/2;
+    e.preventDefault();
+  },{passive:false});
+  el.addEventListener('touchmove',e=>{
+    if(!drag)return;
+    ox+=e.touches[0].clientX-sx;oy+=e.touches[0].clientY-sy;
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+    el.style.left=ox+'px';el.style.top=oy+'px';el.style.transform='translate(-50%,-50%)';
+    e.preventDefault();
+  },{passive:false});
+  el.addEventListener('dblclick',()=>el.remove());
+  container.appendChild(el);
+  if(input)input.value='';
+  closeAllEditPanels();
+  showToast('Text added! Drag to move. Double-tap to remove.');
+}
+
+function setEditSpeed(spd){
+  const vid=document.getElementById('shortsRecPreview');
+  if(vid)vid.playbackRate=spd;
+  showToast('Speed: '+spd+'x');
+  closeAllEditPanels();
+}
+
+function applyEditFilter(filter){
+  const vid=document.getElementById('shortsRecPreview');
+  if(vid)vid.style.filter=filter==='none'?'':filter;
+  showToast('Filter applied ✨');
+  closeAllEditPanels();
+}
+
+function doneShortRecording(){
+  if(!window._recordedShortFile)return showToast('No recording found');
+  closeShortsCamera();
+  showScreen('upload');
+  setTimeout(()=>{
+    const shortCard=document.querySelector('.type-card:nth-child(2)');
+    if(shortCard)selectType('short',shortCard);
+    selectedFile=window._recordedShortFile;
+    const vPrev=document.getElementById('uploadVidPrev');
+    if(vPrev){vPrev.src=URL.createObjectURL(selectedFile);vPrev.style.display='block';}
+    const ft=document.getElementById('fileText');if(ft)ft.textContent='Short ready ✅';
+    const edBtn=document.getElementById('shortEditorBtn');if(edBtn)edBtn.style.display='flex';
+    window._vidDuration='0:'+(_scElapsed<10?'0':'')+Math.floor(_scElapsed);
+    if(window._scSelectedSound){
+      const info=document.getElementById('selectedSongInfo');
+      const nameEl=document.getElementById('selectedSongName');
+      if(info)info.style.display='flex';
+      if(nameEl)nameEl.textContent=window._scSelectedSound;
+    }
+    showToast('Short ready! Add title and upload 🚀');
+  },300);
+}
+
+</script>
+</body>
+</html>
