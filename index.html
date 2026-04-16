@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Stream x</title>
+<title>Stream x — Pakistan ka Apna Platform</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#FF0000">
@@ -73,8 +73,14 @@
 /* NEON */
 [data-theme="neon"]{--bg:#000;--bg2:#030a00;--bg3:#051200;--card:#030a00;--text:#ccff44;--text2:#88cc00;--text3:#448800;--border:#0a2000;--accent:#ccff00;--red:#ccff00;--red2:#aadd00;}
 
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;transition:background .2s,color .2s;overflow-x:hidden;will-change:auto;}
+/* GPU acceleration for smooth scroll */
+.main,.player-screen,.sf,.channel-page{-webkit-overflow-scrolling:touch;will-change:scroll-position;}
+/* Faster screen transitions */
+.screen{animation:none!important;}
+.yt-card{animation:fadeUp .2s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 button,input,textarea{font-family:var(--font);}
 
 /* SCROLLBAR */
@@ -369,12 +375,15 @@ button,input,textarea{font-family:var(--font);}
 .gm-del{border-color:var(--red);color:var(--red);}
 
 /* ═══ VIDEO PLAYER ═══ */
-.player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;}
+.player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .player-screen.open{display:flex;}
-.player-back{position:absolute;top:10px;left:10px;z-index:10;width:34px;height:34px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;}
-.player-vid-wrap{background:#000;width:100%;position:relative;flex-shrink:0;min-height:220px;max-height:100vw;}
-.player-vid-wrap video{width:100%;height:auto;max-height:100vw;object-fit:contain;display:block;}
+.player-back{position:fixed;top:10px;left:10px;z-index:210;width:34px;height:34px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.player-vid-wrap{background:#000;width:100%;position:sticky;top:0;z-index:205;flex-shrink:0;}
+.player-vid-wrap video{width:100%;height:auto;max-height:56.25vw;min-height:210px;object-fit:contain;display:block;}
 .player-vid-wrap img{width:100%;height:100%;object-fit:contain;}
+.vid-buffer-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.15);z-index:5;}
+.vid-buffer-fill{height:100%;background:rgba(255,255,255,.4);width:0%;transition:width .4s;}
+.vid-play-fill{position:absolute;top:0;left:0;height:100%;background:var(--red);width:0%;}
 .player-info{padding:12px 14px 0;}
 .player-title{font-size:15px;font-weight:700;line-height:1.4;}
 .player-meta{font-size:11px;color:var(--text2);margin-top:4px;}
@@ -587,7 +596,7 @@ button,input,textarea{font-family:var(--font);}
 
 <!-- ═══ SPLASH SCREEN ═══ -->
 <div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .2s ease;">
-  <svg width="80" height="58" viewBox="0 0 50 36" style="animation:splashPulse 1s ease infinite alternate;"><rect width="50" height="36" rx="8" fill="#FF0000"/><polygon points="19,8 19,28 38,18" fill="white"/></svg>
+  <svg width="80" height="58" viewBox="0 0 50 36" style="animation:splashPulse 1s ease infinite alternate;border-radius:6px;"><rect width="50" height="36" rx="6" fill="#111"/><rect x="2" y="2" width="46" height="32" rx="5" fill="#1a1a1a"/><rect x="8" y="14" width="34" height="5" rx="2" fill="#444"/><rect x="8" y="8" width="24" height="4" rx="2" fill="#333"/><rect x="8" y="23" width="16" height="3" rx="1.5" fill="#2a2a2a"/><circle cx="40" cy="28" r="4" fill="#FF0000"/></svg>
   <div style="font-size:32px;font-weight:800;color:white;margin-top:14px;letter-spacing:-1px;"><span style="color:#FF0000;">Stream</span> x</div>
   <div style="font-size:13px;color:#aaa;margin-top:6px;">Pakistan ka apna platform 🇵🇰</div>
   <div style="position:absolute;bottom:60px;display:flex;align-items:center;gap:8px;">
@@ -604,7 +613,7 @@ button,input,textarea{font-family:var(--font);}
 <!-- ═══ AUTH ═══ -->
 <div id="authScreen" class="auth-screen" style="display:none;">
   <div class="auth-brand">
-    <svg width="50" height="36" viewBox="0 0 50 36"><rect width="50" height="36" rx="8" fill="#FF0000"/><polygon points="19,8 19,28 38,18" fill="white"/></svg>
+    <svg width="50" height="36" viewBox="0 0 50 36" style="border-radius:5px;"><rect width="50" height="36" rx="5" fill="#111"/><rect x="2" y="2" width="46" height="32" rx="4" fill="#1a1a1a"/><rect x="6" y="12" width="30" height="5" rx="2" fill="#444"/><rect x="6" y="7" width="20" height="3" rx="1.5" fill="#333"/><circle cx="42" cy="28" r="4" fill="#FF0000"/></svg>
     <h1><span class="streams">Stream</span> <span class="max">x</span></h1>
     <p>Pakistan ka apna platform 🇵🇰</p>
   </div>
@@ -642,14 +651,15 @@ button,input,textarea{font-family:var(--font);}
 <div class="side-menu-overlay" id="sideOverlay" onclick="closeSideMenu()"></div>
 <div class="side-menu" id="sideMenu">
   <div class="side-menu-header">
-    <svg width="26" height="18" viewBox="0 0 26 18"><rect width="26" height="18" rx="4" fill="#FF0000"/><polygon points="10,4 10,14 20,9" fill="white"/></svg>
-    <span>My<b>Tube</b></span>
+    <svg width="26" height="18" viewBox="0 0 26 18" style="border-radius:3px;"><rect width="26" height="18" rx="3" fill="#111"/><rect x="1" y="1" width="24" height="16" rx="2" fill="#1a1a1a"/><rect x="3" y="7" width="16" height="3" rx="1" fill="#444"/><rect x="3" y="4" width="10" height="2" rx="1" fill="#333"/><circle cx="22" cy="14" r="2.5" fill="#FF0000"/></svg>
+    <span>Stream<b>x</b></span>
   </div>
   <div class="side-item" onclick="showScreen('home');closeSideMenu()"><i class="fas fa-home"></i><span>Home</span></div>
   <div class="side-item" onclick="showScreen('shorts');closeSideMenu()"><i class="fas fa-film"></i><span>Shorts</span></div>
   <div class="side-item" onclick="showScreen('subs');closeSideMenu()"><i class="fas fa-th-large"></i><span>Subscriptions</span></div>
   <div class="side-item" onclick="showScreen('history');closeSideMenu()"><i class="fas fa-history"></i><span>History</span></div>
   <div class="side-item" onclick="showScreen('gallery');closeSideMenu()"><i class="fas fa-images"></i><span>My Gallery</span></div>
+  <div class="side-item" onclick="showScreen('downloads');closeSideMenu()"><i class="fas fa-download" style="color:var(--red);"></i><span>Downloads</span></div>
   <div class="side-divider"></div>
   <div class="side-section-title">Explore</div>
   <div class="side-item" onclick="filterFeed(document.querySelector('.chip'),'trending');closeSideMenu();showScreen('home')"><i class="fas fa-fire" style="color:#ff6600;"></i><span>Trending</span></div>
@@ -677,7 +687,7 @@ button,input,textarea{font-family:var(--font);}
   <!-- Header -->
   <div class="header">
     <div class="logo-wrap" onclick="openSideMenu()">
-      <svg class="logo-icon" viewBox="0 0 30 21"><rect width="30" height="21" rx="5" fill="#FF0000"/><polygon points="11,5 11,16 22,10.5" fill="white"/></svg>
+      <svg class="logo-icon" viewBox="0 0 30 21" style="border-radius:4px;overflow:hidden;"><rect width="30" height="21" rx="4" fill="#0f0f0f"/><rect x="2" y="2" width="26" height="17" rx="3" fill="#1a1a1a"/><rect x="4" y="4" width="22" height="13" rx="2" fill="#222"/><rect x="6" y="9" width="18" height="3" rx="1" fill="#555"/><rect x="6" y="5" width="12" height="2" rx="1" fill="#444"/><rect x="6" y="13" width="8" height="1.5" rx="0.75" fill="#333"/><circle cx="22" cy="15" r="2" fill="#FF0000"/></svg>
       <div class="logo-text"><span class="streams">Stream</span> <span class="max">x</span></div>
     </div>
     <div class="search-bar" id="searchBarEl">
@@ -725,8 +735,8 @@ button,input,textarea{font-family:var(--font);}
         <div style="display:flex;align-items:center;gap:7px;">
           <i class="fas fa-film" style="color:var(--red);font-size:17px;"></i> Shorts
         </div>
-        <button onclick="openUploadDirect('short')" style="background:var(--red);color:white;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
-          <i class="fas fa-upload" style="font-size:10px;"></i> Upload Short
+        <button onclick="openShortsCamera()" style="background:var(--red);color:white;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <i class="fas fa-circle" style="font-size:10px;animation:blink 1.2s infinite;"></i> Record
         </button>
       </div>
       <div style="display:flex;gap:8px;padding:0 14px 8px;overflow-x:auto;" id="shortFilterChips">
@@ -1072,14 +1082,22 @@ button,input,textarea{font-family:var(--font);}
           <div class="prof-sec-title">About</div>
           <div id="profAboutText" style="font-size:13px;color:var(--text2);line-height:1.6;">No bio yet.</div>
           <div id="profChannelMeta" style="margin-top:10px;display:none;">
-            <div id="profJoinedDate" style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;margin-bottom:4px;"><i class="fas fa-calendar-alt" style="color:var(--red);"></i> Channel created: <span id="profJoinedVal">—</span></div>
-            <div id="profLocation" style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;"><i class="fas fa-map-marker-alt" style="color:var(--red);"></i> Pakistan 🇵🇰</div>
+            <div id="profJoinedDate" style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;margin-bottom:6px;"><i class="fas fa-calendar-alt" style="color:var(--red);"></i> Joined: <span id="profJoinedVal">—</span></div>
+            <div id="profLocation" style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;margin-bottom:6px;" id="profLocationRow"><i class="fas fa-map-marker-alt" style="color:var(--red);"></i> <span id="profLocationVal">Pakistan 🇵🇰</span> <button onclick="editLocation()" style="background:none;border:none;color:var(--red);font-size:10px;cursor:pointer;padding:0 4px;"><i class="fas fa-edit"></i></button></div>
+            <div style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;margin-bottom:6px;"><i class="fas fa-eye" style="color:var(--red);"></i> Total Views: <span id="profTotalViews" style="font-weight:700;color:var(--text);">0</span></div>
           </div>
         </div>
-        <!-- Gallery + History shortcuts -->
-        <div class="prof-section" style="margin-top:16px;display:flex;gap:8px;">
-          <button class="btn-red" onclick="showScreen('gallery')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;"><i class="fas fa-images"></i> Gallery</button>
-          <button onclick="showScreen('history')" style="flex:1;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><i class="fas fa-history"></i> History</button>
+        <!-- Gallery + History + Downloads shortcuts -->
+        <div class="prof-section" style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-red" onclick="showScreen('gallery')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-width:90px;"><i class="fas fa-images"></i> Gallery</button>
+          <button onclick="showScreen('history')" style="flex:1;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-width:90px;"><i class="fas fa-history"></i> History</button>
+          <button onclick="showScreen('downloads')" style="flex:1;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-width:90px;"><i class="fas fa-download" style="color:var(--red);"></i> Downloads</button>
+        </div>
+        <!-- Channel Share -->
+        <div class="prof-section" style="margin-top:10px;">
+          <button onclick="shareMyChannel()" style="width:100%;padding:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <i class="fas fa-share-alt" style="color:var(--red);"></i> Share My Channel
+          </button>
         </div>
 
         <!-- Settings & Legal -->
@@ -1157,6 +1175,21 @@ button,input,textarea{font-family:var(--font);}
           <button class="gtab" onclick="filterGallery('post',this)">Posts</button>
         </div>
         <div class="gallery-grid" id="galleryGrid"><div class="loader" style="grid-column:1/-1;"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+
+    <!-- DOWNLOADS -->
+    <div id="downloadsScreen" class="screen">
+      <div style="padding:16px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button onclick="showScreen('profile')" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:18px;"><i class="fas fa-arrow-left"></i></button>
+            <h2 style="font-size:18px;font-weight:700;margin:0;"><i class="fas fa-download" style="color:var(--red);margin-right:8px;"></i>Downloads</h2>
+          </div>
+          <button onclick="if(confirm('Sab downloads clear karein?')){localStorage.removeItem('sx_downloads');loadDownloads();showToast('Downloads cleared');}" style="background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer;">Clear All</button>
+        </div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">📱 Offline mein bhi dekh sakte hain saved videos</div>
+        <div id="downloadsList"><div class="loader"><div class="spinner"></div></div></div>
       </div>
     </div>
 
@@ -1390,6 +1423,7 @@ button,input,textarea{font-family:var(--font);}
           <button class="studio-tab" id="otab-reports" onclick="switchOwnerTab('reports')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-flag"></i> Reports</button>
           <button class="studio-tab" id="otab-users" onclick="switchOwnerTab('users')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-users"></i> Users</button>
           <button class="studio-tab" id="otab-guidelines" onclick="switchOwnerTab('guidelines')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-shield-alt"></i> Guidelines</button>
+          <button class="studio-tab" id="otab-copyright" onclick="switchOwnerTab('copyright')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-copyright" style="color:#ff6600;"></i> Copyright <span id="owCopyrightBadge" style="display:none;background:var(--red);color:white;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:4px;">0</span></button>
         </div>
 
         <!-- OVERVIEW TAB -->
@@ -1431,6 +1465,18 @@ button,input,textarea{font-family:var(--font);}
             <input class="inp" id="ownerSearchUser" placeholder="🔍 Search user by name/email..." oninput="ownerSearchUsers(this.value)" style="margin-bottom:0;">
           </div>
           <div id="ownerUsersList"><div class="loader"><div class="spinner"></div></div></div>
+        </div>
+
+        <!-- COPYRIGHT ALERTS TAB -->
+        <div id="owner-copyright" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;"><i class="fas fa-copyright" style="color:#ff6600;"></i> Copyright Reports</div>
+            <span id="owCopyrightCount" style="background:var(--red);color:white;border-radius:20px;padding:2px 10px;font-size:11px;">0</span>
+          </div>
+          <div style="background:rgba(255,100,0,.08);border:1px solid rgba(255,100,0,.2);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--text2);">
+            <i class="fas fa-bell" style="color:#ff6600;margin-right:6px;"></i>Jab bhi koi copyright report aayegi, aapko yahan instantly nazar aayegi.
+          </div>
+          <div id="ownerCopyrightList"><div class="loader"><div class="spinner"></div></div></div>
         </div>
 
         <!-- GUIDELINES TAB -->
@@ -1601,11 +1647,15 @@ button,input,textarea{font-family:var(--font);}
 <!-- ═══ VIDEO PLAYER ═══ -->
 <div class="player-screen" id="playerScreen">
   <button class="player-back" onclick="closePlayer()"><i class="fas fa-arrow-left"></i></button>
-  <div class="player-vid-wrap" id="playerVidWrap" style="position:relative;">
-    <video id="playerVid" controls playsinline></video>
-    <button onclick="toggleFullscreen()" style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:6px;padding:5px 8px;font-size:13px;cursor:pointer;z-index:5;">
-      <i class="fas fa-expand" id="fsIcon"></i>
-    </button>
+  <div class="player-vid-wrap" id="playerVidWrap">
+    <video id="playerVid" controls playsinline webkit-playsinline></video>
+    <div class="vid-buffer-bar"><div class="vid-buffer-fill" id="vidBufferFill"></div><div class="vid-play-fill" id="vidPlayFill"></div></div>
+    <div style="position:absolute;bottom:8px;right:8px;display:flex;gap:6px;z-index:6;">
+      <button onclick="showQualityMenu()" style="background:rgba(0,0,0,.7);border:none;color:white;border-radius:6px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer;" id="qualityBtn">⚙️ Auto</button>
+      <button onclick="toggleFullscreen()" style="background:rgba(0,0,0,.6);border:none;color:white;border-radius:6px;padding:5px 8px;font-size:13px;cursor:pointer;">
+        <i class="fas fa-expand" id="fsIcon"></i>
+      </button>
+    </div>
   </div>
   <div class="player-info">
     <div class="player-title" id="playerTitle">Loading...</div>
@@ -2344,10 +2394,15 @@ function openUploadDirect(type){
 function hideSplash(){
   const s=document.getElementById('splashScreen');
   if(!s)return;
-  s.style.transition='opacity .2s ease';
+  s.style.transition='opacity .15s ease';
   s.style.opacity='0';
-  setTimeout(()=>{s.style.display='none';},200);
+  setTimeout(()=>{s.style.display='none';},150);
 }
+// Fast splash - hide after max 1.5s regardless
+setTimeout(()=>{
+  const s=document.getElementById('splashScreen');
+  if(s&&s.style.opacity!=='0'){hideSplash();}
+},1500);
 
 // Google redirect result handle karo
 auth.getRedirectResult().then(async res=>{
@@ -2505,7 +2560,7 @@ function updateProfileUI(){
   document.getElementById('profHandle').textContent=cUserData.handle||'@user';
   document.getElementById('profEmail').textContent=cUser?.email||'';
   document.getElementById('profAboutText').textContent=cUserData.about||'No bio yet.';
-  // Show channel meta (date, location)
+  // Show channel meta (date, location, total views)
   const metaEl=document.getElementById('profChannelMeta');
   const joinedEl=document.getElementById('profJoinedVal');
   if(metaEl&&joinedEl){
@@ -2513,7 +2568,20 @@ function updateProfileUI(){
     if(ct){
       joinedEl.textContent=new Date(ct).toLocaleDateString('en-PK',{year:'numeric',month:'long'});
       metaEl.style.display='block';
+    } else {
+      metaEl.style.display='block';
     }
+  }
+  // Location
+  const locVal = document.getElementById('profLocationVal');
+  if(locVal) locVal.textContent = cUserData.location || 'Pakistan 🇵🇰';
+  // Total views — sum all posts views
+  if(cUser){
+    db.collection('posts').where('authorId','==',cUser.uid).get().then(snap=>{
+      const totalViews = snap.docs.reduce((s,d)=>s+(d.data().views||0),0);
+      const tvEl = document.getElementById('profTotalViews');
+      if(tvEl) tvEl.textContent = totalViews >= 1000 ? (totalViews/1000).toFixed(1)+'K' : totalViews;
+    }).catch(()=>{});
   }
   // Website link
   const existingWebEl=document.getElementById('profWebsite');
@@ -2639,6 +2707,7 @@ function showScreen(name){
   if(name==='live')loadLiveScreen();
   if(name==='themes')renderThemeGrid();
   if(name==='gallery')loadGallery();
+  if(name==='downloads')loadDownloads();
   if(name==='history')loadHistory();
   if(name==='playlists')loadMyPlaylists();
 }
@@ -3375,6 +3444,7 @@ async function openPost(id){
         vid.src='';
         vid.src=p.url;
         vid.load();
+        initBufferTracking();
         vid.play().catch(()=>{
           // Show play button if autoplay blocked
           let po=document.getElementById('playOverlay');
@@ -3499,6 +3569,226 @@ async function createShortFromTrim(){
     });
     showToast('Short created! ✅');
   }catch(e){showToast('Error creating short');}
+}
+
+// ══════════════════════════════════════════════════════
+// VIDEO QUALITY MENU
+// ══════════════════════════════════════════════════════
+let _currentVideoSrc = '';
+let _currentQuality = 'auto';
+const QUALITY_LABELS = ['Auto','360p','480p','720p','1080p','4K'];
+
+function showQualityMenu(){
+  const existing = document.getElementById('qualityMenuSheet');
+  if(existing){ existing.remove(); document.getElementById('qualityMenuOv')?.remove(); return; }
+  const ov = document.createElement('div');
+  ov.id = 'qualityMenuOv';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.5);';
+  ov.onclick = () => { ov.remove(); document.getElementById('qualityMenuSheet')?.remove(); };
+  document.body.appendChild(ov);
+
+  const sheet = document.createElement('div');
+  sheet.id = 'qualityMenuSheet';
+  sheet.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:601;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 36px;';
+  sheet.innerHTML = `
+    <div style="width:34px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;"></div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i class="fas fa-cog" style="color:var(--red);"></i> Video Quality</div>
+    ${QUALITY_LABELS.map(q=>`
+      <div onclick="setQuality('${q}')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer;">
+        <span style="font-size:14px;font-weight:${q===_currentQuality?'700':'400'};color:${q===_currentQuality?'var(--red)':'var(--text)'};">${q==='Auto'?'🔄 Auto (Recommended)':q==='4K'?'⭐ 4K Ultra HD':q==='1080p'?'🔵 1080p Full HD':q==='720p'?'🟢 720p HD':q}</span>
+        ${q===_currentQuality?'<i class="fas fa-check" style="color:var(--red);"></i>':''}
+      </div>`).join('')}
+    <div style="font-size:11px;color:var(--text3);margin-top:12px;">💡 Auto adjusts to your network speed</div>
+  `;
+  document.body.appendChild(sheet);
+}
+
+function setQuality(q){
+  _currentQuality = q;
+  const btn = document.getElementById('qualityBtn');
+  if(btn) btn.textContent = '⚙️ ' + q;
+  document.getElementById('qualityMenuSheet')?.remove();
+  document.getElementById('qualityMenuOv')?.remove();
+  // For Cloudinary URLs, append quality transform
+  const vid = document.getElementById('playerVid');
+  if(!vid || !currentPostData?.url) return;
+  let url = currentPostData.url;
+  if(q !== 'Auto' && url.includes('cloudinary.com')){
+    const qMap = {'360p':'h_360','480p':'h_480','720p':'h_720','1080p':'h_1080','4K':'h_2160'};
+    const transform = qMap[q] || '';
+    if(transform){
+      const currentTime = vid.currentTime;
+      url = url.replace('/upload/', `/upload/${transform},q_auto:good/`);
+      vid.src = url;
+      vid.load();
+      vid.currentTime = currentTime;
+      vid.play().catch(()=>{});
+    }
+  }
+  showToast('Quality: ' + q);
+}
+
+// ══════════════════════════════════════════════════════
+// BUFFER PROGRESS BAR (YouTube style)
+// ══════════════════════════════════════════════════════
+function initBufferTracking(){
+  const vid = document.getElementById('playerVid');
+  if(!vid) return;
+  vid.addEventListener('progress', updateBuffer);
+  vid.addEventListener('timeupdate', updateBuffer);
+}
+
+function updateBuffer(){
+  const vid = document.getElementById('playerVid');
+  const bufFill = document.getElementById('vidBufferFill');
+  const playFill = document.getElementById('vidPlayFill');
+  if(!vid || !bufFill || !playFill) return;
+  if(vid.duration && vid.buffered.length){
+    const buffered = vid.buffered.end(vid.buffered.length - 1);
+    bufFill.style.width = (buffered / vid.duration * 100) + '%';
+  }
+  if(vid.duration){
+    playFill.style.width = (vid.currentTime / vid.duration * 100) + '%';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// DOWNLOADS — Save videos locally & show in Downloads screen
+// ══════════════════════════════════════════════════════
+function getDownloads(){
+  try{ return JSON.parse(localStorage.getItem('sx_downloads')||'[]'); }
+  catch(e){ return []; }
+}
+
+function saveDownloads(arr){
+  try{ localStorage.setItem('sx_downloads', JSON.stringify(arr)); }catch(e){}
+}
+
+function downloadVideo(){
+  if(!currentPostData || !currentPostData.url) return showToast('No downloadable content');
+  const p = currentPostData;
+  // Save to downloads list
+  const dl = getDownloads();
+  const exists = dl.find(d => d.id === p.id);
+  if(!exists){
+    dl.unshift({
+      id: p.id,
+      title: p.title || 'Untitled',
+      url: p.url,
+      thumbURL: p.thumbURL || '',
+      type: p.type || 'video',
+      duration: p.duration || '',
+      authorName: p.authorName || '',
+      savedAt: Date.now()
+    });
+    if(dl.length > 50) dl.pop(); // max 50
+    saveDownloads(dl);
+    showToast('✅ Saved to Downloads!');
+  } else {
+    showToast('Already in Downloads 📥');
+  }
+  // Also trigger browser download
+  const a = document.createElement('a');
+  a.href = p.url;
+  a.download = (p.title||'video').replace(/[^a-z0-9]/gi,'_');
+  a.target = '_blank';
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function loadDownloads(){
+  const list = document.getElementById('downloadsList');
+  if(!list) return;
+  const dl = getDownloads();
+  if(!dl.length){
+    list.innerHTML = '<div class="empty-state"><i class="fas fa-download"></i><p>No downloaded videos yet.<br>Tap Download on any video!</p></div>';
+    return;
+  }
+  list.innerHTML = dl.map((p,i) => {
+    const th = p.thumbURL || (p.url ? p.url.replace('/upload/','/upload/so_1,w_300/').replace(/\.(mp4|mov|webm)$/,'.jpg') : '');
+    const sizeMB = '—';
+    return `<div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div onclick="openDownloadedVideo('${p.id}','${p.url.replace(/'/g,'')}','${(p.title||'').replace(/'/g,'')}','${(p.thumbURL||'').replace(/'/g,'')}')" style="width:110px;height:62px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;cursor:pointer;position:relative;">
+        ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play" style="color:var(--text3);font-size:20px;"></i></div>'}
+        ${p.duration?`<div style="position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,.85);color:white;font-size:8px;font-weight:600;padding:1px 4px;border-radius:2px;">${p.duration}</div>`:''}
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:4px;">${p.authorName||''} • ${getTimeAgo(p.savedAt)}</div>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button onclick="openDownloadedVideo('${p.id}','${p.url.replace(/'/g,'')}','${(p.title||'').replace(/'/g,'')}','${(p.thumbURL||'').replace(/'/g,'')}')" style="background:var(--red);color:white;border:none;border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;"><i class="fas fa-play"></i> Play</button>
+          <button onclick="shareDownloaded('${p.url.replace(/'/g,'')}','${(p.title||'').replace(/'/g,'')}')" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:600;cursor:pointer;"><i class="fas fa-share"></i> Share</button>
+          <button onclick="deleteDownload(${i})" style="background:rgba(255,0,0,.1);color:var(--red);border:1px solid rgba(255,0,0,.2);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:600;cursor:pointer;"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openDownloadedVideo(id, url, title, thumbURL){
+  if(id && id !== 'undefined'){
+    openPost(id);
+  } else {
+    // Play directly if no post ID
+    const ps = document.getElementById('playerScreen');
+    ps.classList.add('open'); ps.scrollTop=0;
+    const vid = document.getElementById('playerVid');
+    const wrap = document.getElementById('playerVidWrap');
+    vid.src = url; vid.load(); vid.play().catch(()=>{});
+    document.getElementById('playerTitle').textContent = title || 'Downloaded Video';
+    document.getElementById('playerMeta').textContent = '📥 Downloaded';
+    if(wrap) wrap.style.backgroundImage='';
+    vid.style.display='block';
+  }
+}
+
+function shareDownloaded(url, title){
+  if(navigator.share){
+    navigator.share({title: title||'Stream x video', url: url}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(url).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Share: '+url.substring(0,40)));
+  }
+}
+
+function deleteDownload(index){
+  const dl = getDownloads();
+  dl.splice(index, 1);
+  saveDownloads(dl);
+  loadDownloads();
+  showToast('Removed from Downloads');
+}
+
+// ══════════════════════════════════════════════════════
+// CHANNEL SHARE
+// ══════════════════════════════════════════════════════
+function shareMyChannel(){
+  if(!cUser || !cUserData) return showToast('Login karein pehle');
+  const handle = cUserData.channelHandle || cUserData.handle || ('@'+(cUserData.name||'user').toLowerCase().replace(/[^a-z0-9]/g,''));
+  const channelUrl = location.origin + location.pathname + '?channel=' + encodeURIComponent(handle);
+  const text = `${cUserData.name||'My Channel'} ko Stream x per follow karo! ${channelUrl}`;
+  if(navigator.share){
+    navigator.share({ title: cUserData.name||'My Channel', text: text, url: channelUrl }).catch(()=>{});
+  } else {
+    showShareSheet(channelUrl, text, cUserData.name||'My Channel');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// EDIT LOCATION
+// ══════════════════════════════════════════════════════
+async function editLocation(){
+  const cur = cUserData?.location || 'Pakistan';
+  const newLoc = prompt('Apni location enter karein:', cur);
+  if(!newLoc || !newLoc.trim()) return;
+  try{
+    await db.collection('users').doc(cUser.uid).update({ location: newLoc.trim() });
+    if(cUserData) cUserData.location = newLoc.trim();
+    const el = document.getElementById('profLocationVal');
+    if(el) el.textContent = newLoc.trim();
+    showToast('Location updated ✅');
+  }catch(e){ showToast('Error updating location'); }
 }
 
 function toggleFullscreen(){
@@ -3906,6 +4196,25 @@ function listenNotifs(){
     .onSnapshot(snap=>{
       document.getElementById('notifDot').style.display=snap.empty?'none':'block';
     },()=>{});
+  // Owner: listen for copyright reports in real-time
+  if(cUser.email===OWNER_EMAIL){
+    db.collection('ownerAlerts').where('type','==','copyright').where('status','==','pending')
+      .onSnapshot(snap=>{
+        const badge=document.getElementById('owCopyrightBadge');
+        if(badge){
+          badge.textContent=snap.size;
+          badge.style.display=snap.size>0?'inline':'none';
+        }
+        // Show toast for new reports
+        snap.docChanges().forEach(change=>{
+          if(change.type==='added'){
+            const r=change.doc.data();
+            showToast('🚨 New copyright report from '+( r.reporterName||'User'));
+            document.getElementById('notifDot').style.display='block';
+          }
+        });
+      },()=>{});
+  }
 }
 
 async function loadNotifs(){
@@ -4451,7 +4760,7 @@ async function doSearch(q){
 // OWNER DASHBOARD
 // ══════════════════════════════════════════════════════
 function switchOwnerTab(tab){
-  ['overview','reports','users','guidelines'].forEach(t=>{
+  ['overview','reports','users','guidelines','copyright'].forEach(t=>{
     const el=document.getElementById('owner-'+t);
     const btn=document.getElementById('otab-'+t);
     if(el)el.style.display=t===tab?'block':'none';
@@ -4460,6 +4769,56 @@ function switchOwnerTab(tab){
   if(tab==='reports')loadOwnerReports();
   if(tab==='users')loadOwnerUsers();
   if(tab==='guidelines')loadOwnerGuidelines();
+  if(tab==='copyright')loadOwnerCopyrightAlerts();
+}
+
+async function loadOwnerCopyrightAlerts(){
+  if(!cUser||cUser.email!==OWNER_EMAIL)return;
+  const list=document.getElementById('ownerCopyrightList');
+  if(!list)return;
+  list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('ownerAlerts').where('type','==','copyright').orderBy('time','desc').limit(50).get().catch(async()=>{
+      return await db.collection('ownerAlerts').where('type','==','copyright').get();
+    });
+    const docs=snap.docs.sort((a,b)=>b.data().time-a.data().time);
+    const cnt=document.getElementById('owCopyrightCount');
+    const badge=document.getElementById('owCopyrightBadge');
+    if(cnt)cnt.textContent=docs.length;
+    if(badge){badge.textContent=docs.length;badge.style.display=docs.length?'inline':'none';}
+    if(!docs.length){list.innerHTML='<div class="empty-state"><i class="fas fa-check-circle" style="color:#00c864;"></i><p>No copyright reports! 🎉</p></div>';return;}
+    list.innerHTML=docs.map(d=>{
+      const r=d.data();
+      return `<div style="background:var(--card);border:1px solid rgba(255,100,0,.3);border-radius:12px;padding:12px 14px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="width:8px;height:8px;background:#ff6600;border-radius:50%;flex-shrink:0;"></div>
+          <span style="font-size:12px;font-weight:700;color:#ff6600;">COPYRIGHT REPORT</span>
+          <span style="font-size:10px;color:var(--text3);margin-left:auto;">${getTimeAgo(r.time)}</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">Post: <b style="color:var(--text);">${r.postId||'—'}</b></div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">Reporter: <b style="color:var(--text);">${r.reporterName||'Unknown'}</b></div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">Reason: <b style="color:var(--text);">${r.reason||'—'}</b></div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="reviewCopyrightAlert('${d.id}','${r.postId||''}','delete')" style="flex:1;padding:8px;background:rgba(255,0,0,.1);color:var(--red);border:1px solid rgba(255,0,0,.3);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-trash"></i> Remove Post</button>
+          <button onclick="reviewCopyrightAlert('${d.id}','${r.postId||''}','dismiss')" style="flex:1;padding:8px;background:var(--bg3);color:var(--text2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-check"></i> Dismiss</button>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load copyright alerts</p>';}
+}
+
+async function reviewCopyrightAlert(alertId, postId, action){
+  try{
+    if(action==='delete'&&postId){
+      if(!confirm('Is post ko permanently delete karein?'))return;
+      await db.collection('posts').doc(postId).delete().catch(()=>{});
+      showToast('Post removed ✅');
+    }else{
+      showToast('Report dismissed ✅');
+    }
+    await db.collection('ownerAlerts').doc(alertId).delete().catch(()=>{});
+    loadOwnerCopyrightAlerts();
+  }catch(e){showToast('Error: '+e.message);}
 }
 
 async function loadOwnerDash(){
@@ -5744,6 +6103,21 @@ async function submitReport(postId,reason,reportedUserId){
       time:Date.now(),
       status:'pending'
     });
+    // Notify owner instantly for copyright reports
+    if(reason && reason.toLowerCase().includes('copyright')){
+      await db.collection('notifications').add({
+        to:OWNER_EMAIL,from:cUser.uid,fromName:cUserData?.name||'User',
+        fromPhoto:cUserData?.photoURL||'',
+        type:'copyright',
+        text:'🚨 Copyright report on post: '+postId+' by '+cUserData?.name+'. Reason: '+reason,
+        postId:postId||null,read:false,time:Date.now()
+      }).catch(()=>{});
+      // Also save to ownerAlerts collection for dashboard
+      await db.collection('ownerAlerts').add({
+        type:'copyright',postId,reason,reportedBy:cUser.uid,
+        reporterName:cUserData?.name||'User',time:Date.now(),status:'pending'
+      }).catch(()=>{});
+    }
     showToast('Report submitted. We will review within 24hrs ✅');
     // Auto-flag post if 5+ reports
     const rSnap=await db.collection('reports').where('postId','==',postId).where('status','==','pending').get();
