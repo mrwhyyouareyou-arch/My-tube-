@@ -7036,3 +7036,1883 @@ async function confirmDeleteAccount() {
   window.addEventListener('load', checkAgeVerification);
 </script>
 <!-- ========== AGE VERIFICATION END ========== -->
+<div class="mod-panel">
+    <h2>🚨 CONTENT MODERATION PANEL</h2>
+    <div id="autoFlags"></div>
+    <div id="userReports"></div>
+</div>
+
+<style>
+    .mod-panel { background: #1a1a1a; color: white; padding: 20px; border-radius: 10px; margin: 10px; }
+    .flag-item { background: #ff4444; padding: 15px; margin: 10px 0; border-radius: 8px; }
+    .report-btn { background: #ff6b6b; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; }
+    .auto-flag { background: #ffaa00; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+</style>
+
+<script>
+// Auto Flag System - Tera existing Firebase use karega
+const autoFlagCheck = async (videoData, videoId) => {
+    const content = videoData.title + ' ' + videoData.description;
+    const badWords = ['violence', 'hate', 'spam', 'copyright', 'nsfw'];
+    const flags = badWords.filter(word => content.toLowerCase().includes(word));
+    
+    if (flags.length > 0) {
+        await db.collection('content_flags').add({
+            videoId: videoId,
+            flags: flags,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            auto: true,
+            status: 'pending'
+        });
+        
+        showAutoFlag(flags, videoId);
+    }
+};
+
+// Display flags
+const showAutoFlag = (flags, videoId) => {
+    const flagsDiv = document.getElementById('autoFlags');
+    flagsDiv.innerHTML += `
+        <div class="flag-item auto-flag">
+            🚨 AUTO-FLAG: ${flags.join(', ')}<br>
+            <small>Video: ${videoId}</small><br>
+            <button class="report-btn" onclick="reviewFlag('${videoId}')">Review</button>
+        </div>
+    `;
+};
+
+// Report handler
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('report-btn') && e.target.dataset.video) {
+        db.collection('content_reports').add({
+            videoId: e.target.dataset.video,
+            reason: 'User reported',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        e.target.textContent = 'Reported ✓';
+    }
+});
+
+const reviewFlag = async (videoId) => {
+    if (confirm('Remove video?')) {
+        await db.collection('videos').doc(videoId).update({ status: 'removed' });
+    }
+};
+</script>
+<!-- PWA INSTALL PROMPT & OFFLINE SUPPORT -->
+<div id="installPrompt" class="pwa-prompt" style="display:none;">
+    <div class="prompt-content">
+        <h3>📱 App Install Karo!</h3>
+        <p>Desktop/Home screen pe add karo - Fast loading + Offline!</p>
+        <button id="installBtn">Install</button>
+        <button id="dismissBtn">Skip</button>
+    </div>
+</div>
+
+<style>
+.pwa-prompt {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+    color: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    max-width: 350px; z-index: 10000; backdrop-filter: blur(10px);
+}
+.prompt-content { text-align: center; }
+#installBtn { background: #4ade80; color: black; border: none; padding: 12px 24px; border-radius: 25px; margin: 5px; font-weight: bold; }
+#installBtn:hover { transform: scale(1.05); }
+#dismissBtn { background: transparent; color: white; border: 2px solid white; padding: 8px 20px; border-radius: 20px; }
+</style>
+
+<script>
+// PWA INSTALL PROMPT
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('installPrompt').style.display = 'block';
+});
+
+document.getElementById('installBtn').onclick = async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            document.getElementById('installPrompt').style.display = 'none';
+            deferredPrompt = null;
+        }
+    }
+};
+
+document.getElementById('dismissBtn').onclick = () => {
+    document.getElementById('installPrompt').style.display = 'none';
+};
+
+// SERVICE WORKER REGISTRATION
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('SW registered:', reg))
+            .catch(err => console.log('SW failed:', err));
+    });
+}
+
+// OFFLINE STATUS
+window.addEventListener('online', () => {
+    showToast('✅ Online - Syncing data...', 'success');
+});
+window.addEventListener('offline', () => {
+    showToast('📴 Offline mode - Working cached', 'warning');
+});
+
+// Toast helper (tera existing function use karega ya ye add kar)
+const showToast = (msg, type) => {
+    const toast = document.createElement('div');
+    toast.textContent = msg;
+    toast.style.cssText = `
+        position: fixed; top: 20px; right: 20px; padding: 15px 20px; 
+        background: ${type === 'success' ? '#10b981' : '#f59e0b'}; 
+        color: white; border-radius: 8px; z-index: 9999;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+};
+</script>
+<!-- SHORTS CAMERA - RECORD + UPLOAD -->
+<div id="shortsCamera" class="camera-container" style="display:none;">
+    <video id="cameraVideo" autoplay muted playsinline></video>
+    <div class="camera-controls">
+        <button id="switchCamera">🔄 Flip</button>
+        <button id="toggleFlash">⚡</button>
+        <button id="recordBtn" class="record-btn">⭕ REC</button>
+        <button id="stopRecord" style="display:none;">⏹ STOP</button>
+    </div>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <div id="recordedPreview" style="display:none;">
+        <video id="previewVideo" controls></video>
+        <button id="uploadShort">📤 Upload Short</button>
+        <button id="retake">🔄 Retake</button>
+    </div>
+</div>
+
+<style>
+.camera-container {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: #000; z-index: 1000; display: flex; flex-direction: column;
+}
+#cameraVideo { width: 100%; height: 85vh; object-fit: cover; }
+.camera-controls {
+    padding: 15px; background: rgba(0,0,0,0.8); display: flex; gap: 15px; justify-content: center;
+}
+.record-btn {
+    width: 80px; height: 80px; border-radius: 50%; border: 5px solid #fff;
+    background: #ff4757; font-size: 24px; color: white; cursor: pointer;
+}
+.record-btn.recording { background: #ff3742; transform: scale(1.1); }
+#recordedPreview video { width: 100%; height: 70vh; }
+</style>
+
+  P<!-- ULTRA AUTO SHORTS CAMERA - ZERO CONFIG -->
+<div id="ultraShortsCam" class="ultra-cam" style="display:none;">
+    <video id="ultraVideo" autoplay muted playsinline></video>
+    <div class="ultra-overlay">
+        <div class="time-left" id="ultraTimer">15s left</div>
+        <div class="ultra-circle" id="ultraCircle"></div>
+    </div>
+</div>
+
+<style>
+.ultra-cam { position: fixed; inset: 0; background: black; z-index: 9999; }
+#ultraVideo { width: 100%; height: 100%; object-fit: cover; }
+.ultra-overlay {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; background: rgba(0,0,0,0.4);
+}
+.ultra-circle {
+    width: 110px; height: 110px; border-radius: 50%; 
+    background: rgba(255,255,255,0.2); cursor: pointer;
+    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+.ultra-circle.recording {
+    background: #ff4757; box-shadow: 0 0 40px #ff4757;
+    animation: pulse-ring 1.5s infinite;
+}
+@keyframes pulse-ring { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+#ultraTimer { color: white; font-size: 20px; font-weight: bold; margin-bottom: 20px; }
+</style>
+
+<script>
+// 🔥 100% AUTO - NO BUTTONS, NO MANUAL ANYTHING
+class UltraAutoCamera {
+    constructor() {
+        this.video = document.getElementById('ultraVideo');
+        this.circle = document.getElementById('ultraCircle');
+        this.timerEl = document.getElementById('ultraTimer');
+        this.isActive = false;
+    }
+
+    async autoStart() {
+        if (this.isActive) return;
+        this.isActive = true;
+        document.getElementById('ultraShortsCam').style.display = 'block';
+        
+        // Auto camera start
+        this.stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user' }, audio: true
+        });
+        this.video.srcObject = this.stream;
+        
+        // Auto setup touch
+        this.circle.onclick = () => this.recordShort();
+    }
+
+    recordShort() {
+        this.circle.classList.add('recording');
+        let timeLeft = 15;
+        this.timerEl.textContent = `${timeLeft}s left`;
+        
+        // Auto record 15s
+        this.mediaRecorder = new MediaRecorder(this.stream);
+        this.chunks = [];
+        this.mediaRecorder.ondataavailable = e => this.chunks.push(e.data);
+        this.mediaRecorder.start();
+        
+        const countInterval = setInterval(() => {
+            timeLeft--;
+            this.timerEl.textContent = `${timeLeft}s left`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(countInterval);
+                this.autoFinish();
+            }
+        }, 1000);
+    }
+
+    async autoFinish() {
+        this.mediaRecorder.stop();
+        this.circle.classList.remove('recording');
+        
+        this.mediaRecorder.onstop = async () => {
+            const blob = new Blob(this.chunks, { type: 'video/webm' });
+            const ref = storage.ref(`shorts/${firebase.auth().currentUser.uid}/auto_${Date.now()}.webm`);
+            
+            await ref.put(blob);
+            const url = await ref.getDownloadURL();
+            
+            await db.collection('shorts').add({
+                url, userId: firebase.auth().currentUser.uid,
+                auto: true, duration: 15,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            showToast('Short auto-posted! 🎥', 'success');
+            this.close();
+        };
+    }
+
+    close() {
+        document.getElementById('ultraShortsCam').style.display = 'none';
+        if (this.stream) this.stream.getTracks().forEach(t => t.stop());
+        this.isActive = false;
+    }
+}
+
+const ultraCam = new UltraAutoCamera();
+
+// 🔥 GLOBAL AUTO TRIGGER - ANYWHERE SHORTS BUTTON TOUCHES
+document.addEventListener('click', (e) => {
+    if (e.target.textContent.includes('Shorts') || 
+        e.target.classList.contains('shorts-btn') ||
+        e.target.closest('.shorts-icon')) {
+        ultraCam.autoStart();
+    }
+}, true);
+
+// ESCAPE TO CLOSE
+document.onkeydown = (e) => {
+    if (e.key === 'Escape') ultraCam.close();
+};
+</script>
+
+  
+<!-- FB-STYLE DOWNLOAD BUTTONS - INSTANT RECOGNITION -->
+<div class="shorts-video-container" id="allShortsContainer">
+    <!-- Example shorts will auto-populate here -->
+</div>
+
+<div id="smartDownloadPanel" class="smart-download-panel" style="display:none;">
+    <h4>⬇️ Quick Download</h4>
+    <div id="quickButtons"></div>
+</div>
+
+<style>
+.shorts-video-container {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px; padding: 20px;
+}
+.short-card {
+    background: #1a1a1a; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: transform 0.3s;
+}
+.short-card:hover { transform: translateY(-5px); }
+.short-video {
+    width: 100%; height: 400px; object-fit: cover;
+}
+.short-meta {
+    padding: 15px; color: white;
+}
+.fb-download-btn {
+    background: #1877f2; color: white; border: none;
+    padding: 12px 20px; border-radius: 25px; font-weight: bold;
+    width: 100%; margin-top: 10px; cursor: pointer;
+    transition: all 0.3s;
+}
+.fb-download-btn:hover {
+    background: #166fe5; transform: scale(1.02);
+}
+.fb-download-btn:active { transform: scale(0.98); }
+.smart-download-panel {
+    position: fixed; bottom: 20px; right: 20px;
+    background: #242424; padding: 20px; border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 1000;
+    min-width: 200px;
+}
+</style>
+
+<script>
+// 🔥 FB-STYLE DOWNLOAD - SMART BUTTON DETECTION
+class SmartShortsDownloader {
+    constructor() {
+        this.downloaded = new Set();
+        this.initSmartButtons();
+    }
+
+    initSmartButtons() {
+        // 1. AUTO FIND ALL SHORTS & ADD FB BUTTONS
+        this.scanForShorts();
+        
+        // 2. FB-STYLE DOWNLOAD BUTTONS
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('fb-download-btn')) {
+                this.downloadVideo(e.target.dataset.videoUrl);
+            }
+        });
+        
+        // 3. QUICK PANEL FOR LAST 3 SHORTS
+        this.showQuickPanel();
+    }
+
+    scanForShorts() {
+        // Auto-find all shorts videos in your app
+        const shortsContainer = document.getElementById('allShortsContainer');
+        
+        // Fetch shorts from Firestore & create cards
+        db.collection('shorts').orderBy('createdAt', 'desc').limit(12).get().then(snapshot => {
+            snapshot.forEach(doc => {
+                const short = doc.data();
+                this.createShortCard(short, shortsContainer);
+            });
+        });
+    }
+
+    createShortCard(short, container) {
+        const card = document.createElement('div');
+        card.className = 'short-card';
+        card.innerHTML = `
+            <video src="${short.url}" class="short-video" muted loop 
+                   poster="https://via.placeholder.com/300x400/222/fff?text=SHORT">
+            </video>
+            <div class="short-meta">
+                <h4>${short.userId?.slice(0,12)}...</h4>
+                <button class="fb-download-btn" data-video-url="${short.url}">
+                    ⬇️ Download Short
+                </button>
+            </div>
+        `;
+        container.appendChild(card);
+    }
+
+    async downloadVideo(videoUrl) {
+        const btn = event.target;
+        btn.textContent = '⏳ Downloading...';
+        btn.disabled = true;
+        
+        try {
+            const response = await fetch(videoUrl);
+            const blob = await response.blob();
+            
+            // FB-STYLE DOWNLOAD
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `short_${Date.now()}.mp4`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            this.downloaded.add(videoUrl);
+            btn.textContent = '✓ Downloaded';
+            btn.style.background = '#10b981';
+            
+            showToast('Short saved to Downloads!', 'success');
+            this.updateQuickPanel(videoUrl);
+            
+        } catch(err) {
+            btn.textContent = '❌ Failed';
+            btn.style.background = '#ef4444';
+            showToast('Download failed - try again', 'error');
+        }
+        
+        setTimeout(() => {
+            btn.disabled = false;
+            if (!this.downloaded.has(videoUrl)) {
+                btn.textContent = '⬇️ Download Short';
+                btn.style.background = '#1877f2';
+            }
+        }, 3000);
+    }
+
+    showQuickPanel() {
+        // Quick access to last 3 downloads
+        const quickPanel = document.getElementById('smartDownloadPanel');
+        const quickBtns = document.getElementById('quickButtons');
+        
+        // Show after first download
+        setTimeout(() => {
+            if (this.downloaded.size > 0) {
+                quickPanel.style.display = 'block';
+                quickBtns.innerHTML = `
+                    <button class="fb-download-btn" style="font-size:14px;margin:5px 0;">
+                        Last Short Downloaded ✓
+                    </button>
+                `;
+            }
+        }, 2000);
+    }
+
+    updateQuickPanel(url) {
+        const quickBtns = document.getElementById('quickButtons');
+        quickBtns.innerHTML = `
+            <div style="color:#10b981;font-size:12px;margin-bottom:10px;">
+                Latest: ${new Date().toLocaleTimeString()}
+            </div>
+            <button class="fb-download-btn" style="font-size:14px;padding:10px;">
+                ${this.downloaded.size} Shorts Saved
+            </button>
+        `;
+    }
+}
+
+// 🔥 FULLY AUTO INIT
+const fbDownloader = new SmartShortsDownloader();
+
+// Smart panel close
+document.getElementById('smartDownloadPanel').onclick = (e) => {
+    if (e.target === e.currentTarget) {
+        e.currentTarget.style.display = 'none';
+    }
+};
+</script>
+
+<!-- COMPLETE PRIVACY SYSTEM - FULL CONTROL -->
+<div id="privacyDashboard" class="privacy-dashboard">
+    <div class="privacy-header">
+        <h2>🔒 Privacy Settings</h2>
+        <div class="privacy-status" id="privacyStatus">Protected</div>
+    </div>
+    
+    <div class="privacy-sections">
+        <!-- Account Privacy -->
+        <div class="privacy-section">
+            <h3>👤 Account Privacy</h3>
+            <label class="privacy-toggle">
+                Public Profile
+                <input type="checkbox" id="publicProfile" checked>
+                <span class="toggle-slider"></span>
+            </label>
+            <label class="privacy-toggle">
+                Show Email
+                <input type="checkbox" id="showEmail">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <!-- Video Privacy -->
+        <div class="privacy-section">
+            <h3>📹 Video Privacy</h3>
+            <label class="privacy-toggle">
+                Shorts Public
+                <input type="checkbox" id="shortsPublic" checked>
+                <span class="toggle-slider"></span>
+            </label>
+            <label class="privacy-toggle">
+                Live Streams Private
+                <input type="checkbox" id="livePrivate">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <!-- Data Controls -->
+        <div class="privacy-section">
+            <h3>💾 Data Control</h3>
+            <button id="clearCache" class="privacy-btn danger">Clear All Cache</button>
+            <button id="exportData" class="privacy-btn secondary">Export My Data</button>
+            <button id="deleteAccount" class="privacy-btn danger">Delete Account</button>
+        </div>
+    </div>
+
+    <!-- Privacy Activity Log -->
+    <div class="privacy-log">
+        <h3>📋 Recent Privacy Actions</h3>
+        <div id="privacyLogList"></div>
+    </div>
+</div>
+
+<style>
+.privacy-dashboard {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white; padding: 30px; border-radius: 20px; max-width: 600px;
+    margin: 20px auto; box-shadow: 0 20px 60px rgba(30,58,138,0.4);
+}
+.privacy-header {
+    text-align: center; margin-bottom: 30px;
+}
+.privacy-status {
+    background: #10b981; padding: 10px 25px; border-radius: 25px;
+    font-weight: bold; font-size: 16px; margin-top: 10px;
+}
+.privacy-sections { margin-bottom: 30px; }
+.privacy-section {
+    background: rgba(255,255,255,0.1); padding: 25px;
+    border-radius: 15px; margin-bottom: 20px; backdrop-filter: blur(10px);
+}
+.privacy-section h3 {
+    margin: 0 0 20px 0; font-size: 20px; border-bottom: 2px solid rgba(255,255,255,0.3);
+    padding-bottom: 10px;
+}
+.privacy-toggle {
+    display: flex; align-items: center; gap: 15px; margin-bottom: 15px;
+    font-size: 16px; cursor: pointer;
+}
+.toggle-slider {
+    width: 50px; height: 26px; background: #64748b; border-radius: 25px;
+    position: relative; transition: 0.3s; flex-shrink: 0;
+}
+.toggle-slider::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; background: white; border-radius: 50%;
+    transition: 0.3s;
+}
+input[type="checkbox"]:checked + .toggle-slider {
+    background: #10b981;
+}
+input[type="checkbox"]:checked + .toggle-slider::after {
+    transform: translateX(24px);
+}
+.privacy-btn {
+    background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3);
+    padding: 12px 24px; border-radius: 25px; cursor: pointer;
+    font-weight: 600; transition: all 0.3s; margin: 5px;
+}
+.privacy-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+.danger { background: #ef4444; border-color: #dc2626; }
+.danger:hover { background: #dc2626; }
+.secondary { background: #f59e0b; border-color: #d97706; }
+.privacy-log {
+    background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px;
+}
+#privacyLogList {
+    max-height: 200px; overflow-y: auto; font-size: 14px;
+}
+.log-item {
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; justify-content: space-between;
+}
+</style>
+
+<script>
+// 🔥 COMPLETE PRIVACY SYSTEM - FULLY FUNCTIONAL
+class PrivacyManager {
+    constructor() {
+        this.userId = firebase.auth().currentUser?.uid;
+        this.settings = {};
+        this.init();
+    }
+
+    async init() {
+        await this.loadSettings();
+        this.bindControls();
+        this.loadPrivacyLog();
+        this.updateStatus();
+    }
+
+    async loadSettings() {
+        const doc = await db.collection('privacy_settings').doc(this.userId).get();
+        this.settings = doc.exists ? doc.data() : {
+            publicProfile: true,
+            showEmail: false,
+            shortsPublic: true,
+            livePrivate: false
+        };
+        this.applySettings();
+    }
+
+    applySettings() {
+        document.getElementById('publicProfile').checked = this.settings.publicProfile;
+        document.getElementById('showEmail').checked = this.settings.showEmail;
+        document.getElementById('shortsPublic').checked = this.settings.shortsPublic;
+        document.getElementById('livePrivate').checked = this.settings.livePrivate;
+    }
+
+    bindControls() {
+        // Toggle handlers
+        document.querySelectorAll('.privacy-toggle input').forEach(input => {
+            input.onchange = (e) => this.updateSetting(e.target.id, e.target.checked);
+        });
+
+        // Action buttons
+        document.getElementById('clearCache').onclick = () => this.clearAllCache();
+        document.getElementById('exportData').onclick = () => this.exportUserData();
+        document.getElementById('deleteAccount').onclick = () => this.deleteAccount();
+    }
+
+    async updateSetting(key, value) {
+        this.settings[key] = value;
+        
+        // Apply real-time restrictions
+        if (key === 'shortsPublic' && !value) {
+            await db.collection('shorts')
+                .where('userId', '==', this.userId)
+                .get()
+                .then(snapshot => {
+                    snapshot.forEach(doc => doc.ref.update({ isPublic: false }));
+                });
+        }
+        
+        // Save to Firestore
+        await db.collection('privacy_settings').doc(this.userId).set(this.settings);
+        this.addPrivacyLog(`${key} → ${value}`);
+        this.updateStatus();
+    }
+
+    updateStatus() {
+        const status = document.getElementById('privacyStatus');
+        const privacyScore = Object.values(this.settings).filter(Boolean).length;
+        const level = privacyScore > 2 ? 'Protected' : 'Basic';
+        const colors = { Protected: '#10b981', Basic: '#f59e0b', Exposed: '#ef4444' };
+        status.textContent = level;
+        status.style.background = colors[level];
+    }
+
+    async clearAllCache() {
+        if (confirm('Clear ALL local data? (Videos, settings, cache)')) {
+            localStorage.clear();
+            caches.keys().then(names => names.forEach(name => caches.delete(name)));
+            await db.collection('user_cache').doc(this.userId).delete();
+            this.addPrivacyLog('Full cache cleared');
+            showToast('Cache completely cleared!', 'success');
+        }
+    }
+
+    async exportData() {
+        const data = { settings: this.settings, timestamp: new Date().toISOString() };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `privacy_export_${this.userId}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.addPrivacyLog('Data exported');
+    }
+
+    async deleteAccount() {
+        if (confirm('⚠️ PERMANENTLY delete account? All data lost!')) {
+            // Delete all user data
+            await Promise.all([
+                db.collection('users').doc(this.userId).delete(),
+                db.collection('shorts').where('userId', '==', this.userId).get().then(qs => {
+                    qs.docs.forEach(doc => doc.ref.delete());
+                }),
+                db.collection('privacy_settings').doc(this.userId).delete()
+            ]);
+            
+            firebase.auth().currentUser.delete();
+            this.addPrivacyLog('Account deleted');
+            showToast('Account permanently deleted', 'warning');
+        }
+    }
+
+    addPrivacyLog(action) {
+        const log = {
+            action,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            userId: this.userId
+        };
+        db.collection('privacy_logs').add(log);
+        this.loadPrivacyLog();
+    }
+
+    async loadPrivacyLog() {
+        const snapshot = await db.collection('privacy_logs')
+            .where('userId', '==', this.userId)
+            .orderBy('timestamp', 'desc')
+            .limit(10)
+            .get();
+        
+        const logList = document.getElementById('privacyLogList');
+        logList.innerHTML = snapshot.docs.map(doc => {
+            const data = doc.data();
+            const time = data.timestamp?.toDate()?.toLocaleString() || 'Now';
+            return `<div class="log-item">
+                <span>${data.action}</span>
+                <small>${time}</small>
+            </div>`;
+        }).join('');
+    }
+}
+
+// 🔥 FULLY AUTO INIT
+if (firebase.auth().currentUser) {
+    new PrivacyManager();
+}
+
+// Privacy dashboard auto-open on /privacy route
+if (window.location.pathname.includes('privacy')) {
+    document.getElementById('privacyDashboard').scrollIntoView();
+}
+</script>
+
+  <!-- ZERO CONFIG - WORKS EVERYWHERE -->
+<div id="autoHeartContainer" class="auto-heart-container"></div>
+
+<style>
+.auto-heart-container {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+}
+.perfect-heart {
+    position: absolute; font-size: 55px; pointer-events: none;
+    animation: perfectHeart 1.8s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+@keyframes perfectHeart {
+    0% { transform: scale(0) translateY(0px) rotate(-15deg); opacity: 1; }
+    30% { transform: scale(1.3) translateY(-30px) rotate(5deg); opacity: 1; }
+    70% { transform: scale(1) translateY(-80px) rotate(15deg); opacity: 1; }
+    100% { transform: scale(0.4) translateY(-150px) rotate(45deg); opacity: 0; }
+}
+.hold-heart-stream { animation-duration: 2.2s !important; }
+</style>
+
+<script>
+// 🔥 PERFECTLY AUTOMATIC - NO CLASSES REQUIRED
+class PerfectAutoHearts {
+    constructor() {
+        this.isDoubleTapped = false;
+        this.holdActive = false;
+        this.initPerfect();
+    }
+
+    initPerfect() {
+        let lastClick = 0;
+        
+        // UNIVERSAL DOUBLE TAP - ANY VIDEO/SHORT
+        document.addEventListener('click', (e) => {
+            const now = Date.now();
+            const isVideoArea = e.target.tagName === 'VIDEO' || 
+                              e.target.closest('video, .short-player, .video-container');
+            
+            if (!isVideoArea) return;
+            
+            if (now - lastClick < 350) {
+                // DOUBLE TAP → EXPLOSION
+                this.explosionEffect(e.clientX, e.clientY);
+                this.likeVideo(e.target);
+            }
+            lastClick = now;
+        }, true);
+
+        // HOLD MODE - CONTINUOUS
+        document.addEventListener('mousedown', (e) => {
+            if (e.target.tagName === 'VIDEO' || e.target.closest('video')) {
+                this.holdActive = true;
+                this.holdStream(e.clientX, e.clientY);
+            }
+        }, true);
+        
+        document.addEventListener('mouseup', () => this.holdActive = false);
+        document.addEventListener('touchend', () => this.holdActive = false);
+    }
+
+    explosionEffect(x, y) {
+        // 15 COLOR HEARTS EXPLOSION
+        const colors = ['#ff6b9d','#ff8e8e','#a8e6cf','#ffd93d','#ff9f43','#4ecdc4','#45b7d1','#96ceb4','#feca57','#ff6b6b','#ff4757','#ff8fa3','#a55eea','#66d7d4','#f7dc6f'];
+        const hearts = ['❤️','💖','💕','💗','💓','💞','💝','💘','💟','🧡','💛','💚','💙','💜','🖤'];
+        
+        for (let i = 0; i < 15; i++) {
+            setTimeout(() => {
+                this.spawnHeart(x, y, colors[i % colors.length], hearts[i % hearts.length]);
+            }, i * 60);
+        }
+    }
+
+    holdStream(x, y) {
+        if (!this.holdActive) return;
+        
+        // Continuous hearts while holding
+        this.spawnHeart(x, y, '', '', 'hold-heart-stream');
+        
+        // Next heart in 200ms
+        setTimeout(() => this.holdStream(x, y), 200);
+    }
+
+    spawnHeart(x, y, color = '', emoji = '❤️', extraClass = '') {
+        const heart = document.createElement('div');
+        heart.className = `perfect-heart ${extraClass}`;
+        heart.innerHTML = emoji;
+        heart.style.left = (x - 25) + 'px';
+        heart.style.top = (y - 25) + 'px';
+        heart.style.color = color || `hsl(${Math.random()*360}, 70%, 60%)`;
+        
+        document.getElementById('autoHeartContainer').appendChild(heart);
+        
+        setTimeout(() => heart.remove(), 1800);
+    }
+
+    async likeVideo(target) {
+        // Auto-like to Firestore
+        const videoId = target.src || target.closest('[data-video-id]')?.dataset.videoId || 'auto';
+        await db.collection('hearts').add({
+            videoId,
+            userId: firebase.auth().currentUser?.uid,
+            position: { x: target.getBoundingClientRect().left, y: target.getBoundingClientRect().top },
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Animate like counter
+        const counter = target.parentElement.querySelector('.like-count, .hearts-count');
+        if (counter) {
+            const num = parseInt(counter.textContent) || 0;
+            counter.style.transform = 'scale(1.3)';
+            counter.textContent = num + 1;
+            setTimeout(() => counter.style.transform = 'scale(1)', 200);
+        }
+    }
+}
+
+// 🔥 STARTS AUTOMATICALLY - NO CONFIG
+new PerfectAutoHearts();
+</script>
+  <!-- UNIQUE VIEW COUNTER - FIRESTORE BASED -->
+<div class="view-counter-container">
+    <div class="video-views-display">
+        <span class="views-icon">👁️</span>
+        <span id="uniqueViewCount" class="view-number">0</span>
+        <span class="views-label">Unique Views</span>
+    </div>
+    <div class="live-stats">
+        <span>Today: <span id="todayViews">0</span></span>
+        <span>All Time: <span id="totalViews">0</span></span>
+    </div>
+</div>
+
+<style>
+.view-counter-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white; padding: 15px 25px; border-radius: 25px;
+    display: flex; align-items: center; gap: 20px;
+    box-shadow: 0 8px 32px rgba(102,126,234,0.4); margin: 20px 0;
+    font-weight: 600; backdrop-filter: blur(10px);
+}
+.video-views-display {
+    display: flex; align-items: center; gap: 10px; font-size: 18px;
+}
+.views-icon { font-size: 24px; animation: pulse 2s infinite; }
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+.view-number {
+    background: rgba(255,255,255,0.2); padding: 8px 16px;
+    border-radius: 20px; min-width: 50px; text-align: center;
+    font-size: 22px; font-weight: bold;
+}
+.live-stats {
+    display: flex; gap: 25px; font-size: 14px;
+    background: rgba(255,255,255,0.1); padding: 8px 16px;
+    border-radius: 15px;
+}
+</style>
+
+<script>
+// 🔥 UNIQUE VIEWS - PER USER PER VIDEO - FIRESTORE
+class UniqueViewTracker {
+    constructor(videoId = 'default_video') {
+        this.videoId = videoId;
+        this.userId = firebase.auth().currentUser?.uid || 'anonymous_' + Math.random().toString(36).substr(2, 9);
+        this.today = new Date().toISOString().split('T')[0];
+        this.init();
+    }
+
+    async init() {
+        // Check if user already viewed this video today
+        await this.checkExistingView();
+        
+        // Real-time view count listener
+        this.viewsRef = db.collection('video_views').doc(this.videoId);
+        this.viewsRef.onSnapshot(doc => {
+            this.updateDisplay(doc.data());
+        });
+        
+        // Auto-track view after 3 seconds
+        setTimeout(() => this.trackView(), 3000);
+    }
+
+    async checkExistingView() {
+        const userViewRef = db.collection('user_views')
+            .doc(this.videoId)
+            .collection('views')
+            .doc(this.userId);
+        
+        const doc = await userViewRef.get();
+        if (!doc.exists) {
+            // New unique viewer
+            this.isNewViewer = true;
+        }
+    }
+
+    async trackView() {
+        if (!this.isNewViewer) return;
+        
+        try {
+            // Record user view
+            await db.collection('user_views')
+                .doc(this.videoId)
+                .collection('views')
+                .doc(this.userId).set({
+                    videoId: this.videoId,
+                    userId: this.userId,
+                    date: this.today,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            
+            // Update main views counter
+            await this.viewsRef.set({
+                uniqueViews: firebase.firestore.FieldValue.increment(1),
+                totalViews: firebase.firestore.FieldValue.increment(1),
+                todayViews: firebase.firestore.FieldValue.increment(1),
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+            
+            showToast('👁️ View counted!', 'success');
+            
+        } catch(err) {
+            console.log('View tracking failed:', err);
+        }
+    }
+
+    updateDisplay(data) {
+        if (!data) return;
+        
+        document.getElementById('uniqueViewCount').textContent = 
+            new Intl.NumberFormat().format(data.uniqueViews || 0);
+        document.getElementById('todayViews').textContent = 
+            new Intl.NumberFormat().format(data.todayViews || 0);
+        document.getElementById('totalViews').textContent = 
+            new Intl.NumberFormat().format(data.totalViews || 0);
+    }
+}
+
+// 🔥 AUTO INIT FOR ALL VIDEOS - ZERO CONFIG
+function initViewTracker(videoId = window.location.pathname.split('/').pop() || 'home') {
+    new UniqueViewTracker(videoId);
+}
+
+// Start automatically
+document.addEventListener('DOMContentLoaded', () => {
+    initViewTracker();
+});
+
+// Dynamic video detection
+const viewObserver = new MutationObserver(() => {
+    document.querySelectorAll('video[data-video-id]').forEach(video => {
+        if (!video.hasAttribute('data-view-tracked')) {
+            video.setAttribute('data-view-tracked', 'true');
+            new UniqueViewTracker(video.dataset.videoId);
+        }
+    });
+});
+viewObserver.observe(document.body, { childList: true, subtree: true });
+
+// Manual init for specific video (optional)
+function trackThisVideo(videoId) {
+    new UniqueViewTracker(videoId);
+}
+</script>
+<!-- COMPLETE DASHBOARD - VIDEOS/SHORTS/POSTS TABS -->
+<div id="creatorDashboard" class="creator-dashboard">
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="videos">📹 Videos</button>
+        <button class="tab-btn" data-tab="shorts">📱 Shorts</button>
+        <button class="tab-btn" data-tab="posts">📝 Posts</button>
+        <div class="stats-overview">
+            <span>Videos: <strong id="videoCount">0</strong></span>
+            <span>Shorts: <strong id="shortCount">0</strong></span>
+            <span>Posts: <strong id="postCount">0</strong></span>
+        </div>
+    </div>
+
+    <!-- Tab Contents -->
+    <div class="tab-content">
+        <div id="videos" class="tab-pane active">
+            <div class="content-header">
+                <h3>My Videos</h3>
+                <button id="uploadVideoBtn" class="upload-btn">+ Upload Video</button>
+            </div>
+            <div id="videosList" class="content-grid"></div>
+        </div>
+
+        <div id="shorts" class="tab-pane">
+            <div class="content-header">
+                <h3>My Shorts</h3>
+                <button id="uploadShortBtn" class="upload-btn">+ New Short</button>
+            </div>
+            <div id="shortsList" class="content-grid"></div>
+        </div>
+
+        <div id="posts" class="tab-pane">
+            <div class="content-header">
+                <h3>My Posts</h3>
+                <button id="newPostBtn" class="upload-btn">+ New Post</button>
+            </div>
+            <div id="postsList" class="content-grid"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+.creator-dashboard {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    color: white; padding: 30px; border-radius: 20px;
+    max-width: 1200px; margin: 20px auto; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+.tab-nav {
+    display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;
+}
+.tab-btn {
+    background: rgba(255,255,255,0.1); color: white; border: 2px solid rgba(255,255,255,0.2);
+    padding: 15px 25px; border-radius: 15px; cursor: pointer; font-weight: 600;
+    transition: all 0.3s; font-size: 16px;
+}
+.tab-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+.tab-btn.active {
+    background: linear-gradient(45deg, #667eea, #764ba2); border-color: #667eea;
+    box-shadow: 0 10px 25px rgba(102,126,234,0.4);
+}
+.stats-overview {
+    margin-left: auto; display: flex; gap: 25px; align-items: center;
+    background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 12px;
+}
+.content-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #333;
+}
+.upload-btn {
+    background: linear-gradient(45deg, #10b981, #059669); color: white;
+    border: none; padding: 12px 24px; border-radius: 25px; font-weight: 600;
+    cursor: pointer; box-shadow: 0 5px 15px rgba(16,185,129,0.4);
+}
+.upload-btn:hover { transform: translateY(-2px); }
+.content-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px; padding: 20px 0;
+}
+.content-item {
+    background: #1e1e2e; border-radius: 15px; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: transform 0.3s;
+    cursor: pointer;
+}
+.content-item:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+.item-thumb {
+    width: 100%; height: 200px; background: #333;
+    object-fit: cover; position: relative;
+}
+.item-meta {
+    padding: 20px; position: relative;
+}
+.item-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+.item-stats {
+    display: flex; gap: 20px; font-size: 14px; color: #aaa; margin-top: 10px;
+}
+.stats-item { display: flex; align-items: center; gap: 5px; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+</style>
+
+<script>
+// 🔥 COMPLETE DASHBOARD - SEPARATE LOADING
+class CreatorDashboard {
+    constructor() {
+        this.userId = firebase.auth().currentUser?.uid;
+        this.init();
+    }
+
+    init() {
+        this.bindTabs();
+        this.loadAllContent();
+        this.setupUploads();
+    }
+
+    bindTabs() {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                const tab = e.target.dataset.tab;
+                
+                // Update active tab
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                
+                e.target.classList.add('active');
+                document.getElementById(tab).classList.add('active');
+            };
+        });
+    }
+
+    async loadAllContent() {
+        // Load Videos
+        await this.loadVideos();
+        // Load Shorts  
+        await this.loadShorts();
+        // Load Posts
+        await this.loadPosts();
+    }
+
+    async loadVideos() {
+        const snapshot = await db.collection('videos')
+            .where('userId', '==', this.userId)
+            .orderBy('createdAt', 'desc')
+            .get();
+        
+        const container = document.getElementById('videosList');
+        container.innerHTML = '';
+        
+        snapshot.forEach(doc => {
+            this.createContentItem(doc.data(), container, 'video');
+        });
+        
+        document.getElementById('videoCount').textContent = snapshot.size;
+    }
+
+    async loadShorts() {
+        const snapshot = await db.collection('shorts')
+            .where('userId', '==', this.userId)
+            .orderBy('createdAt', 'desc')
+            .get();
+        
+        const container = document.getElementById('shortsList');
+        container.innerHTML = '';
+        
+        snapshot.forEach(doc => {
+            this.createContentItem(doc.data(), container, 'short');
+        });
+        
+        document.getElementById('shortCount').textContent = snapshot.size;
+    }
+
+    async loadPosts() {
+        const snapshot = await db.collection('posts')
+            .where('userId', '==', this.userId)
+            .orderBy('createdAt', 'desc')
+            .get();
+        
+        const container = document.getElementById('postsList');
+        container.innerHTML = '';
+        
+        snapshot.forEach(doc => {
+            this.createContentItem(doc.data(), container, 'post');
+        });
+        
+        document.getElementById('postCount').textContent = snapshot.size;
+    }
+
+    createContentItem(item, container, type) {
+        const div = document.createElement('div');
+        div.className = 'content-item';
+        div.onclick = () => this.editContent(item.id, type);
+        
+        div.innerHTML = `
+            <div class="item-thumb" style="background-image: linear-gradient(45deg, ${type === 'short' ? '#ff6b6b' : '#667eea'}, ${type === 'post' ? '#10b981' : '#764ba2'});">
+                <div class="thumb-icon">${type === 'video' ? '🎥' : type === 'short' ? '📱' : '📝'}</div>
+            </div>
+            <div class="item-meta">
+                <div class="item-title">${item.title || item.content?.slice(0,30) + '...' || 'Untitled'}</div>
+                <div class="item-stats">
+                    <div class="stats-item">
+                        👁️ <span>${item.views || 0}</span>
+                    </div>
+                    <div class="stats-item">
+                        ❤️ <span>${item.likes || 0}</span>
+                    </div>
+                    <div class="stats-item">
+                        ${new Date(item.createdAt?.toDate()).toLocaleDateString()}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(div);
+    }
+
+    setupUploads() {
+        document.getElementById('uploadVideoBtn').onclick = () => this.openUpload('video');
+        document.getElementById('uploadShortBtn').onclick = () => this.openUpload('short');
+        document.getElementById('newPostBtn').onclick = () => this.openUpload('post');
+    }
+
+    openUpload(type) {
+        showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} upload coming soon!`, 'info');
+        // Add your upload modal here
+    }
+
+    editContent(contentId, type) {
+        showToast(`Editing ${type}: ${contentId}`, 'info');
+        // Add edit functionality
+    }
+}
+
+// 🔥 AUTO INIT - WORKS INSTANTLY
+if (firebase.auth().currentUser) {
+    new CreatorDashboard();
+}
+
+// Real-time updates
+setInterval(() => {
+    if (document.querySelector('.creator-dashboard')) {
+        new CreatorDashboard().loadAllContent();
+    }
+}, 30000);
+</script>
+
+  <!-- COMPLETE PROFILE EDITOR - EXTENDED FIELDS -->
+<div id="extendedProfileEditor" class="profile-editor">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <img id="profileAvatar" src="https://via.placeholder.com/120/667eea/fff?text=DP" alt="Profile">
+            <button id="changeAvatar" class="avatar-btn">📸 Change</button>
+            <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+        </div>
+        <h2>Edit Extended Profile</h2>
+        <button id="saveProfileBtn" class="save-btn">💾 Save All Changes</button>
+    </div>
+
+    <form id="profileForm" class="profile-form">
+        <!-- Basic Info -->
+        <div class="form-section">
+            <h3>👤 Basic Information</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" id="displayName" placeholder="Your display name">
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="@handle">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Bio</label>
+                <textarea id="bio" rows="3" placeholder="Tell us about yourself..."></textarea>
+            </div>
+        </div>
+
+        <!-- Extended Contact -->
+        <div class="form-section">
+            <h3>📞 Contact & Links</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email (Private)</label>
+                    <input type="email" id="privateEmail">
+                </div>
+                <div class="form-group">
+                    <label>Phone (Optional)</label>
+                    <input type="tel" id="phone">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Instagram</label>
+                    <input type="url" id="instagram" placeholder="https://instagram.com/">
+                </div>
+                <div class="form-group">
+                    <label>Twitter/X</label>
+                    <input type="url" id="twitter" placeholder="https://twitter.com/">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Website/Blog</label>
+                <input type="url" id="website">
+            </div>
+        </div>
+
+        <!-- Extended Preferences -->
+        <div class="form-section">
+            <h3>⚙️ Preferences & Privacy</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="category">
+                        <option value="gaming">Gaming</option>
+                        <option value="music">Music</option>
+                        <option value="vlogs">Vlogs</option>
+                        <option value="education">Education</option>
+                        <option value="tech">Tech</option>
+                        <option value="lifestyle">Lifestyle</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Country</label>
+                    <select id="country">
+                        <option value="PK">Pakistan</option>
+                        <option value="IN">India</option>
+                        <option value="US">USA</option>
+                        <option value="UK">UK</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="privacy-toggles">
+                <label class="toggle-item">
+                    <input type="checkbox" id="showEmailPublic">
+                    Show Email Publicly
+                    <span class="toggle"></span>
+                </label>
+                <label class="toggle-item">
+                    <input type="checkbox" id="allowMessages">
+                    Allow Direct Messages
+                    <span class="toggle"></span>
+                </label>
+                <label class="toggle-item">
+                    <input type="checkbox" id="profilePublic">
+                    Public Profile
+                    <span class="toggle"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Extended Custom -->
+        <div class="form-section">
+            <h3>🎨 Custom Fields</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Custom Link 1</label>
+                    <input type="text" id="customLink1" placeholder="Discord/Telegram/etc">
+                </div>
+                <div class="form-group">
+                    <label>Custom Link 2</label>
+                    <input type="text" id="customLink2">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="location" placeholder="City, Country">
+            </div>
+        </div>
+    </form>
+
+    <div id="profileStatus" class="status-message"></div>
+</div>
+
+<style>
+.profile-editor {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: white; padding: 40px; border-radius: 25px;
+    max-width: 800px; margin: 30px auto; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.profile-header {
+    text-align: center; margin-bottom: 40px;
+}
+.profile-avatar {
+    position: relative; display: inline-block; margin-bottom: 20px;
+}
+#profileAvatar {
+    width: 120px; height: 120px; border-radius: 50%;
+    object-fit: cover; border: 5px solid #667eea; box-shadow: 0 15px 35px rgba(102,126,234,0.3);
+}
+.avatar-btn {
+    position: absolute; bottom: 0; right: 0;
+    background: #10b981; color: white; border: none;
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+    font-size: 16px; box-shadow: 0 5px 15px rgba(16,185,129,0.4);
+}
+.save-btn {
+    background: linear-gradient(45deg, #667eea, #764ba2); color: white;
+    border: none; padding: 18px 40px; border-radius: 30px;
+    font-size: 18px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 10px 30px rgba(102,126,234,0.4); width: 100%;
+}
+.save-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(102,126,234,0.5); }
+.save-btn.saving { opacity: 0.7; }
+.form-section {
+    background: rgba(255,255,255,0.05); padding: 30px;
+    border-radius: 20px; margin-bottom: 25px; backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.form-section h3 {
+    margin: 0 0 25px 0; font-size: 22px; color: #e2e8f0;
+    position: relative; padding-bottom: 10px;
+}
+.form-section h3::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 50px; height: 3px; background: linear-gradient(90deg, #667eea, #764ba2);
+}
+.form-row { display: flex; gap: 20px; margin-bottom: 20px; }
+.form-group {
+    flex: 1; margin-bottom: 20px;
+}
+.form-group label {
+    display: block; margin-bottom: 8px; font-weight: 600;
+    color: #cbd5e1; font-size: 15px;
+}
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 15px; border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 12px; background: rgba(255,255,255,0.08);
+    color: white; font-size: 16px; transition: all 0.3s;
+    backdrop-filter: blur(10px);
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: #667eea; box-shadow: 0 0 20px rgba(102,126,234,0.3);
+    background: rgba(255,255,255,0.12);
+}
+.privacy-toggles {
+    display: flex; flex-direction: column; gap: 15px; margin-top: 20px;
+}
+.toggle-item {
+    display: flex; align-items: center; gap: 15px;
+    font-size: 16px; cursor: pointer; padding: 15px;
+    background: rgba(255,255,255,0.03); border-radius: 12px;
+}
+.toggle {
+    width: 55px; height: 30px; background: #475569;
+    border-radius: 30px; position: relative; transition: 0.3s;
+    flex-shrink: 0;
+}
+.toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 24px; height: 24px; background: white; border-radius: 50%;
+    transition: 0.3s;
+}
+input[type="checkbox"]:checked + .toggle {
+    background: linear-gradient(45deg, #10b981, #059669);
+}
+input[type="checkbox"]:checked + .toggle::after {
+    transform: translateX(25px);
+}
+.status-message {
+    text-align: center; margin-top: 20px; padding: 15px;
+    border-radius: 12px; font-weight: 600;
+}
+.status-success { background: rgba(16,185,129,0.2); color: #10b981; }
+.status-error { background: rgba(239,68,68,0.2); color: #ef4444; }
+</style>
+
+<script>
+// 🔥 COMPLETE PROFILE SAVE - EXTENDED FIELDS
+class ExtendedProfileEditor {
+    constructor() {
+        this.userId = firebase.auth().currentUser?.uid;
+        this.init();
+    }
+
+    async init() {
+        await this.loadProfile();
+        this.bindEvents();
+    }
+
+    async loadProfile() {
+        const doc = await db.collection('profiles').doc(this.userId).get();
+        if (doc.exists) {
+            const profile = doc.data();
+            Object.keys(profile).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) {
+                    if (el.type === 'checkbox') {
+                        el.checked = profile[key];
+                    } else {
+                        el.value = profile[key] || '';
+                    }
+                }
+            });
+            
+            // Load avatar
+            if (profile.avatarUrl) {
+                document.getElementById('profileAvatar').src = profile.avatarUrl;
+            }
+        }
+    }
+
+    bindEvents() {
+        // Avatar change
+        document.getElementById('changeAvatar').onclick = () => {
+            document.getElementById('avatarInput').click();
+        };
+        
+        document.getElementById('avatarInput').onchange = (e) => this.uploadAvatar(e.target.files[0]);
+        
+        // Save profile
+        document.getElementById('saveProfileBtn').onclick = () => this.saveProfile();
+        
+        // Auto-save on field change (debounced)
+        let saveTimeout;
+        document.getElementById('profileForm').addEventListener('input', () => {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => this.quickSave(), 2000);
+        });
+    }
+
+    async uploadAvatar(file) {
+        if (!file) return;
+        
+        const storageRef = firebase.storage().ref(`avatars/${this.userId}/${file.name}`);
+        const uploadTask = storageRef.put(file);
+        
+        uploadTask.on('state_changed',
+            snapshot => {}, // progress
+            error => this.showStatus('Avatar upload failed', 'error'),
+            async () => {
+                const avatarUrl = await storageRef.getDownloadURL();
+                document.getElementById('profileAvatar').src = avatarUrl;
+                await this.updateField('avatarUrl', avatarUrl);
+                this.showStatus('Avatar updated! ✅', 'success');
+            }
+        );
+    }
+
+    async saveProfile() {
+        const btn = document.getElementById('saveProfileBtn');
+        btn.textContent = 'Saving...';
+        btn.classList.add('saving');
+        
+        try {
+            const profileData = {};
+            
+            // Collect all form fields
+            document.querySelectorAll('#profileForm input, #profileForm select, #profileForm textarea').forEach(el => {
+                profileData[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+            });
+            
+            profileData.userId = this.userId;
+            profileData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+            
+            await db.collection('profiles').doc(this.userId).set(profileData);
+            
+            this.showStatus('Profile saved successfully! 🎉', 'success');
+            showToast('All changes saved to cloud!', 'success');
+            
+        } catch (error) {
+            this.showStatus('Save failed - check connection', 'error');
+            console.error('Profile save error:', error);
+        } finally {
+            btn.textContent = '💾 Save All Changes';
+            btn.classList.remove('saving');
+        }
+    }
+
+    async quickSave() {
+        // Save individual field changes
+        const changedFields = {};
+        document.querySelectorAll('#profileForm input, #profileForm textarea, #profileForm select').forEach(el => {
+            if (el.value.trim()) {
+                changedFields[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+            }
+        });
+        
+        if (Object.keys(changedFields).length > 0) {
+            await db.collection('profiles').doc(this.userId).update({
+                ...changedFields,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+    }
+
+    async updateField(field, value) {
+        await db.collection('profiles').doc(this.userId).update({
+            [field]: value,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+
+    showStatus(message, type) {
+        const status = document.getElementById('profileStatus');
+        status.textContent = message;
+        status.className = `status-message status-${type}`;
+    }
+}
+
+// 🔥 FULLY AUTOMATIC INIT
+if (firebase.auth().currentUser) {
+    new ExtendedProfileEditor();
+}
+</script>
+
+  <!-- PERFECT POST SHARE SYSTEM -->
+<div id="postShareSystem" class="share-system">
+    <!-- Example Post -->
+    <div class="post-card" data-post-id="example123">
+        <div class="post-content">
+            <h4>Check out my new video! 🔥</h4>
+            <p>Watch now: https://yourapp.com/video/abc123</p>
+        </div>
+        <div class="post-actions">
+            <button class="share-btn" data-share-title="New Video Alert!" data-share-text="Check out my latest video! 🔥" data-share-url="https://yourapp.com/video/abc123">
+                📤 Share
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Universal Share Button - Add to any post -->
+<button class="universal-share" data-share-title="My Post" data-share-text="Check this out!" data-share-url="https://yourapp.com/post/123">
+    🔗 Share Post
+</button>
+
+<style>
+.share-system { max-width: 600px; margin: 20px auto; }
+.post-card {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-radius: 20px; padding: 25px; margin-bottom: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+}
+.post-content h4 {
+    color: #f8fafc; font-size: 22px; margin: 0 0 15px 0;
+    font-weight: 700;
+}
+.post-content p {
+    color: #cbd5e1; font-size: 16px; line-height: 1.6;
+    background: rgba(255,255,255,0.05); padding: 15px;
+    border-radius: 12px; border-left: 4px solid #667eea;
+}
+.post-actions {
+    margin-top: 20px; text-align: center;
+}
+.share-btn, .universal-share {
+    background: linear-gradient(45deg, #3b82f6, #1d4ed8); color: white;
+    border: none; padding: 15px 30px; border-radius: 30px;
+    font-size: 16px; font-weight: 600; cursor: pointer;
+    box-shadow: 0 10px 25px rgba(59,130,246,0.4);
+    transition: all 0.3s; position: relative; overflow: hidden;
+}
+.share-btn:hover, .universal-share:hover {
+    transform: translateY(-3px); box-shadow: 0 15px 35px rgba(59,130,246,0.5);
+}
+.share-btn:active, .universal-share:active { transform: translateY(-1px); }
+.share-btn::after, .universal-share::after {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+.share-btn.sharing::after, .universal-share.sharing::after { left: 100%; }
+.share-sheet {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+    display: flex; align-items: center; justify-content: center; z-index: 10000;
+    opacity: 0; visibility: hidden; transition: all 0.3s;
+}
+.share-sheet.active {
+    opacity: 1; visibility: visible;
+}
+.share-sheet-content {
+    background: #1e293b; border-radius: 20px; padding: 30px;
+    max-width: 400px; width: 90%; max-height: 80vh; overflow-y: auto;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+.share-header {
+    text-align: center; margin-bottom: 25px;
+}
+.share-title {
+    font-size: 24px; font-weight: 700; color: #f8fafc; margin-bottom: 5px;
+}
+.share-url {
+    background: rgba(255,255,255,0.1); padding: 12px 20px;
+    border-radius: 12px; word-break: break-all; font-family: monospace;
+    font-size: 14px; color: #cbd5e1;
+}
+.share-options {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px; margin-top: 25px;
+}
+.share-option {
+    background: rgba(255,255,255,0.1); color: white; border: none;
+    padding: 15px; border-radius: 15px; cursor: pointer; font-size: 16px;
+    transition: all 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.share-option:hover {
+    background: rgba(255,255,255,0.2); transform: translateY(-2px);
+}
+.share-close {
+    background: #ef4444; color: white; border: none;
+    padding: 12px 24px; border-radius: 12px; cursor: pointer;
+    margin-top: 20px; font-weight: 600; width: 100%;
+}
+</style>
+
+<script>
+// 🔥 PERFECT POST SHARE - TEXT + LINK + ALL PLATFORMS
+class PerfectShareSystem {
+    constructor() {
+        this.initShareButtons();
+        this.initUniversalShare();
+    }
+
+    initShareButtons() {
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.share-btn');
+            if (!btn) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const title = btn.dataset.shareTitle || 'Check this out!';
+            const text = btn.dataset.shareText || 'Sharing from my app!';
+            const url = btn.dataset.shareUrl || window.location.href;
+            
+            this.openShareSheet(title, text, url, btn);
+        });
+    }
+
+    initUniversalShare() {
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.universal-share');
+            if (!btn) return;
+            
+            const title = btn.dataset.shareTitle;
+            const text = btn.dataset.shareText;
+            const url = btn.dataset.shareUrl;
+            
+            this.shareNative(title, text, url);
+        });
+    }
+
+    openShareSheet(title, text, url, btn) {
+        // Show animated share sheet
+        let sheet = document.querySelector('.share-sheet');
+        if (!sheet) {
+            sheet = this.createShareSheet(title, text, url);
+            document.body.appendChild(sheet);
+        }
+        
+        sheet.classList.add('active');
+        btn.classList.add('sharing');
+        
+        // Auto-close after 5s inactivity
+        setTimeout(() => sheet.classList.remove('active'), 5000);
+    }
+
+    createShareSheet(title, text, url) {
+        const sheet = document.createElement('div');
+        sheet.className = 'share-sheet';
+        sheet.innerHTML = `
+            <div class="share-sheet-content">
+                <div class="share-header">
+                    <div class="share-title">${title}</div>
+                    <div class="share-url">${url}</div>
+                </div>
+                <div class="share-options">
+                    <button class="share-option" onclick="navigator.share({title:'${title}',text:'${text}',url:'${url}'})">
+                        📱 Native
+                    </button>
+                    <button class="share-option" onclick="navigator.clipboard.writeText('${url}');showToast('Link copied!')">
+                        📋 Copy Link
+                    </button>
+                    <button class="share-option" onclick="this.copyShareText('${text} ${url}')">
+                        📄 Copy Text
+                    </button>
+                    <a class="share-option" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}" target="_blank">
+                        🐦 Twitter
+                    </a>
+                    <a class="share-option" href="https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}" target="_blank">
+                        💬 WhatsApp
+                    </a>
+                    <a class="share-option" href="https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}" target="_blank">
+                        ✈️ Telegram
+                    </a>
+                </div>
+                <button class="share-close" onclick="this.parentElement.parentElement.classList.remove('active')">
+                    Close
+                </button>
+            </div>
+        `;
+        return sheet;
+    }
+
+    async shareNative(title, text, url) {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: title,
+                    text: text,
+                    url: url
+                });
+            } catch(err) {
+                console.log('Share cancelled');
+            }
+        } else {
+            // Fallback to copy
+            await navigator.clipboard.writeText(`${title}
+${text}
+${url}`);
+            showToast('Link copied to clipboard!');
+        }
+    }
+
+    async copyShareText(shareText) {
+        await navigator.clipboard.writeText(shareText);
+        showToast('Full text copied! 📄');
+    }
+}
+
+// 🔥 AUTO INIT - WORKS ON ALL POSTS
+new PerfectShareSystem();
+
+// Global toast function (if not exists)
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed; top: 20px; right: 20px; background: ${type === 'success' ? '#10b981' : '#f59e0b'};
+        color: white; padding: 15px 25px; border-radius: 10px; z-index: 10001;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-weight: 600;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// Auto-share buttons on dynamic content
+const shareObserver = new MutationObserver(() => {
+    document.querySelectorAll('.post-card:not([data-share-init])').forEach(post => {
+        post.setAttribute('data-share-init', 'true');
+        // Auto-add share button if missing
+        if (!post.querySelector('.share-btn')) {
+            const actions = document.createElement('div');
+            actions.className = 'post-actions';
+            actions.innerHTML = `
+                <button class="share-btn" 
+                        data-share-title="${post.querySelector('h4')?.textContent || 'Post'}"
+                        data-share-text="${post.querySelector('p')?.textContent || ''}"
+                        data-share-url="${window.location.origin}/post/${post.dataset.postId}">
+                    📤 Share
+                </button>
+            `;
+            post.appendChild(actions);
+        }
+    });
+});
+shareObserver.observe(document.body, { childList: true, subtree: true });
+</script>
+
+  
+
+  
+  
+  
+  
+  
