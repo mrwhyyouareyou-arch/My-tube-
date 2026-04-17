@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Stream x</title>
+<title>MyTube — Pakistan ka apna platform</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#FF0000">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Stream x">
+<meta name="apple-mobile-web-app-title" content="MyTube">
 <!-- PWA fast launch -->
 <meta http-equiv="Cache-Control" content="max-age=3600">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" as="style">
@@ -24,8 +24,8 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <!-- SEO -->
-<meta name="description" content="Stream x — Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.">
-<meta property="og:title" content="Stream x — Pakistan ka apna platform">
+<meta name="description" content="MyTube — Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.">
+<meta property="og:title" content="MyTube — Pakistan ka apna platform">
 <meta property="og:description" content="Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!">
 <meta property="og:type" content="website">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -86,10 +86,8 @@ button,input,textarea{font-family:var(--font);}
 .header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);}
 .logo-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0;cursor:pointer;}
 .logo-icon{width:30px;height:21px;flex-shrink:0;}
-.logo-text{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
+.logo-text{font-size:18px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
 .logo-text span{color:var(--red);}
-.logo-text .streams{color:var(--red);}
-.logo-text .max{color:var(--text);font-size:14px;}
 .search-bar{flex:1;display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:22px;overflow:hidden;transition:border-color .2s;}
 .search-bar.focused{border-color:var(--red);}
 .search-bar input{flex:1;padding:8px 12px;background:none;border:none;outline:none;color:var(--text);font-size:13px;}
@@ -127,8 +125,6 @@ button,input,textarea{font-family:var(--font);}
 .auth-brand svg{margin-bottom:8px;}
 .auth-brand h1{font-size:28px;font-weight:800;margin-bottom:4px;}
 .auth-brand h1 span{color:var(--red);}
-.auth-brand h1 .streams{color:var(--red);}
-.auth-brand h1 .max{color:var(--text);}
 .auth-brand p{color:var(--text2);font-size:13px;}
 .auth-card{width:100%;max-width:360px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px 20px;}
 .auth-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:20px;}
@@ -588,7 +584,7 @@ button,input,textarea{font-family:var(--font);}
 <!-- ═══ SPLASH SCREEN ═══ -->
 <div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .2s ease;">
   <svg width="80" height="58" viewBox="0 0 50 36" style="animation:splashPulse 1s ease infinite alternate;"><rect width="50" height="36" rx="8" fill="#FF0000"/><polygon points="19,8 19,28 38,18" fill="white"/></svg>
-  <div style="font-size:32px;font-weight:800;color:white;margin-top:14px;letter-spacing:-1px;"><span style="color:#FF0000;">Stream</span> x</div>
+  <div style="font-size:32px;font-weight:800;color:white;margin-top:14px;letter-spacing:-1px;">My<span style="color:#FF0000;">Tube</span></div>
   <div style="font-size:13px;color:#aaa;margin-top:6px;">Pakistan ka apna platform 🇵🇰</div>
   <div style="position:absolute;bottom:60px;display:flex;align-items:center;gap:8px;">
     <div style="width:8px;height:8px;border-radius:50%;background:#FF0000;animation:splashDot 1.2s ease infinite;"></div>
@@ -605,7 +601,7 @@ button,input,textarea{font-family:var(--font);}
 <div id="authScreen" class="auth-screen" style="display:none;">
   <div class="auth-brand">
     <svg width="50" height="36" viewBox="0 0 50 36"><rect width="50" height="36" rx="8" fill="#FF0000"/><polygon points="19,8 19,28 38,18" fill="white"/></svg>
-    <h1><span class="streams">Stream</span> <span class="max">x</span></h1>
+    <h1>My<span>Tube</span></h1>
     <p>Pakistan ka apna platform 🇵🇰</p>
   </div>
   <div class="auth-card">
@@ -670,7 +666,7 @@ button,input,textarea{font-family:var(--font);}
   <div class="side-item" onclick="showScreen('terms');closeSideMenu()"><i class="fas fa-file-contract"></i><span>Terms of Service</span></div>
   <div class="side-item" onclick="showScreen('copyright');closeSideMenu()"><i class="fas fa-copyright"></i><span>Copyright</span></div>
   <div class="side-footer">
-    <p>© 2025 Stream x Pakistan<br>All rights reserved.<br><span style="color:var(--red);">▶ Stream x</span> v5.0</p>
+    <p>© 2025 MyTube Pakistan<br>All rights reserved.<br><span style="color:var(--red);">▶ MyTube</span> v5.0</p>
   </div>
 </div>
 
@@ -678,7 +674,7 @@ button,input,textarea{font-family:var(--font);}
   <div class="header">
     <div class="logo-wrap" onclick="openSideMenu()">
       <svg class="logo-icon" viewBox="0 0 30 21"><rect width="30" height="21" rx="5" fill="#FF0000"/><polygon points="11,5 11,16 22,10.5" fill="white"/></svg>
-      <div class="logo-text"><span class="streams">Stream</span> <span class="max">x</span></div>
+      <div class="logo-text">My<span>Tube</span></div>
     </div>
     <div class="search-bar" id="searchBarEl">
       <input type="text" id="searchInput" placeholder="Search..." oninput="onSearchInput(this.value)" onfocus="searchFocus()" onblur="searchBlur()">
@@ -725,8 +721,8 @@ button,input,textarea{font-family:var(--font);}
         <div style="display:flex;align-items:center;gap:7px;">
           <i class="fas fa-film" style="color:var(--red);font-size:17px;"></i> Shorts
         </div>
-        <button onclick="openUploadDirect('short')" style="background:var(--red);color:white;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
-          <i class="fas fa-upload" style="font-size:10px;"></i> Upload Short
+        <button onclick="openShortsCamera()" style="background:var(--red);color:white;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <i class="fas fa-circle" style="font-size:10px;"></i> Record
         </button>
       </div>
       <div style="display:flex;gap:8px;padding:0 14px 8px;overflow-x:auto;" id="shortFilterChips">
@@ -853,94 +849,48 @@ button,input,textarea{font-family:var(--font);}
 
         <!-- OVERVIEW TAB -->
         <div id="studio-overview">
-          <!-- Period selector -->
-          <div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;">
-            <button class="chip active" id="dashPeriod7" onclick="setDashPeriod(7,this)" style="border-radius:20px;white-space:nowrap;">7 days</button>
-            <button class="chip" id="dashPeriod28" onclick="setDashPeriod(28,this)" style="border-radius:20px;white-space:nowrap;">28 days</button>
-            <button class="chip" id="dashPeriodAll" onclick="setDashPeriod(0,this)" style="border-radius:20px;white-space:nowrap;">All time</button>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Last 28 days</div>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-ico"><i class="fas fa-eye"></i></div><div class="stat-num" id="dViews">0</div><div class="stat-lbl">Views</div></div>
+            <div class="stat-card"><div class="stat-ico"><i class="fas fa-clock"></i></div><div class="stat-num" id="dWatchTime">0m</div><div class="stat-lbl">Watch Time</div></div>
+            <div class="stat-card"><div class="stat-ico"><i class="fas fa-users"></i></div><div class="stat-num" id="dSubs">0</div><div class="stat-lbl">Subscribers</div></div>
+            <div class="stat-card"><div class="stat-ico"><i class="fas fa-dollar-sign"></i></div><div class="stat-num" id="dRevenue">$0</div><div class="stat-lbl">Est. Revenue</div></div>
           </div>
-
-          <!-- Key Metrics (YouTube style with trend arrows) -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;">
-              <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Views</div>
-              <div style="font-size:24px;font-weight:800;" id="dViews">0</div>
-              <div style="font-size:11px;margin-top:4px;" id="dViewsTrend"><span style="color:var(--text3);">—</span></div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;">
-              <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Watch Time</div>
-              <div style="font-size:24px;font-weight:800;" id="dWatchTime">0m</div>
-              <div style="font-size:11px;margin-top:4px;" id="dWatchTrend"><span style="color:var(--text3);">—</span></div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;">
-              <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Subscribers</div>
-              <div style="font-size:24px;font-weight:800;" id="dSubs">0</div>
-              <div style="font-size:11px;margin-top:4px;" id="dSubsTrend"><span style="color:var(--text3);">—</span></div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;">
-              <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Est. Revenue</div>
-              <div style="font-size:24px;font-weight:800;" id="dRevenue">$0</div>
-              <div style="font-size:11px;margin-top:4px;"><span style="color:var(--text3);">—</span></div>
+          <!-- Latest video performance -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Latest Video Performance</div>
+            <div id="latestVideoPerfEl">
+              <div style="color:var(--text3);font-size:12px;">No videos yet</div>
             </div>
           </div>
-
-          <!-- Views line chart -->
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-              <div>
-                <div style="font-size:13px;font-weight:700;">📈 Views Over Time</div>
-                <div style="font-size:10px;color:var(--text3);" id="dashChartSubtitle">Per-video (last 7)</div>
-              </div>
-              <div style="font-size:11px;color:var(--text2);" id="dashTotalViews">Total: 0</div>
-            </div>
-            <!-- SVG line chart -->
-            <div style="position:relative;height:90px;" id="dashLineChartWrap">
-              <svg id="dashLineChart" width="100%" height="90" style="overflow:visible;"></svg>
-            </div>
-            <div id="dashViewsLabels" style="display:flex;gap:5px;margin-top:6px;font-size:8px;color:var(--text3);overflow:hidden;"></div>
-          </div>
-
-          <!-- Impressions + CTR row -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:12px;">
-              <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">Impressions</div>
-              <div style="font-size:18px;font-weight:800;" id="dImpressions">0</div>
-              <div style="font-size:10px;color:var(--text3);margin-top:2px;">Total reach</div>
-              <div id="dashImpressionsChart" style="display:flex;align-items:flex-end;gap:3px;height:40px;margin-top:8px;"></div>
-            </div>
-            <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:12px;">
-              <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">Click-through Rate</div>
-              <div style="font-size:18px;font-weight:800;" id="aCTR">0%</div>
-              <div style="font-size:10px;color:var(--text3);margin-top:2px;">Likes ÷ Views</div>
-              <div style="margin-top:8px;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;">
-                <div id="dashCTRBar" style="height:100%;background:linear-gradient(90deg,var(--red),#ff6644);border-radius:3px;width:0%;transition:width .5s;"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Video performance details -->
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:10px;">🎬 Latest Video Performance</div>
-            <div id="latestVideoPerfEl"><div style="color:var(--text3);font-size:12px;">No videos yet</div></div>
-          </div>
-
-          <!-- Quick Stats grid -->
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:10px;"><i class="fas fa-chart-line" style="color:var(--red);margin-right:6px;"></i>Analytics</div>
+          <div class="analytics-wrap">
+            <div class="analytics-title"><i class="fas fa-chart-line"></i> Quick Stats</div>
             <div class="an-grid">
+              <div class="an-card"><div class="an-num" id="aCTR">0%</div><div class="an-lbl">CTR</div></div>
               <div class="an-card"><div class="an-num" id="aAvgViews">0</div><div class="an-lbl">Avg Views</div></div>
               <div class="an-card"><div class="an-num" id="aEngagement">0%</div><div class="an-lbl">Engagement</div></div>
               <div class="an-card"><div class="an-num" id="aScore">0</div><div class="an-lbl">Rank Score</div></div>
-              <div class="an-card"><div class="an-num" id="aGrowth">0%</div><div class="an-lbl">Growth %</div></div>
               <div class="an-card"><div class="an-num" id="aBest">-</div><div class="an-lbl">Best Post</div></div>
-              <div class="an-card"><div class="an-num" id="dVideoCount">0</div><div class="an-lbl">Videos</div></div>
+              <div class="an-card"><div class="an-num" id="aGrowth">0%</div><div class="an-lbl">Growth %</div></div>
             </div>
           </div>
-
-          <!-- Subscriber Milestones -->
+          <!-- VIEWS CHART -->
           <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:8px;">🏆 Subscriber Milestones</div>
-            <div id="dashSubsTrend"></div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:4px;">📊 Views Chart</div>
+            <div style="font-size:10px;color:var(--text3);margin-bottom:12px;">Per-video performance (last 7)</div>
+            <div id="dashViewsChart" style="display:flex;align-items:flex-end;gap:5px;height:80px;"></div>
+            <div id="dashViewsLabels" style="display:flex;gap:5px;margin-top:5px;font-size:8px;color:var(--text3);overflow:hidden;"></div>
+          </div>
+          <!-- IMPRESSIONS CHART -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:4px;">🎯 Impressions</div>
+            <div style="font-size:10px;color:var(--text3);margin-bottom:12px;">Likes + Views combo trend</div>
+            <div id="dashImpressionsChart" style="display:flex;align-items:flex-end;gap:5px;height:60px;"></div>
+          </div>
+          <!-- SUBSCRIBERS TREND -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px;">👥 Subscriber Milestones</div>
+            <div id="dashSubsTrend" style="font-size:13px;color:var(--text2);"></div>
           </div>
           <div class="sec-title">👥 Subscribers</div>
           <div id="subsList"><div style="color:var(--text3);font-size:12px;padding:8px 0;">No subscribers yet</div></div>
@@ -1139,7 +1089,7 @@ button,input,textarea{font-family:var(--font);}
     <div id="themesScreen" class="screen">
       <div class="themes-screen">
         <h2>🎨 Themes</h2>
-        <p>Choose your Stream x look</p>
+        <p>Choose your MyTube look</p>
         <div class="themes-grid" id="themesGrid"></div>
       </div>
     </div>
@@ -1180,7 +1130,7 @@ button,input,textarea{font-family:var(--font);}
           <h2 style="font-size:18px;font-weight:700;">Privacy Policy</h2>
         </div>
         <div style="font-size:13px;line-height:1.8;color:var(--text2);">
-          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">Stream x Privacy Policy</p>
+          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">MyTube Privacy Policy</p>
           <p style="color:var(--text3);font-size:11px;margin-bottom:16px;">Last updated: April 2025</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">1. Information We Collect</p>
@@ -1199,13 +1149,13 @@ button,input,textarea{font-family:var(--font);}
           <p style="margin-bottom:14px;">We use browser local storage to save your theme preference, watch history, and search history. This data stays on your device and is not shared.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">6. Content Policy</p>
-          <p style="margin-bottom:14px;">Users are responsible for content they upload. Stream x reserves the right to remove content that violates our community guidelines including spam, harassment, or illegal content.</p>
+          <p style="margin-bottom:14px;">Users are responsible for content they upload. MyTube reserves the right to remove content that violates our community guidelines including spam, harassment, or illegal content.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">7. Contact Us</p>
-          <p style="margin-bottom:14px;">For privacy concerns, contact us through the Stream x platform. We respond within 48 hours.</p>
+          <p style="margin-bottom:14px;">For privacy concerns, contact us through the MyTube platform. We respond within 48 hours.</p>
 
           <div style="background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.2);border-radius:10px;padding:12px;margin-top:16px;">
-            <p style="font-size:12px;color:var(--text);">By using Stream x, you agree to this Privacy Policy. We may update this policy and will notify users of significant changes.</p>
+            <p style="font-size:12px;color:var(--text);">By using MyTube, you agree to this Privacy Policy. We may update this policy and will notify users of significant changes.</p>
           </div>
         </div>
       </div>
@@ -1219,32 +1169,32 @@ button,input,textarea{font-family:var(--font);}
           <h2 style="font-size:18px;font-weight:700;">Terms of Service</h2>
         </div>
         <div style="font-size:13px;line-height:1.8;color:var(--text2);">
-          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">Stream x Terms of Service</p>
+          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">MyTube Terms of Service</p>
           <p style="color:var(--text3);font-size:11px;margin-bottom:16px;">Effective: April 2025</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">1. Acceptance of Terms</p>
-          <p style="margin-bottom:14px;">By accessing or using Stream x, you agree to be bound by these Terms of Service. If you do not agree, please do not use the platform.</p>
+          <p style="margin-bottom:14px;">By accessing or using MyTube, you agree to be bound by these Terms of Service. If you do not agree, please do not use the platform.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">2. User Accounts</p>
-          <p style="margin-bottom:14px;">You must be 13 years or older to use Stream x. You are responsible for maintaining the security of your account and all activities that occur under it.</p>
+          <p style="margin-bottom:14px;">You must be 13 years or older to use MyTube. You are responsible for maintaining the security of your account and all activities that occur under it.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">3. Content Guidelines</p>
           <p style="margin-bottom:14px;">You may not upload content that is illegal, harmful, threatening, abusive, defamatory, or violates anyone's rights. Spam, fake accounts, and bot activity are strictly prohibited.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">4. Intellectual Property</p>
-          <p style="margin-bottom:14px;">You retain ownership of content you create. By uploading to Stream x, you grant us a license to display and distribute your content on the platform.</p>
+          <p style="margin-bottom:14px;">You retain ownership of content you create. By uploading to MyTube, you grant us a license to display and distribute your content on the platform.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">5. Live Streaming Requirements</p>
           <p style="margin-bottom:14px;">Live streaming requires meeting minimum thresholds: 40 videos, 50 shorts, 100 likes on one video, and 100 subscribers. These requirements ensure platform quality.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">6. Termination</p>
-          <p style="margin-bottom:14px;">Stream x reserves the right to suspend or terminate accounts that violate these terms, with or without notice.</p>
+          <p style="margin-bottom:14px;">MyTube reserves the right to suspend or terminate accounts that violate these terms, with or without notice.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">7. Limitation of Liability</p>
-          <p style="margin-bottom:14px;">Stream x is provided "as is." We are not liable for any damages arising from your use of the platform.</p>
+          <p style="margin-bottom:14px;">MyTube is provided "as is." We are not liable for any damages arising from your use of the platform.</p>
 
           <div style="background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.2);border-radius:10px;padding:12px;margin-top:16px;">
-            <p style="font-size:12px;color:var(--text);">These terms govern your use of Stream x. Continued use constitutes acceptance of any updates to these terms.</p>
+            <p style="font-size:12px;color:var(--text);">These terms govern your use of MyTube. Continued use constitutes acceptance of any updates to these terms.</p>
           </div>
         </div>
       </div>
@@ -1259,7 +1209,7 @@ button,input,textarea{font-family:var(--font);}
         </div>
         <div style="background:rgba(255,150,0,.08);border:1px solid rgba(255,150,0,.3);border-radius:12px;padding:14px;margin-bottom:20px;display:flex;gap:10px;align-items:center;">
           <i class="fas fa-gavel" style="color:#ff9600;font-size:22px;flex-shrink:0;"></i>
-          <p style="font-size:13px;color:var(--text);font-weight:600;">Stream x is committed to keeping the platform safe and positive.</p>
+          <p style="font-size:13px;color:var(--text);font-weight:600;">MyTube is committed to keeping the platform safe and positive.</p>
         </div>
         <div style="font-size:13px;line-height:1.8;color:var(--text2);">
           <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:16px;">Community Guidelines</p>
@@ -1285,7 +1235,7 @@ button,input,textarea{font-family:var(--font);}
           </div>
 
           <div style="background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.2);border-radius:10px;padding:12px;margin-top:8px;">
-            <p style="font-size:12px;color:var(--text);">Stream x reserves the right to remove any content or account at its discretion to maintain a safe platform for all users.</p>
+            <p style="font-size:12px;color:var(--text);">MyTube reserves the right to remove any content or account at its discretion to maintain a safe platform for all users.</p>
           </div>
         </div>
       </div>
@@ -1299,18 +1249,18 @@ button,input,textarea{font-family:var(--font);}
           <h2 style="font-size:18px;font-weight:700;">Copyright Policy</h2>
         </div>
         <div style="font-size:13px;line-height:1.8;color:var(--text2);">
-          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">Stream x Copyright Policy</p>
+          <p style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:12px;">MyTube Copyright Policy</p>
 
           <div style="background:rgba(255,0,0,.08);border-radius:12px;padding:14px;margin-bottom:16px;display:flex;gap:10px;">
             <i class="fas fa-copyright" style="color:var(--red);font-size:20px;flex-shrink:0;margin-top:2px;"></i>
-            <p style="color:var(--text);">Stream x respects intellectual property rights and expects users to do the same.</p>
+            <p style="color:var(--text);">MyTube respects intellectual property rights and expects users to do the same.</p>
           </div>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">What is Copyright Infringement?</p>
           <p style="margin-bottom:14px;">Uploading content that you do not own or have permission to use — including music, videos, images, or other creative works — is copyright infringement.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">DMCA Policy</p>
-          <p style="margin-bottom:14px;">Stream x follows DMCA (Digital Millennium Copyright Act) guidelines. Copyright holders can report infringing content and we will review and act accordingly.</p>
+          <p style="margin-bottom:14px;">MyTube follows DMCA (Digital Millennium Copyright Act) guidelines. Copyright holders can report infringing content and we will review and act accordingly.</p>
 
           <p style="font-weight:600;color:var(--text);margin-bottom:6px;">What Happens to Violators?</p>
           <p style="margin-bottom:14px;">• First violation: Warning issued<br>• Second violation: Content removed, channel restricted<br>• Third violation: Account permanently suspended</p>
@@ -1325,7 +1275,7 @@ button,input,textarea{font-family:var(--font);}
           <p style="margin-bottom:14px;">Use the Report button on any video to report copyright violations. Our team reviews all reports within 72 hours.</p>
 
           <div style="background:rgba(0,200,100,.06);border:1px solid rgba(0,200,100,.2);border-radius:10px;padding:12px;margin-top:16px;">
-            <p style="font-size:12px;color:var(--text);"><i class="fas fa-check-circle" style="color:#00c864;margin-right:6px;"></i>Protect your original content by uploading it on Stream x. Your content is your property.</p>
+            <p style="font-size:12px;color:var(--text);"><i class="fas fa-check-circle" style="color:#00c864;margin-right:6px;"></i>Protect your original content by uploading it on MyTube. Your content is your property.</p>
           </div>
         </div>
       </div>
@@ -1371,176 +1321,36 @@ button,input,textarea{font-family:var(--font);}
     <!-- OWNER -->
     <div id="ownerScreen" class="screen">
       <div class="owner-screen">
-        <div class="owner-hdr">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:40px;height:40px;background:linear-gradient(135deg,#ff0000,#cc0000);border-radius:12px;display:flex;align-items:center;justify-content:center;">
-              <i class="fas fa-crown" style="color:#ffd700;font-size:18px;"></i>
-            </div>
-            <div>
-              <h2 style="font-size:16px;margin:0;">Stream x Admin</h2>
-              <div style="font-size:10px;color:var(--text3);">Owner Control Panel</div>
-            </div>
-          </div>
-          <span class="owner-badge">OWNER</span>
+        <div class="owner-hdr"><h2>Admin Panel</h2><span class="owner-badge">OWNER</span></div>
+        <div class="owner-stats" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,150,255,.15);color:#0096ff;"><i class="fas fa-users"></i></div><div class="ow-num" id="owUsers">0</div><div class="ow-lbl">Total Users</div></div>
+          <div class="ow-stat"><div class="ow-ico" style="background:rgba(255,0,0,.1);color:var(--red);"><i class="fas fa-tv"></i></div><div class="ow-num" id="owChannels">0</div><div class="ow-lbl">Channels</div></div>
+          <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,200,100,.15);color:#00c864;"><i class="fas fa-video"></i></div><div class="ow-num" id="owVideos">0</div><div class="ow-lbl">Videos</div></div>
+          <div class="ow-stat"><div class="ow-ico" style="background:rgba(255,150,0,.15);color:#ff9600;"><i class="fas fa-heart"></i></div><div class="ow-num" id="owLikes">0</div><div class="ow-lbl">Total Likes</div></div>
+          <div class="ow-stat"><div class="ow-ico" style="background:rgba(100,100,255,.15);color:#6464ff;"><i class="fas fa-eye"></i></div><div class="ow-num" id="owViews">0</div><div class="ow-lbl">Total Views</div></div>
+          <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,200,200,.15);color:#00c8c8;"><i class="fas fa-film"></i></div><div class="ow-num" id="owShorts">0</div><div class="ow-lbl">Shorts</div></div>
         </div>
-
-        <!-- Owner Tabs -->
-        <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:16px;overflow-x:auto;">
-          <button class="studio-tab active" id="otab-overview" onclick="switchOwnerTab('overview')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-chart-line"></i> Overview</button>
-          <button class="studio-tab" id="otab-reports" onclick="switchOwnerTab('reports')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-flag"></i> Reports</button>
-          <button class="studio-tab" id="otab-users" onclick="switchOwnerTab('users')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-users"></i> Users</button>
-          <button class="studio-tab" id="otab-guidelines" onclick="switchOwnerTab('guidelines')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-shield-alt"></i> Guidelines</button>
-        </div>
-
-        <!-- OVERVIEW TAB -->
-        <div id="owner-overview">
-          <div class="owner-stats" style="grid-template-columns:1fr 1fr 1fr;">
-            <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,150,255,.15);color:#0096ff;"><i class="fas fa-users"></i></div><div class="ow-num" id="owUsers">0</div><div class="ow-lbl">Users</div></div>
-            <div class="ow-stat"><div class="ow-ico" style="background:rgba(255,0,0,.1);color:var(--red);"><i class="fas fa-tv"></i></div><div class="ow-num" id="owChannels">0</div><div class="ow-lbl">Channels</div></div>
-            <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,200,100,.15);color:#00c864;"><i class="fas fa-video"></i></div><div class="ow-num" id="owVideos">0</div><div class="ow-lbl">Videos</div></div>
-            <div class="ow-stat"><div class="ow-ico" style="background:rgba(255,150,0,.15);color:#ff9600;"><i class="fas fa-heart"></i></div><div class="ow-num" id="owLikes">0</div><div class="ow-lbl">Likes</div></div>
-            <div class="ow-stat"><div class="ow-ico" style="background:rgba(100,100,255,.15);color:#6464ff;"><i class="fas fa-eye"></i></div><div class="ow-num" id="owViews">0</div><div class="ow-lbl">Views</div></div>
-            <div class="ow-stat"><div class="ow-ico" style="background:rgba(0,200,200,.15);color:#00c8c8;"><i class="fas fa-film"></i></div><div class="ow-num" id="owShorts">0</div><div class="ow-lbl">Shorts</div></div>
-          </div>
-          <!-- Platform Growth Chart -->
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:14px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:4px;">📊 Platform Activity</div>
-            <div style="font-size:10px;color:var(--text3);margin-bottom:12px;">Total posts per content type</div>
-            <div id="ownerActivityChart" style="display:flex;align-items:flex-end;gap:8px;height:70px;margin-bottom:6px;"></div>
-            <div id="ownerActivityLabels" style="display:flex;gap:8px;font-size:9px;color:var(--text3);"></div>
-          </div>
-          <!-- Live Streams Active -->
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:14px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:10px;">🔴 Active Live Streams</div>
-            <div id="ownerLiveList"><div style="font-size:12px;color:var(--text3);">No active streams</div></div>
-          </div>
-        </div>
-
-        <!-- REPORTS TAB -->
-        <div id="owner-reports" style="display:none;">
-          <div style="font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
-            <span>🚩 Pending Reports</span>
-            <span id="owReportCount" style="background:var(--red);color:white;border-radius:20px;padding:2px 10px;font-size:11px;">0</span>
-          </div>
-          <div id="ownerReportsList"><div class="loader"><div class="spinner"></div></div></div>
-        </div>
-
-        <!-- USERS TAB -->
-        <div id="owner-users" style="display:none;">
-          <div style="margin-bottom:12px;">
-            <input class="inp" id="ownerSearchUser" placeholder="🔍 Search user by name/email..." oninput="ownerSearchUsers(this.value)" style="margin-bottom:0;">
-          </div>
-          <div id="ownerUsersList"><div class="loader"><div class="spinner"></div></div></div>
-        </div>
-
-        <!-- GUIDELINES TAB -->
-        <div id="owner-guidelines" style="display:none;">
-          <div style="font-size:13px;font-weight:700;margin-bottom:12px;">⚖️ Community Guidelines Manager</div>
-          <!-- Add new guideline -->
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:14px;">
-            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">Add New Rule</div>
-            <select id="guidelineCategory" class="inp" style="margin-bottom:8px;">
-              <option value="content">🎬 Content Rules</option>
-              <option value="behavior">👥 Behavior Rules</option>
-              <option value="safety">🛡️ Safety Rules</option>
-              <option value="legal">⚖️ Legal Rules</option>
-            </select>
-            <input class="inp" id="guidelineTitle" placeholder="Rule title" style="margin-bottom:8px;">
-            <textarea class="inp" id="guidelineDesc" placeholder="Rule description..." style="height:70px;resize:none;"></textarea>
-            <button onclick="addGuideline()" style="width:100%;padding:10px;background:var(--red);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;"><i class="fas fa-plus"></i> Add Rule</button>
-          </div>
-          <!-- Existing guidelines -->
-          <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">Current Rules</div>
-          <div id="guidelinesList"><div class="loader"><div class="spinner"></div></div></div>
-        </div>
-
+        <div class="owner-sec-title">All Users</div>
+        <div id="ownerUsersList"><div class="loader"><div class="spinner"></div></div></div>
       </div>
     </div>
 
     <!-- LIVE -->
     <div id="liveScreen" class="screen">
       <div class="live-screen">
-        <!-- Live Header -->
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-          <div style="width:10px;height:10px;background:var(--red);border-radius:50%;animation:blink 1.2s infinite;"></div>
-          <h2 style="margin:0;font-size:18px;">Go Live</h2>
-        </div>
-
-        <!-- Requirements locked -->
+        <h2>🔴 Go Live</h2>
         <div class="live-req-card" id="liveLocked">
           <h3><i class="fas fa-lock" style="color:var(--red);"></i> Requirements</h3>
           <p>Reach these milestones to unlock live streaming</p>
           <div id="liveReqList"></div>
         </div>
-
-        <!-- Live Setup (owner always sees this) -->
         <div class="live-setup-card" id="liveSetup" style="display:none;">
-          <h3>🎙️ Stream Setup</h3>
-          <div class="live-ind"><div class="live-dot"></div><span class="live-badge">READY</span><span style="font-size:12px;color:var(--text2);margin-left:6px;">Agora Connected</span></div>
-          <input class="inp" id="liveTitle" placeholder="Stream Title *">
-          <input class="inp" id="liveCat" placeholder="Category (e.g. Gaming, Talk Show)">
-          <div style="margin-bottom:12px;">
-            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">📡 Stream Quality</div>
-            <div style="display:flex;gap:8px;">
-              <button class="privacy-btn active" id="liveQ720" onclick="setLiveQuality('720p',this)">720p</button>
-              <button class="privacy-btn" id="liveQ1080" onclick="setLiveQuality('1080p',this)">1080p</button>
-              <button class="privacy-btn" id="liveQAuto" onclick="setLiveQuality('auto',this)">Auto</button>
-            </div>
-          </div>
-          <button class="btn-red" id="startLiveBtn" onclick="startAgoraLive()">
-            <i class="fas fa-circle" style="animation:blink 1.2s infinite;"></i> Start Live Stream
-          </button>
+          <h3>Stream Setup</h3>
+          <div class="live-ind"><div class="live-dot"></div><span class="live-badge">LIVE</span><span style="font-size:12px;color:var(--text2);margin-left:6px;">Ready!</span></div>
+          <input class="inp" id="liveTitle" placeholder="Stream Title">
+          <input class="inp" id="liveCat" placeholder="Category">
+          <button class="btn-red" onclick="startLive()"><i class="fas fa-circle"></i> Start Live Stream</button>
         </div>
-
-        <!-- Active Live View (after going live) -->
-        <div id="liveActiveView" style="display:none;">
-          <div style="position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:16/9;margin-bottom:12px;">
-            <div id="localVideoContainer" style="width:100%;height:100%;"></div>
-            <!-- Live badge -->
-            <div style="position:absolute;top:10px;left:10px;background:var(--red);color:white;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;display:flex;align-items:center;gap:5px;">
-              <div style="width:7px;height:7px;background:white;border-radius:50%;animation:blink 1s infinite;"></div> LIVE
-            </div>
-            <!-- Viewer count -->
-            <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);color:white;font-size:11px;padding:4px 8px;border-radius:6px;">
-              <i class="fas fa-eye" style="margin-right:4px;"></i><span id="liveViewerCount">0</span>
-            </div>
-            <!-- Duration -->
-            <div style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.7);color:white;font-size:11px;padding:4px 8px;border-radius:6px;">
-              <i class="fas fa-clock" style="margin-right:4px;"></i><span id="liveDuration">00:00</span>
-            </div>
-          </div>
-          <!-- Live Controls -->
-          <div style="display:flex;gap:8px;margin-bottom:12px;">
-            <button id="liveMuteBtn" onclick="toggleLiveMic()" style="flex:1;padding:10px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;">
-              <i class="fas fa-microphone"></i> Mic On
-            </button>
-            <button id="liveCamBtn" onclick="toggleLiveCam()" style="flex:1;padding:10px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;">
-              <i class="fas fa-video"></i> Cam On
-            </button>
-            <button onclick="flipLiveCamera()" style="flex:1;padding:10px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;">
-              <i class="fas fa-sync-alt"></i> Flip
-            </button>
-          </div>
-          <!-- Live Chat -->
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:12px;margin-bottom:12px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:8px;">💬 Live Chat</div>
-            <div id="liveChatMessages" style="height:160px;overflow-y:auto;margin-bottom:8px;display:flex;flex-direction:column;gap:6px;"></div>
-            <div style="display:flex;gap:6px;">
-              <input class="inp" id="liveChatInput" placeholder="Say something..." style="flex:1;margin-bottom:0;padding:8px 12px;">
-              <button onclick="sendLiveChat()" style="background:var(--red);color:white;border:none;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
-            </div>
-          </div>
-          <button onclick="endAgoraLive()" style="width:100%;padding:12px;background:#1a1a1a;border:2px solid var(--red);color:var(--red);border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">
-            <i class="fas fa-stop-circle"></i> End Stream
-          </button>
-        </div>
-
-        <!-- Watch Live (viewer mode) -->
-        <div id="liveWatchView" style="display:none;">
-          <div style="font-size:13px;font-weight:700;margin-bottom:10px;">📡 Live Streams</div>
-          <div id="liveStreamsList"><div class="loader"><div class="spinner"></div></div></div>
-        </div>
-
       </div>
     </div>
   </div>
@@ -1562,10 +1372,10 @@ button,input,textarea{font-family:var(--font);}
   <!-- YouTube-style icon row -->
   <div style="display:flex;justify-content:space-around;align-items:flex-start;padding:18px 8px 4px;">
 
-    <!-- Short / Gallery Upload -->
-    <div onclick="closeUploadChoice();openUploadDirect('short');" style="display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;min-width:72px;" ontouchstart="this.style.opacity='.6'" ontouchend="this.style.opacity='1'">
+    <!-- Short / Camera -->
+    <div onclick="closeUploadChoice();openShortsCamera();" style="display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;min-width:72px;" ontouchstart="this.style.opacity='.6'" ontouchend="this.style.opacity='1'">
       <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#ff416c,#ff4b2b);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(255,65,108,.45);">
-        <i class="fas fa-film" style="color:white;font-size:22px;"></i>
+        <i class="fas fa-circle-notch" style="color:white;font-size:22px;"></i>
       </div>
       <span style="font-size:12px;font-weight:600;color:var(--text);text-align:center;">Short</span>
     </div>
@@ -2023,7 +1833,7 @@ button,input,textarea{font-family:var(--font);}
   <div style="background:var(--bg2);border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;">
     <div style="font-size:44px;margin-bottom:12px;">🔞</div>
     <div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px;">Age Verification</div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">Stream x is for users <b style="color:var(--text);">18 years and older</b> only. By continuing, you confirm that you are at least 18 years of age.</div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">MyTube is for users <b style="color:var(--text);">18 years and older</b> only. By continuing, you confirm that you are at least 18 years of age.</div>
     <div style="background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.2);border-radius:10px;padding:12px;margin-bottom:20px;font-size:12px;color:var(--text2);">
       <i class="fas fa-shield-alt" style="color:var(--red);margin-right:6px;"></i>
       This platform may contain mature content. Parental guidance advised.
@@ -2111,16 +1921,9 @@ const FB = {
   messagingSenderId:"948348267378",
   appId:"1:948348267378:web:2dd25f59a9f510a8694beb"
 };
-const CLOUD="dyrjyet9o", PRESET="stream x_upload";
+const CLOUD="dyrjyet9o", PRESET="mytube_upload";
 const OWNER_EMAIL="mrwhyyouareyou@gmail.com";
 const LIVE_REQS={videos:40,shorts:50,likesOnOneVideo:100,subscribers:100};
-// Agora Live Streaming Config
-const AGORA_APP_ID="a7388a9f1d5c42b1b3c5f69af29223a3";
-const AGORA_TOKEN="007eJxTYGCZEtOn0rEzttq/umW6epD7Lu81F1Ym1i3Rm/XowBYGJnEFhkRzYwuLRMs0wxTTZBOjJMMk42TTNDPLxDQjSyMj40TjXJ17mQ2BjAyKWhuZGBkgEMTnZAguKUpNzFWoUGBgAABqDh78";
-const AGORA_CHANNEL="stream x-live";
-let _agoraClient=null, _agoraLocalAudio=null, _agoraLocalVideo=null;
-let _liveActive=false, _liveDurInt=null, _liveDurSecs=0;
-let _liveMicOn=true, _liveCamOn=true, _liveQuality='720p';
 
 firebase.initializeApp(FB);
 const auth=firebase.auth(), db=firebase.firestore();
@@ -2349,20 +2152,7 @@ function hideSplash(){
   setTimeout(()=>{s.style.display='none';},200);
 }
 
-// Google redirect result handle karo
-auth.getRedirectResult().then(async res=>{
-  if(res&&res.user){
-    const u=res.user;
-    const doc=await db.collection('users').doc(u.uid).get();
-    if(!doc.exists){
-      await db.collection('users').doc(u.uid).set({
-        name:u.displayName||'User',email:u.email,
-        handle:'@'+(u.displayName||'user').toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,''),
-        about:'',photoURL:u.photoURL||'',subscribers:0,createdAt:Date.now(),lastSeen:Date.now()
-      });
-    }
-  }
-}).catch(err=>{if(err&&err.code)setAuthErr(fErr(err.code));});
+
 
 auth.onAuthStateChanged(async user=>{
   if(user){
@@ -2430,7 +2220,12 @@ async function doSignup(){
 async function doGoogle(){
   try{
     const provider=new firebase.auth.GoogleAuthProvider();
-    await auth.signInWithRedirect(provider);
+    const result = await auth.signInWithPopup(provider);
+    if(result&&result.user){
+      const u=result.user;
+      const doc=await db.collection("users").doc(u.uid).get();
+      if(!doc.exists){await db.collection("users").doc(u.uid).set({name:u.displayName||"User",email:u.email,handle:"@"+(u.displayName||"user").toLowerCase().replace(/\s+/g,"").replace(/[^a-z0-9]/g,""),about:"",photoURL:u.photoURL||"",subscribers:0,createdAt:Date.now(),lastSeen:Date.now()});}
+    }
   }catch(err){setAuthErr(fErr(err.code));}
 }
 
@@ -3646,8 +3441,8 @@ async function toggleSubscribe(){
 function shareVideo(){
   if(!currentPostData)return;
   const url=currentPostData.url||location.href;
-  const title=currentPostData.title||'Watch on Stream x';
-  const text=`${title} - Stream x Pakistan 🇵🇰`;
+  const title=currentPostData.title||'Watch on MyTube';
+  const text=`${title} - MyTube Pakistan 🇵🇰`;
   if(navigator.share){
     navigator.share({title,text,url}).catch(()=>showShareSheet(url,title));
   }else{
@@ -3937,223 +3732,169 @@ async function loadNotifs(){
 // ══════════════════════════════════════════════════════
 // DASHBOARD
 // ══════════════════════════════════════════════════════
-let _dashPeriodDays=7;
-function setDashPeriod(days,btn){
-  _dashPeriodDays=days;
-  document.querySelectorAll('#dashPeriod7,#dashPeriod28,#dashPeriodAll').forEach(b=>{if(b)b.classList.remove('active');});
-  if(btn)btn.classList.add('active');
-  loadDashboard();
-}
-
 async function loadDashboard(){
   if(!cUser)return;
   document.getElementById('dashWelcome').textContent='Welcome, '+(cUserData?.name||'Creator')+'!';
+  // Studio avatar
   const stAv=document.getElementById('studioAvatar');
   if(stAv){if(cUserData?.photoURL)stAv.innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;else stAv.textContent=(cUserData?.name||'U')[0].toUpperCase();}
   const stCh=document.getElementById('studioChannelName');
   if(stCh)stCh.textContent=cUserData?.channelName||cUserData?.name||'My Channel';
+  // Studio header
+  const stAvEl=document.getElementById('studioAvatar');
+  if(stAvEl){if(cUserData?.photoURL)stAvEl.innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;else stAvEl.textContent=(cUserData?.name||'U')[0].toUpperCase();}
+  const stChEl=document.getElementById('studioChannelName');
+  if(stChEl)stChEl.textContent=cUserData?.channelName||cUserData?.name||'My Channel';
   try{
     const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
     let likes=0,views=0,vids=0,comments=0,maxLikes=0,bestTitle='';
     const myPosts=[];
     let watchTimeSecs=0;
-    const now=Date.now();
-    const periodMs=_dashPeriodDays>0?_dashPeriodDays*24*3600*1000:Infinity;
     snap.forEach(d=>{
-      const p={id:d.id,...d.data()};
-      myPosts.push(p);
-      const inPeriod=_dashPeriodDays===0||(now-(p.time||0))<periodMs;
-      if(inPeriod){
-        likes+=p.likes||0;
-        views+=p.views||0;
-        comments+=p.comments||0;
-        watchTimeSecs+=p.watchTime||0;
-        vids++;
-      }
+      const p=d.data();
+      likes+=p.likes||0;
+      views+=p.views||0;
+      vids++;
+      comments+=p.comments||0;
+      watchTimeSecs+=p.watchTime||0;
       if((p.likes||0)>maxLikes){maxLikes=p.likes||0;bestTitle=p.title||'N/A';}
+      myPosts.push({id:d.id,...p});
     });
-    myPosts.sort((a,b)=>b.time-a.time);
     const ud=await db.collection('users').doc(cUser.uid).get();
     const subs=ud.exists?(ud.data().subscribers||0):0;
-
-    // Update counts
+    document.getElementById('dVideos') && (document.getElementById('dVideos').textContent=vids);
     document.getElementById('dSubs').textContent=subs;
-    document.getElementById('dViews').textContent=views>=1000?Math.round(views/100)/10+'K':views;
+    document.getElementById('dLikes') && (document.getElementById('dLikes').textContent=likes);
+    document.getElementById('dViews').textContent=views;
     const watchMins=Math.round(watchTimeSecs/60);
     const wtEl=document.getElementById('dWatchTime');if(wtEl)wtEl.textContent=watchMins>60?Math.round(watchMins/60)+'h':watchMins+'m';
+    // Revenue estimate (₨0.5 per 1000 views = very rough)
     const revEl=document.getElementById('dRevenue');if(revEl)revEl.textContent='₨'+(Math.round(views*0.5/1000*100)/100).toFixed(2);
-    const impEl=document.getElementById('dImpressions');if(impEl)impEl.textContent=views>=1000?Math.round((views+likes*3)/100)/10+'K':views+likes*3;
-    const vcountEl=document.getElementById('dVideoCount');if(vcountEl)vcountEl.textContent=myPosts.length;
-
-    // Trend arrows — compare first half vs second half of period posts
-    const half=Math.floor(myPosts.length/2);
-    const recentViews=myPosts.slice(0,half).reduce((a,p)=>a+(p.views||0),0);
-    const olderViews=myPosts.slice(half).reduce((a,p)=>a+(p.views||0),0);
-    const viewsUp=recentViews>=olderViews;
-    const viewsDiff=olderViews>0?Math.round(Math.abs(recentViews-olderViews)/olderViews*100):0;
-    const trendEl=document.getElementById('dViewsTrend');
-    if(trendEl)trendEl.innerHTML=`<span style="color:${viewsUp?'#00c864':'#ff4444'};font-weight:700;">${viewsUp?'↑':'↓'} ${viewsDiff}%</span> <span style="color:var(--text3);">vs prev period</span>`;
-    const subTrendEl=document.getElementById('dSubsTrend');
-    if(subTrendEl)subTrendEl.innerHTML=`<span style="color:${subs>0?'#00c864':'var(--text3)'};font-weight:700;">${subs>0?'↑':''} ${subs} total</span>`;
-    const wtTrendEl=document.getElementById('dWatchTrend');
-    if(wtTrendEl)wtTrendEl.innerHTML=`<span style="color:var(--text2);">${watchMins} min total</span>`;
-
-    // Profile stats
-    document.getElementById('profVideos') && (document.getElementById('profVideos').textContent=myPosts.length);
-    document.getElementById('profSubs') && (document.getElementById('profSubs').textContent=subs);
-    document.getElementById('profLikes') && (document.getElementById('profLikes').textContent=myPosts.reduce((a,p)=>a+(p.likes||0),0));
-
-    // Analytics
-    const totalViews=myPosts.reduce((a,p)=>a+(p.views||0),0);
-    const totalLikes=myPosts.reduce((a,p)=>a+(p.likes||0),0);
-    const ctr=myPosts.length>0?Math.min(100,Math.round((totalLikes/Math.max(totalViews,1))*100)):0;
-    const avgV=myPosts.length>0?Math.round(totalViews/myPosts.length):0;
-    const eng=myPosts.length>0?Math.min(100,Math.round(((totalLikes+comments)/Math.max(totalViews,1))*100)):0;
-    const totalScore=myPosts.reduce((a,p)=>a+(p.rankScore||0),0);
-    const growth=subs>0?Math.round((totalLikes/Math.max(subs,1))*100):0;
-    document.getElementById('aCTR').textContent=ctr+'%';
-    document.getElementById('aAvgViews').textContent=avgV;
-    document.getElementById('aEngagement').textContent=eng+'%';
-    document.getElementById('aScore').textContent=totalScore;
-    document.getElementById('aBest').textContent=bestTitle.substring(0,8)||'-';
-    document.getElementById('aGrowth').textContent=growth+'%';
-    // CTR bar
-    const ctrBar=document.getElementById('dashCTRBar');if(ctrBar)ctrBar.style.width=ctr+'%';
-    document.getElementById('dashTotalViews') && (document.getElementById('dashTotalViews').textContent='Total: '+totalViews);
-
-    // SVG Line Chart — views per post
-    const last7=myPosts.slice(0,7).reverse();
-    const svgEl=document.getElementById('dashLineChart');
-    const vlEl=document.getElementById('dashViewsLabels');
-    if(svgEl&&last7.length){
-      const W=svgEl.getBoundingClientRect().width||300;
-      const H=90;
-      const maxV=Math.max(...last7.map(p=>p.views||0),1);
-      const pts=last7.map((p,i)=>{
-        const x=last7.length>1?i*(W/(last7.length-1)):W/2;
-        const y=H-Math.max(8,Math.round(((p.views||0)/maxV)*(H-10)));
-        return {x,y,views:p.views||0,title:p.title||'',id:p.id};
-      });
-      const pathD=pts.map((p,i)=>(i===0?`M ${p.x},${p.y}`:`L ${p.x},${p.y}`)).join(' ');
-      // Area fill
-      const areaD=pathD+` L ${pts[pts.length-1].x},${H} L ${pts[0].x},${H} Z`;
-      svgEl.innerHTML=`
-        <defs>
-          <linearGradient id="lgr" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--red)" stop-opacity="0.35"/>
-            <stop offset="100%" stop-color="var(--red)" stop-opacity="0.03"/>
-          </linearGradient>
-        </defs>
-        <path d="${areaD}" fill="url(#lgr)" />
-        <path d="${pathD}" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        ${pts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="5" fill="var(--red)" stroke="var(--bg)" stroke-width="2" style="cursor:pointer;" onclick="openPost('${p.id}')"><title>${p.title}: ${p.views} views</title></circle>`).join('')}
-        ${pts.map(p=>`<text x="${p.x}" y="${p.y-10}" text-anchor="middle" font-size="9" fill="var(--text2)">${p.views>=1000?Math.round(p.views/100)/10+'K':p.views}</text>`).join('')}
-      `;
-      if(vlEl)vlEl.innerHTML=last7.map(p=>`<div style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;">${(p.title||'').substring(0,6)||'—'}</div>`).join('');
-    }
-
-    // Impressions mini chart
-    const icEl=document.getElementById('dashImpressionsChart');
-    if(icEl&&myPosts.length){
-      const l7=myPosts.slice(0,7);
-      const maxI=Math.max(...l7.map(p=>(p.views||0)+(p.likes||0)*5),1);
-      icEl.innerHTML=l7.map((p,i)=>{
-        const val=(p.views||0)+(p.likes||0)*5;
-        const pct=Math.max(8,Math.round((val/maxI)*100));
-        return `<div style="flex:1;background:linear-gradient(to top,#0096ff,#00c8ff);height:${pct}%;border-radius:3px 3px 0 0;min-height:4px;opacity:${0.5+i*0.07};"></div>`;
-      }).join('');
-    }
-
+    const d2El=document.getElementById('dVideos2');if(d2El)d2El.textContent=vids+' videos • '+likes+' total likes';
     // Latest video performance
     const lpEl=document.getElementById('latestVideoPerfEl');
     if(lpEl&&myPosts.length){
       const latest=myPosts[0];
       const th=latest.thumbURL||(latest.url?latest.url.replace('/upload/','/upload/so_1,w_120/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-      const typical_views=Math.max(1,Math.round(totalViews/Math.max(myPosts.length,1)));
-      const isAbove=(latest.views||0)>=typical_views;
-      const perfPct=typical_views>0?Math.min(200,Math.round(((latest.views||0)/typical_views)*100)):0;
-      lpEl.innerHTML=`
-        <div style="display:flex;gap:10px;margin-bottom:12px;">
-          <div style="width:80px;height:50px;border-radius:7px;overflow:hidden;background:var(--bg3);flex-shrink:0;">${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play" style="color:var(--text3);"></i></div>'}</div>
-          <div style="flex:1;">
-            <div style="font-size:12px;font-weight:700;">${latest.title||'Untitled'}</div>
-            <div style="font-size:10px;color:var(--text2);margin-top:2px;">${getTimeAgo(latest.time)}</div>
-            <div style="font-size:10px;font-weight:600;margin-top:4px;color:${isAbove?'#00c864':'#ff4444'};">${isAbove?'↑ Above':'↓ Below'} average (${perfPct}%)</div>
-          </div>
+      const score=latest.rankScore||0;
+      const typical_views=Math.max(1,Math.round(views/Math.max(vids,1)));
+      const isAbove=latest.views>=typical_views;
+      lpEl.innerHTML=`<div style="display:flex;gap:10px;margin-bottom:12px;">
+        <div style="width:80px;height:50px;border-radius:7px;overflow:hidden;background:var(--bg3);flex-shrink:0;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:''}
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-          ${[['👁️','Views',latest.views||0],['❤️','Likes',latest.likes||0],['💬','Comments',latest.comments||0]].map(([icon,lbl,val])=>`
-            <div style="text-align:center;padding:8px;background:var(--bg3);border-radius:8px;">
-              <div style="font-size:16px;font-weight:800;">${val}</div>
-              <div style="font-size:10px;color:var(--text3);">${icon} ${lbl}</div>
-            </div>`).join('')}
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:600;">${latest.title||'Untitled'}</div>
+          <div style="font-size:10px;color:var(--text2);">Rank Score: <b>${score}</b></div>
         </div>
-        <!-- Performance bar -->
-        <div style="margin-top:10px;">
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px;"><span>Performance vs channel avg</span><span>${perfPct}%</span></div>
-          <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;">
-            <div style="height:100%;width:${Math.min(100,perfPct)}%;background:${isAbove?'#00c864':'var(--red)'};border-radius:3px;transition:width .5s;"></div>
-          </div>
-        </div>`;
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:12px;color:var(--text2);">Ranking by views</span>
+        <span style="font-size:12px;font-weight:600;">${myPosts.indexOf(latest)+1} of ${vids}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:12px;color:var(--text2);">Views</span>
+        <span style="font-size:12px;font-weight:700;">${latest.views||0} <span style="color:${isAbove?'#00c864':'#ff4444'};font-size:10px;">${isAbove?'↑':'↓'}</span></span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;">
+        <span style="font-size:12px;color:var(--text2);">Likes</span>
+        <span style="font-size:12px;font-weight:700;">${latest.likes||0}</span>
+      </div>`;
     }
-
+    document.getElementById('profVideos').textContent=vids;
+    document.getElementById('profSubs').textContent=subs;
+    document.getElementById('profLikes').textContent=likes;
+    // Analytics
+    const ctr=vids>0?Math.min(100,Math.round((likes/Math.max(views,1))*100)):0;
+    const avgV=vids>0?Math.round(views/vids):0;
+    const eng=vids>0?Math.min(100,Math.round(((likes+comments)/Math.max(views,1))*100)):0;
+    const totalScore=myPosts.reduce((a,p)=>a+(p.rankScore||0),0);
+    const growth=subs>0?Math.round((likes/Math.max(subs,1))*100):0;
+    document.getElementById('aCTR').textContent=ctr+'%';
+    // Mini bar chart
+    const chartEl=document.getElementById('miniChart');
+    if(chartEl&&myPosts.length){
+      const last7=myPosts.slice(0,7);
+      const maxV=Math.max(...last7.map(p=>p.views||0),1);
+      const colors=['#ff0000','#ff4444','#ff6666','#ff8888','#ffaaaa','#cc0000','#aa0000'];
+      chartEl.innerHTML=last7.map((p,i)=>{
+        const pct=Math.max(4,Math.round(((p.views||0)/maxV)*100));
+        return `<div title="${p.title||'Post'}: ${p.views||0} views" onclick="openPost('${p.id}')" style="flex:1;background:${colors[i]||'var(--red)'};height:${pct}%;border-radius:4px 4px 0 0;cursor:pointer;min-height:4px;transition:height .3s;" ></div>`;
+      }).join('');
+    }
+    document.getElementById('aAvgViews').textContent=avgV;
+    document.getElementById('aEngagement').textContent=eng+'%';
+    document.getElementById('aScore').textContent=totalScore;
+    document.getElementById('aBest').textContent=bestTitle.substring(0,8)||'-';
+    document.getElementById('aGrowth').textContent=growth+'%';
+    // Views Chart (last 7 posts)
+    const vcEl=document.getElementById('dashViewsChart');
+    const vlEl=document.getElementById('dashViewsLabels');
+    if(vcEl&&myPosts.length){
+      const last7=myPosts.slice(0,7);
+      const maxV=Math.max(...last7.map(p=>p.views||0),1);
+      vcEl.innerHTML=last7.map((p,i)=>{
+        const pct=Math.max(4,Math.round(((p.views||0)/maxV)*100));
+        return `<div title="${p.title||'Post'}: ${p.views||0} views" onclick="openPost('${p.id}')" style="flex:1;background:var(--red);height:${pct}%;border-radius:4px 4px 0 0;cursor:pointer;min-height:4px;transition:height .5s;opacity:${0.5+i*0.07};"></div>`;
+      }).join('');
+      if(vlEl)vlEl.innerHTML=last7.map(p=>`<div style="flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${p.views||0}</div>`).join('');
+    }
+    // Impressions Chart (likes+views combo)
+    const icEl=document.getElementById('dashImpressionsChart');
+    if(icEl&&myPosts.length){
+      const last7=myPosts.slice(0,7);
+      const maxI=Math.max(...last7.map(p=>(p.views||0)+(p.likes||0)*5),1);
+      icEl.innerHTML=last7.map((p,i)=>{
+        const val=(p.views||0)+(p.likes||0)*5;
+        const pct=Math.max(4,Math.round((val/maxI)*100));
+        return `<div style="flex:1;background:linear-gradient(to top,#0096ff,#00c8ff);height:${pct}%;border-radius:4px 4px 0 0;min-height:4px;opacity:${0.5+i*0.07};"></div>`;
+      }).join('');
+    }
     // Subscriber milestones
     const stEl=document.getElementById('dashSubsTrend');
     if(stEl){
-      const milestones=[10,50,100,500,1000,5000,10000,100000];
+      const milestones=[10,50,100,500,1000,5000,10000];
       const next=milestones.find(m=>m>subs)||null;
       const prev=milestones.filter(m=>m<=subs).pop()||0;
       if(next){
-        const pct=Math.min(100,Math.round(((subs-prev)/Math.max(next-prev,1))*100));
-        stEl.innerHTML=`
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <div style="font-size:22px;font-weight:800;">${subs}</div>
-            <div style="font-size:11px;color:var(--text2);">subscribers<br>next goal: <b style="color:var(--text);">${next}</b></div>
+        const pct=Math.round(((subs-prev)/(next-prev))*100);
+        stEl.innerHTML=`<div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Next milestone: <b style="color:var(--text);">${next} subscribers</b></div>
+          <div style="background:var(--bg3);border-radius:6px;height:8px;overflow:hidden;">
+            <div style="background:var(--red);height:100%;width:${pct}%;border-radius:6px;transition:width .5s;"></div>
           </div>
-          <div style="background:var(--bg3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:4px;">
-            <div style="background:linear-gradient(90deg,var(--red),#ff6644);height:100%;width:${pct}%;border-radius:6px;transition:width .5s;"></div>
-          </div>
-          <div style="font-size:11px;color:var(--text3);">${subs}/${next} (${pct}%)</div>`;
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">${subs}/${next} (${pct}%)</div>`;
       }else{
-        stEl.innerHTML=`<div style="color:#ffd700;font-size:14px;font-weight:700;">🏆 Legend! ${subs}+ subs</div>`;
+        stEl.innerHTML=`<div style="color:#ffd700;font-size:14px;font-weight:700;">🏆 You reached all milestones! (${subs} subs)</div>`;
       }
     }
-
-    // My content list
+    // My content (legacy fallback - main display is now in content tab sections)
+    myPosts.sort((a,b)=>b.time-a.time);
     const cl=document.getElementById('myContentList');
     if(cl){
       if(!myPosts.length){cl.innerHTML='<div class="empty-state"><i class="fas fa-upload"></i><p>No content yet!</p></div>';}
       else{cl.innerHTML=myPosts.map(p=>{
         const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-        const avgForThis=myPosts.length>0?totalViews/myPosts.length:0;
-        const isGood=(p.views||0)>=avgForThis;
         return `<div class="my-vid-item">
           <div class="my-vid-thumb">${th?`<img src="${th}">`:'<i class="fas fa-video" style="color:var(--text3);font-size:18px;"></i>'}</div>
           <div class="my-vid-info">
             <div class="my-vid-title">${p.title||'Untitled'}</div>
             <div class="my-vid-stats">❤️${p.likes||0} 👁️${p.views||0} 💬${p.comments||0} • ${getTimeAgo(p.time)}</div>
-            <div style="font-size:10px;color:${isGood?'#00c864':'#ff7777'};">${isGood?'↑ Above avg':'↓ Below avg'}</div>
           </div>
           <button class="my-vid-del" onclick="deletePost('${p.id}',event)"><i class="fas fa-trash-alt"></i></button>
         </div>`;
       }).join('');}
     }
-
     // Subs list
     const subsSnap=await db.collection('subscriptions').where('to','==',cUser.uid).limit(20).get();
     const sl=document.getElementById('subsList');
-    if(sl){
-      if(subsSnap.empty){sl.innerHTML='<div style="color:var(--text3);font-size:12px;padding:6px 0;">No subscribers yet</div>';}
-      else{
-        const uids=subsSnap.docs.map(d=>d.data().from);
-        const udocs=await Promise.all(uids.map(uid=>db.collection('users').doc(uid).get()));
-        sl.innerHTML=udocs.map(d=>{
-          if(!d.exists)return '';const u=d.data();
-          const av=u.photoURL?`<img src="${u.photoURL}">`:(u.name||'U')[0].toUpperCase();
-          return `<div class="sub-item"><div class="sub-av">${av}</div><div><div style="font-size:13px;font-weight:600;">${u.name||'User'}</div><div style="font-size:11px;color:var(--text2);">${u.handle||''}</div></div></div>`;
-        }).join('');
-      }
-    }
+    if(subsSnap.empty){sl.innerHTML='<div style="color:var(--text3);font-size:12px;padding:6px 0;">No subscribers yet</div>';return;}
+    const uids=subsSnap.docs.map(d=>d.data().from);
+    const udocs=await Promise.all(uids.map(uid=>db.collection('users').doc(uid).get()));
+    sl.innerHTML=udocs.map(d=>{
+      if(!d.exists)return '';const u=d.data();
+      const av=u.photoURL?`<img src="${u.photoURL}">`:(u.name||'U')[0].toUpperCase();
+      return `<div class="sub-item"><div class="sub-av">${av}</div><div><div style="font-size:13px;font-weight:600;">${u.name||'User'}</div><div style="font-size:11px;color:var(--text2);">${u.handle||''}</div></div></div>`;
+    }).join('');
   }catch(e){console.error(e);}
 }
 
@@ -4450,6 +4191,1523 @@ async function doSearch(q){
 // ══════════════════════════════════════════════════════
 // OWNER DASHBOARD
 // ══════════════════════════════════════════════════════
+async function loadOwnerDash(){
+  if(!cUser||cUser.email!==OWNER_EMAIL)return;
+  const ul=document.getElementById('ownerUsersList');
+  if(ul)ul.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const [usersSnap,postsSnap]=await Promise.all([
+      db.collection('users').get(),
+      db.collection('posts').get()
+    ]);
+    let channels=0,totalLikes=0,totalViews=0;
+    usersSnap.forEach(d=>{if(d.data().channelName||d.data().hasChannel)channels++;});
+    postsSnap.forEach(d=>{totalLikes+=d.data().likes||0;totalViews+=d.data().views||0;});
+    document.getElementById('owUsers').textContent=usersSnap.size;
+    document.getElementById('owChannels').textContent=channels;
+    document.getElementById('owVideos').textContent=postsSnap.size;
+    document.getElementById('owLikes').textContent=totalLikes;
+    const users=usersSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.lastSeen||0)-(a.lastSeen||0));
+    if(ul)ul.innerHTML=users.map(u=>{
+      const av=u.photoURL?`<img src="${u.photoURL}" style="width:100%;height:100%;object-fit:cover;">`:(u.name||'U')[0].toUpperCase();
+      const ls=u.lastSeen?getTimeAgo(u.lastSeen):'Never';
+      const active=u.lastSeen&&(Date.now()-u.lastSeen)<3*24*3600*1000;
+      const isOwner=u.email===OWNER_EMAIL;
+      return `<div class="ou-item">
+        <div class="ou-av" style="overflow:hidden;">${av}</div>
+        <div class="ou-info">
+          <div class="ou-name">${u.name||'User'}${isOwner?' 👑':''}</div>
+          <div class="ou-meta">${u.email||''} • ${ls}</div>
+          ${u.channelName?`<div style="font-size:10px;color:var(--red);">📺 ${u.channelName}</div>`:''}
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <span class="ou-badge ${active?'badge-active':''}" style="display:block;font-size:10px;">${active?'🟢 Active':'⚫ Offline'}</span>
+          <span style="font-size:10px;color:var(--text3);">${u.subscribers||0} subs</span>
+        </div>
+      </div>`;
+    }).join('')||'<div class="empty-state"><i class="fas fa-users"></i><p>No users yet</p></div>';
+  }catch(e){console.error(e);if(ul)ul.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
+}
+
+// ══════════════════════════════════════════════════════
+// LIVE
+// ══════════════════════════════════════════════════════
+async function loadLiveScreen(){
+  if(!cUser)return;
+  // Owner always has live access
+  if(cUser.email===OWNER_EMAIL){
+    document.getElementById('liveLocked').style.display='none';
+    document.getElementById('liveSetup').style.display='block';
+    // Show owner badge
+    const setupCard=document.getElementById('liveSetup');
+    if(setupCard&&!setupCard.querySelector('.owner-live-badge')){
+      const badge=document.createElement('div');
+      badge.className='owner-live-badge';
+      badge.style.cssText='background:linear-gradient(135deg,#ff0000,#cc0000);color:white;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;';
+      badge.innerHTML='<i class="fas fa-crown"></i> Owner — Live access always enabled';
+      setupCard.insertBefore(badge,setupCard.firstChild);
+    }
+    return;
+  }
+  try{
+    const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
+    let videos=0,shorts=0,maxLikes=0;
+    snap.forEach(d=>{const p=d.data();if(p.type==='video'||p.type==='gaming'||p.type==='music')videos++;if(p.type==='short')shorts++;if((p.likes||0)>maxLikes)maxLikes=p.likes||0;});
+    const ud=await db.collection('users').doc(cUser.uid).get();
+    const subs=ud.exists?(ud.data().subscribers||0):0;
+    const reqs=[
+      {label:`${LIVE_REQS.videos} videos uploaded`,cur:videos,req:LIVE_REQS.videos},
+      {label:`${LIVE_REQS.shorts} shorts uploaded`,cur:shorts,req:LIVE_REQS.shorts},
+      {label:`${LIVE_REQS.likesOnOneVideo} likes on 1 video`,cur:maxLikes,req:LIVE_REQS.likesOnOneVideo},
+      {label:`${LIVE_REQS.subscribers} subscribers`,cur:subs,req:LIVE_REQS.subscribers}
+    ];
+    const allDone=reqs.every(r=>r.cur>=r.req);
+    document.getElementById('liveReqList').innerHTML=reqs.map(r=>{
+      const done=r.cur>=r.req;
+      const pct=Math.min(100,Math.round((r.cur/r.req)*100));
+      return `<div class="live-req">
+        <div class="live-req-ic ${done?'req-ok':'req-no'}">${done?'✅':'🔒'}</div>
+        <div class="live-req-txt">${r.label}<div class="live-prog-bar"><div class="live-prog-fill" style="width:${pct}%;"></div></div></div>
+        <div class="live-req-prog">${r.cur}/${r.req}</div>
+      </div>`;
+    }).join('');
+    document.getElementById('liveLocked').style.display=allDone?'none':'block';
+    document.getElementById('liveSetup').style.display=allDone?'block':'none';
+  }catch(e){console.error(e);}
+}
+
+function startLive(){
+  const title=document.getElementById('liveTitle').value.trim();
+  if(!title)return showToast('Stream title required!');
+  db.collection('posts').add({
+    title,type:'live',isLive:true,
+    authorId:cUser.uid,authorName:cUserData?.name||'',authorPhoto:cUserData?.photoURL||'',
+    likes:0,views:0,comments:0,rankScore:50,time:Date.now()
+  }).then(()=>showToast('🔴 Live started! ✅')).catch(()=>showToast('Error starting live'));
+}
+
+// ══════════════════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════════════════
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeModalOut(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+
+// ══ SIDE MENU ══
+// ══ CHANNEL PAGE ══
+let cpCurrentAuthorId=null;
+
+async function openChannelPage(authorId,e){
+  if(e)e.stopPropagation();
+  if(!authorId)return;
+  cpCurrentAuthorId=authorId;
+  document.getElementById('channelPage').classList.add('open');
+  document.getElementById('cpContent').innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const uDoc=await db.collection('users').doc(authorId).get();
+    if(!uDoc.exists){showToast('Channel not found');closeChannelPage();return;}
+    const u=uDoc.data();
+    const pic=document.getElementById('cpPic');
+    if(u.photoURL){pic.innerHTML=`<img src="${u.photoURL}">`;}else{pic.textContent=(u.name||'U')[0].toUpperCase();}
+    document.getElementById('cpName').textContent=u.channelName||u.name||'Channel';
+    document.getElementById('cpHandle').textContent=u.channelHandle||u.handle||'@user';
+    document.getElementById('cpSubs').textContent=(u.subscribers||0)+' subscribers';
+    document.getElementById('cpAbout').textContent=u.channelAbout||u.about||'';
+    // Sub button
+    const subBtn=document.getElementById('cpSubBtn');
+    if(authorId===cUser?.uid){subBtn.style.display='none';}
+    else{
+      subBtn.style.display='block';
+      const subDoc=await db.collection('subscriptions').doc(`${cUser.uid}_${authorId}`).get();
+      if(subDoc.exists){subBtn.textContent='Subscribed';subBtn.classList.add('subscribed');}
+      else{subBtn.textContent='Subscribe';subBtn.classList.remove('subscribed');}
+    }
+    loadChannelVideos(authorId);
+  }catch(e){showToast('Error loading channel');}
+}
+
+function closeChannelPage(){document.getElementById('channelPage').classList.remove('open');}
+
+async function toggleChannelSub(){
+  if(!cUser||!cpCurrentAuthorId)return;
+  const btn=document.getElementById('cpSubBtn');
+  const sid=`${cUser.uid}_${cpCurrentAuthorId}`;
+  const ref=db.collection('subscriptions').doc(sid);
+  try{
+    const doc=await ref.get();
+    if(doc.exists){
+      await ref.delete();
+      await db.collection('users').doc(cpCurrentAuthorId).update({subscribers:firebase.firestore.FieldValue.increment(-1)});
+      btn.textContent='Subscribe';btn.classList.remove('subscribed');showToast('Unsubscribed');
+    }else{
+      await ref.set({from:cUser.uid,to:cpCurrentAuthorId,time:Date.now()});
+      await db.collection('users').doc(cpCurrentAuthorId).update({subscribers:firebase.firestore.FieldValue.increment(1)});
+      btn.textContent='Subscribed';btn.classList.add('subscribed');showToast('Subscribed! ✅');
+      sendNotif(cpCurrentAuthorId,'sub',`${cUserData?.name||'Someone'} subscribed to your channel!`,null);
+    }
+    const ud=await db.collection('users').doc(cpCurrentAuthorId).get();
+    if(ud.exists)document.getElementById('cpSubs').textContent=(ud.data().subscribers||0)+' subscribers';
+  }catch(e){showToast('Error');}
+}
+
+function switchChannelTab(tab,btn){
+  document.querySelectorAll('.channel-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(!cpCurrentAuthorId)return;
+  if(tab==='videos'||tab==='shorts'||tab==='posts')loadChannelVideos(cpCurrentAuthorId,tab);
+  else if(tab==='about')loadChannelAbout();
+}
+
+async function loadChannelVideos(authorId,typeFilter='videos'){
+  const el=document.getElementById('cpContent');
+  el.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('posts').where('authorId','==',authorId).orderBy('time','desc').limit(30).get();
+    let posts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(typeFilter==='shorts')posts=posts.filter(p=>p.type==='short');
+    else if(typeFilter==='posts')posts=posts.filter(p=>p.type==='post');
+    else posts=posts.filter(p=>p.type!=='post'&&p.type!=='short'||p.type==='video'||p.type==='gaming'||p.type==='music');
+    if(!posts.length){el.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet</p></div>';return;}
+    el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+posts.map(p=>{
+      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_300/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      return `<div onclick="openPost('${p.id}')" style="cursor:pointer;">
+        <div style="aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:var(--bg3);margin-bottom:6px;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-video" style="color:var(--text3);font-size:20px;"></i></div>'}
+        </div>
+        <div style="font-size:12px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
+        <div style="font-size:10px;color:var(--text2);margin-top:2px;">👁️${p.views||0} • ${getTimeAgo(p.time)}</div>
+      </div>`;
+    }).join('')+'</div>';
+  }catch(e2){
+    try{
+      const s2=await db.collection('posts').where('authorId','==',authorId).limit(20).get();
+      const posts2=s2.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.time-a.time);
+      el.innerHTML=posts2.length?'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+posts2.map(p=>`<div onclick="openPost('${p.id}')" style="cursor:pointer;"><div style="aspect-ratio:16/9;border-radius:8px;background:var(--bg3);margin-bottom:6px;overflow:hidden;"></div><div style="font-size:12px;font-weight:600;">${p.title||'Untitled'}</div></div>`).join('')+'</div>':'<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content</p></div>';
+    }catch(e3){el.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
+  }
+}
+
+function loadChannelAbout(){
+  const el=document.getElementById('cpContent');
+  const about=document.getElementById('cpAbout')?.textContent||'';
+  el.innerHTML=`<div style="padding:16px 0;">
+    <div style="font-size:14px;line-height:1.7;color:var(--text2);">${about||'No description'}</div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+      <div style="font-size:12px;color:var(--text3);">Joined MyTube</div>
+      <div style="font-size:13px;font-weight:600;">Pakistan 🇵🇰</div>
+    </div>
+  </div>`;
+}
+
+function openSideMenu(){
+  document.getElementById('sideOverlay').classList.add('open');
+  document.getElementById('sideMenu').classList.add('open');
+}
+function closeSideMenu(){
+  document.getElementById('sideOverlay').classList.remove('open');
+  document.getElementById('sideMenu').classList.remove('open');
+}
+
+// ══ STUDIO TABS ══
+function switchStudioTab(tab){
+  ['overview','content','analytics','audience'].forEach(t=>{
+    const el=document.getElementById('studio-'+t);
+    const btn=document.getElementById('stab-'+t);
+    if(el)el.style.display=t===tab?'block':'none';
+    if(btn)btn.classList.toggle('active',t===tab);
+  });
+  // Load content if needed
+  if(tab==='analytics')updateAnalyticsTab();
+  if(tab==='audience')updateAudienceTab();
+  if(tab==='content')loadMyContentSections();
+}
+
+function updateAnalyticsTab(){
+  // Mirror data from main dashboard
+  const views=document.getElementById('dViews')?.textContent||'0';
+  const el=document.getElementById('an-views');if(el)el.textContent=views;
+  const ctr=document.getElementById('aCTR')?.textContent||'0%';
+  const ctrEl=document.getElementById('an-ctr2');if(ctrEl)ctrEl.textContent=ctr;
+  const subs=document.getElementById('dSubs')?.textContent||'0';
+  const subEl=document.getElementById('an-subchange');if(subEl)subEl.textContent='+'+subs;
+  const avgEl=document.getElementById('an-watchtime');if(avgEl)avgEl.textContent=document.getElementById('dWatchTime')?.textContent?.replace('m','')||'0';
+  // Top content
+  loadTopContent();
+}
+
+function updateAudienceTab(){
+  const subs=document.getElementById('dSubs')?.textContent||'0';
+  const views=document.getElementById('dViews')?.textContent||'0';
+  const el1=document.getElementById('aud-subs');if(el1)el1.textContent=subs;
+  const el2=document.getElementById('aud-newsubs');if(el2)el2.textContent='+'+subs;
+  const el3=document.getElementById('aud-unique');if(el3)el3.textContent=views;
+  const el4=document.getElementById('aud-returning');if(el4)el4.textContent=Math.floor(parseInt(views)||0*0.3).toString();
+  // Copy subs list
+  const sl=document.getElementById('subsList');
+  const sl2=document.getElementById('subsList2');
+  if(sl&&sl2)sl2.innerHTML=sl.innerHTML;
+}
+
+async function loadTopContent(){
+  const el=document.getElementById('topContentList');
+  if(!el||!cUser)return;
+  try{
+    const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
+    const posts=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,5);
+    el.innerHTML=posts.map((p,i)=>{
+      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_100/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      return `<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);">
+        <div style="font-size:16px;font-weight:800;color:var(--text3);width:20px;text-align:center;">${i+1}</div>
+        <div style="width:60px;height:38px;border-radius:6px;overflow:hidden;background:var(--bg3);flex-shrink:0;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:''}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.title||'Untitled'}</div>
+          <div style="font-size:10px;color:var(--text2);">👁️${p.views||0} • ❤️${p.likes||0} • 💬${p.comments||0}</div>
+        </div>
+      </div>`;
+    }).join('')||'<div style="color:var(--text3);font-size:12px;">No content yet</div>';
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════════════
+// HIDE POST
+// ══════════════════════════════════════════════════════
+let _hiddenPosts=JSON.parse(localStorage.getItem('mt_hidden')||'[]');
+
+function hidePost(id,btn,e){
+  if(e)e.stopPropagation();
+  _hiddenPosts.push(id);
+  localStorage.setItem('mt_hidden',JSON.stringify(_hiddenPosts.slice(-100)));
+  const card=document.getElementById('card_'+id);
+  if(card){
+    card.style.transition='opacity .3s,max-height .4s';
+    card.style.opacity='0';
+    setTimeout(()=>{card.style.maxHeight='0';card.style.overflow='hidden';card.style.margin='0';},300);
+    setTimeout(()=>card.remove(),700);
+  }
+  showToast('Post hidden');
+}
+
+// ══════════════════════════════════════════════════════
+// QUICK SUBSCRIBE (from feed card)
+// ══════════════════════════════════════════════════════
+async function quickSubscribe(authorId,authorName,btn,e){
+  if(e)e.stopPropagation();
+  if(!cUser)return showToast('Login karein!');
+  const sid=`${cUser.uid}_${authorId}`;
+  const ref=db.collection('subscriptions').doc(sid);
+  try{
+    const doc=await ref.get();
+    if(doc.exists){
+      await ref.delete();
+      await db.collection('users').doc(authorId).update({subscribers:firebase.firestore.FieldValue.increment(-1)}).catch(()=>{});
+      if(btn){btn.textContent='Subscribe';btn.style.background='var(--red)';}
+      showToast('Unsubscribed');
+    }else{
+      await ref.set({from:cUser.uid,to:authorId,time:Date.now()});
+      await db.collection('users').doc(authorId).update({subscribers:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
+      if(btn){btn.textContent='Subscribed ✓';btn.style.background='var(--bg3)';btn.style.color='var(--text2)';}
+      showToast('Subscribed! ✅');
+      sendNotif(authorId,'sub',`${cUserData?.name||'Someone'} subscribed!`,null);
+      showSubNotifPopup(authorId,authorName);
+    }
+  }catch(e){showToast('Error');}
+}
+
+// ══════════════════════════════════════════════════════
+// SUBSCRIBE NOTIFICATION POPUP
+// ══════════════════════════════════════════════════════
+function showSubNotifPopup(authorId,channelName){
+  const ex=document.getElementById('subNotifPopup');if(ex)ex.remove();
+  const popup=document.createElement('div');
+  popup.id='subNotifPopup';
+  popup.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:1200;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;width:min(320px,90vw);box-shadow:0 8px 32px rgba(0,0,0,.5);animation:fadeUp .3s ease;';
+  popup.innerHTML=`
+    <div style="font-size:14px;font-weight:700;margin-bottom:4px;">🔔 Notifications</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px;">Choose notifications for <b>${channelName}</b></div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button onclick="setSubNotif('${authorId}','all');document.getElementById('subNotifPopup').remove();" style="background:var(--red);color:white;border:none;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-bell" style="font-size:16px;"></i> All notifications
+      </button>
+      <button onclick="setSubNotif('${authorId}','personalized');document.getElementById('subNotifPopup').remove();" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-bell-slash" style="font-size:16px;color:var(--text2);"></i> Personalized only
+      </button>
+      <button onclick="document.getElementById('subNotifPopup').remove();" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;padding:4px;">Skip</button>
+    </div>
+  `;
+  document.body.appendChild(popup);
+  setTimeout(()=>{const el=document.getElementById('subNotifPopup');if(el)el.remove();},8000);
+}
+
+function setSubNotif(authorId,pref){
+  try{localStorage.setItem('notif_'+authorId,pref);showToast(pref==='all'?'🔔 All notifications on!':'🔔 Personalized notifications set!');}catch(e){}
+}
+
+// ══════════════════════════════════════════════════════
+// COMMENT FILTER
+// ══════════════════════════════════════════════════════
+let _allComments=[];
+function filterComments(type,btn){
+  document.querySelectorAll('#commFilterRow .chip').forEach(c=>c.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const list=document.getElementById('commentsList');
+  if(!list||!_allComments.length)return;
+  let sorted=[..._allComments];
+  if(type==='newest')sorted.sort((a,b)=>(b.time||0)-(a.time||0));
+  else if(type==='top')sorted.sort((a,b)=>(b.likes||0)-(a.likes||0));
+  list.innerHTML=sorted.map(c=>renderCommentHTML(c)).join('');
+}
+
+function renderCommentHTML(c){
+  const av=c.photoURL?`<img src="${c.photoURL}">`:(c.author||'U')[0].toUpperCase();
+  return `<div class="comm-item">
+    <div class="comm-av">${av}</div>
+    <div class="comm-body">
+      <div class="comm-author">${c.author||'User'}</div>
+      <div class="comm-text">${c.text||''}</div>
+      <div class="comm-time">${getTimeAgo(c.time)}</div>
+    </div>
+  </div>`;
+}
+
+function showAboutComments(){
+  document.getElementById('aboutCommOverlay').style.display='block';
+  document.getElementById('aboutCommSheet').style.display='block';
+}
+function closeAboutComments(){
+  document.getElementById('aboutCommOverlay').style.display='none';
+  document.getElementById('aboutCommSheet').style.display='none';
+}
+
+// ══════════════════════════════════════════════════════
+// SHORT MENU (3-dot on short card)
+// ══════════════════════════════════════════════════════
+function showShortMenu(id,title,authorId,url,e){
+  if(e){e.stopPropagation();e.preventDefault();}
+  const ex=document.getElementById('shortMenuSheet');if(ex)ex.remove();
+  const exo=document.getElementById('shortMenuOv');if(exo)exo.remove();
+  const ov=document.createElement('div');
+  ov.id='shortMenuOv';
+  ov.style.cssText='position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.5);';
+  document.body.appendChild(ov);
+  const sheet=document.createElement('div');
+  sheet.id='shortMenuSheet';
+  sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:801;background:var(--bg2);border-radius:20px 20px 0 0;padding:16px 0 24px;';
+  const isOwn=authorId===cUser?.uid;
+  sheet.innerHTML=`
+    <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 14px;"></div>
+    <div style="font-size:14px;font-weight:700;padding:0 16px 12px;border-bottom:1px solid var(--border);">${title||'Short'}</div>
+    <div onclick="closeShortMenu();ctxPostId='${id}';addToPlaylist('${id}');" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;">
+      <i class="fas fa-list-ul" style="width:22px;color:var(--text2);"></i><span style="font-size:14px;">Save to playlist</span>
+    </div>
+    <div onclick="closeShortMenu();navigator.clipboard.writeText('${url||''}').then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Copied!'));" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;">
+      <i class="fas fa-share-alt" style="width:22px;color:var(--text2);"></i><span style="font-size:14px;">Share</span>
+    </div>
+    <div onclick="closeShortMenu();showToast('Not interested');" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;">
+      <i class="fas fa-eye-slash" style="width:22px;color:var(--text2);"></i><span style="font-size:14px;">Not interested</span>
+    </div>
+    <div onclick="closeShortMenu();showToast('Reported! ✅');" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;">
+      <i class="fas fa-flag" style="width:22px;color:var(--text2);"></i><span style="font-size:14px;">Report</span>
+    </div>
+    ${isOwn?`<div onclick="closeShortMenu();ctxPostId='${id}';ctxDelete();" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;color:#ff4444;">
+      <i class="fas fa-trash-alt" style="width:22px;"></i><span style="font-size:14px;">Delete</span>
+    </div>`:''}
+  `;
+  ov.onclick=()=>{sheet.remove();ov.remove();};
+  document.body.appendChild(sheet);
+}
+function closeShortMenu(){
+  const s=document.getElementById('shortMenuSheet');if(s)s.remove();
+  const o=document.getElementById('shortMenuOv');if(o)o.remove();
+}
+
+// ══════════════════════════════════════════════════════
+// PLAYLIST SYSTEM
+// ══════════════════════════════════════════════════════
+let currentPlaylistId=null,currentPlaylistName='';
+
+async function loadMyPlaylists(){
+  if(!cUser)return;
+  const list=document.getElementById('myPlaylistsList');
+  if(!list)return;
+  list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('playlists').where('ownerId','==',cUser.uid).orderBy('time','desc').get();
+    if(snap.empty){list.innerHTML='<div class="empty-state"><i class="fas fa-list-ul"></i><p>No playlists yet</p></div>';return;}
+    list.innerHTML=snap.docs.map(d=>{
+      const pl=d.data();
+      return `<div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--border);margin-bottom:10px;cursor:pointer;" onclick="openPlaylist('${d.id}','${(pl.name||'').replace(/'/g,'')}')">
+        <div style="width:52px;height:52px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-list-ul" style="color:var(--red);font-size:20px;"></i></div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:600;">${pl.name||'Untitled'}</div>
+          <div style="font-size:11px;color:var(--text2);">${pl.videoIds?.length||0} videos</div>
+        </div>
+        <button onclick="event.stopPropagation();deletePlaylistById('${d.id}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px;"><i class="fas fa-trash-alt"></i></button>
+      </div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
+}
+
+function openPlaylist(id,name){
+  currentPlaylistId=id;currentPlaylistName=name;
+  const screen=document.getElementById('playlistDetailScreen');
+  if(screen){
+    const ptEl=document.getElementById('playlistDetailTitle')||document.getElementById('playlistTitle');
+    if(ptEl)ptEl.textContent=name||'Playlist';
+    showScreen('playlistDetail');
+    loadPlaylistVideos(id);
+  }
+}
+
+async function loadPlaylistVideos(id){
+  const list=document.getElementById('playlistVideosList');
+  if(!list)return;
+  list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try{
+    const doc=await db.collection('playlists').doc(id).get();
+    const pl=doc.data();
+    const ids=pl?.videoIds||[];
+    if(!ids.length){list.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No videos in this playlist yet</p></div>';return;}
+    const posts=await Promise.all(ids.map(vid=>db.collection('posts').doc(vid).get()));
+    const valid=posts.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}));
+    if(!valid.length){list.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>Videos not found</p></div>';return;}
+    list.innerHTML=valid.map((p,i)=>{
+      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      return `<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="openPost('${p.id}')">
+        <div style="font-size:13px;font-weight:800;color:var(--text3);width:18px;text-align:center;">${i+1}</div>
+        <div style="width:90px;height:56px;border-radius:7px;overflow:hidden;background:var(--bg3);flex-shrink:0;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-video" style="font-size:16px;color:var(--text3);"></i></div>'}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:3px;">${p.authorName||''} • ${getTimeAgo(p.time)}</div>
+        </div>
+        <button onclick="event.stopPropagation();removeFromPlaylist('${id}','${p.id}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:4px;"><i class="fas fa-times"></i></button>
+      </div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading playlist</p></div>';}
+}
+
+async function removeFromPlaylist(plId,vidId){
+  try{
+    await db.collection('playlists').doc(plId).update({videoIds:firebase.firestore.FieldValue.arrayRemove(vidId)});
+    showToast('Removed from playlist');
+    loadPlaylistVideos(plId);
+  }catch(e){showToast('Error');}
+}
+
+function createPlaylistDialog(){
+  const name=prompt('Playlist name:');
+  if(!name||!name.trim())return;
+  createPlaylist(name.trim());
+}
+
+async function createPlaylist(name){
+  if(!cUser)return showToast('Login karein!');
+  try{
+    await db.collection('playlists').add({name,ownerId:cUser.uid,videoIds:[],time:Date.now()});
+    showToast('Playlist created! ✅');
+    loadMyPlaylists();
+  }catch(e){showToast('Error creating playlist');}
+}
+
+async function saveToPlaylist(){
+  if(!cUser||!currentPostId)return showToast('Login karein!');
+  try{
+    const snap=await db.collection('playlists').where('ownerId','==',cUser.uid).get();
+    if(snap.empty){
+      const name=prompt('No playlists found. Create one:');
+      if(!name)return;
+      await db.collection('playlists').add({name,ownerId:cUser.uid,videoIds:[currentPostId],time:Date.now()});
+      showToast('Added to new playlist "'+name+'" ✅');return;
+    }
+    const ex=document.getElementById('plSheet');if(ex)ex.remove();
+    const exo=document.getElementById('plSheetOv');if(exo)exo.remove();
+    const ov=document.createElement('div');ov.id='plSheetOv';
+    ov.style.cssText='position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);';
+    document.body.appendChild(ov);
+    const sheet=document.createElement('div');sheet.id='plSheet';
+    sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:501;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 28px;max-height:60vh;overflow-y:auto;';
+    sheet.innerHTML=`<div style="font-size:16px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;"><span>💾 Save to Playlist</span><i class="fas fa-times" style="cursor:pointer;color:var(--text2);" onclick="document.getElementById('plSheet').remove();document.getElementById('plSheetOv').remove();"></i></div>`+
+      snap.docs.map(d=>`<div onclick="addToExistingPlaylist('${d.id}','${(d.data().name||'').replace(/'/g,'')}');document.getElementById('plSheet').remove();document.getElementById('plSheetOv').remove();" style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;cursor:pointer;margin-bottom:6px;background:var(--bg3);">
+        <i class="fas fa-list-ul" style="color:var(--red);font-size:16px;"></i>
+        <span style="font-size:14px;font-weight:600;">${d.data().name||'Untitled'}</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:auto;">${d.data().videoIds?.length||0} videos</span>
+      </div>`).join('')+
+      `<div onclick="(async()=>{const n=prompt('New playlist name:');if(n){await db.collection('playlists').add({name:n,ownerId:cUser.uid,videoIds:[currentPostId],time:Date.now()});showToast('Created & saved! ✅');}document.getElementById('plSheet').remove();document.getElementById('plSheetOv').remove();})()" style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;cursor:pointer;margin-top:6px;border:2px dashed var(--border);">
+        <i class="fas fa-plus" style="color:var(--text3);font-size:16px;"></i>
+        <span style="font-size:14px;color:var(--text2);">Create new playlist</span>
+      </div>`;
+    ov.onclick=()=>{sheet.remove();ov.remove();};
+    document.body.appendChild(sheet);
+  }catch(e){showToast('Error: '+e.message);}
+}
+
+async function addToExistingPlaylist(plId,plName){
+  if(!currentPostId)return;
+  try{
+    await db.collection('playlists').doc(plId).update({videoIds:firebase.firestore.FieldValue.arrayUnion(currentPostId)});
+    showToast('Saved to "'+plName+'" ✅');
+  }catch(e){showToast('Error saving');}
+}
+
+async function addToPlaylist(postId){
+  if(!cUser)return showToast('Login karein!');
+  const prevId=currentPostId;
+  currentPostId=postId;
+  await saveToPlaylist();
+  currentPostId=prevId;
+}
+
+async function deletePlaylist(){
+  if(!currentPlaylistId||!confirm('Delete this playlist?'))return;
+  try{
+    await db.collection('playlists').doc(currentPlaylistId).delete();
+    showToast('Playlist deleted ✅');
+    showScreen('playlists');
+    loadMyPlaylists();
+  }catch(e){showToast('Error deleting');}
+}
+
+async function deletePlaylistById(id){
+  if(!confirm('Delete this playlist?'))return;
+  try{
+    await db.collection('playlists').doc(id).delete();
+    showToast('Deleted ✅');
+    loadMyPlaylists();
+  }catch(e){showToast('Error');}
+}
+
+function filterLikedVideos(){
+  showScreen('home');
+  const liked=allPosts.filter(p=>cUser&&(p.likedBy||[]).includes(cUser.uid));
+  renderFeed(liked.length?liked:allPosts);
+  if(!liked.length)showToast('No liked videos yet');
+}
+
+// ══════════════════════════════════════════════════════
+// SHORT EDITOR — Camera, Sound, Trim, Speed, Timer
+// ══════════════════════════════════════════════════════
+let _editorSong=null,_editorTrimStart=0,_editorTrimDur=60,_editorSpeed=1;
+let _editorCameraStream=null,_editorTimerInterval=null;
+const SPEED_OPTIONS=[0.5,0.75,1,1.25,1.5,2];
+let _editorSpeedIdx=2;
+
+function openShortEditor(file){
+  const modal=document.getElementById('shortEditorModal');
+  if(modal)modal.style.display='flex';
+  if(file){
+    const vid=document.getElementById('editorVid');
+    const empty=document.getElementById('editorEmptyState');
+    const url=URL.createObjectURL(file);
+    if(vid){vid.src=url;vid.style.display='block';}
+    if(empty)empty.style.display='none';
+  }
+}
+
+function closeShortEditor(){
+  const modal=document.getElementById('shortEditorModal');
+  if(modal)modal.style.display='none';
+  stopEditorCamera();
+  const vid=document.getElementById('editorVid');
+  if(vid){vid.pause();}
+  closeAllEditorPanels();
+}
+
+function editorTogglePlay(){
+  const vid=document.getElementById('editorVid');
+  const btn=document.getElementById('editorPlayBtn');
+  if(!vid||!vid.src)return;
+  if(vid.paused){vid.play();if(btn)btn.innerHTML='<i class="fas fa-pause"></i>';}
+  else{vid.pause();if(btn)btn.innerHTML='<i class="fas fa-play"></i>';}
+}
+
+function editorVidSeek(secs){
+  const vid=document.getElementById('editorVid');
+  if(vid)vid.currentTime=Math.max(0,(vid.currentTime||0)+secs);
+}
+
+function closeAllEditorPanels(){
+  ['editorTrimPanel','editorSoundPanel','editorTimerPanel'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
+}
+
+async function toggleEditorCamera(){
+  const btn=document.getElementById('edCamBtn');
+  const camVid=document.getElementById('editorCamera');
+  if(_editorCameraStream){
+    stopEditorCamera();
+    if(btn)btn.style.borderColor='#333';
+    return;
+  }
+  try{
+    _editorCameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+    if(camVid){camVid.srcObject=_editorCameraStream;camVid.style.display='block';}
+    if(btn)btn.style.borderColor='var(--red)';
+    showToast('Camera on 📷');
+  }catch(e){showToast('Camera access denied.');}
+}
+
+function stopEditorCamera(){
+  if(_editorCameraStream){_editorCameraStream.getTracks().forEach(t=>t.stop());_editorCameraStream=null;}
+  const camVid=document.getElementById('editorCamera');
+  if(camVid){camVid.srcObject=null;camVid.style.display='none';}
+}
+
+function openEditorSounds(){
+  closeAllEditorPanels();
+  const panel=document.getElementById('editorSoundPanel');
+  if(!panel)return;
+  panel.style.display='block';
+  const list=document.getElementById('editorSongsList');
+  if(list)list.innerHTML=TRENDING_SONGS.map(s=>`
+    <div onclick="selectEditorSong(${JSON.stringify(s).replace(/"/g,"'")})" style="flex-shrink:0;background:#222;border:1.5px solid ${_editorSong?.id===s.id?'var(--red)':'#444'};border-radius:10px;padding:8px 12px;cursor:pointer;min-width:110px;text-align:center;">
+      <div style="font-size:18px;margin-bottom:3px;">${s.emoji}</div>
+      <div style="font-size:10px;font-weight:600;color:#ccc;">${s.name}</div>
+    </div>`).join('');
+}
+
+function selectEditorSong(song){
+  _editorSong=song;
+  const info=document.getElementById('editorSelectedSong');
+  const name=document.getElementById('editorSongName');
+  if(info)info.style.display='flex';
+  if(name)name.textContent=song.name;
+  showToast('Sound selected: '+song.name);
+  openEditorSounds();
+}
+
+function clearEditorSong(){
+  _editorSong=null;
+  const info=document.getElementById('editorSelectedSong');
+  if(info)info.style.display='none';
+}
+
+function openEditorTrim(){
+  closeAllEditorPanels();
+  const panel=document.getElementById('editorTrimPanel');
+  if(!panel)return;
+  panel.style.display='block';
+  const vid=document.getElementById('editorVid');
+  const maxDur=Math.floor(vid?.duration||60);
+  const startEl=document.getElementById('edTrimStart');
+  if(startEl){startEl.max=Math.max(maxDur-5,1);startEl.value=_editorTrimStart;}
+  updateEdTrim();
+}
+
+function updateEdTrim(){
+  const s=parseInt(document.getElementById('edTrimStart')?.value||0);
+  const d=parseInt(document.getElementById('edTrimDur')?.value||60);
+  _editorTrimStart=s;_editorTrimDur=d;
+  const sl=document.getElementById('edTrimStartLbl');if(sl)sl.textContent=s+'s';
+  const el=document.getElementById('edTrimEndLbl');if(el)el.textContent=(s+d)+'s';
+  const dl=document.getElementById('edTrimDurLbl');if(dl)dl.textContent=d+'s';
+  const vid=document.getElementById('editorVid');
+  if(vid)vid.currentTime=s;
+}
+
+function applyEditorTrim(){
+  const vid=document.getElementById('editorVid');
+  if(vid){vid.currentTime=_editorTrimStart;}
+  showToast(`Trim set: ${_editorTrimStart}s → ${_editorTrimStart+_editorTrimDur}s ✂️`);
+  closeAllEditorPanels();
+}
+
+function cycleEditorSpeed(btn){
+  _editorSpeedIdx=(_editorSpeedIdx+1)%SPEED_OPTIONS.length;
+  _editorSpeed=SPEED_OPTIONS[_editorSpeedIdx];
+  const vid=document.getElementById('editorVid');
+  if(vid)vid.playbackRate=_editorSpeed;
+  const lbl=document.getElementById('edSpeedLbl');if(lbl)lbl.textContent=_editorSpeed+'x';
+  if(btn)btn.style.borderColor=_editorSpeed!==1?'var(--red)':'#333';
+  showToast('Speed: '+_editorSpeed+'x');
+}
+
+function openEditorTimer(){
+  closeAllEditorPanels();
+  const panel=document.getElementById('editorTimerPanel');
+  if(panel)panel.style.display='block';
+}
+
+function setEditorTimer(secs){
+  clearInterval(_editorTimerInterval);
+  const disp=document.getElementById('editorTimerDisplay');
+  if(!disp)return;
+  disp.style.display='block';
+  let count=secs;
+  disp.textContent=count;
+  _editorTimerInterval=setInterval(()=>{
+    count--;
+    if(disp)disp.textContent=count;
+    if(count<=0){
+      clearInterval(_editorTimerInterval);
+      disp.textContent='🎬';
+      showToast('Timer done! Record now 🔴');
+    }
+  },1000);
+}
+
+function applyShortEdits(){
+  const edits={
+    trimStart:_editorTrimStart,
+    trimDur:_editorTrimDur,
+    speed:_editorSpeed,
+    bgMusic:_editorSong?.name||null,
+    bgMusicId:_editorSong?.id||null,
+  };
+  window._shortEditorEdits=edits;
+  if(edits.bgMusic){
+    selectedSong=_editorSong;
+    const info=document.getElementById('selectedSongInfo');
+    const nameEl=document.getElementById('selectedSongName');
+    if(info)info.style.display='flex';
+    if(nameEl)nameEl.textContent=edits.bgMusic;
+  }
+  showToast('Edits applied! ✅');
+  closeShortEditor();
+}
+// ══════════════════════════════════════════════════════
+// DELETE ACCOUNT
+// ══════════════════════════════════════════════════════
+function showDeleteAccountSheet(){
+  document.getElementById('deleteAccOverlay').style.display='block';
+  document.getElementById('deleteAccSheet').style.display='block';
+  document.getElementById('deleteConfirmInput').value='';
+}
+function closeDeleteAccountSheet(){
+  document.getElementById('deleteAccOverlay').style.display='none';
+  document.getElementById('deleteAccSheet').style.display='none';
+}
+
+async function confirmDeleteAccount(){
+  const val=document.getElementById('deleteConfirmInput').value.trim();
+  if(val!=='DELETE')return showToast('Type DELETE to confirm');
+  if(!cUser)return showToast('Not logged in');
+  if(!confirm('Last warning: ALL your data will be deleted forever. Continue?'))return;
+  try{
+    showToast('Deleting your account...');
+    // Delete all user posts
+    const posts=await db.collection('posts').where('authorId','==',cUser.uid).get();
+    const batch=db.batch();
+    posts.forEach(d=>batch.delete(d.ref));
+    // Delete subscriptions
+    const subs=await db.collection('subscriptions').where('from','==',cUser.uid).get();
+    subs.forEach(d=>batch.delete(d.ref));
+    const subs2=await db.collection('subscriptions').where('to','==',cUser.uid).get();
+    subs2.forEach(d=>batch.delete(d.ref));
+    // Delete user doc
+    batch.delete(db.collection('users').doc(cUser.uid));
+    batch.delete(db.collection('channels').doc(cUser.uid));
+    await batch.commit();
+    // Delete Firebase Auth user
+    await cUser.delete();
+    closeDeleteAccountSheet();
+    showToast('Account deleted. Goodbye! 👋');
+    setTimeout(()=>location.reload(),2000);
+  }catch(e){
+    if(e.code==='auth/requires-recent-login'){
+      showToast('Please logout and login again to delete account');
+    }else{
+      showToast('Error: '+e.message);
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// AGE VERIFICATION
+// ══════════════════════════════════════════════════════
+function checkAgeVerification(){
+  const verified=localStorage.getItem('mt_age_verified');
+  if(!verified){
+    const ov=document.getElementById('ageVerifOverlay');
+    if(ov)ov.style.display='flex';
+  }
+}
+function confirmAge(){
+  localStorage.setItem('mt_age_verified','yes');
+  const ov=document.getElementById('ageVerifOverlay');
+  if(ov)ov.style.display='none';
+}
+function denyAge(){
+  showToast('This platform is for 18+ users only.');
+  setTimeout(()=>{window.location.href='https://www.google.com';},1500);
+}
+
+// ══════════════════════════════════════════════════════
+// CONTENT MODERATION — Auto-flag & Report system
+// ══════════════════════════════════════════════════════
+const BANNED_WORDS=['spam','fake','cheat','hack','nude','xxx','porn','sex','vulgar'];
+
+function moderateContent(text){
+  if(!text)return true;
+  const lower=text.toLowerCase();
+  return !BANNED_WORDS.some(w=>lower.includes(w));
+}
+
+async function submitReport(postId,reason,reportedUserId){
+  if(!cUser)return showToast('Login karein to report karein');
+  try{
+    await db.collection('reports').add({
+      postId,reason,
+      reportedBy:cUser.uid,
+      reportedUser:reportedUserId||'',
+      time:Date.now(),
+      status:'pending'
+    });
+    showToast('Report submitted. We will review within 24hrs ✅');
+    // Auto-flag post if 5+ reports
+    const rSnap=await db.collection('reports').where('postId','==',postId).where('status','==','pending').get();
+    if(rSnap.size>=5){
+      await db.collection('posts').doc(postId).update({flagged:true,flagReason:'Multiple user reports'});
+      showToast('Content flagged for review');
+    }
+  }catch(e){showToast('Error submitting report');}
+}
+
+// Override ctxReport to use proper system
+function ctxReport(){
+  closeCtxMenu();
+  if(!ctxPostId)return;
+  const ex=document.getElementById('reportSheet');if(ex)ex.remove();
+  const exo=document.getElementById('reportOv');if(exo)exo.remove();
+  const ov=document.createElement('div');
+  ov.id='reportOv';
+  ov.style.cssText='position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.6);';
+  document.body.appendChild(ov);
+  const sheet=document.createElement('div');
+  sheet.id='reportSheet';
+  sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:801;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 32px;';
+  const reasons=['Spam or misleading','Nudity or sexual content','Hate speech','Violence or dangerous acts','Harassment or bullying','Copyright violation','Child safety concern','Other'];
+  sheet.innerHTML=`
+    <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;"></div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:14px;">🚩 Report Content</div>
+    ${reasons.map(r=>`
+      <div onclick="submitReport('${ctxPostId}','${r}','');document.getElementById('reportSheet').remove();document.getElementById('reportOv').remove();"
+        style="padding:13px 0;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;display:flex;align-items:center;gap:10px;">
+        <i class="fas fa-flag" style="color:var(--red);font-size:13px;"></i>${r}
+      </div>`).join('')}
+    <button onclick="document.getElementById('reportSheet').remove();document.getElementById('reportOv').remove();" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:14px;">Cancel</button>
+  `;
+  ov.onclick=()=>{sheet.remove();ov.remove();};
+  document.body.appendChild(sheet);
+}
+
+// ══════════════════════════════════════════════════════
+// PWA — Service Worker + Install Prompt
+// ══════════════════════════════════════════════════════
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js',{scope:'./'})
+      .then(reg=>{console.log('SW registered ✅',reg.scope);})
+      .catch(e=>console.log('SW error:',e));
+  });
+}
+
+let _pwaPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  _pwaPrompt=e;
+  // Show install banner after 5 seconds
+  setTimeout(()=>showPwaInstallBanner(),5000);
+});
+
+function showPwaInstallBanner(){
+  if(!_pwaPrompt)return;
+  const ex=document.getElementById('pwaBanner');if(ex)return;
+  const banner=document.createElement('div');
+  banner.id='pwaBanner';
+  banner.style.cssText='position:fixed;bottom:72px;left:12px;right:12px;z-index:1100;background:linear-gradient(135deg,#1a1a1a,#2a0000);border:1.5px solid var(--red);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(255,0,0,.2);animation:fadeUp .3s ease;';
+  banner.innerHTML=`
+    <div style="width:40px;height:40px;background:var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg width="22" height="16" viewBox="0 0 50 36"><rect width="50" height="36" rx="8" fill="white"/><polygon points="19,8 19,28 38,18" fill="#FF0000"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div style="font-size:13px;font-weight:700;color:white;">Install MyTube App</div>
+      <div style="font-size:11px;color:#aaa;">Home screen pe add karo — free!</div>
+    </div>
+    <button onclick="installPwa()" style="background:var(--red);color:white;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;">Install</button>
+    <button onclick="document.getElementById('pwaBanner').remove()" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:18px;padding:2px 4px;">×</button>
+  `;
+  document.body.appendChild(banner);
+}
+
+async function installPwa(){
+  if(!_pwaPrompt)return;
+  _pwaPrompt.prompt();
+  const result=await _pwaPrompt.userChoice;
+  if(result.outcome==='accepted'){showToast('MyTube install ho gayi! 🎉');}
+  _pwaPrompt=null;
+  const banner=document.getElementById('pwaBanner');if(banner)banner.remove();
+}
+
+window.addEventListener('appinstalled',()=>{
+  showToast('MyTube successfully installed! 🎉');
+  _pwaPrompt=null;
+});
+
+// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// SHORTS CAMERA SYSTEM
+// ══════════════════════════════════════════════════════
+let _scStream=null,_scRecorder=null,_scChunks=[],_scRecording=false;
+let _scMaxTime=15,_scElapsed=0,_scProgInt=null;
+let _scFacing='environment',_scSpeedIdx=2;
+const SC_SPEEDS=[0.5,0.75,1,1.25,1.5];
+let scTextColor='#ffffff';
+
+function openShortsCamera(){
+  const modal=document.getElementById('shortsCameraModal');
+  if(modal)modal.style.display='block';
+  // Show record mode
+  const rm=document.getElementById('scRecordMode');
+  const em=document.getElementById('scEditMode');
+  if(rm)rm.style.display='flex';
+  if(em)em.style.display='none';
+  startShortsStream();
+  // Load trending sounds
+  setTimeout(loadScSounds,500);
+}
+
+async function startShortsStream(){
+  try{
+    if(_scStream){_scStream.getTracks().forEach(t=>t.stop());}
+    _scStream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:_scFacing,width:{ideal:1080},height:{ideal:1920}},
+      audio:true
+    });
+    const prev=document.getElementById('shortsCamPreview');
+    if(prev){prev.srcObject=_scStream;prev.play().catch(()=>{});}
+  }catch(e){
+    showToast('Camera access denied. Allow in browser settings.');
+    closeShortsCamera();
+  }
+}
+
+function closeShortsCamera(){
+  stopShortsRecording();
+  if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
+  const modal=document.getElementById('shortsCameraModal');
+  if(modal)modal.style.display='none';
+  // Reset
+  const prog=document.getElementById('scProgress');if(prog)prog.style.width='0%';
+  const ov=document.getElementById('scTextOverlays');if(ov)ov.innerHTML='';
+  window._scSelectedSound=null;window._scAudioBlob=null;
+  closeAllEditPanels();
+  const sp=document.getElementById('scSoundQuickPanel');if(sp)sp.style.display='none';
+}
+
+function backToRecordMode(){
+  const rm=document.getElementById('scRecordMode');
+  const em=document.getElementById('scEditMode');
+  if(rm)rm.style.display='flex';
+  if(em)em.style.display='none';
+  const ov=document.getElementById('scTextOverlays');if(ov)ov.innerHTML='';
+  closeAllEditPanels();
+  startShortsStream();
+}
+
+function flipShortsCamera(){
+  _scFacing=_scFacing==='environment'?'user':'environment';
+  startShortsStream();
+}
+
+function setShortsTimer(secs){
+  _scMaxTime=secs;
+  ['scT15','scT30','scT60'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.style.borderColor='transparent';el.style.color='rgba(255,255,255,.6)';}
+  });
+  const active=document.getElementById('scT'+secs);
+  if(active){active.style.borderColor='white';active.style.color='white';}
+  showToast(secs+'s selected');
+}
+
+function cycleShortsSpeed(){
+  _scSpeedIdx=(_scSpeedIdx+1)%SC_SPEEDS.length;
+  const spd=SC_SPEEDS[_scSpeedIdx];
+  const lbl=document.getElementById('scSpeedLbl');
+  if(lbl)lbl.textContent=spd+'x';
+  showToast('Speed: '+spd+'x');
+}
+
+function toggleShortsRecording(){
+  if(_scRecording)stopShortsRecording();
+  else startShortsRecording();
+}
+
+function startShortsRecording(){
+  if(!_scStream)return showToast('Camera not ready');
+  _scChunks=[];_scElapsed=0;_scRecording=true;
+  const icon=document.getElementById('scRecordIcon');
+  if(icon){icon.style.borderRadius='6px';icon.style.width='30px';icon.style.height='30px';}
+  const timeEl=document.getElementById('scRecTime');
+  if(timeEl)timeEl.style.display='block';
+  let mimeType='';
+  if(MediaRecorder.isTypeSupported('video/mp4;codecs=avc1'))mimeType='video/mp4;codecs=avc1';
+  else if(MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus'))mimeType='video/webm;codecs=vp8,opus';
+  else if(MediaRecorder.isTypeSupported('video/webm'))mimeType='video/webm';
+  try{_scRecorder=mimeType?new MediaRecorder(_scStream,{mimeType}):new MediaRecorder(_scStream);}
+  catch(e){_scRecorder=new MediaRecorder(_scStream);}
+  _scRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)_scChunks.push(e.data);};
+  _scRecorder.onstop=()=>finalizeShortsRecording();
+  _scRecorder.start(100);
+  const prog=document.getElementById('scProgress');
+  _scProgInt=setInterval(()=>{
+    _scElapsed+=0.1;
+    const pct=(_scElapsed/_scMaxTime)*100;
+    if(prog)prog.style.width=Math.min(pct,100)+'%';
+    const m=Math.floor(_scElapsed/60),s=Math.floor(_scElapsed%60);
+    if(timeEl)timeEl.textContent=m+':'+(s<10?'0'+s:s);
+    if(_scElapsed>=_scMaxTime)stopShortsRecording();
+  },100);
+}
+
+function stopShortsRecording(){
+  if(!_scRecording)return;
+  _scRecording=false;
+  clearInterval(_scProgInt);
+  if(_scRecorder&&_scRecorder.state!=='inactive')_scRecorder.stop();
+  const icon=document.getElementById('scRecordIcon');
+  if(icon){icon.style.borderRadius='50%';icon.style.width='38px';icon.style.height='38px';}
+}
+
+function finalizeShortsRecording(){
+  const mimeType=_scRecorder?.mimeType||'video/webm';
+  const ext=mimeType.includes('mp4')?'mp4':'webm';
+  const blob=new Blob(_scChunks,{type:mimeType});
+  window._recordedShortFile=new File([blob],'short_'+Date.now()+'.'+ext,{type:mimeType});
+  if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
+  const url=URL.createObjectURL(blob);
+  const recPrev=document.getElementById('shortsRecPreview');
+  if(recPrev){recPrev.src=url;recPrev.play().catch(()=>{});}
+  // Switch to edit mode
+  const rm=document.getElementById('scRecordMode');
+  const em=document.getElementById('scEditMode');
+  if(rm)rm.style.display='none';
+  if(em)em.style.display='flex';
+  // Load edit sounds
+  loadScEditSounds();
+  showToast('Done! Edit and tap Upload →');
+}
+
+function handleGalleryShort(input){
+  const file=input.files[0];if(!file)return;
+  window._recordedShortFile=file;
+  const url=URL.createObjectURL(file);
+  const recPrev=document.getElementById('shortsRecPreview');
+  if(recPrev){recPrev.src=url;recPrev.play().catch(()=>{});}
+  const rm=document.getElementById('scRecordMode');
+  const em=document.getElementById('scEditMode');
+  if(rm)rm.style.display='none';
+  if(em)em.style.display='flex';
+  loadScEditSounds();
+  showToast('Video loaded! Edit and Upload →');
+}
+
+// Sound system
+function openScSoundQuick(){
+  const p=document.getElementById('scSoundQuickPanel');
+  if(p)p.style.display='block';
+  loadScSounds();
+}
+
+function loadScSounds(){
+  const list=document.getElementById('scSoundTrending');
+  if(!list||typeof TRENDING_SONGS==='undefined')return;
+  list.innerHTML=TRENDING_SONGS.map(s=>
+    `<div onclick="selectScSound('${s.name.replace(/'/g,'')}',this)" style="flex-shrink:0;background:#1c1c1c;border:1.5px solid ${window._scSelectedSound===s.name?'var(--red)':'#444'};border-radius:12px;padding:10px 14px;cursor:pointer;min-width:110px;text-align:center;">
+      <div style="font-size:20px;margin-bottom:4px;">${s.emoji}</div>
+      <div style="font-size:10px;font-weight:600;color:#ccc;">${s.name}</div>
+    </div>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// SHORTS CAMERA — PRESS & HOLD TO RECORD
+// ══════════════════════════════════════════════════════
+let _scHoldTimer=null,_scHoldActive=false,_scTouchUsed=false;
+
+function scBtnTouchStart(e){
+  e.preventDefault(); // prevents onclick from firing after touch
+  _scHoldActive=true;
+  _scTouchUsed=true;
+  if(!_scRecording){
+    startShortsRecording();
+  }
+}
+function scBtnTouchEnd(e){
+  e.preventDefault();
+  _scHoldActive=false;
+  if(_scRecording){
+    stopShortsRecording();
+  }
+  // Reset touch flag after short delay
+  setTimeout(()=>{_scTouchUsed=false;},300);
+}
+function scBtnClick(e){
+  // Skip if already handled by touch (mobile)
+  if(_scTouchUsed)return;
+  if(_scRecording){stopShortsRecording();}
+  else{startShortsRecording();}
+}
+
+// ══════════════════════════════════════════════════════
+// SHORTS DOWNLOAD
+// ══════════════════════════════════════════════════════
+function sfDownload(){
+  const p=sfPosts[sfCurrentIdx];
+  if(!p||!p.url)return showToast('No video to download');
+  showToast('Downloading...');
+  const a=document.createElement('a');
+  a.href=p.url;
+  a.download=(p.title||'short')+'.mp4';
+  a.target='_blank';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// ══════════════════════════════════════════════════════
+// PRIVACY SYSTEM
+// ══════════════════════════════════════════════════════
+function setPrivacy(val,btn){
+  _uploadPrivacy=val;
+  document.querySelectorAll('.privacy-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════
+// DOUBLE-TAP HEARTS — Multi-color, continuous while holding
+// ══════════════════════════════════════════════════════
+const HEART_MULTI=['❤️','💜','💛','💚','💙','🧡','🤍','💖','💗'];
+let _dtLastTap=0,_dtHoldInt=null;
+let _dtTouchX=0,_dtTouchY=0; // live position tracked by touchmove
+
+function setupDoubleTapHearts(){
+  const sfEl=document.getElementById('shortFS');
+  if(!sfEl)return;
+
+  // Track live finger position
+  sfEl.addEventListener('touchmove',function(e){
+    if(e.touches[0]){
+      _dtTouchX=e.touches[0].clientX;
+      _dtTouchY=e.touches[0].clientY;
+    }
+  },{passive:true});
+
+  sfEl.addEventListener('touchstart',function(e){
+    // Ignore buttons
+    if(e.target.closest('button,.sf-act,.sf-close,.sf-nav'))return;
+    const now=Date.now();
+    const diff=now-_dtLastTap;
+    _dtLastTap=now;
+    // Capture initial position
+    _dtTouchX=e.touches[0].clientX;
+    _dtTouchY=e.touches[0].clientY;
+
+    if(diff<300&&diff>0){
+      // Double tap — spawn hearts and like
+      spawnHearts(_dtTouchX,_dtTouchY,3);
+      sfLike();
+      // Keep spawning while finger is held
+      clearInterval(_dtHoldInt);
+      _dtHoldInt=setInterval(()=>{
+        spawnHearts(_dtTouchX,_dtTouchY,2);
+      },140);
+    }
+  },{passive:true});
+
+  sfEl.addEventListener('touchend',function(){
+    if(_dtHoldInt){clearInterval(_dtHoldInt);_dtHoldInt=null;}
+  },{passive:true});
+
+  sfEl.addEventListener('touchcancel',function(){
+    if(_dtHoldInt){clearInterval(_dtHoldInt);_dtHoldInt=null;}
+  },{passive:true});
+}
+
+function spawnHearts(x,y,count){
+  for(let i=0;i<count;i++){
+    const em=HEART_MULTI[Math.floor(Math.random()*HEART_MULTI.length)];
+    const el=document.createElement('div');
+    el.className='heart-anim';
+    el.style.left=(x+(Math.random()-0.5)*80)+'px';
+    el.style.top=(y+(Math.random()-0.5)*60)+'px';
+    el.style.animationDelay=(i*0.07)+'s';
+    el.style.fontSize=(22+Math.random()*18)+'px';
+    el.textContent=em;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),950+i*70);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// UNIQUE VIEW COUNT — per user per video (Firestore-based)
+// ══════════════════════════════════════════════════════
+async function trackUniqueView(postId){
+  if(!cUser||!postId)return;
+  try{
+    const viewRef=db.collection('views').doc(cUser.uid+'_'+postId);
+    const exists=await viewRef.get();
+    if(!exists.exists){
+      await viewRef.set({uid:cUser.uid,postId,time:Date.now()});
+      await db.collection('posts').doc(postId).update({
+        views:firebase.firestore.FieldValue.increment(1),
+        rankScore:firebase.firestore.FieldValue.increment(2)
+      }).catch(()=>{});
+    }
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════════════
+// DASHBOARD — Load videos/shorts/posts separately
+// ══════════════════════════════════════════════════════
+async function loadMyContentSections(){
+  if(!cUser)return;
+  const [vEl,sEl,pEl]=['myVideosList','myShortsList','myPostsList'].map(id=>document.getElementById(id));
+  [vEl,sEl,pEl].forEach(el=>{if(el)el.innerHTML='<div class="loader"><div class="spinner"></div></div>';});
+  try{
+    let snap;
+    try{
+      snap=await db.collection('posts').where('authorId','==',cUser.uid).orderBy('time','desc').get();
+    }catch(e){
+      // Fallback if index not ready
+      snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
+    }
+    const all=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.time||0)-(a.time||0));
+    const videos=all.filter(p=>p.type==='video'||p.type==='gaming'||p.type==='music');
+    const shorts=all.filter(p=>p.type==='short');
+    const posts=all.filter(p=>p.type==='post'||p.type==='image');
+
+    function renderItem(p){
+      const priv=p.privacy||'public';
+      const privIcon=priv==='private'?'🔒':priv==='unlisted'?'🔗':'🌐';
+      return `<div style="display:flex;gap:10px;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;" onclick="openPost('${p.id}')">
+        <div style="width:80px;height:52px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;position:relative;">
+          ${p.thumbURL?`<img src="${p.thumbURL}" style="width:100%;height:100%;object-fit:cover;">`:`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-${p.type==='short'?'film':'video'}" style="color:var(--text3);font-size:18px;"></i></div>`}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:600;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title||'Untitled'}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:3px;">👁 ${p.views||0} &nbsp; ❤️ ${p.likes||0} &nbsp; 💬 ${p.comments||0}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;">CTR: ${p.views>0?Math.min(100,Math.round(((p.likes||0)/(p.views||1))*100)):0}% &nbsp; ${privIcon} ${priv}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
+          <button onclick="togglePostPrivacy('${p.id}','${priv}',this);event.stopPropagation();" style="background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer;">${privIcon}</button>
+          <button onclick="ctxDeleteContent('${p.id}');event.stopPropagation();" style="background:none;border:none;color:#ff4444;cursor:pointer;font-size:13px;"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`;
+    }
+
+    if(vEl)vEl.innerHTML=videos.length?videos.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-video"></i><p>No videos yet</p></div>';
+    if(sEl)sEl.innerHTML=shorts.length?shorts.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-film"></i><p>No shorts yet</p></div>';
+    if(pEl)pEl.innerHTML=posts.length?posts.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-pen"></i><p>No posts yet</p></div>';
+  }catch(e){
+    console.error('loadMyContentSections:',e);
+    [vEl,sEl,pEl].forEach(el=>{if(el)el.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading content</p></div>';});
+  }
+}
+
+async function togglePostPrivacy(postId,current,btn){
+  const order=['public','unlisted','private'];
+  const icons={'public':'🌐','unlisted':'🔗','private':'🔒'};
+  const next=order[(order.indexOf(current)+1)%order.length];
+  try{
+    await db.collection('posts').doc(postId).update({privacy:next});
+    if(btn)btn.textContent=icons[next];
+    showToast('Visibility: '+next+' '+icons[next]);
+  }catch(e){showToast('Error updating');}
+}
+
+async function ctxDeleteContent(postId){
+  if(!confirm('Delete this content?'))return;
+  try{
+    await db.collection('posts').doc(postId).delete();
+    showToast('Deleted ✅');
+    loadMyContentSections();
+  }catch(e){showToast('Error: '+e.message);}
+}
+
+// ══════════════════════════════════════════════════════
+// SAVE EDIT PROFILE — extended fields
+// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// POST SHARE FIX — share post text/link properly
+// ══════════════════════════════════════════════════════
+function sharePostProperly(postId,title,url){
+  const shareUrl=url||`${location.origin}${location.pathname}?post=${postId}`;
+  const text=`${title||'Check this out'} - MyTube Pakistan 🇵🇰`;
+  if(navigator.share){
+    navigator.share({title:title||'MyTube',text,url:shareUrl}).catch(()=>{
+      navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));
+    });
+  }else{
+    navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// HASHTAG SEARCH — make titles & tags searchable for FYP
+// ══════════════════════════════════════════════════════
+function extractSearchTerms(post){
+  const terms=new Set();
+  const title=(post.title||'').toLowerCase();
+  const desc=(post.desc||'').toLowerCase();
+  const tags=post.tags||[];
+  // Add each word from title
+  title.split(/\s+/).filter(w=>w.length>2).forEach(w=>terms.add(w));
+  // Add hashtags from title & desc
+  [...title.matchAll(/#(\w+)/g),...desc.matchAll(/#(\w+)/g)].forEach(m=>terms.add(m[1]));
+  // Add tags
+  tags.forEach(t=>terms.add(t.toLowerCase().replace(/^#/,'')));
+  // Add category
+  if(post.category)terms.add(post.category);
+  if(post.type)terms.add(post.type);
+  return [...terms].slice(0,20);
+}
+
+// ══════════════════════════════════════════════════════
+// INIT NEW FEATURES
+// ══════════════════════════════════════════════════════
+setTimeout(()=>{
+  setupDoubleTapHearts();
+},800);
+
+function loadScEditSounds(){
+  const list=document.getElementById('scEditSoundsList');
+  if(!list||typeof TRENDING_SONGS==='undefined')return;
+  list.innerHTML=TRENDING_SONGS.map(s=>
+    `<div onclick="selectScSound('${s.name.replace(/'/g,'')}',this)" style="flex-shrink:0;background:#1c1c1c;border:1.5px solid ${window._scSelectedSound===s.name?'var(--red)':'#444'};border-radius:12px;padding:8px 12px;cursor:pointer;min-width:100px;text-align:center;">
+      <div style="font-size:16px;margin-bottom:3px;">${s.emoji}</div>
+      <div style="font-size:9px;font-weight:600;color:#ccc;">${s.name}</div>
+    </div>`
+  ).join('');
+}
+
+function selectScSound(name,el){
+  window._scSelectedSound=name;
+  // Update UI
+  document.querySelectorAll('#scSoundTrending > div, #scEditSoundsList > div').forEach(d=>{d.style.borderColor='#444';});
+  if(el)el.style.borderColor='var(--red)';
+  // Show selected bar
+  const bar=document.getElementById('scSelectedSoundBar');
+  const nm=document.getElementById('scSelectedSoundName');
+  if(bar)bar.style.display='flex';
+  if(nm)nm.textContent=name;
+  showToast('🎵 '+name+' selected');
+}
+
+function clearScSound(){
+  window._scSelectedSound=null;
+  window._scAudioBlob=null;
+  const bar=document.getElementById('scSelectedSoundBar');
+  if(bar)bar.style.display='none';
+  loadScSounds();
+  loadScEditSounds();
+  showToast('Sound removed');
+}
+
+function handleScAudio(input){
+  const file=input.files[0];if(!file)return;
+  window._scAudioBlob=URL.createObjectURL(file);
+  window._scSelectedSound=file.name;
+  const bar=document.getElementById('scSelectedSoundBar');
+  const nm=document.getElementById('scSelectedSoundName');
+  if(bar)bar.style.display='flex';
+  if(nm)nm.textContent=file.name;
+  showToast('🎵 Audio selected: '+file.name);
+  const sp=document.getElementById('scSoundQuickPanel');if(sp)sp.style.display='none';
+  closeAllEditPanels();
+}
+
+// Edit tools
+function toggleEditPreview(){
+  const vid=document.getElementById('shortsRecPreview');
+  const icon=document.getElementById('scPlayIcon');
+  if(!vid)return;
+  if(vid.paused){vid.play();if(icon)icon.className='fas fa-pause';}
+  else{vid.pause();if(icon)icon.className='fas fa-play';}
+}
+
+function openScPanel(id){
+  closeAllEditPanels();
+  const p=document.getElementById(id);
+  if(p){p.style.display='block';if(id==='scEditSoundPanel')loadScEditSounds();}
+}
+
+function closeAllEditPanels(){
+  ['scTextPanel','scEditSoundPanel','scSpeedPanel','scFilterPanel'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
+}
+
+function addTextOverlay(){
+  const input=document.getElementById('scTextInput');
+  const size=document.getElementById('scTextSize')?.value||'22px';
+  const text=input?.value?.trim();
+  if(!text)return showToast('Enter text first');
+  const container=document.getElementById('scTextOverlays');
+  if(!container)return;
+  const el=document.createElement('div');
+  el.style.cssText='position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);color:'+scTextColor+';font-size:'+size+';font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.9);pointer-events:all;cursor:move;user-select:none;text-align:center;padding:6px 10px;';
+  el.textContent=text;
+  let sx,sy,ox,oy,drag=false;
+  el.addEventListener('touchstart',e=>{
+    drag=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+    const r=el.getBoundingClientRect();ox=r.left+r.width/2;oy=r.top+r.height/2;
+    e.preventDefault();
+  },{passive:false});
+  el.addEventListener('touchmove',e=>{
+    if(!drag)return;
+    ox+=e.touches[0].clientX-sx;oy+=e.touches[0].clientY-sy;
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+    el.style.left=ox+'px';el.style.top=oy+'px';el.style.transform='translate(-50%,-50%)';
+    e.preventDefault();
+  },{passive:false});
+  el.addEventListener('dblclick',()=>el.remove());
+  container.appendChild(el);
+  if(input)input.value='';
+  closeAllEditPanels();
+  showToast('Text added! Drag to move. Double-tap to remove.');
+}
+
+function setEditSpeed(spd){
+  const vid=document.getElementById('shortsRecPreview');
+  if(vid)vid.playbackRate=spd;
+  showToast('Speed: '+spd+'x');
+  closeAllEditPanels();
+}
+
+function applyEditFilter(filter){
+  const vid=document.getElementById('shortsRecPreview');
+  if(vid)vid.style.filter=filter==='none'?'':filter;
+  showToast('Filter applied ✨');
+  closeAllEditPanels();
+}
+
+function doneShortRecording(){
+  if(!window._recordedShortFile)return showToast('No recording found');
+  closeShortsCamera();
+  showScreen('upload');
+  setTimeout(()=>{
+    const shortCard=document.querySelector('.type-card:nth-child(2)');
+    if(shortCard)selectType('short',shortCard);
+    selectedFile=window._recordedShortFile;
+    const vPrev=document.getElementById('uploadVidPrev');
+    if(vPrev){vPrev.src=URL.createObjectURL(selectedFile);vPrev.style.display='block';}
+    const ft=document.getElementById('fileText');if(ft)ft.textContent='Short ready ✅';
+    const edBtn=document.getElementById('shortEditorBtn');if(edBtn)edBtn.style.display='flex';
+    window._vidDuration='0:'+(_scElapsed<10?'0':'')+Math.floor(_scElapsed);
+    if(window._scSelectedSound){
+      const info=document.getElementById('selectedSongInfo');
+      const nameEl=document.getElementById('selectedSongName');
+      if(info)info.style.display='flex';
+      if(nameEl)nameEl.textContent=window._scSelectedSound;
+    }
+    showToast('Short ready! Add title and upload 🚀');
+  },300);
+}
+
 function switchOwnerTab(tab){
   ['overview','reports','users','guidelines'].forEach(t=>{
     const el=document.getElementById('owner-'+t);
@@ -5798,605 +7056,42 @@ window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();
   _pwaPrompt=e;
   // Show install banner after 5 seconds
-  setTimeout(()=>showPwaInstallBanner(),5000);
+  setTime
+  // Show install banner after 5 seconds
+    setTimeout(() => {
+        if (_pwaPrompt) {
+            const banner = document.createElement('div');
+            banner.id = 'pwa-install-banner';
+            banner.style.cssText = "position:fixed;bottom:20px;left:20px;right:20px;z-index:999;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:fadeUp .3s ease;background:linear-gradient(135deg,#1a1a1a,#2a0000);border:1.5px solid var(--red);border-radius:10px;padding:14px 16px;";
+            
+            banner.innerHTML = `
+                <div style="display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <svg width="40" height="40" viewBox="0 0 40 40">
+                        <rect width="40" height="40" rx="8" fill="white"/>
+                        <polygon points="19,8 19,28 38,18" fill="#FF0000"/>
+                    </svg>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+                    <p style="margin:0;color:white;font-size:14px;font-weight:500;">Install App</p>
+                    <div style="display:flex;gap:8px;">
+                        <button onclick="document.getElementById('pwa-install-banner').remove()" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:12px;font-weight:700;padding:8px 14px;">Later</button>
+                        <button id="pwa-install-btn" style="background:var(--red);border:none;color:white;cursor:pointer;font-size:12px;font-weight:700;padding:8px 14px;border-radius:10px;">Install</button>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('pwa-install-banner').remove()" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:18px;padding:2px 4px;">&times;</button>
+            `;
+            
+            document.body.appendChild(banner);
+
+            document.getElementById('pwa-install-btn').addEventListener('click', async () => {
+                banner.remove();
+                _pwaPrompt.prompt();
+                const { outcome } = await _pwaPrompt.userChoice;
+                console.log(`User response to install prompt: ${outcome}`);
+                _pwaPrompt = null;
+            });
+        }
+    }, 5000);
 });
 
-function showPwaInstallBanner(){
-  if(!_pwaPrompt)return;
-  const ex=document.getElementById('pwaBanner');if(ex)return;
-  const banner=document.createElement('div');
-  banner.id='pwaBanner';
-  banner.style.cssText='position:fixed;bottom:72px;left:12px;right:12px;z-index:1100;background:linear-gradient(135deg,#1a1a1a,#2a0000);border:1.5px solid var(--red);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(255,0,0,.2);animation:fadeUp .3s ease;';
-  banner.innerHTML=`
-    <div style="width:40px;height:40px;background:var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-      <svg width="22" height="16" viewBox="0 0 50 36"><rect width="50" height="36" rx="8" fill="white"/><polygon points="19,8 19,28 38,18" fill="#FF0000"/></svg>
-    </div>
-    <div style="flex:1;">
-      <div style="font-size:13px;font-weight:700;color:white;">Install Stream x App</div>
-      <div style="font-size:11px;color:#aaa;">Home screen pe add karo — free!</div>
-    </div>
-    <button onclick="installPwa()" style="background:var(--red);color:white;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;">Install</button>
-    <button onclick="document.getElementById('pwaBanner').remove()" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:18px;padding:2px 4px;">×</button>
-  `;
-  document.body.appendChild(banner);
-}
-
-async function installPwa(){
-  if(!_pwaPrompt)return;
-  _pwaPrompt.prompt();
-  const result=await _pwaPrompt.userChoice;
-  if(result.outcome==='accepted'){showToast('Stream x install ho gayi! 🎉');}
-  _pwaPrompt=null;
-  const banner=document.getElementById('pwaBanner');if(banner)banner.remove();
-}
-
-window.addEventListener('appinstalled',()=>{
-  showToast('Stream x successfully installed! 🎉');
-  _pwaPrompt=null;
-});
-
-// ══════════════════════════════════════════════════════
-// ══════════════════════════════════════════════════════
-// SHORTS CAMERA SYSTEM
-// ══════════════════════════════════════════════════════
-let _scStream=null,_scRecorder=null,_scChunks=[],_scRecording=false;
-let _scMaxTime=15,_scElapsed=0,_scProgInt=null;
-let _scFacing='environment',_scSpeedIdx=2;
-const SC_SPEEDS=[0.5,0.75,1,1.25,1.5];
-let scTextColor='#ffffff';
-
-function openShortsCamera(){
-  const modal=document.getElementById('shortsCameraModal');
-  if(modal)modal.style.display='block';
-  // Show record mode
-  const rm=document.getElementById('scRecordMode');
-  const em=document.getElementById('scEditMode');
-  if(rm)rm.style.display='flex';
-  if(em)em.style.display='none';
-  startShortsStream();
-  // Load trending sounds
-  setTimeout(loadScSounds,500);
-}
-
-async function startShortsStream(){
-  try{
-    if(_scStream){_scStream.getTracks().forEach(t=>t.stop());}
-    _scStream=await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:_scFacing,width:{ideal:1080},height:{ideal:1920}},
-      audio:true
-    });
-    const prev=document.getElementById('shortsCamPreview');
-    if(prev){prev.srcObject=_scStream;prev.play().catch(()=>{});}
-  }catch(e){
-    showToast('Camera access denied. Allow in browser settings.');
-    closeShortsCamera();
-  }
-}
-
-function closeShortsCamera(){
-  stopShortsRecording();
-  if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
-  const modal=document.getElementById('shortsCameraModal');
-  if(modal)modal.style.display='none';
-  // Reset
-  const prog=document.getElementById('scProgress');if(prog)prog.style.width='0%';
-  const ov=document.getElementById('scTextOverlays');if(ov)ov.innerHTML='';
-  window._scSelectedSound=null;window._scAudioBlob=null;
-  closeAllEditPanels();
-  const sp=document.getElementById('scSoundQuickPanel');if(sp)sp.style.display='none';
-}
-
-function backToRecordMode(){
-  const rm=document.getElementById('scRecordMode');
-  const em=document.getElementById('scEditMode');
-  if(rm)rm.style.display='flex';
-  if(em)em.style.display='none';
-  const ov=document.getElementById('scTextOverlays');if(ov)ov.innerHTML='';
-  closeAllEditPanels();
-  startShortsStream();
-}
-
-function flipShortsCamera(){
-  _scFacing=_scFacing==='environment'?'user':'environment';
-  startShortsStream();
-}
-
-function setShortsTimer(secs){
-  _scMaxTime=secs;
-  ['scT15','scT30','scT60'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){el.style.borderColor='transparent';el.style.color='rgba(255,255,255,.6)';}
-  });
-  const active=document.getElementById('scT'+secs);
-  if(active){active.style.borderColor='white';active.style.color='white';}
-  showToast(secs+'s selected');
-}
-
-function cycleShortsSpeed(){
-  _scSpeedIdx=(_scSpeedIdx+1)%SC_SPEEDS.length;
-  const spd=SC_SPEEDS[_scSpeedIdx];
-  const lbl=document.getElementById('scSpeedLbl');
-  if(lbl)lbl.textContent=spd+'x';
-  showToast('Speed: '+spd+'x');
-}
-
-function toggleShortsRecording(){
-  if(_scRecording)stopShortsRecording();
-  else startShortsRecording();
-}
-
-function startShortsRecording(){
-  if(!_scStream)return showToast('Camera not ready');
-  _scChunks=[];_scElapsed=0;_scRecording=true;
-  const icon=document.getElementById('scRecordIcon');
-  if(icon){icon.style.borderRadius='6px';icon.style.width='30px';icon.style.height='30px';}
-  const timeEl=document.getElementById('scRecTime');
-  if(timeEl)timeEl.style.display='block';
-  let mimeType='';
-  if(MediaRecorder.isTypeSupported('video/mp4;codecs=avc1'))mimeType='video/mp4;codecs=avc1';
-  else if(MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus'))mimeType='video/webm;codecs=vp8,opus';
-  else if(MediaRecorder.isTypeSupported('video/webm'))mimeType='video/webm';
-  try{_scRecorder=mimeType?new MediaRecorder(_scStream,{mimeType}):new MediaRecorder(_scStream);}
-  catch(e){_scRecorder=new MediaRecorder(_scStream);}
-  _scRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)_scChunks.push(e.data);};
-  _scRecorder.onstop=()=>finalizeShortsRecording();
-  _scRecorder.start(100);
-  const prog=document.getElementById('scProgress');
-  _scProgInt=setInterval(()=>{
-    _scElapsed+=0.1;
-    const pct=(_scElapsed/_scMaxTime)*100;
-    if(prog)prog.style.width=Math.min(pct,100)+'%';
-    const m=Math.floor(_scElapsed/60),s=Math.floor(_scElapsed%60);
-    if(timeEl)timeEl.textContent=m+':'+(s<10?'0'+s:s);
-    if(_scElapsed>=_scMaxTime)stopShortsRecording();
-  },100);
-}
-
-function stopShortsRecording(){
-  if(!_scRecording)return;
-  _scRecording=false;
-  clearInterval(_scProgInt);
-  if(_scRecorder&&_scRecorder.state!=='inactive')_scRecorder.stop();
-  const icon=document.getElementById('scRecordIcon');
-  if(icon){icon.style.borderRadius='50%';icon.style.width='38px';icon.style.height='38px';}
-}
-
-function finalizeShortsRecording(){
-  const mimeType=_scRecorder?.mimeType||'video/webm';
-  const ext=mimeType.includes('mp4')?'mp4':'webm';
-  const blob=new Blob(_scChunks,{type:mimeType});
-  window._recordedShortFile=new File([blob],'short_'+Date.now()+'.'+ext,{type:mimeType});
-  if(_scStream){_scStream.getTracks().forEach(t=>t.stop());_scStream=null;}
-  const url=URL.createObjectURL(blob);
-  const recPrev=document.getElementById('shortsRecPreview');
-  if(recPrev){recPrev.src=url;recPrev.play().catch(()=>{});}
-  // Switch to edit mode
-  const rm=document.getElementById('scRecordMode');
-  const em=document.getElementById('scEditMode');
-  if(rm)rm.style.display='none';
-  if(em)em.style.display='flex';
-  // Load edit sounds
-  loadScEditSounds();
-  showToast('Done! Edit and tap Upload →');
-}
-
-function handleGalleryShort(input){
-  const file=input.files[0];if(!file)return;
-  window._recordedShortFile=file;
-  const url=URL.createObjectURL(file);
-  const recPrev=document.getElementById('shortsRecPreview');
-  if(recPrev){recPrev.src=url;recPrev.play().catch(()=>{});}
-  const rm=document.getElementById('scRecordMode');
-  const em=document.getElementById('scEditMode');
-  if(rm)rm.style.display='none';
-  if(em)em.style.display='flex';
-  loadScEditSounds();
-  showToast('Video loaded! Edit and Upload →');
-}
-
-// Sound system
-function openScSoundQuick(){
-  const p=document.getElementById('scSoundQuickPanel');
-  if(p)p.style.display='block';
-  loadScSounds();
-}
-
-function loadScSounds(){
-  const list=document.getElementById('scSoundTrending');
-  if(!list||typeof TRENDING_SONGS==='undefined')return;
-  list.innerHTML=TRENDING_SONGS.map(s=>
-    `<div onclick="selectScSound('${s.name.replace(/'/g,'')}',this)" style="flex-shrink:0;background:#1c1c1c;border:1.5px solid ${window._scSelectedSound===s.name?'var(--red)':'#444'};border-radius:12px;padding:10px 14px;cursor:pointer;min-width:110px;text-align:center;">
-      <div style="font-size:20px;margin-bottom:4px;">${s.emoji}</div>
-      <div style="font-size:10px;font-weight:600;color:#ccc;">${s.name}</div>
-    </div>`
-  ).join('');
-}
-
-// ══════════════════════════════════════════════════════
-// SHORTS CAMERA — PRESS & HOLD TO RECORD
-// ══════════════════════════════════════════════════════
-let _scHoldTimer=null,_scHoldActive=false,_scTouchUsed=false;
-
-function scBtnTouchStart(e){
-  e.preventDefault(); // prevents onclick from firing after touch
-  _scHoldActive=true;
-  _scTouchUsed=true;
-  if(!_scRecording){
-    startShortsRecording();
-  }
-}
-function scBtnTouchEnd(e){
-  e.preventDefault();
-  _scHoldActive=false;
-  if(_scRecording){
-    stopShortsRecording();
-  }
-  // Reset touch flag after short delay
-  setTimeout(()=>{_scTouchUsed=false;},300);
-}
-function scBtnClick(e){
-  // Skip if already handled by touch (mobile)
-  if(_scTouchUsed)return;
-  if(_scRecording){stopShortsRecording();}
-  else{startShortsRecording();}
-}
-
-// ══════════════════════════════════════════════════════
-// SHORTS DOWNLOAD
-// ══════════════════════════════════════════════════════
-function sfDownload(){
-  const p=sfPosts[sfCurrentIdx];
-  if(!p||!p.url)return showToast('No video to download');
-  showToast('Downloading...');
-  const a=document.createElement('a');
-  a.href=p.url;
-  a.download=(p.title||'short')+'.mp4';
-  a.target='_blank';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
-
-// ══════════════════════════════════════════════════════
-// PRIVACY SYSTEM
-// ══════════════════════════════════════════════════════
-function setPrivacy(val,btn){
-  _uploadPrivacy=val;
-  document.querySelectorAll('.privacy-btn').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
-}
-
-// ══════════════════════════════════════════════════════
-// DOUBLE-TAP HEARTS — Multi-color, continuous while holding
-// ══════════════════════════════════════════════════════
-const HEART_MULTI=['❤️','💜','💛','💚','💙','🧡','🤍','💖','💗'];
-let _dtLastTap=0,_dtHoldInt=null;
-let _dtTouchX=0,_dtTouchY=0; // live position tracked by touchmove
-
-function setupDoubleTapHearts(){
-  const sfEl=document.getElementById('shortFS');
-  if(!sfEl)return;
-
-  // Track live finger position
-  sfEl.addEventListener('touchmove',function(e){
-    if(e.touches[0]){
-      _dtTouchX=e.touches[0].clientX;
-      _dtTouchY=e.touches[0].clientY;
-    }
-  },{passive:true});
-
-  sfEl.addEventListener('touchstart',function(e){
-    // Ignore buttons
-    if(e.target.closest('button,.sf-act,.sf-close,.sf-nav'))return;
-    const now=Date.now();
-    const diff=now-_dtLastTap;
-    _dtLastTap=now;
-    // Capture initial position
-    _dtTouchX=e.touches[0].clientX;
-    _dtTouchY=e.touches[0].clientY;
-
-    if(diff<300&&diff>0){
-      // Double tap — spawn hearts and like
-      spawnHearts(_dtTouchX,_dtTouchY,3);
-      sfLike();
-      // Keep spawning while finger is held
-      clearInterval(_dtHoldInt);
-      _dtHoldInt=setInterval(()=>{
-        spawnHearts(_dtTouchX,_dtTouchY,2);
-      },140);
-    }
-  },{passive:true});
-
-  sfEl.addEventListener('touchend',function(){
-    if(_dtHoldInt){clearInterval(_dtHoldInt);_dtHoldInt=null;}
-  },{passive:true});
-
-  sfEl.addEventListener('touchcancel',function(){
-    if(_dtHoldInt){clearInterval(_dtHoldInt);_dtHoldInt=null;}
-  },{passive:true});
-}
-
-function spawnHearts(x,y,count){
-  for(let i=0;i<count;i++){
-    const em=HEART_MULTI[Math.floor(Math.random()*HEART_MULTI.length)];
-    const el=document.createElement('div');
-    el.className='heart-anim';
-    el.style.left=(x+(Math.random()-0.5)*80)+'px';
-    el.style.top=(y+(Math.random()-0.5)*60)+'px';
-    el.style.animationDelay=(i*0.07)+'s';
-    el.style.fontSize=(22+Math.random()*18)+'px';
-    el.textContent=em;
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),950+i*70);
-  }
-}
-
-// ══════════════════════════════════════════════════════
-// UNIQUE VIEW COUNT — per user per video (Firestore-based)
-// ══════════════════════════════════════════════════════
-async function trackUniqueView(postId){
-  if(!cUser||!postId)return;
-  try{
-    const viewRef=db.collection('views').doc(cUser.uid+'_'+postId);
-    const exists=await viewRef.get();
-    if(!exists.exists){
-      await viewRef.set({uid:cUser.uid,postId,time:Date.now()});
-      await db.collection('posts').doc(postId).update({
-        views:firebase.firestore.FieldValue.increment(1),
-        rankScore:firebase.firestore.FieldValue.increment(2)
-      }).catch(()=>{});
-    }
-  }catch(e){}
-}
-
-// ══════════════════════════════════════════════════════
-// DASHBOARD — Load videos/shorts/posts separately
-// ══════════════════════════════════════════════════════
-async function loadMyContentSections(){
-  if(!cUser)return;
-  const [vEl,sEl,pEl]=['myVideosList','myShortsList','myPostsList'].map(id=>document.getElementById(id));
-  [vEl,sEl,pEl].forEach(el=>{if(el)el.innerHTML='<div class="loader"><div class="spinner"></div></div>';});
-  try{
-    let snap;
-    try{
-      snap=await db.collection('posts').where('authorId','==',cUser.uid).orderBy('time','desc').get();
-    }catch(e){
-      // Fallback if index not ready
-      snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
-    }
-    const all=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.time||0)-(a.time||0));
-    const videos=all.filter(p=>p.type==='video'||p.type==='gaming'||p.type==='music');
-    const shorts=all.filter(p=>p.type==='short');
-    const posts=all.filter(p=>p.type==='post'||p.type==='image');
-
-    function renderItem(p){
-      const priv=p.privacy||'public';
-      const privIcon=priv==='private'?'🔒':priv==='unlisted'?'🔗':'🌐';
-      return `<div style="display:flex;gap:10px;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;" onclick="openPost('${p.id}')">
-        <div style="width:80px;height:52px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;position:relative;">
-          ${p.thumbURL?`<img src="${p.thumbURL}" style="width:100%;height:100%;object-fit:cover;">`:`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-${p.type==='short'?'film':'video'}" style="color:var(--text3);font-size:18px;"></i></div>`}
-        </div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;font-weight:600;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title||'Untitled'}</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:3px;">👁 ${p.views||0} &nbsp; ❤️ ${p.likes||0} &nbsp; 💬 ${p.comments||0}</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px;">CTR: ${p.views>0?Math.min(100,Math.round(((p.likes||0)/(p.views||1))*100)):0}% &nbsp; ${privIcon} ${priv}</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
-          <button onclick="togglePostPrivacy('${p.id}','${priv}',this);event.stopPropagation();" style="background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer;">${privIcon}</button>
-          <button onclick="ctxDeleteContent('${p.id}');event.stopPropagation();" style="background:none;border:none;color:#ff4444;cursor:pointer;font-size:13px;"><i class="fas fa-trash"></i></button>
-        </div>
-      </div>`;
-    }
-
-    if(vEl)vEl.innerHTML=videos.length?videos.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-video"></i><p>No videos yet</p></div>';
-    if(sEl)sEl.innerHTML=shorts.length?shorts.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-film"></i><p>No shorts yet</p></div>';
-    if(pEl)pEl.innerHTML=posts.length?posts.map(renderItem).join(''):'<div class="empty-state"><i class="fas fa-pen"></i><p>No posts yet</p></div>';
-  }catch(e){
-    console.error('loadMyContentSections:',e);
-    [vEl,sEl,pEl].forEach(el=>{if(el)el.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading content</p></div>';});
-  }
-}
-
-async function togglePostPrivacy(postId,current,btn){
-  const order=['public','unlisted','private'];
-  const icons={'public':'🌐','unlisted':'🔗','private':'🔒'};
-  const next=order[(order.indexOf(current)+1)%order.length];
-  try{
-    await db.collection('posts').doc(postId).update({privacy:next});
-    if(btn)btn.textContent=icons[next];
-    showToast('Visibility: '+next+' '+icons[next]);
-  }catch(e){showToast('Error updating');}
-}
-
-async function ctxDeleteContent(postId){
-  if(!confirm('Delete this content?'))return;
-  try{
-    await db.collection('posts').doc(postId).delete();
-    showToast('Deleted ✅');
-    loadMyContentSections();
-  }catch(e){showToast('Error: '+e.message);}
-}
-
-// ══════════════════════════════════════════════════════
-// SAVE EDIT PROFILE — extended fields
-// ══════════════════════════════════════════════════════
-// ══════════════════════════════════════════════════════
-// POST SHARE FIX — share post text/link properly
-// ══════════════════════════════════════════════════════
-function sharePostProperly(postId,title,url){
-  const shareUrl=url||`${location.origin}${location.pathname}?post=${postId}`;
-  const text=`${title||'Check this out'} - Stream x Pakistan 🇵🇰`;
-  if(navigator.share){
-    navigator.share({title:title||'Stream x',text,url:shareUrl}).catch(()=>{
-      navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));
-    });
-  }else{
-    navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));
-  }
-}
-
-// ══════════════════════════════════════════════════════
-// HASHTAG SEARCH — make titles & tags searchable for FYP
-// ══════════════════════════════════════════════════════
-function extractSearchTerms(post){
-  const terms=new Set();
-  const title=(post.title||'').toLowerCase();
-  const desc=(post.desc||'').toLowerCase();
-  const tags=post.tags||[];
-  // Add each word from title
-  title.split(/\s+/).filter(w=>w.length>2).forEach(w=>terms.add(w));
-  // Add hashtags from title & desc
-  [...title.matchAll(/#(\w+)/g),...desc.matchAll(/#(\w+)/g)].forEach(m=>terms.add(m[1]));
-  // Add tags
-  tags.forEach(t=>terms.add(t.toLowerCase().replace(/^#/,'')));
-  // Add category
-  if(post.category)terms.add(post.category);
-  if(post.type)terms.add(post.type);
-  return [...terms].slice(0,20);
-}
-
-// ══════════════════════════════════════════════════════
-// INIT NEW FEATURES
-// ══════════════════════════════════════════════════════
-setTimeout(()=>{
-  setupDoubleTapHearts();
-},800);
-
-function loadScEditSounds(){
-  const list=document.getElementById('scEditSoundsList');
-  if(!list||typeof TRENDING_SONGS==='undefined')return;
-  list.innerHTML=TRENDING_SONGS.map(s=>
-    `<div onclick="selectScSound('${s.name.replace(/'/g,'')}',this)" style="flex-shrink:0;background:#1c1c1c;border:1.5px solid ${window._scSelectedSound===s.name?'var(--red)':'#444'};border-radius:12px;padding:8px 12px;cursor:pointer;min-width:100px;text-align:center;">
-      <div style="font-size:16px;margin-bottom:3px;">${s.emoji}</div>
-      <div style="font-size:9px;font-weight:600;color:#ccc;">${s.name}</div>
-    </div>`
-  ).join('');
-}
-
-function selectScSound(name,el){
-  window._scSelectedSound=name;
-  // Update UI
-  document.querySelectorAll('#scSoundTrending > div, #scEditSoundsList > div').forEach(d=>{d.style.borderColor='#444';});
-  if(el)el.style.borderColor='var(--red)';
-  // Show selected bar
-  const bar=document.getElementById('scSelectedSoundBar');
-  const nm=document.getElementById('scSelectedSoundName');
-  if(bar)bar.style.display='flex';
-  if(nm)nm.textContent=name;
-  showToast('🎵 '+name+' selected');
-}
-
-function clearScSound(){
-  window._scSelectedSound=null;
-  window._scAudioBlob=null;
-  const bar=document.getElementById('scSelectedSoundBar');
-  if(bar)bar.style.display='none';
-  loadScSounds();
-  loadScEditSounds();
-  showToast('Sound removed');
-}
-
-function handleScAudio(input){
-  const file=input.files[0];if(!file)return;
-  window._scAudioBlob=URL.createObjectURL(file);
-  window._scSelectedSound=file.name;
-  const bar=document.getElementById('scSelectedSoundBar');
-  const nm=document.getElementById('scSelectedSoundName');
-  if(bar)bar.style.display='flex';
-  if(nm)nm.textContent=file.name;
-  showToast('🎵 Audio selected: '+file.name);
-  const sp=document.getElementById('scSoundQuickPanel');if(sp)sp.style.display='none';
-  closeAllEditPanels();
-}
-
-// Edit tools
-function toggleEditPreview(){
-  const vid=document.getElementById('shortsRecPreview');
-  const icon=document.getElementById('scPlayIcon');
-  if(!vid)return;
-  if(vid.paused){vid.play();if(icon)icon.className='fas fa-pause';}
-  else{vid.pause();if(icon)icon.className='fas fa-play';}
-}
-
-function openScPanel(id){
-  closeAllEditPanels();
-  const p=document.getElementById(id);
-  if(p){p.style.display='block';if(id==='scEditSoundPanel')loadScEditSounds();}
-}
-
-function closeAllEditPanels(){
-  ['scTextPanel','scEditSoundPanel','scSpeedPanel','scFilterPanel'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.style.display='none';
-  });
-}
-
-function addTextOverlay(){
-  const input=document.getElementById('scTextInput');
-  const size=document.getElementById('scTextSize')?.value||'22px';
-  const text=input?.value?.trim();
-  if(!text)return showToast('Enter text first');
-  const container=document.getElementById('scTextOverlays');
-  if(!container)return;
-  const el=document.createElement('div');
-  el.style.cssText='position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);color:'+scTextColor+';font-size:'+size+';font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.9);pointer-events:all;cursor:move;user-select:none;text-align:center;padding:6px 10px;';
-  el.textContent=text;
-  let sx,sy,ox,oy,drag=false;
-  el.addEventListener('touchstart',e=>{
-    drag=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;
-    const r=el.getBoundingClientRect();ox=r.left+r.width/2;oy=r.top+r.height/2;
-    e.preventDefault();
-  },{passive:false});
-  el.addEventListener('touchmove',e=>{
-    if(!drag)return;
-    ox+=e.touches[0].clientX-sx;oy+=e.touches[0].clientY-sy;
-    sx=e.touches[0].clientX;sy=e.touches[0].clientY;
-    el.style.left=ox+'px';el.style.top=oy+'px';el.style.transform='translate(-50%,-50%)';
-    e.preventDefault();
-  },{passive:false});
-  el.addEventListener('dblclick',()=>el.remove());
-  container.appendChild(el);
-  if(input)input.value='';
-  closeAllEditPanels();
-  showToast('Text added! Drag to move. Double-tap to remove.');
-}
-
-function setEditSpeed(spd){
-  const vid=document.getElementById('shortsRecPreview');
-  if(vid)vid.playbackRate=spd;
-  showToast('Speed: '+spd+'x');
-  closeAllEditPanels();
-}
-
-function applyEditFilter(filter){
-  const vid=document.getElementById('shortsRecPreview');
-  if(vid)vid.style.filter=filter==='none'?'':filter;
-  showToast('Filter applied ✨');
-  closeAllEditPanels();
-}
-
-function doneShortRecording(){
-  if(!window._recordedShortFile)return showToast('No recording found');
-  closeShortsCamera();
-  showScreen('upload');
-  setTimeout(()=>{
-    const shortCard=document.querySelector('.type-card:nth-child(2)');
-    if(shortCard)selectType('short',shortCard);
-    selectedFile=window._recordedShortFile;
-    const vPrev=document.getElementById('uploadVidPrev');
-    if(vPrev){vPrev.src=URL.createObjectURL(selectedFile);vPrev.style.display='block';}
-    const ft=document.getElementById('fileText');if(ft)ft.textContent='Short ready ✅';
-    const edBtn=document.getElementById('shortEditorBtn');if(edBtn)edBtn.style.display='flex';
-    window._vidDuration='0:'+(_scElapsed<10?'0':'')+Math.floor(_scElapsed);
-    if(window._scSelectedSound){
-      const info=document.getElementById('selectedSongInfo');
-      const nameEl=document.getElementById('selectedSongName');
-      if(info)info.style.display='flex';
-      if(nameEl)nameEl.textContent=window._scSelectedSound;
-    }
-    showToast('Short ready! Add title and upload 🚀');
-  },300);
-}
-
-</script>
-</body>
-</html>
+  
