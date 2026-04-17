@@ -402,3 +402,68 @@ function showEliteAlert(msg) {
     document.body.appendChild(alertBox);
     setTimeout(() => alertBox.remove(), 4000);
 }
+// --- STREAM X BOOT ENGINE ---
+window.onload = () => {
+    console.log("Stream X: Booting Engine 2050...");
+    
+    // Check Auth State
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            currentUser = user;
+            console.log("User Logged In:", user.uid);
+            // Agar user login hai, toh home screen dikhao aur data load karo
+            initStreamX();
+        } else {
+            // Agar login nahi hai, toh Login/Signup screen dikhao
+            showScreen('auth-screen');
+        }
+    });
+};
+
+function initStreamX() {
+    showScreen('home'); // Splash se Home par le jao
+    loadEliteFeed();    // Home Feed load karo
+    createChannelAutomated(); // Check if channel exists
+}
+
+// --- ELITE AUTH SCREEN UI (If not logged in) ---
+function createAuthUI() {
+    const authHTML = `
+        <div id="auth-screen" class="screen" style="background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px;">
+            <h1 class="neon-glow" style="font-family:'Syncopate'; font-size:30px; color:var(--red);">STREAM X</h1>
+            <p style="color:var(--gray); margin-bottom:40px;">Future of Connection</p>
+            <button onclick="loginWithGoogle()" style="width:100%; padding:15px; background:white; color:black; border:none; border-radius:12px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:10px;">
+                <i class="fab fa-google"></i> Continue with Google
+            </button>
+            <p style="margin-top:20px; font-size:12px; color:var(--gray);">By joining, you agree to Stream X Terms 3059</p>
+        </div>
+    `;
+    document.getElementById('app-container').insertAdjacentHTML('beforeend', authHTML);
+}
+createAuthUI();
+
+;// --- AUTO CHANNEL SYSTEM ---
+async function createChannelAutomated() {
+    if (!currentUser) return;
+
+    const userRef = db.collection('users').doc(currentUser.uid);
+    const doc = await userRef.get();
+
+    if (!doc.exists()) {
+        console.log("Stream X: Creating Elite Channel...");
+        await userRef.set({
+            uid: currentUser.uid,
+            name: currentUser.displayName || "Elite User",
+            email: currentUser.email,
+            photoURL: currentUser.photoURL || "https://via.placeholder.com/150",
+            subscribers: 0,
+            shorts: 0,
+            longVideos: 0,
+            isVerified: false,
+            joinedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showEliteAlert("Welcome to Stream X! Your channel is ready.");
+    }
+}
+
+
