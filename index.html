@@ -2350,30 +2350,20 @@ function hideSplash(){
 }
 
 // Google redirect result handle karo
-auth.getRedirectResult().then(async res=>{
-  sessionStorage.removeItem('googleRedirect');
+// getRedirectResult not needed with signInWithPopup
+// auth.getRedirectResult().then(async res=>{
   if(res&&res.user){
     const u=res.user;
-    try{
-      const doc=await db.collection('users').doc(u.uid).get();
-      if(!doc.exists){
-        await db.collection('users').doc(u.uid).set({
-          name:u.displayName||'User',email:u.email,
-          handle:'@'+(u.displayName||'user').toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,''),
-          about:'',photoURL:u.photoURL||'',subscribers:0,createdAt:Date.now(),lastSeen:Date.now()
-        });
-      }
-    }catch(e){console.log('User doc create:',e.message);}
-    // Force show main app after Google redirect
-    hideSplash();
-    document.getElementById('authScreen').style.display='none';
-    document.getElementById('mainApp').style.display='block';
+    const doc=await db.collection('users').doc(u.uid).get();
+    if(!doc.exists){
+      await db.collection('users').doc(u.uid).set({
+        name:u.displayName||'User',email:u.email,
+        handle:'@'+(u.displayName||'user').toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,''),
+        about:'',photoURL:u.photoURL||'',subscribers:0,createdAt:Date.now(),lastSeen:Date.now()
+      });
+    }
   }
-}).catch(err=>{
-  sessionStorage.removeItem('googleRedirect');
-  console.log('Redirect result error:',err?.code);
-  if(err&&err.code&&err.code!=='auth/null-user')setAuthErr(fErr(err.code));
-});
+}).catch(err=>{if(err&&err.code)setAuthErr(fErr(err.code));});
 
 auth.onAuthStateChanged(async user=>{
   if(user){
@@ -2393,12 +2383,6 @@ auth.onAuthStateChanged(async user=>{
     loadHome();
   }else{
     cUser=null;
-    // Check if a redirect is currently in progress (avoid flicker)
-    const isRedirecting=sessionStorage.getItem('googleRedirect');
-    if(isRedirecting){
-      // Keep splash showing — redirect result will handle it
-      return;
-    }
     // Hide splash fast — no 2 second wait
     setTimeout(()=>{
       hideSplash();
@@ -2447,13 +2431,8 @@ async function doSignup(){
 async function doGoogle(){
   try{
     const provider=new firebase.auth.GoogleAuthProvider();
-    sessionStorage.setItem('googleRedirect','1');
-    await auth.signInWithRedirect(provider);
-  }catch(err){
-    sessionStorage.removeItem('googleRedirect');
-    setAuthErr(fErr(err.code));
-  }
-}
+    const result = await auth.signInWithPopup(provider);
+  }catch(err){setAuthErr(fErr(err.code));}
 }
 
 function doLogout(){auth.signOut();showToast('Logged out');}
@@ -3516,7 +3495,7 @@ async function createShortFromTrim(){
       likes:0,likedBy:[],views:0,comments:0,reactions:{},
       rankScore:20,
       trimStart:start,trimDur:dur,
-      isTrimmed:true,originalId:currentPostData.id,
+      isTrimmmed:true,originalId:currentPostData.id,
       time:Date.now()
     });
     showToast('Short created! ✅');
