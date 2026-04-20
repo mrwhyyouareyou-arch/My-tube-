@@ -370,9 +370,9 @@ button,input,textarea{font-family:var(--font);}
 /* ═══ VIDEO PLAYER ═══ */
 .player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;}
 .player-screen.open{display:flex;}
-.player-back{position:absolute;top:10px;left:10px;z-index:10;width:34px;height:34px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;}
-.player-vid-wrap{background:#000;width:100%;position:relative;flex-shrink:0;min-height:220px;max-height:100vw;}
-.player-vid-wrap video{width:100%;height:auto;max-height:100vw;object-fit:contain;display:block;}
+.player-back{position:fixed;top:10px;left:10px;z-index:210;width:34px;height:34px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.player-vid-wrap{background:#000;width:100%;position:sticky;top:0;z-index:50;flex-shrink:0;min-height:220px;max-height:56vw;}
+.player-vid-wrap video{width:100%;height:auto;max-height:56vw;object-fit:contain;display:block;}
 .player-vid-wrap img{width:100%;height:100%;object-fit:contain;}
 .player-info{padding:12px 14px 0;}
 .player-title{font-size:15px;font-weight:700;line-height:1.4;}
@@ -505,6 +505,22 @@ button,input,textarea{font-family:var(--font);}
 .channel-tab.active{color:var(--red);border-bottom-color:var(--red);}
 .channel-content{padding:12px 14px;}
 
+/* ═══ STICKY VIDEO PLAYER ═══ */
+.player-vid-sticky-wrap{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:#000;
+  width:100%;
+  aspect-ratio:16/9;
+  flex-shrink:0;
+}
+.player-vid-sticky-wrap video{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
 /* VIDEO CONTEXT MENU */
 .ctx-menu-overlay{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,.4);display:none;}
 .ctx-menu-overlay.open{display:block;}
@@ -2463,17 +2479,6 @@ function hideSplash(){
   setTimeout(()=>{s.style.display='none';},200);
 }
 
-// ══════════════════════════════════════════════════════
-// SPLASH + AUTH
-// ══════════════════════════════════════════════════════
-function hideSplash(){
-  const s=document.getElementById('splashScreen');
-  if(!s)return;
-  s.style.transition='opacity .2s ease';
-  s.style.opacity='0';
-  setTimeout(()=>{s.style.display='none';},200);
-}
-
 auth.onAuthStateChanged(async user=>{
   if(user){
     cUser=user;
@@ -2860,8 +2865,9 @@ async function loadNextBatch(isFirst=false){
   }catch(e){
     const bl=document.getElementById('feedBottomLoader');if(bl)bl.remove();
     console.error('Feed err:',e);
+  }finally{
+    _feedLoading=false;
   }
-  _feedLoading=false;
 }
 
 function appendCard(p,feed){
@@ -3454,7 +3460,14 @@ async function uploadCloud(file,ep){
   const iv=setInterval(()=>{prog=Math.min(prog+3,88);document.getElementById('progFill').style.width=prog+'%';},250);
   const res=await fetch(ep,{method:'POST',body:fd});
   clearInterval(iv);document.getElementById('progFill').style.width='100%';
-  if(!res.ok){const er=await res.json();throw new Error(er.error?.message||'Upload failed');}
+  if(!res.ok){
+    const er=await res.json();
+    const msg=er.error?.message||'Upload failed';
+    if(msg.toLowerCase().includes('preset')){
+      throw new Error('Cloudinary Upload Preset nahi mila! Dashboard mein "'+PRESET+'" naam ka unsigned preset banao.');
+    }
+    throw new Error(msg);
+  }
   const data=await res.json();return data.secure_url;
 }
 
