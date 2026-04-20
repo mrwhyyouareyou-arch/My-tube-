@@ -2229,7 +2229,7 @@ const FB = {
   messagingSenderId:"948348267378",
   appId:"1:948348267378:web:2dd25f59a9f510a8694beb"
 };
-const CLOUD="dyrjyet9o", PRESET="mytube";
+const CLOUD="dyrjyet9o", PRESET="mytube_upload";
 const OWNER_EMAIL="mrwhyyouareyou@gmail.com";
 const LIVE_REQS={videos:40,shorts:50,likesOnOneVideo:100,subscribers:100};
 // Live streaming — coming soon (Agora removed)
@@ -2450,6 +2450,17 @@ function openUploadDirect(type){
     });
     if(card)selectType(type,card);
   },200);
+}
+
+// ══════════════════════════════════════════════════════
+// SPLASH + AUTH
+// ══════════════════════════════════════════════════════
+function hideSplash(){
+  const s=document.getElementById('splashScreen');
+  if(!s)return;
+  s.style.transition='opacity .2s ease';
+  s.style.opacity='0';
+  setTimeout(()=>{s.style.display='none';},200);
 }
 
 // ══════════════════════════════════════════════════════
@@ -2849,9 +2860,8 @@ async function loadNextBatch(isFirst=false){
   }catch(e){
     const bl=document.getElementById('feedBottomLoader');if(bl)bl.remove();
     console.error('Feed err:',e);
-  }finally{
-    _feedLoading=false;
   }
+  _feedLoading=false;
 }
 
 function appendCard(p,feed){
