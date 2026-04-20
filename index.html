@@ -2463,46 +2463,29 @@ function hideSplash(){
   setTimeout(()=>{s.style.display='none';},200);
 }
 
+// AUTH BYPASSED — Direct app access
+// Login system temporarily removed for testing
+setTimeout(()=>{
+  hideSplash();
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('mainApp').style.display='block';
+  cUser=null;cUserData=null;
+  try{loadHome();}catch(e){}
+},600);
+
 auth.onAuthStateChanged(async user=>{
   if(user){
     cUser=user;
-    // Show app immediately — don't wait for data
-    hideSplash();
-    document.getElementById('authScreen').style.display='none';
-    document.getElementById('mainApp').style.display='block';
-    // Load data in background — crash-safe
     try{
-      // Check if user is banned
-      const userDoc=await db.collection('users').doc(user.uid).get();
-      if(userDoc.exists&&userDoc.data().banned){
-        auth.signOut();
-        setTimeout(()=>{
-          document.getElementById('authScreen').style.display='flex';
-          document.getElementById('mainApp').style.display='none';
-          setAuthErr('Yeh account ban kar diya gaya hai.');
-        },300);
-        return;
-      }
       loadUserData().then(()=>{
-        try{ensureChannelExists();}catch(e){}
         try{updateHeaderAv();}catch(e){}
         try{setupOwnerNav();}catch(e){}
         try{loadUserPrefs();}catch(e){}
         try{listenNotifs();}catch(e){}
       }).catch(()=>{});
-      loadHome();
-    }catch(e){
-      // Even if data load fails, show app — don't crash
-      loadHome();
-    }
+    }catch(e){}
   }else{
     cUser=null;cUserData=null;
-    setTimeout(()=>{
-      hideSplash();
-      document.getElementById('authScreen').style.display='flex';
-      document.getElementById('mainApp').style.display='none';
-      checkAgeVerification();
-    },600);
   }
 });
 
