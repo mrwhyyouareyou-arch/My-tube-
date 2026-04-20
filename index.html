@@ -578,6 +578,18 @@ button,input,textarea{font-family:var(--font);}
 .heart-anim{position:fixed;pointer-events:none;z-index:9999;font-size:80px;animation:heartPop .8s ease forwards;}
 @keyframes heartPop{0%{transform:scale(0) translate(-50%,-50%);opacity:1}50%{transform:scale(1.4) translate(-50%,-50%);opacity:1}100%{transform:scale(1.2) translate(-50%,-50%);opacity:0}}
 
+/* Floating Mini Player */
+#floatingPlayer{position:fixed;bottom:76px;right:12px;z-index:500;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.6);display:none;flex-direction:column;width:200px;}
+#floatingPlayer video{width:200px;height:113px;object-fit:cover;display:block;}
+#floatingPlayer .fp-bar{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:#111;}
+#floatingPlayer .fp-title{font-size:10px;color:white;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#floatingPlayer .fp-close{background:none;border:none;color:#aaa;cursor:pointer;font-size:14px;padding:2px 4px;}
+#floatingPlayer .fp-expand{background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;padding:2px 4px;}
+
+/* Profile cover upload */
+.prof-cover{position:relative;cursor:pointer;}
+.prof-cover-edit{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);color:white;border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;}
+
 .toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none;}
 .toast.show{opacity:1;}
 </style>
@@ -811,7 +823,7 @@ button,input,textarea{font-family:var(--font);}
             </div>
           </div>
           <!-- Short Editor Button — shows only for shorts -->
-          <button id="shortEditorBtn" onclick="openShortEditor(selectedFile)" style="display:none;width:100%;padding:12px;background:#1a1a1a;border:2px solid var(--red);color:white;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;display:none;align-items:center;justify-content:center;gap:8px;"><i class="fas fa-film" style="color:var(--red);"></i> Open Short Editor ✂️</button>
+          <button id="shortEditorBtn" style="display:none;"></button>
           <!-- Privacy Setting -->
           <div style="margin-bottom:12px;">
             <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;"><i class="fas fa-lock" style="color:var(--red);margin-right:5px;"></i> Visibility</div>
@@ -1165,8 +1177,14 @@ button,input,textarea{font-family:var(--font);}
             <button onclick="savePayoutMethod()" style="width:100%;padding:10px;background:var(--red);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;"><i class="fas fa-save"></i> Save Payout Info</button>
           </div>
 
+          <!-- Monetization Tasks -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:12px;">📋 Monetization Tasks</div>
+            <div id="monetTasksList"><div class="loader"><div class="spinner"></div></div></div>
+          </div>
+
           <!-- Apply for Monetization -->
-          <div id="monetApplyCard" style="background:linear-gradient(135deg,#1a0000,#2a0800);border:1.5px solid var(--red);border-radius:14px;padding:16px;margin-bottom:14px;">
+          <div id="monetApplyCard" style="background:linear-gradient(135deg,#1a0000,#2a0800);border:1.5px solid var(--red);border-radius:14px;padding:16px;margin-bottom:14px;display:none;">
             <div style="font-size:15px;font-weight:800;margin-bottom:6px;">🚀 Apply for Monetization</div>
             <div style="font-size:12px;color:var(--text2);margin-bottom:14px;">Requirements poore karo phir apply karo. Team 48 hours mein review karegi.</div>
             <button onclick="applyForMonetization()" class="btn-red"><i class="fas fa-paper-plane"></i> Submit Application</button>
@@ -1179,7 +1197,10 @@ button,input,textarea{font-family:var(--font);}
     <!-- PROFILE -->
     <div id="profileScreen" class="screen">
       <div class="prof-screen">
-        <div class="prof-cover" id="profCover"></div>
+        <div class="prof-cover" id="profCover" onclick="document.getElementById('coverPicInput').click()" style="cursor:pointer;">
+          <button class="prof-cover-edit"><i class="fas fa-camera"></i> Cover</button>
+          <input type="file" id="coverPicInput" accept="image/*" style="display:none;" onchange="uploadCoverPic(this)">
+        </div>
         <div class="prof-info">
           <div class="prof-pic-wrap">
             <div class="prof-pic" id="profPicEl">?</div>
@@ -1510,7 +1531,8 @@ button,input,textarea{font-family:var(--font);}
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
           <button onclick="showScreen('playlists')" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:18px;"><i class="fas fa-arrow-left"></i></button>
           <h2 style="font-size:17px;font-weight:700;" id="playlistTitle">Playlist</h2>
-          <button onclick="deletePlaylist()" style="background:none;border:none;color:var(--text3);cursor:pointer;margin-left:auto;font-size:16px;"><i class="fas fa-trash"></i></button>
+          <button onclick="openMyVideosForPlaylist()" style="background:var(--red);color:white;border:none;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;margin-left:auto;"><i class="fas fa-plus"></i> Add Video</button>
+          <button onclick="deletePlaylist()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;"><i class="fas fa-trash"></i></button>
         </div>
         <div id="playlistVideosList"></div>
       </div>
@@ -1539,6 +1561,7 @@ button,input,textarea{font-family:var(--font);}
           <button class="studio-tab" id="otab-reports" onclick="switchOwnerTab('reports')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-flag"></i> Reports</button>
           <button class="studio-tab" id="otab-users" onclick="switchOwnerTab('users')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-users"></i> Users</button>
           <button class="studio-tab" id="otab-guidelines" onclick="switchOwnerTab('guidelines')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-shield-alt"></i> Guidelines</button>
+          <button class="studio-tab" id="otab-requests" onclick="switchOwnerTab('requests')" style="font-size:11px;padding:8px 10px;"><i class="fas fa-inbox"></i> Requests <span id="reqBadge" style="background:var(--red);color:white;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:3px;">0</span></button>
         </div>
 
         <!-- OVERVIEW TAB -->
@@ -1601,6 +1624,27 @@ button,input,textarea{font-family:var(--font);}
           <!-- Existing guidelines -->
           <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">Current Rules</div>
           <div id="guidelinesList"><div class="loader"><div class="spinner"></div></div></div>
+        </div>
+
+        <!-- REQUESTS TAB -->
+        <div id="owner-requests" style="display:none;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:12px;">📥 All Requests</div>
+          <!-- Monetization Applications -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+              <i class="fas fa-rupee-sign" style="color:#00c864;"></i> Monetization Applications
+              <span id="monetAppBadge" style="background:var(--red);color:white;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto;">0</span>
+            </div>
+            <div id="monetAppsList"><div style="color:var(--text3);font-size:12px;">Loading...</div></div>
+          </div>
+          <!-- Reports -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+              <i class="fas fa-flag" style="color:var(--red);"></i> Pending Reports
+              <span id="reqReportBadge" style="background:var(--red);color:white;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto;">0</span>
+            </div>
+            <div id="reqReportsList"><div style="color:var(--text3);font-size:12px;">Loading...</div></div>
+          </div>
         </div>
 
       </div>
@@ -2153,6 +2197,16 @@ button,input,textarea{font-family:var(--font);}
 
 <div class="toast" id="toastEl"></div>
 
+<!-- ═══ FLOATING MINI PLAYER ═══ -->
+<div id="floatingPlayer">
+  <video id="fpVid" playsinline loop></video>
+  <div class="fp-bar">
+    <span class="fp-title" id="fpTitle">Playing...</span>
+    <button class="fp-expand" onclick="expandFloatingPlayer()"><i class="fas fa-expand-alt"></i></button>
+    <button class="fp-close" onclick="closeFloatingPlayer()"><i class="fas fa-times"></i></button>
+  </div>
+</div>
+
 <!-- ═══ SHORT EDITOR MODAL ═══ -->
 <div id="shortEditorOverlay" onclick="closeShortEditor()" style="display:none;position:fixed;inset:0;z-index:990;background:rgba(0,0,0,.85);"></div>
 <div id="shortEditorModal" style="display:none;position:fixed;inset:0;z-index:991;background:#000;flex-direction:column;overflow:hidden;">
@@ -2455,14 +2509,6 @@ function openUploadDirect(type){
 // ══════════════════════════════════════════════════════
 // SPLASH + AUTH
 // ══════════════════════════════════════════════════════
-function hideSplash(){
-  const s=document.getElementById('splashScreen');
-  if(!s)return;
-  s.style.transition='opacity .2s ease';
-  s.style.opacity='0';
-  setTimeout(()=>{s.style.display='none';},200);
-}
-
 // ══════════════════════════════════════════════════════
 // SPLASH + AUTH
 // ══════════════════════════════════════════════════════
@@ -2582,39 +2628,15 @@ function fErr(c){
 // ══════════════════════════════════════════════════════
 // USER DATA
 // ══════════════════════════════════════════════════════
-async function ensureChannelExists(){
-  if(!cUser)return;
-  try{
-    const doc=await db.collection('users').doc(cUser.uid).get();
-    if(!doc.exists)return;
-    const u=doc.data();
-    if(u.hasChannel&&u.channelName)return; // Already has channel
-    // Auto create channel from user name
-    const name=u.name||cUser.displayName||cUser.email.split('@')[0];
-    const handle='@'+name.toLowerCase().replace(/[^a-z0-9]/g,'').substring(0,20);
-    await db.collection('channels').doc(cUser.uid).set({
-      name,handle,about:'',
-      ownerEmail:cUser.email,ownerUid:cUser.uid,
-      ownerPhoto:u.photoURL||'',
-      subscribers:0,videos:0,
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    },{merge:true});
-    await db.collection('users').doc(cUser.uid).update({
-      channelName:name,channelHandle:handle,hasChannel:true
-    });
-    if(cUserData){cUserData.channelName=name;cUserData.channelHandle=handle;cUserData.hasChannel=true;}
-  }catch(e){console.log('Channel auto-create:',e.message);}
-}
-
 async function loadUserData(){
   if(!cUser)return;
   try{
     const doc=await db.collection('users').doc(cUser.uid).get();
     cUserData=doc.exists?doc.data():{name:cUser.displayName||'User',handle:'@user',about:'',photoURL:cUser.photoURL||'',subscribers:0};
-    // Update lastSeen
     db.collection('users').doc(cUser.uid).update({lastSeen:Date.now()}).catch(()=>{});
     updateProfileUI();
     updateEmailChannelUI();
+    loadCoverPic();
   }catch(e){console.error(e);}
 }
 
@@ -2983,6 +3005,7 @@ function buildCard(p){
       <div class="yt-meta">
         <div class="yt-title">${p.title||'Untitled'}</div>
         <div class="yt-sub"><span onclick="openChannelPage('${p.authorId||''}',event)" style="cursor:pointer;color:var(--text2);">${p.authorName||'Unknown'}</span> • ❤️${p.likes||0} • 👁️${p.views||0} • ${getTimeAgo(p.time)}</div>
+        ${p.authorId&&p.authorId!==cUser?.uid?`<button onclick="quickSubscribe('${p.authorId}','${p.authorName||''}',this,event)" style="margin-top:5px;background:var(--text);color:var(--bg);border:none;border-radius:14px;padding:3px 12px;font-size:11px;font-weight:700;cursor:pointer;">Subscribe</button>`:''}
       </div>
       <button class="yt-more" onclick="showVideoMenu('${p.id}','${(p.title||'').replace(/'/g,'')}','${p.authorId||''}','${p.url||''}',event)"><i class="fas fa-ellipsis-v"></i></button>
     </div></div>`;
@@ -4582,7 +4605,7 @@ async function doSearch(q){
 // OWNER DASHBOARD
 // ══════════════════════════════════════════════════════
 function switchOwnerTab(tab){
-  ['overview','reports','users','guidelines'].forEach(t=>{
+  ['overview','reports','users','guidelines','requests'].forEach(t=>{
     const el=document.getElementById('owner-'+t);
     const btn=document.getElementById('otab-'+t);
     if(el)el.style.display=t===tab?'block':'none';
@@ -4591,6 +4614,7 @@ function switchOwnerTab(tab){
   if(tab==='reports')loadOwnerReports();
   if(tab==='users')loadOwnerUsers();
   if(tab==='guidelines')loadOwnerGuidelines();
+  if(tab==='requests')loadOwnerRequests();
 }
 
 async function loadOwnerDash(){
@@ -4985,7 +5009,7 @@ function switchStudioTab(tab){
   if(tab==='analytics')updateAnalyticsTab();
   if(tab==='audience')updateAudienceTab();
   if(tab==='content')loadMyContentSections();
-  if(tab==='monetization')loadMonetizationTab();
+  if(tab==='monetization'){loadMonetizationTab();loadMonetizationTasks();}
 }
 
 function updateAnalyticsTab(){
@@ -6515,7 +6539,290 @@ async function sendSuperThanks(){
 }
 
 
-window.addEventListener('error', function(e){
+// ══════════════════════════════════════════════════════
+// FLOATING MINI PLAYER
+// ══════════════════════════════════════════════════════
+let _fpPostId=null,_fpPostData=null;
+
+function initFloatingPlayer(){
+  const playerScreen=document.getElementById('playerScreen');
+  if(!playerScreen)return;
+  // When player scrolled past video, show floating player
+  playerScreen.addEventListener('scroll',()=>{
+    const vidWrap=document.getElementById('playerVidWrap');
+    if(!vidWrap)return;
+    const rect=vidWrap.getBoundingClientRect();
+    const fp=document.getElementById('floatingPlayer');
+    const mainVid=document.getElementById('playerVid');
+    if(!fp||!mainVid)return;
+    if(rect.bottom<0&&mainVid.src&&!mainVid.paused){
+      // Video scrolled out of view — show floating
+      if(fp.style.display==='none'||!fp.style.display){
+        const fpVid=document.getElementById('fpVid');
+        const fpTitle=document.getElementById('fpTitle');
+        if(fpVid&&fpVid.src!==mainVid.src){fpVid.src=mainVid.src;fpVid.currentTime=mainVid.currentTime;fpVid.play().catch(()=>{});}
+        if(fpTitle)fpTitle.textContent=currentPostData?.title||'Playing...';
+        fp.style.display='flex';
+        _fpPostId=currentPostId;_fpPostData=currentPostData;
+      }
+    }else{
+      // Video back in view — hide floating
+      if(fp.style.display==='flex'){
+        fp.style.display='none';
+        const fpVid=document.getElementById('fpVid');
+        if(fpVid){fpVid.pause();fpVid.src='';}
+      }
+    }
+  },{passive:true});
+}
+
+function closeFloatingPlayer(){
+  const fp=document.getElementById('floatingPlayer');
+  if(fp)fp.style.display='none';
+  const fpVid=document.getElementById('fpVid');
+  if(fpVid){fpVid.pause();fpVid.src='';}
+  _fpPostId=null;_fpPostData=null;
+}
+
+function expandFloatingPlayer(){
+  closeFloatingPlayer();
+  if(_fpPostId)openPost(_fpPostId);
+}
+
+// Init floating player after DOM ready
+setTimeout(initFloatingPlayer,1000);
+
+// ══════════════════════════════════════════════════════
+// COVER PICTURE UPLOAD
+// ══════════════════════════════════════════════════════
+async function uploadCoverPic(input){
+  const file=input.files[0];if(!file)return;
+  if(!cUser)return showToast('Login karein!');
+  if(file.size>8*1024*1024)return showToast('Max 8MB!');
+  showToast('Cover upload ho raha hai...');
+  try{
+    const url=await uploadCloud(file,`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`);
+    await db.collection('users').doc(cUser.uid).update({coverURL:url});
+    if(cUserData)cUserData.coverURL=url;
+    const cover=document.getElementById('profCover');
+    if(cover)cover.style.backgroundImage=`url('${url}')`;
+    showToast('Cover updated! ✅');
+  }catch(e){showToast('Upload failed: '+e.message);}
+}
+
+// ══════════════════════════════════════════════════════
+// AUTO CHANNEL ON LOGIN — ensure every user has channel
+// ══════════════════════════════════════════════════════
+async function ensureChannelExists(){
+  if(!cUser)return;
+  try{
+    const doc=await db.collection('users').doc(cUser.uid).get();
+    if(!doc.exists){
+      // New user — create full profile
+      await db.collection('users').doc(cUser.uid).set({
+        name:cUser.displayName||cUser.email.split('@')[0],
+        email:cUser.email,
+        handle:'@'+(cUser.email.split('@')[0]).toLowerCase().replace(/[^a-z0-9]/g,'').substring(0,20),
+        about:'',photoURL:cUser.photoURL||'',
+        subscribers:0,createdAt:Date.now(),lastSeen:Date.now(),
+        hasChannel:true,
+        channelName:cUser.displayName||cUser.email.split('@')[0]
+      });
+      return;
+    }
+    const u=doc.data();
+    if(u.hasChannel&&u.channelName)return;
+    const name=u.name||cUser.displayName||cUser.email.split('@')[0];
+    const handle='@'+name.toLowerCase().replace(/[^a-z0-9]/g,'').substring(0,20);
+    await db.collection('users').doc(cUser.uid).update({
+      channelName:name,channelHandle:handle,hasChannel:true
+    });
+    if(cUserData){cUserData.channelName=name;cUserData.channelHandle=handle;cUserData.hasChannel=true;}
+  }catch(e){console.warn('Channel ensure:',e.message);}
+}
+
+// Load cover pic on profile load
+function loadCoverPic(){
+  if(!cUserData?.coverURL)return;
+  const cover=document.getElementById('profCover');
+  if(cover){
+    cover.style.backgroundImage=`url('${cUserData.coverURL}')`;
+    cover.style.backgroundSize='cover';
+    cover.style.backgroundPosition='center';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// OWNER REQUESTS — Monetization apps + Reports
+// ══════════════════════════════════════════════════════
+async function loadOwnerRequests(){
+  if(!cUser||cUser.email!==OWNER_EMAIL)return;
+
+  // Load monetization applications
+  const appsList=document.getElementById('monetAppsList');
+  const appBadge=document.getElementById('monetAppBadge');
+  if(appsList){
+    appsList.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+    try{
+      const snap=await db.collection('monetizationApps').orderBy('appliedAt','desc').limit(50).get().catch(async()=>{
+        return await db.collection('monetizationApps').limit(50).get();
+      });
+      if(appBadge)appBadge.textContent=snap.size;
+      const reqBadge=document.getElementById('reqBadge');
+      if(reqBadge)reqBadge.textContent=snap.size;
+      if(snap.empty){appsList.innerHTML='<div style="font-size:12px;color:var(--text3);">No applications yet</div>';return;}
+      appsList.innerHTML=snap.docs.map(d=>{
+        const a=d.data();
+        const statusColor={pending:'#ff9600',approved:'#00c864',rejected:'#ff4444'}[a.status]||'#ff9600';
+        return `<div style="background:var(--bg3);border-radius:10px;padding:12px;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:700;">${a.name||'User'}</div>
+              <div style="font-size:11px;color:var(--text2);">${a.email||''}</div>
+              <div style="font-size:10px;color:var(--text3);">${a.appliedAt?getTimeAgo(a.appliedAt):''}</div>
+            </div>
+            <span style="font-size:10px;font-weight:700;color:${statusColor};background:rgba(0,0,0,.3);padding:3px 8px;border-radius:6px;">${(a.status||'pending').toUpperCase()}</span>
+          </div>
+          ${a.status==='pending'?`<div style="display:flex;gap:6px;">
+            <button onclick="reviewMonetApp('${d.id}','approved')" style="flex:1;padding:7px;background:#00c864;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Approve</button>
+            <button onclick="reviewMonetApp('${d.id}','rejected')" style="flex:1;padding:7px;background:#ff4444;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Reject</button>
+          </div>`:''}
+        </div>`;
+      }).join('');
+    }catch(e){appsList.innerHTML='<div style="font-size:12px;color:var(--text3);">Error loading</div>';}
+  }
+
+  // Load pending reports summary
+  const repList=document.getElementById('reqReportsList');
+  const repBadge=document.getElementById('reqReportBadge');
+  if(repList){
+    try{
+      const snap=await db.collection('reports').where('status','==','pending').limit(20).get();
+      if(repBadge)repBadge.textContent=snap.size;
+      if(snap.empty){repList.innerHTML='<div style="font-size:12px;color:#00c864;">✅ No pending reports!</div>';return;}
+      repList.innerHTML=snap.docs.map(d=>{
+        const r=d.data();
+        return `<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:6px;display:flex;align-items:center;gap:10px;">
+          <i class="fas fa-flag" style="color:var(--red);"></i>
+          <div style="flex:1;font-size:12px;">${r.reason||'Report'} <span style="color:var(--text3);">• ${getTimeAgo(r.time)}</span></div>
+          <button onclick="switchOwnerTab('reports')" style="background:var(--red);color:white;border:none;border-radius:6px;padding:4px 8px;font-size:10px;cursor:pointer;">View</button>
+        </div>`;
+      }).join('');
+    }catch(e){repList.innerHTML='<div style="font-size:12px;color:var(--text3);">Error loading</div>';}
+  }
+}
+
+async function reviewMonetApp(appId,status){
+  try{
+    await db.collection('monetizationApps').doc(appId).update({status,reviewedAt:Date.now(),reviewedBy:cUser.uid});
+    showToast(status==='approved'?'✅ Monetization approved!':'❌ Application rejected');
+    loadOwnerRequests();
+    // Notify user
+    const appDoc=await db.collection('monetizationApps').doc(appId).get();
+    if(appDoc.exists){
+      const uid=appDoc.data().uid;
+      if(uid)await db.collection('notifications').add({
+        to:uid,from:cUser.uid,fromName:'Stream x Team',type:'system',
+        text:status==='approved'?'🎉 Monetization approved! Earn tab check karo.':'Your monetization application was reviewed.',
+        read:false,time:Date.now()
+      }).catch(()=>{});
+    }
+  }catch(e){showToast('Error: '+e.message);}
+}
+
+// ══════════════════════════════════════════════════════
+// PLAYLIST — Add own videos to playlist
+// ══════════════════════════════════════════════════════
+async function openMyVideosForPlaylist(){
+  if(!cUser)return showToast('Login karein!');
+  const ex=document.getElementById('myVidPlSheet');if(ex)ex.remove();
+  const exo=document.getElementById('myVidPlOv');if(exo)exo.remove();
+  const ov=document.createElement('div');ov.id='myVidPlOv';
+  ov.style.cssText='position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.6);';
+  document.body.appendChild(ov);
+  const sheet=document.createElement('div');sheet.id='myVidPlSheet';
+  sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:701;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 32px;max-height:70vh;overflow-y:auto;';
+  sheet.innerHTML='<div style="font-size:15px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;"><span>📹 My Videos</span><i class="fas fa-times" style="cursor:pointer;color:var(--text2);" onclick="document.getElementById(\'myVidPlSheet\').remove();document.getElementById(\'myVidPlOv\').remove();"></i></div><div id="myVidPlList"><div class="loader"><div class="spinner"></div></div></div>';
+  ov.onclick=()=>{sheet.remove();ov.remove();};
+  document.body.appendChild(sheet);
+  try{
+    const snap=await db.collection('posts').where('authorId','==',cUser.uid).orderBy('time','desc').get().catch(async()=>{
+      return await db.collection('posts').where('authorId','==',cUser.uid).get();
+    });
+    const list=document.getElementById('myVidPlList');
+    if(!list)return;
+    if(snap.empty){list.innerHTML='<div style="color:var(--text3);font-size:13px;">No videos yet</div>';return;}
+    list.innerHTML=snap.docs.map(d=>{
+      const p={id:d.id,...d.data()};
+      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_100/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      return `<div onclick="addToPlaylist('${p.id}');document.getElementById('myVidPlSheet').remove();document.getElementById('myVidPlOv').remove();" style="display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;cursor:pointer;margin-bottom:6px;background:var(--bg3);">
+        <div style="width:60px;height:38px;border-radius:6px;overflow:hidden;background:var(--border);flex-shrink:0;">${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-video" style="color:var(--text3);font-size:14px;"></i></div>'}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title||'Untitled'}</div>
+          <div style="font-size:10px;color:var(--text3);">${p.type} • ${getTimeAgo(p.time)}</div>
+        </div>
+        <i class="fas fa-plus-circle" style="color:var(--red);font-size:18px;"></i>
+      </div>`;
+    }).join('');
+  }catch(e){const list=document.getElementById('myVidPlList');if(list)list.innerHTML='<div style="color:var(--text3);font-size:13px;">Error loading</div>';}
+}
+
+// ══════════════════════════════════════════════════════
+// MONETIZATION TASKS IN CREATOR DASHBOARD
+// ══════════════════════════════════════════════════════
+const MONET_TASKS=[
+  {id:'t1',label:'Upload 10 videos',field:'videos',req:10,icon:'🎬'},
+  {id:'t2',label:'Upload 20 shorts',field:'shorts',req:20,icon:'📱'},
+  {id:'t3',label:'Get 100 subscribers',field:'subscribers',req:100,icon:'👥'},
+  {id:'t4',label:'Get 500 subscribers',field:'subscribers',req:500,icon:'🔥'},
+  {id:'t5',label:'Get 1000 subscribers',field:'subscribers',req:1000,icon:'🏆'},
+  {id:'t6',label:'2000 hours watch time',field:'watchTime',req:2000,icon:'⏱️'},
+  {id:'t7',label:'Get 1000 total views',field:'views',req:1000,icon:'👁️'},
+  {id:'t8',label:'Get 4000 total views',field:'views',req:4000,icon:'🚀'},
+];
+
+async function loadMonetizationTasks(){
+  const el=document.getElementById('monetTasksList');
+  if(!el||!cUser)return;
+  try{
+    const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
+    let videos=0,shorts=0,totalViews=0,watchTime=0;
+    snap.forEach(d=>{
+      const p=d.data();
+      if(p.type==='video'||p.type==='gaming'||p.type==='music')videos++;
+      if(p.type==='short')shorts++;
+      totalViews+=p.views||0;
+      watchTime+=Math.round((p.watchTime||0)/3600);
+    });
+    const ud=await db.collection('users').doc(cUser.uid).get();
+    const subs=ud.exists?(ud.data().subscribers||0):0;
+    const stats={videos,shorts,subscribers:subs,views:totalViews,watchTime};
+
+    el.innerHTML=MONET_TASKS.map(t=>{
+      const cur=stats[t.field]||0;
+      const done=cur>=t.req;
+      const pct=Math.min(100,Math.round((cur/t.req)*100));
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px;background:${done?'rgba(0,200,100,.06)':'var(--bg3)'};border:1px solid ${done?'#00c864':'var(--border)'};border-radius:10px;margin-bottom:8px;">
+        <div style="font-size:20px;">${t.icon}</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:600;color:${done?'#00c864':'var(--text)'};">${t.label}</div>
+          <div style="height:4px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${done?'#00c864':'var(--red)'};border-radius:2px;transition:width .5s;"></div>
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px;">${cur>=1000?Math.round(cur/100)/10+'K':cur} / ${t.req>=1000?Math.round(t.req/100)/10+'K':t.req}</div>
+        </div>
+        <div style="font-size:18px;">${done?'✅':'🔒'}</div>
+      </div>`;
+    }).join('');
+
+    // Check if all main tasks done — show apply button
+    const mainDone=stats.subscribers>=1000&&totalViews>=4000;
+    const applyEl=document.getElementById('monetApplyCard');
+    if(applyEl)applyEl.style.display=mainDone?'block':'none';
+  }catch(e){if(el)el.innerHTML='<div style="color:var(--text3);font-size:12px;">Error loading tasks</div>';}
+}
+
+
   console.warn('Stream x error caught:', e.message);
   // Don't crash the app — just log silently
 });
@@ -6525,12 +6832,4 @@ window.addEventListener('unhandledrejection', function(e){
 });
 
 // ══════════════════════════════════════════════════════
-// SAFE WRAPPER — any function call that might crash
-// ══════════════════════════════════════════════════════
-function safe(fn){
-  try{fn();}catch(e){console.warn('Safe call error:',e.message);}
-}
-
-</script>
-</body>
-</html>
+// SAFE WRAPP
