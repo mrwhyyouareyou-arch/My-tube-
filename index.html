@@ -2463,29 +2463,40 @@ function hideSplash(){
   setTimeout(()=>{s.style.display='none';},200);
 }
 
-// AUTH BYPASSED — Direct app access
-// Login system temporarily removed for testing
-setTimeout(()=>{
-  hideSplash();
-  document.getElementById('authScreen').style.display='none';
-  document.getElementById('mainApp').style.display='block';
-  cUser=null;cUserData=null;
-  try{loadHome();}catch(e){}
-},600);
+// ══════════════════════════════════════════════════════
+// SPLASH + AUTH
+// ══════════════════════════════════════════════════════
+function hideSplash(){
+  const s=document.getElementById('splashScreen');
+  if(!s)return;
+  s.style.transition='opacity .2s ease';
+  s.style.opacity='0';
+  setTimeout(()=>{s.style.display='none';},200);
+}
 
 auth.onAuthStateChanged(async user=>{
   if(user){
     cUser=user;
+    hideSplash();
+    document.getElementById('authScreen').style.display='none';
+    document.getElementById('mainApp').style.display='block';
     try{
       loadUserData().then(()=>{
+        try{ensureChannelExists();}catch(e){}
         try{updateHeaderAv();}catch(e){}
         try{setupOwnerNav();}catch(e){}
         try{loadUserPrefs();}catch(e){}
         try{listenNotifs();}catch(e){}
       }).catch(()=>{});
-    }catch(e){}
+      loadHome();
+    }catch(e){loadHome();}
   }else{
     cUser=null;cUserData=null;
+    setTimeout(()=>{
+      hideSplash();
+      document.getElementById('authScreen').style.display='flex';
+      document.getElementById('mainApp').style.display='none';
+    },600);
   }
 });
 
