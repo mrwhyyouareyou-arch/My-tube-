@@ -6831,5 +6831,13 @@ window.addEventListener('unhandledrejection', function(e){
   e.preventDefault(); // Prevent crash
 });
 
-// ══════════════════════════════════════════════════════
-// SAFE WRAPP
+// ==========================================
+// SAFE WRAPPER — any function call that might crash
+// ==========================================
+function safe(fn){
+  try {
+    fn();
+  } catch(e) {
+    console.warn('Safe call error:', e.message);
+  }
+}
