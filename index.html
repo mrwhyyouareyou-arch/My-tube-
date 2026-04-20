@@ -505,22 +505,6 @@ button,input,textarea{font-family:var(--font);}
 .channel-tab.active{color:var(--red);border-bottom-color:var(--red);}
 .channel-content{padding:12px 14px;}
 
-/* ═══ STICKY VIDEO PLAYER ═══ */
-.player-vid-sticky-wrap{
-  position:sticky;
-  top:0;
-  z-index:50;
-  background:#000;
-  width:100%;
-  aspect-ratio:16/9;
-  flex-shrink:0;
-}
-.player-vid-sticky-wrap video{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  display:block;
-}
 /* VIDEO CONTEXT MENU */
 .ctx-menu-overlay{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,.4);display:none;}
 .ctx-menu-overlay.open{display:block;}
@@ -2245,7 +2229,7 @@ const FB = {
   messagingSenderId:"948348267378",
   appId:"1:948348267378:web:2dd25f59a9f510a8694beb"
 };
-const CLOUD="dyrjyet9o", PRESET="stream_x_upload";
+const CLOUD="dyrjyet9o", PRESET="mytube";
 const OWNER_EMAIL="mrwhyyouareyou@gmail.com";
 const LIVE_REQS={videos:40,shorts:50,likesOnOneVideo:100,subscribers:100};
 // Live streaming — coming soon (Agora removed)
@@ -3460,14 +3444,7 @@ async function uploadCloud(file,ep){
   const iv=setInterval(()=>{prog=Math.min(prog+3,88);document.getElementById('progFill').style.width=prog+'%';},250);
   const res=await fetch(ep,{method:'POST',body:fd});
   clearInterval(iv);document.getElementById('progFill').style.width='100%';
-  if(!res.ok){
-    const er=await res.json();
-    const msg=er.error?.message||'Upload failed';
-    if(msg.toLowerCase().includes('preset')){
-      throw new Error('Cloudinary Upload Preset nahi mila! Dashboard mein "'+PRESET+'" naam ka unsigned preset banao.');
-    }
-    throw new Error(msg);
-  }
+  if(!res.ok){const er=await res.json();throw new Error(er.error?.message||'Upload failed');}
   const data=await res.json();return data.secure_url;
 }
 
