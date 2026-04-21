@@ -4335,7 +4335,7 @@ async function uploadProfilePic(input){
     if(!res.ok){const er=await res.json();throw new Error(er.error?.message||'Upload failed');}
     const data=await res.json();
     const url=data.secure_url;
-    await db.collection('users').doc(cUser.uid).update({photoURL:url});
+    await db.collection('users').doc(cUser.uid).set({photoURL:url},{merge:true});
     cUserData={...cUserData,photoURL:url};
     const picEl=document.getElementById('profPicEl');
     if(picEl){picEl.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;}
@@ -4343,7 +4343,6 @@ async function uploadProfilePic(input){
     showToast('Profile pic updated! ✅');
   }catch(e){
     console.error('Profile pic error:',e);
-    alert('DEBUG ERROR: '+JSON.stringify(e.message));
     showToast('Upload failed: '+(e.message||'Internet check karein'));
   }
 }
@@ -4360,7 +4359,7 @@ async function uploadCoverPic(input){
     if(!res.ok){const er=await res.json();throw new Error(er.error?.message||'Upload failed');}
     const data=await res.json();
     const url=data.secure_url;
-    await db.collection('users').doc(cUser.uid).update({coverURL:url});
+    await db.collection('users').doc(cUser.uid).set({coverURL:url},{merge:true});
     cUserData={...cUserData,coverURL:url};
     const coverImg=document.getElementById('profCoverImg');
     const coverDiv=document.getElementById('profCoverDiv');
