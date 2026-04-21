@@ -1180,11 +1180,14 @@ button,input,textarea{font-family:var(--font);}
     <!-- PROFILE — YouTube Style -->
     <div id="profileScreen" class="screen">
       <div style="overflow-y:auto;padding-bottom:80px;">
-        <div style="height:110px;background:linear-gradient(135deg,#1a0000,#4a0000,#2a0000);position:relative;">
+        <div id="profCoverDiv" onclick="document.getElementById('coverInput').click()" style="height:110px;background:linear-gradient(135deg,#1a0000,#4a0000,#2a0000);position:relative;cursor:pointer;overflow:hidden;">
+          <img id="profCoverImg" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+          <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.55);color:white;font-size:11px;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;pointer-events:none;"><i class="fas fa-camera"></i> Cover change karein</div>
           <div style="position:absolute;top:10px;right:10px;display:flex;gap:8px;">
-            <button onclick="showScreen('themes')" style="background:rgba(0,0,0,.5);border:none;color:white;border-radius:20px;padding:6px 12px;font-size:12px;cursor:pointer;"><i class="fas fa-palette"></i></button>
-            <button onclick="doLogout()" style="background:rgba(0,0,0,.5);border:none;color:white;border-radius:20px;padding:6px 12px;font-size:12px;cursor:pointer;"><i class="fas fa-sign-out-alt"></i></button>
+            <button onclick="event.stopPropagation();showScreen('themes')" style="background:rgba(0,0,0,.5);border:none;color:white;border-radius:20px;padding:6px 12px;font-size:12px;cursor:pointer;"><i class="fas fa-palette"></i></button>
+            <button onclick="event.stopPropagation();doLogout()" style="background:rgba(0,0,0,.5);border:none;color:white;border-radius:20px;padding:6px 12px;font-size:12px;cursor:pointer;"><i class="fas fa-sign-out-alt"></i></button>
           </div>
+          <input type="file" id="coverInput" accept="image/*" onchange="uploadCoverPic(this)" style="display:none;">
         </div>
         <div style="padding:0 14px;margin-top:-40px;">
           <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px;">
@@ -2634,8 +2637,15 @@ function updateProfileUI(){
     existingWebEl.innerHTML=cUserData.website?`<a href="${cUserData.website}" target="_blank" rel="noopener" style="color:var(--red);text-decoration:none;"><i class="fas fa-link"></i> ${cUserData.website.replace(/^https?:\/\//,'')}</a>`:'';
   }
   const pic=document.getElementById('profPicEl');
-  if(cUserData.photoURL){pic.innerHTML=`<img src="${cUserData.photoURL}">`;}
+  if(cUserData.photoURL){pic.innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;}
   else{pic.textContent=(cUserData.name||'U')[0].toUpperCase();}
+  // Load cover image if saved
+  if(cUserData.coverURL){
+    const coverImg=document.getElementById('profCoverImg');
+    const coverDiv=document.getElementById('profCoverDiv');
+    if(coverImg){coverImg.src=cUserData.coverURL;coverImg.style.display='block';}
+    if(coverDiv)coverDiv.style.background='none';
+  }
   if(cUserData.channelName){
     const el=document.getElementById('channelName');
     if(el)el.value=cUserData.channelName||'';
@@ -4311,14 +4321,40 @@ async function deletePost(id,e){
 // ══════════════════════════════════════════════════════
 async function uploadProfilePic(input){
   const file=input.files[0];if(!file)return;
-  if(file.size>5*1024*1024)return showToast('Max 5MB!');
-  showToast('Uploading...');
+  if(file.size>5*1024*1024)return showToast('Max 5MB allowed!');
+  showToast('Uploading profile pic...');
   try{
     const url=await uploadCloud(file,`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`);
     await db.collection('users').doc(cUser.uid).update({photoURL:url});
-    cUserData.photoURL=url;
-    updateProfileUI();updateHeaderAv();updateEmailChannelUI();showToast('Profile pic updated! ✅');
-  }catch(e){showToast('Upload failed');}
+    cUserData={...cUserData,photoURL:url};
+    // Update UI
+    const picEl=document.getElementById('profPicEl');
+    if(picEl)picEl.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    updateHeaderAv();
+    showToast('Profile pic updated! ✅');
+  }catch(e){
+    console.error('Profile pic upload error:',e);
+    showToast('Upload failed: '+( e.message||'Check internet connection'));
+  }
+}
+
+async function uploadCoverPic(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>8*1024*1024)return showToast('Max 8MB allowed!');
+  showToast('Cover upload ho rahi hai...');
+  try{
+    const url=await uploadCloud(file,`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`);
+    await db.collection('users').doc(cUser.uid).update({coverURL:url});
+    cUserData={...cUserData,coverURL:url};
+    const coverImg=document.getElementById('profCoverImg');
+    const coverDiv=document.getElementById('profCoverDiv');
+    if(coverImg){coverImg.src=url;coverImg.style.display='block';}
+    if(coverDiv)coverDiv.style.background='none';
+    showToast('Cover updated! ✅');
+  }catch(e){
+    console.error('Cover upload error:',e);
+    showToast('Upload failed: '+(e.message||'Check internet connection'));
+  }
 }
 
 // ══════════════════════════════════════════════════════
