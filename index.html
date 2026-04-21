@@ -2464,7 +2464,6 @@ auth.onAuthStateChanged(async user=>{
         try{setupOwnerNav();}catch(e){}
         try{loadUserPrefs();}catch(e){}
         try{listenNotifs();}catch(e){}
-        setTimeout(()=>{try{if(!checkTermsAgreed())showTermsGate();}catch(e){}},800);
       }).catch(()=>{});
       loadHome();
     }catch(e){loadHome();}
@@ -3378,14 +3377,6 @@ function addPostImages(input){
 async function doUpload(){
   if(!cUser)return showToast('Login karein!');
   const title=document.getElementById('uploadTitle').value.trim();
-  if(!title)return showToast('Title required!');
-  if(!checkDailyLimit(uploadType))return;
-  showUploadConfirm();
-}
-
-async function _actualDoUpload(){
-  if(!cUser)return showToast('Login karein!');
-  const title=document.getElementById('uploadTitle').value.trim();
   const desc=document.getElementById('uploadDesc').value.trim();
   const tags=document.getElementById('uploadTags').value.trim();
   if(!title)return showToast('Title required!');
@@ -3426,7 +3417,6 @@ async function _actualDoUpload(){
       privacy:_uploadPrivacy||'public',
       searchTerms:extractSearchTerms({title,desc,tags:tags.split(',').map(t=>t.trim()),category:document.getElementById('uploadCategory')?.value||uploadType,type:uploadType})
     });
-    incrementDailyUpload(uploadType);
     showToast('✅ Uploaded successfully!');
     resetUploadForm();btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';
     setTimeout(()=>showScreen('home'),1000);
@@ -6734,134 +6724,10 @@ function loadProfileAbout(container){
     </div>`;
 }
 
-
-// ══ TERMS GATE ══
-function checkTermsAgreed(){return localStorage.getItem('sx_terms_v1')==='yes';}
-function showTermsGate(){const el=document.getElementById('termsGateScreen');if(el)el.style.display='flex';}
-function hideTermsGate(){const el=document.getElementById('termsGateScreen');if(el)el.style.display='none';}
-function toggleTermsCheck(){
-  const cb=document.getElementById('termsCheckbox');
-  const btn=document.getElementById('termsAgreeBtn');
-  if(!cb||!btn)return;
-  const checked=cb.getAttribute('data-checked')==='true';
-  if(!checked){
-    cb.setAttribute('data-checked','true');
-    cb.style.background='var(--red)';cb.style.borderColor='var(--red)';
-    cb.innerHTML='<i class="fas fa-check" style="color:white;font-size:11px;"></i>';
-    btn.disabled=false;btn.style.background='var(--red)';btn.style.cursor='pointer';
-  }else{
-    cb.setAttribute('data-checked','false');
-    cb.style.background='';cb.style.borderColor='var(--border)';cb.innerHTML='';
-    btn.disabled=true;btn.style.background='#555';btn.style.cursor='not-allowed';
-  }
-}
-function agreeToTerms(){
-  const cb=document.getElementById('termsCheckbox');
-  if(!cb||cb.getAttribute('data-checked')!=='true')return;
-  localStorage.setItem('sx_terms_v1','yes');
-  hideTermsGate();
-  showToast('Stream x mein khush aamdeed! 🎉');
-}
-// === DAILY LIMITS ===
-function getTodayKey() {
-  const d = new Date();
-  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+function safe(fn){
+  try{fn();}catch(e){console.warn('Safe call error:',e.message);}
 }
 
-function getDailyUploads() {
-  try {
-    return JSON.parse(localStorage.getItem('sx_ul_' + getTodayKey()) || '{}');
-  } catch (e) {
-    return {};
-  }
-}
-
-function incrementDailyUpload(type) {
-  const data = getDailyUploads();
-  data[type] = (data[type] || 0) + 1;
-  localStorage.setItem('sx_ul_' + getTodayKey(), JSON.stringify(data));
-}
-
-function checkDailyLimit(type) {
-  const limits = {
-    video: 2,
-    short: 3,
-    post: 3,
-    image: 3,
-    gaming: 2,
-    music: 2
-  };
-  const used = (getDailyUploads()[type] || 0);
-  const limit = limits[type] || 2;
-
-  if (used >= limit) {
-    showToast('Aaj ka ' + type + ' limit (' + limit + ') poora ho gaya! Kal try karein ⏰');
-    return false; // false = upload roko
-  }
-  return true; // true = upload karne do
-}
-
-// === UPLOAD CONFIRM ===
-function showUploadConfirm() {
-  document.getElementById('uploadConfirmOverlay').style.display = 'block';
-  document.getElementById('uploadConfirmSheet').style.display = 'block';
-}
-
-function cancelUploadConfirm() {
-  document.getElementById('uploadConfirmOverlay').style.display = 'none';
-  document.getElementById('uploadConfirmSheet').style.display = 'none';
-}
-
-async function confirmAndUpload() {
-  // Yahan Vision API ka call aayega bhai
-  // Abhi ke liye bas limit check + increment
-
-  // Example: const type = 'short'; // ya video, post etc
-  // if(!checkDailyLimit(type)) return;
-
-  // Upload ka code yahan...
-  // Upload success ke baad:
-  // incrementDailyUpload(type);
-  // cancelUploadConfirm();
-  // showToast('Upload success! 🎉');
-}
-<!-- === UPLOAD CONFIRM SYSTEM ONLY === -->
-<script>
-// === UPLOAD CONFIRM ===
-function showUploadConfirm() {
-  document.getElementById('uploadConfirmOverlay').style.display = 'block';
-  document.getElementById('uploadConfirmSheet').style.display = 'block';
-}
-
-function cancelUploadConfirm() {
-  document.getElementById('uploadConfirmOverlay').style.display = 'none';
-  document.getElementById('uploadConfirmSheet').style.display = 'none';
-}
-
-async function confirmAndUpload() {
-  cancelUploadConfirm();
-  try {
-    await _actualDoUpload(); // Tera asli upload function
-    showToast('Upload success! 🎉');
-  } catch (e) {
-    console.warn('Safe call error:', e.message);
-    showToast('Upload failed, dobara try karein ❌');
-  }
-}
-
-function safe(fn) {
-  try { fn(); } catch(e) { console.warn('Safe call error:', e.message); }
-}
 </script>
-
-<!-- UPLOAD CONFIRM POPUP HTML -->
-<div id="uploadConfirmOverlay" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.7);"></div>
-
-<div id="uploadConfirmSheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9001;background:var(--card);border-radius:16px 16px 0 0;padding:20px;">
-  <div style="font-size:16px;font-weight:800;margin-bottom:12px;">Upload Confirm Karein ⚠️</div>
-  <div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Kya ye video/image aapne khud banaya hai? Copy ya reused content pe account ban ho sakta hai.</div>
-  <button onclick="confirmAndUpload()" style="width:100%;padding:12px;background:var(--red);color:#fff;border:none;border-radius:8px;font-weight:700;margin-bottom:8px;">Haan, Ye Mera Hai ✅</button>
-  <button onclick="cancelUploadConfirm()" style="width:100%;padding:12px;background:var(--line);color:var(--text);border:none;border-radius:8px;font-weight:700;">Cancel</button>
-</div>
-  
-  
+</body>
+</html>
