@@ -4343,6 +4343,7 @@ async function uploadProfilePic(input){
     showToast('Profile pic updated! ✅');
   }catch(e){
     console.error('Profile pic error:',e);
+    alert('DEBUG ERROR: '+JSON.stringify(e.message));
     showToast('Upload failed: '+(e.message||'Internet check karein'));
   }
 }
