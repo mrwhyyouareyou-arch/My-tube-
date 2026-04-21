@@ -2464,6 +2464,8 @@ auth.onAuthStateChanged(async user=>{
         try{setupOwnerNav();}catch(e){}
         try{loadUserPrefs();}catch(e){}
         try{listenNotifs();}catch(e){}
+        // Show terms gate if not agreed yet
+        try{if(!checkTermsAgreed())showTermsGate();}catch(e){}
       }).catch(()=>{});
       loadHome();
     }catch(e){loadHome();}
@@ -3380,6 +3382,14 @@ async function doUpload(){
   const desc=document.getElementById('uploadDesc').value.trim();
   const tags=document.getElementById('uploadTags').value.trim();
   if(!title)return showToast('Title required!');
+  // Check daily limit
+  if(!checkDailyLimit(uploadType))return;
+  // Show confirm popup
+  if(!_pendingUpload){
+    _pendingUpload=true;
+    showUploadConfirm();
+    return;
+  }
   const btn=document.getElementById('uploadBtn');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';
   try{
@@ -3417,6 +3427,7 @@ async function doUpload(){
       privacy:_uploadPrivacy||'public',
       searchTerms:extractSearchTerms({title,desc,tags:tags.split(',').map(t=>t.trim()),category:document.getElementById('uploadCategory')?.value||uploadType,type:uploadType})
     });
+    incrementDailyUpload(uploadType);
     showToast('✅ Uploaded successfully!');
     resetUploadForm();btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';
     setTimeout(()=>showScreen('home'),1000);
@@ -6724,10 +6735,54 @@ function loadProfileAbout(container){
     </div>`;
 }
 
-function safe(fn){
-  try{fn();}catch(e){console.warn('Safe call error:',e.message);}
+
+// ══════════════════════════════════════════════════════
+// TERMS GATE — First login
+// ══════════════════════════════════════════════════════
+function checkTermsAgreed(){
+  return localStorage.getItem('sx_terms_agreed')==='yes';
 }
 
-</script>
-</body>
-</html>
+function showTermsGate(){
+  const el=document.getElementById('termsGateScreen');
+  if(el){el.style.display='flex';}
+}
+
+function hideTermsGate(){
+  const el=document.getElementById('termsGateScreen');
+  if(el){el.style.display='none';}
+}
+
+function toggleTermsCheck(){
+  const cb=document.getElementById('termsCheckbox');
+  const btn=document.getElementById('termsAgreeBtn');
+  if(!cb||!btn)return;
+  const checked=cb.getAttribute('data-checked')==='true';
+  if(!checked){
+    cb.setAttribute('data-checked','true');
+    cb.style.background='var(--red)';
+    cb.style.borderColor='var(--red)';
+    cb.innerHTML='<i class="fas fa-check" style="color:white;font-size:12px;"></i>';
+    btn.disabled=false;
+    btn.style.background='var(--red)';
+    btn.style.cursor='pointer';
+  }else{
+    cb.setAttribute('data-checked','false');
+    cb.style.background='';
+    cb.style.borderColor='var(--border)';
+    cb.innerHTML='';
+    btn.disabled=true;
+    btn.style.background='#555';
+    btn.style.cursor='not-allowed';
+  }
+}
+
+function agreeToTerms(){
+  const cb=document.getElementById('termsCheckbox');
+  if(!cb||cb.getAttribute('data-checked')!=='true')return;
+  localStorage.setItem('sx_terms_agreed','yes');
+  hideTermsGate();
+  showToast('Stream x mein khush aamdeed! 🎉');
+}
+
+/
