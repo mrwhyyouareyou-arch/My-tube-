@@ -6825,3 +6825,43 @@ async function confirmAndUpload() {
   // cancelUploadConfirm();
   // showToast('Upload success! 🎉');
 }
+<!-- === UPLOAD CONFIRM SYSTEM ONLY === -->
+<script>
+// === UPLOAD CONFIRM ===
+function showUploadConfirm() {
+  document.getElementById('uploadConfirmOverlay').style.display = 'block';
+  document.getElementById('uploadConfirmSheet').style.display = 'block';
+}
+
+function cancelUploadConfirm() {
+  document.getElementById('uploadConfirmOverlay').style.display = 'none';
+  document.getElementById('uploadConfirmSheet').style.display = 'none';
+}
+
+async function confirmAndUpload() {
+  cancelUploadConfirm();
+  try {
+    await _actualDoUpload(); // Tera asli upload function
+    showToast('Upload success! 🎉');
+  } catch (e) {
+    console.warn('Safe call error:', e.message);
+    showToast('Upload failed, dobara try karein ❌');
+  }
+}
+
+function safe(fn) {
+  try { fn(); } catch(e) { console.warn('Safe call error:', e.message); }
+}
+</script>
+
+<!-- UPLOAD CONFIRM POPUP HTML -->
+<div id="uploadConfirmOverlay" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.7);"></div>
+
+<div id="uploadConfirmSheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9001;background:var(--card);border-radius:16px 16px 0 0;padding:20px;">
+  <div style="font-size:16px;font-weight:800;margin-bottom:12px;">Upload Confirm Karein ⚠️</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Kya ye video/image aapne khud banaya hai? Copy ya reused content pe account ban ho sakta hai.</div>
+  <button onclick="confirmAndUpload()" style="width:100%;padding:12px;background:var(--red);color:#fff;border:none;border-radius:8px;font-weight:700;margin-bottom:8px;">Haan, Ye Mera Hai ✅</button>
+  <button onclick="cancelUploadConfirm()" style="width:100%;padding:12px;background:var(--line);color:var(--text);border:none;border-radius:8px;font-weight:700;">Cancel</button>
+</div>
+  
+  
