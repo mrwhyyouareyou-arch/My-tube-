@@ -2464,8 +2464,7 @@ auth.onAuthStateChanged(async user=>{
         try{setupOwnerNav();}catch(e){}
         try{loadUserPrefs();}catch(e){}
         try{listenNotifs();}catch(e){}
-        // Show terms gate if not agreed yet
-        try{if(!checkTermsAgreed())showTermsGate();}catch(e){}
+        setTimeout(()=>{try{if(!checkTermsAgreed())showTermsGate();}catch(e){}},800);
       }).catch(()=>{});
       loadHome();
     }catch(e){loadHome();}
@@ -3379,17 +3378,17 @@ function addPostImages(input){
 async function doUpload(){
   if(!cUser)return showToast('Login karein!');
   const title=document.getElementById('uploadTitle').value.trim();
+  if(!title)return showToast('Title required!');
+  if(!checkDailyLimit(uploadType))return;
+  showUploadConfirm();
+}
+
+async function _actualDoUpload(){
+  if(!cUser)return showToast('Login karein!');
+  const title=document.getElementById('uploadTitle').value.trim();
   const desc=document.getElementById('uploadDesc').value.trim();
   const tags=document.getElementById('uploadTags').value.trim();
   if(!title)return showToast('Title required!');
-  // Check daily limit
-  if(!checkDailyLimit(uploadType))return;
-  // Show confirm popup
-  if(!_pendingUpload){
-    _pendingUpload=true;
-    showUploadConfirm();
-    return;
-  }
   const btn=document.getElementById('uploadBtn');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';
   try{
@@ -6736,23 +6735,10 @@ function loadProfileAbout(container){
 }
 
 
-// ══════════════════════════════════════════════════════
-// TERMS GATE — First login
-// ══════════════════════════════════════════════════════
-function checkTermsAgreed(){
-  return localStorage.getItem('sx_terms_agreed')==='yes';
-}
-
-function showTermsGate(){
-  const el=document.getElementById('termsGateScreen');
-  if(el){el.style.display='flex';}
-}
-
-function hideTermsGate(){
-  const el=document.getElementById('termsGateScreen');
-  if(el){el.style.display='none';}
-}
-
+// ══ TERMS GATE ══
+function checkTermsAgreed(){return localStorage.getItem('sx_terms_v1')==='yes';}
+function showTermsGate(){const el=document.getElementById('termsGateScreen');if(el)el.style.display='flex';}
+function hideTermsGate(){const el=document.getElementById('termsGateScreen');if(el)el.style.display='none';}
 function toggleTermsCheck(){
   const cb=document.getElementById('termsCheckbox');
   const btn=document.getElementById('termsAgreeBtn');
@@ -6760,29 +6746,82 @@ function toggleTermsCheck(){
   const checked=cb.getAttribute('data-checked')==='true';
   if(!checked){
     cb.setAttribute('data-checked','true');
-    cb.style.background='var(--red)';
-    cb.style.borderColor='var(--red)';
-    cb.innerHTML='<i class="fas fa-check" style="color:white;font-size:12px;"></i>';
-    btn.disabled=false;
-    btn.style.background='var(--red)';
-    btn.style.cursor='pointer';
+    cb.style.background='var(--red)';cb.style.borderColor='var(--red)';
+    cb.innerHTML='<i class="fas fa-check" style="color:white;font-size:11px;"></i>';
+    btn.disabled=false;btn.style.background='var(--red)';btn.style.cursor='pointer';
   }else{
     cb.setAttribute('data-checked','false');
-    cb.style.background='';
-    cb.style.borderColor='var(--border)';
-    cb.innerHTML='';
-    btn.disabled=true;
-    btn.style.background='#555';
-    btn.style.cursor='not-allowed';
+    cb.style.background='';cb.style.borderColor='var(--border)';cb.innerHTML='';
+    btn.disabled=true;btn.style.background='#555';btn.style.cursor='not-allowed';
   }
 }
-
 function agreeToTerms(){
   const cb=document.getElementById('termsCheckbox');
   if(!cb||cb.getAttribute('data-checked')!=='true')return;
-  localStorage.setItem('sx_terms_agreed','yes');
+  localStorage.setItem('sx_terms_v1','yes');
   hideTermsGate();
   showToast('Stream x mein khush aamdeed! 🎉');
 }
+// === DAILY LIMITS ===
+function getTodayKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+}
 
-/
+function getDailyUploads() {
+  try {
+    return JSON.parse(localStorage.getItem('sx_ul_' + getTodayKey()) || '{}');
+  } catch (e) {
+    return {};
+  }
+}
+
+function incrementDailyUpload(type) {
+  const data = getDailyUploads();
+  data[type] = (data[type] || 0) + 1;
+  localStorage.setItem('sx_ul_' + getTodayKey(), JSON.stringify(data));
+}
+
+function checkDailyLimit(type) {
+  const limits = {
+    video: 2,
+    short: 3,
+    post: 3,
+    image: 3,
+    gaming: 2,
+    music: 2
+  };
+  const used = (getDailyUploads()[type] || 0);
+  const limit = limits[type] || 2;
+
+  if (used >= limit) {
+    showToast('Aaj ka ' + type + ' limit (' + limit + ') poora ho gaya! Kal try karein ⏰');
+    return false; // false = upload roko
+  }
+  return true; // true = upload karne do
+}
+
+// === UPLOAD CONFIRM ===
+function showUploadConfirm() {
+  document.getElementById('uploadConfirmOverlay').style.display = 'block';
+  document.getElementById('uploadConfirmSheet').style.display = 'block';
+}
+
+function cancelUploadConfirm() {
+  document.getElementById('uploadConfirmOverlay').style.display = 'none';
+  document.getElementById('uploadConfirmSheet').style.display = 'none';
+}
+
+async function confirmAndUpload() {
+  // Yahan Vision API ka call aayega bhai
+  // Abhi ke liye bas limit check + increment
+
+  // Example: const type = 'short'; // ya video, post etc
+  // if(!checkDailyLimit(type)) return;
+
+  // Upload ka code yahan...
+  // Upload success ke baad:
+  // incrementDailyUpload(type);
+  // cancelUploadConfirm();
+  // showToast('Upload success! 🎉');
+}
