@@ -368,25 +368,13 @@ button,input,textarea{font-family:var(--font);}
 .gm-del{border-color:var(--red);color:var(--red);}
 
 /* ═══ VIDEO PLAYER ═══ */
-.player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;}
+.player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow:hidden;}
 .player-screen.open{display:flex;}
 .player-back{position:fixed;top:10px;left:10px;z-index:210;width:34px;height:34px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;}
-.player-vid-wrap{background:#000;width:100%;position:sticky;top:0;z-index:50;flex-shrink:0;min-height:220px;max-height:56vw;}
+.player-vid-wrap{background:#000;width:100%;flex-shrink:0;min-height:220px;max-height:56vw;position:relative;z-index:5;}
 .player-vid-wrap video{width:100%;height:auto;max-height:56vw;object-fit:contain;display:block;}
-
-/* ═══ RELATED VIDEOS LANDSCAPE ═══ */
-.related-landscape-card{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;cursor:pointer;animation:fadeUp .3s ease;}
-.related-landscape-card:active{opacity:.75;}
-.related-thumb-wrap{position:relative;width:160px;min-width:160px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;}
-.related-thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
-.related-thumb-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
-.related-thumb-placeholder i{font-size:22px;color:var(--text3);opacity:.5;}
-.related-dur{position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.88);color:white;font-size:9px;font-weight:600;padding:1px 4px;border-radius:3px;}
-.related-info{flex:1;min-width:0;}
-.related-title{font-size:12px;font-weight:600;line-height:1.4;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.related-ch{font-size:11px;color:var(--text2);margin-top:3px;}
-.related-meta{font-size:10px;color:var(--text3);margin-top:2px;}
 .player-vid-wrap img{width:100%;height:100%;object-fit:contain;}
+.player-scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .player-info{padding:12px 14px 0;}
 .player-title{font-size:15px;font-weight:700;line-height:1.4;}
 .player-meta{font-size:11px;color:var(--text2);margin-top:4px;}
@@ -1718,6 +1706,7 @@ button,input,textarea{font-family:var(--font);}
       <i class="fas fa-expand" id="fsIcon"></i>
     </button>
   </div>
+  <div class="player-scroll-body">
   <div class="player-info">
     <div class="player-title" id="playerTitle">Loading...</div>
     <div class="player-meta" id="playerMeta"></div>
@@ -1801,6 +1790,7 @@ button,input,textarea{font-family:var(--font);}
     </div>
     <button onclick="closeAboutComments()" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;">Got it</button>
   </div>
+  </div><!-- end player-scroll-body -->
 </div>
 
 <!-- ═══ FULLSCREEN SHORT ═══ -->
@@ -3949,43 +3939,76 @@ async function loadComments(postId){
 }
 
 async function loadRelated(postId, postType, category){
-  const list=document.getElementById('relatedList');
-  if(!list)return;
-  list.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px 0;">Loading...</div>';
-  try{
+  const list = document.getElementById('relatedList');
+  if(!list) return;
+  list.innerHTML = '<div style="display:flex;justify-content:center;padding:20px;"><div class="spinner"></div></div>';
+  try {
     let snap;
-    try{snap=await db.collection('posts').orderBy('rankScore','desc').limit(30).get();}
-    catch(e){snap=await db.collection('posts').orderBy('time','desc').limit(30).get();}
-    let related=snap.docs.map(d=>({id:d.id,...d.data()}))
-      .filter(p=>p.id!==postId)
-      .sort((a,b)=>{
-        const sa=(a.category===category||a.type===postType?20:0)+(a.rankScore||0);
-        const sb=(b.category===category||b.type===postType?20:0)+(b.rankScore||0);
+    try { snap = await db.collection('posts').orderBy('rankScore','desc').limit(50).get(); }
+    catch(e) { snap = await db.collection('posts').orderBy('time','desc').limit(50).get(); }
+
+    const all = snap.docs.map(d => ({id:d.id,...d.data()})).filter(p => p.id !== postId);
+    const shorts = all.filter(p => p.type === 'short' && p.url).slice(0, 8);
+    const videos = all.filter(p => p.type !== 'short')
+      .sort((a,b) => {
+        const sa = (a.category===category?30:0)+(a.type===postType?10:0)+(a.rankScore||0);
+        const sb = (b.category===category?30:0)+(b.type===postType?10:0)+(b.rankScore||0);
         return sb-sa;
-      })
-      .slice(0,12);
-    if(!related.length){list.innerHTML='';return;}
-    list.innerHTML=related.map(p=>{
-      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_400/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-      const views=p.views>=1000?(p.views/1000).toFixed(1)+'K':(p.views||0);
-      const ago=getTimeAgo(p.time);
-      return `<div class="related-landscape-card" onclick="openPost('${p.id}')">
-        <div class="related-thumb-wrap">
-          ${th
-            ? `<img src="${th}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'related-thumb-placeholder\\'><i class=\\'fas fa-play-circle\\'></i></div>'">`
-            : `<div class="related-thumb-placeholder"><i class="fas fa-play-circle"></i></div>`
-          }
-          ${p.type==='short'?'<div style="position:absolute;top:4px;left:4px;background:var(--red);color:white;font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px;">SHORT</div>':''}
-          ${p.duration?`<span class="related-dur">${p.duration}</span>`:''}
+      }).slice(0,15);
+
+    if(!videos.length && !shorts.length){
+      list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px;">Koi related content nahi mila</div>';
+      return;
+    }
+
+    let html = '';
+
+    // SHORTS ROW
+    if(shorts.length){
+      html += `<div style="margin-bottom:18px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+          <i class="fas fa-film" style="color:var(--red);"></i> Shorts
         </div>
-        <div class="related-info">
-          <div class="related-title">${p.title||'Untitled'}</div>
-          <div class="related-ch">${p.authorName||'Unknown'}</div>
-          <div class="related-meta">👁️ ${views} views • ${ago}</div>
+        <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+          ${shorts.map(p => {
+            const th = p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_0,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+            const ttl = (p.title||'').replace(/</g,'&lt;');
+            return `<div onclick="openPost('${p.id}')" style="flex-shrink:0;width:80px;height:140px;border-radius:10px;overflow:hidden;background:var(--bg3);position:relative;cursor:pointer;">
+              ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-film" style="color:var(--text3);font-size:20px;"></i></div>'}
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px;background:linear-gradient(transparent,rgba(0,0,0,.85));">
+                <div style="font-size:9px;font-weight:600;color:white;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${ttl}</div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }
+
+    // LANDSCAPE VIDEO CARDS
+    html += videos.map(p => {
+      const th = p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_400/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+      const views = p.views>=1000000?(p.views/1000000).toFixed(1)+'M':p.views>=1000?(p.views/1000).toFixed(1)+'K':(p.views||0);
+      const title = (p.title||'Untitled').replace(/</g,'&lt;');
+      const ch = (p.authorName||'Unknown').replace(/</g,'&lt;');
+      const dur = p.duration||'';
+      return `<div onclick="openPost('${p.id}')" style="display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="position:relative;width:160px;min-width:160px;height:90px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;">
+          ${th?`<img src="${th}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`:`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play-circle" style="font-size:26px;color:var(--text3);opacity:.5;"></i></div>`}
+          ${dur?`<div style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.85);color:white;font-size:9px;font-weight:600;padding:2px 5px;border-radius:3px;">${dur}</div>`:''}
+        </div>
+        <div style="flex:1;min-width:0;padding-top:2px;">
+          <div style="font-size:12px;font-weight:600;line-height:1.45;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:5px;">${title}</div>
+          <div style="font-size:11px;color:var(--text2);margin-bottom:3px;">${ch}</div>
+          <div style="font-size:10px;color:var(--text3);">👁️ ${views} &nbsp;•&nbsp; ${getTimeAgo(p.time)}</div>
         </div>
       </div>`;
     }).join('');
-  }catch(e){list.innerHTML='';}
+
+    list.innerHTML = html;
+  } catch(err){
+    console.warn('loadRelated error:',err);
+    list.innerHTML='';
+  }
 }
 
 function setReply(mention){
