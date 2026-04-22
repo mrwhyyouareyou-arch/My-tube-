@@ -3036,8 +3036,7 @@ function buildPostCard(p){
     <div class="post-hdr">
       <div class="post-av">${avHtml}</div>
       <div><div class="post-author">${p.authorName||'User'}</div><div class="post-time">${getTimeAgo(p.time)}</div></div>
-${(p.title||p.desc)?`<div class="post-body" style="${p.bgColor&&p.bgColor!=='none'?'background:'+p.bgColor+';color:white;padding:16px;border-radius:10px;margin:8px 14px;font-size:15px;font-weight:600;text-align:center;min-height:80px;display:flex;align-items:center;justify-content:center;flex-direction:column;':''}">${p.title||''}${p.desc?'<br>'+p.desc:''}${p.bgColor&&p.bgColor!=='none'?'<br><button onclick="savePostImage(\''+p.id+'\',event)" style="margin-top:8px;background:rgba(255,255,255,0.2);border:none;color:white;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;"><i class=\'fas fa-download\'></i> Save</button>':''}</div>`:''}
-    ${imgs}
+${(p.title||p.desc)?`<div class="post-body" style="${p.bgColor&&p.bgColor!=='none'?'background:'+p.bgColor+';color:#fff;padding:20px 14px;border-radius:12px;margin:8px 14px;font-size:16px;font-weight:700;text-align:center;min-height:100px;display:flex;align-items:center;justify-content:center;':''}">${p.title||''}${p.desc?'<br><span style="font-size:13px;font-weight:400;">'+p.desc+'</span>':''}</div>`:''}
     <div class="post-acts">
       <button class="post-act" id="qlike_${p.id}" onclick="quickLike('${p.id}',this,event)"><i class="fas fa-thumbs-up"></i> ${p.likes||0}</button>
       <button class="post-act" onclick="openPost('${p.id}');event.stopPropagation()"><i class="fas fa-comment"></i> ${p.comments||0}</button>
