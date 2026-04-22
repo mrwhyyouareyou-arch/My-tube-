@@ -3382,6 +3382,50 @@ async function doUpload(){
   if(!title)return showToast('Title required!');
   const btn=document.getElementById('uploadBtn');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';
+  // ══ DAILY UPLOAD LIMIT CHECK ══
+  const today = new Date().toDateString();
+  const limitKey = `uploadLimit_${cUser.uid}_${today}`;
+  let dailyCount = JSON.parse(localStorage.getItem(limitKey) || '{"video":0,"short":0,"post":0}');
+  const typeKey = (uploadType==='video'||uploadType==='gaming'||uploadType==='music') ? 'video' :
+                  (uploadType==='short') ? 'short' : 'post';
+  const limits = {video:2, short:2, post:2};
+  if(dailyCount[typeKey] >= limits[typeKey]){
+    showToast(`⛔ Aaj ke liye ${typeKey} limit (${limits[typeKey]}) puri ho gayi! Kal dobara try karein.`);
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-upload"></i> Upload';
+    return;
+  }
+
+  // ══ ORIGINAL CONTENT CHECK ══
+  const confirmed = await new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.innerHTML = `
+      <div style="background:var(--bg2);border-radius:16px;padding:24px;max-width:340px;width:100%;border:1px solid var(--border);">
+        <div style="font-size:28px;text-align:center;margin-bottom:12px;">⚠️</div>
+        <h3 style="font-size:16px;font-weight:700;text-align:center;margin-bottom:8px;">Original Content Confirm Karein</h3>
+        <p style="font-size:13px;color:var(--text2);text-align:center;margin-bottom:6px;">Is this your original content?<br>کیا یہ آپ کا اپنا اوریجنل مواد ہے؟</p>
+        <p style="font-size:11px;color:#ff4444;text-align:center;margin-bottom:18px;line-height:1.5;">⚠️ Reused / copyrighted content upload karne par aapka account permanently terminate ho jayega aur dobara account banana ban hoga.</p>
+        <div style="display:flex;gap:10px;">
+          <button id="noOriginal" style="flex:1;padding:11px;border:1px solid var(--border);background:transparent;color:var(--text);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">No / نہیں</button>
+          <button id="yesOriginal" style="flex:1;padding:11px;background:var(--red);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">Yes / ہاں</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    document.getElementById('yesOriginal').onclick = () => { document.body.removeChild(overlay); resolve(true); };
+    document.getElementById('noOriginal').onclick = () => { document.body.removeChild(overlay); resolve(false); };
+  });
+
+  if(!confirmed){
+    showToast('Upload cancel kar diya gaya.');
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-upload"></i> Upload';
+    return;
+  }
+
+  // ══ DAILY COUNT SAVE ══
+  dailyCount[typeKey]++;
+  localStorage.setItem(limitKey, JSON.stringify(dailyCount));
   try{
     let url='',thumbURL='';
     if(uploadType!=='post'){
