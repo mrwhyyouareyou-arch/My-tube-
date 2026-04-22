@@ -3475,6 +3475,26 @@ async function doUpload(){
       if(!selectedFile){showToast('Select file!');btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';return;}
       const maxMB=uploadType==='image'?10:150;
       if(selectedFile.size>maxMB*1024*1024){showToast(`Max ${maxMB}MB!`);btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';return;}
+      // ══ DUPLICATE VIDEO HASH CHECK ══
+      if(uploadType==='video'||uploadType==='short'||uploadType==='gaming'){
+        try{
+          showToast('⏳ Duplicate check ho raha hai...');
+          const buf = await selectedFile.arrayBuffer();
+          const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+          const hashArr = Array.from(new Uint8Array(hashBuf));
+          const fileHash = hashArr.map(b=>b.toString(16).padStart(2,'0')).join('');
+          const hashSnap = await db.collection('videoHashes').where('hash','==',fileHash).get();
+          if(!hashSnap.empty){
+            showToast('❌ Duplicate content not allowed! Ye video pehle se upload ho chuki hai.');
+            btn.disabled=false;
+            btn.innerHTML='<i class="fas fa-upload"></i> Upload';
+            return;
+          }
+          window._currentFileHash = fileHash;
+        }catch(hashErr){
+          console.warn('Hash check failed:', hashErr);
+        }
+      }
       showProg();
       const ep=(uploadType==='video'||uploadType==='short'||uploadType==='gaming'||uploadType==='music')
         ?`https://api.cloudinary.com/v1_1/${CLOUD}/video/upload`
@@ -3487,6 +3507,16 @@ async function doUpload(){
       for(const f of postImgFiles){images.push(await uploadCloud(f,`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`));}
     }
     hideProg();
+    // ══ SAVE HASH TO FIRESTORE ══
+    if(window._currentFileHash){
+      await db.collection('videoHashes').add({
+        hash: window._currentFileHash,
+        authorId: cUser.uid,
+        title: title,
+        time: Date.now()
+      });
+      window._currentFileHash = null;
+    }
     // Initial rankScore based on recency
     const initialScore=calcScore({time:Date.now(),likes:0,views:0,comments:0,type:uploadType,category:tags.split(',')[0]?.trim()||uploadType});
     await db.collection('posts').add({
