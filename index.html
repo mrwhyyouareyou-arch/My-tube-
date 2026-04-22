@@ -647,7 +647,7 @@ button,input,textarea{font-family:var(--font);}
   <div class="side-item" onclick="showScreen('gallery');closeSideMenu()"><i class="fas fa-images"></i><span>My Gallery</span></div>
   <div class="side-divider"></div>
   <div class="side-section-title">Explore</div>
-  <div class="side-item" onclick="showScreen('home');setTimeout(()=>filterFeed(document.querySelector('.chip[onclick*=trending]'),'trending'),300);closeSideMenu()">
+  <div class="side-item" onclick="filterFeed(document.querySelector('.chip'),'trending');closeSideMenu();showScreen('home')">
   <div class="side-item" onclick="doSearch('music');closeSideMenu()"><i class="fas fa-music" style="color:#e91e8c;"></i><span>Music</span></div>
   <div class="side-item" onclick="doSearch('gaming');closeSideMenu()"><i class="fas fa-gamepad" style="color:#00c864;"></i><span>Gaming</span></div>
   <div class="side-item" onclick="doSearch('news');closeSideMenu()"><i class="fas fa-newspaper" style="color:#0096ff;"></i><span>News</span></div>
@@ -2998,7 +2998,7 @@ function buildCard(p){
   const score=calcScore(p,userPrefs);
   return `<div class="yt-card" onclick="openPost('${p.id}')">
     <div class="yt-thumb">
-      ${thumb}
+      let thumb=''; to
       ${p.type==='short'?'<div class="yt-badge">SHORT</div>':''}
       ${p.isLive?'<div class="yt-badge" style="background:#ff0000;">🔴 LIVE</div>':''}
       ${p.duration?`<div class="yt-dur">${p.duration}</div>`:(p.type==='short'?'<div class="yt-dur" style="background:rgba(255,0,0,.85);">SHORT</div>':((p.type==='video'||p.type==='gaming'||p.type==='music')&&!p.isLive?'<div class="yt-dur">▶</div>':''))}
