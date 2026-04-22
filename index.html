@@ -823,6 +823,21 @@ button,input,textarea{font-family:var(--font);}
               <button class="privacy-btn" id="privPrivate" onclick="setPrivacy('private',this)"><i class="fas fa-lock"></i> Private</button>
             </div>
           </div>
+          <!-- Post Background Color Picker -->
+<div id="postColorWrap" style="display:none;margin-bottom:12px;">
+  <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;"><i class="fas fa-palette" style="color:var(--red);margin-right:5px;"></i> Post Background Color</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <div onclick="selectPostBg(this,'none')" style="width:32px;height:32px;border-radius:50%;background:var(--card);border:2px solid var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;">✕</div>
+    <div onclick="selectPostBg(this,'#ff0000')" style="width:32px;height:32px;border-radius:50%;background:#ff0000;cursor:pointer;border:2px solid transparent;"></div>
+    <div onclick="selectPostBg(this,'#0096ff')" style="width:32px;height:32px;border-radius:50%;background:#0096ff;cursor:pointer;border:2px solid transparent;"></div>
+    <div onclick="selectPostBg(this,'#00c864')" style="width:32px;height:32px;border-radius:50%;background:#00c864;cursor:pointer;border:2px solid transparent;"></div>
+    <div onclick="selectPostBg(this,'#ffd700')" style="width:32px;height:32px;border-radius:50%;background:#ffd700;cursor:pointer;border:2px solid transparent;"></div>
+    <div onclick="selectPostBg(this,'#9b59b6')" style="width:32px;height:32px;border-radius:50%;background:#9b59b6;cursor:pointer;border:2px solid transparent;"></div>
+    <div onclick="selectPostBg(this,'#ff6600')" style="width:32px;height:32px;border-radius:50%;background:#ff6600;cursor:pointer;border:2px solid transparent;"></div>
+    <div onclick="selectPostBg(this,'#e91e8c')" style="width:32px;height:32px;border-radius:50%;background:#e91e8c;cursor:pointer;border:2px solid transparent;"></div>
+    <div onclick="selectPostBg(this,'#000000')" style="width:32px;height:32px;border-radius:50%;background:#000;cursor:pointer;border:2px solid transparent;"></div>
+  </div>
+</div>
           <button class="btn-red" id="uploadBtn" onclick="doUpload()"><i class="fas fa-upload"></i> Upload</button>
         </div>
       </div>
@@ -2983,7 +2998,7 @@ async function openFeedShort(postId){
 function buildCard(p){
   if(p.type==='post')return buildPostCard(p);
   // YouTube-style video card
-  let thumb='';
+  let thumb=''; to 
   if(p.type==='image'){
     thumb=p.url?`<img src="${p.url}" loading="lazy">`:'<div class="yt-thumb-placeholder"><i class="fas fa-image"></i></div>';
   }else{
@@ -3021,8 +3036,7 @@ function buildPostCard(p){
     <div class="post-hdr">
       <div class="post-av">${avHtml}</div>
       <div><div class="post-author">${p.authorName||'User'}</div><div class="post-time">${getTimeAgo(p.time)}</div></div>
-    </div>
-    ${(p.title||p.desc)?`<div class="post-body">${p.title||''}${p.desc?'<br>'+p.desc:''}</div>`:''}
+${(p.title||p.desc)?`<div class="post-body" style="${p.bgColor&&p.bgColor!=='none'?'background:'+p.bgColor+';color:white;padding:16px;border-radius:10px;margin:8px 14px;font-size:15px;font-weight:600;text-align:center;min-height:80px;display:flex;align-items:center;justify-content:center;flex-direction:column;':''}">${p.title||''}${p.desc?'<br>'+p.desc:''}${p.bgColor&&p.bgColor!=='none'?'<br><button onclick="savePostImage(\''+p.id+'\',event)" style="margin-top:8px;background:rgba(255,255,255,0.2);border:none;color:white;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;"><i class=\'fas fa-download\'></i> Save</button>':''}</div>`:''}
     ${imgs}
     <div class="post-acts">
       <button class="post-act" id="qlike_${p.id}" onclick="quickLike('${p.id}',this,event)"><i class="fas fa-thumbs-up"></i> ${p.likes||0}</button>
@@ -3361,9 +3375,12 @@ function selectType(type,el){
   const icon=document.getElementById('fileIcon');
   const musicWrap=document.getElementById('musicSelectorWrap');
   if(musicWrap)musicWrap.style.display='none';
+
   if(type==='post'){
     document.getElementById('fileDrop').style.display='none';
     document.getElementById('postImgsWrap').style.display='block';
+    document.getElementById('postColorWrap').style.display='block';
+_postBgColor='none';
   }else if(type==='image'){
     fi.accept='image/*';if(icon)icon.className='fas fa-image';
     document.getElementById('fileText').textContent='Select Image';
@@ -3376,7 +3393,37 @@ function selectType(type,el){
     if(type==='short'&&edBtn){edBtn.style.display='flex';}
   }
 }
+let _postBgColor = 'none';
+function selectPostBg(el, color){
+  document.querySelectorAll('#postColorWrap div[onclick]').forEach(d=>d.style.border='2px solid transparent');
+  el.style.border='2px solid var(--text)';
+  _postBgColor = color;
+}
 
+function savePostImage(postId, e){
+  if(e) e.stopPropagation();
+  const canvas = document.createElement('canvas');
+  canvas.width = 400; canvas.height = 200;
+  const ctx = canvas.getContext('2d');
+  db.collection('posts').doc(postId).get().then(doc=>{
+    if(!doc.exists) return;
+    const p = doc.data();
+    ctx.fillStyle = p.bgColor||'#ff0000';
+    ctx.fillRect(0,0,400,200);
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 20px Outfit, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(p.title||'', 200, 90);
+    if(p.desc){ ctx.font = '14px Outfit, sans-serif'; ctx.fillText(p.desc.substring(0,60), 200, 120); }
+    ctx.font = '12px sans-serif'; ctx.fillStyle='rgba(255,255,255,0.7)';
+    ctx.fillText('Stream X', 200, 180);
+    const link = document.createElement('a');
+    link.download = 'streamx-post.png';
+    link.href = canvas.toDataURL();
+    link.click();
+    showToast('✅ Image saved!');
+  });
+}
 function onFileSelect(input){
   selectedFile=input.files[0];if(!selectedFile)return;
   document.getElementById('fileText').textContent=selectedFile.name;
@@ -3576,6 +3623,7 @@ async function doUpload(){
       duration:window._vidDuration||'',
       bgMusic:selectedSong?selectedSong.name:'',
       privacy:_uploadPrivacy||'public',
+      bgColor: uploadType==='post' ? (_postBgColor||'none') : 'none',
       searchTerms:extractSearchTerms({title,desc,tags:tags.split(',').map(t=>t.trim()),category:document.getElementById('uploadCategory')?.value||uploadType,type:uploadType})
     });
     showToast('✅ Uploaded successfully!');
