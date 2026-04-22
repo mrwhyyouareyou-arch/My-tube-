@@ -3517,6 +3517,50 @@ async function doUpload(){
       });
       window._currentFileHash = null;
     }
+    // ══ SOCIAL MEDIA REUSED CONTENT SCANNER ══
+    const _st = (title+' '+desc+' '+tags).toLowerCase();
+    const _badWords = [
+      // Social media platforms
+      'tiktok','tik tok','#tiktok','@tiktok',
+      'instagram','#instagram','#reels','ig reels',
+      'youtube','youtu.be','#youtube','#ytshorts',
+      'facebook','#facebook','#fbvideo',
+      'snapchat','#snapchat',
+      'twitter','#twitter','#xvideo',
+      'likee','#likee','josh app','#joshapp',
+      'moj app','#mojapp','chingari',
+      // Repost indicators
+      'credit to','credits to','not mine','not my video',
+      'not my content','taken from','downloaded from',
+      'copied from','source:','via @','repost','re-post',
+      'found on','belongs to','owned by','all credit',
+      'full credit','original owner','original creator',
+      // Urdu/Hindi repost words
+      'mera nahi','meri nahi','kisi aur ka','copy kiya',
+      'download kiya','wahan se liya','yahan se liya',
+      // Watermark hints
+      'follow me on','follow us on','link in bio',
+      'swipe up','watch on','available on',
+      // Common spam
+      'میرا نہیں','کسی اور کا','ڈاؤنلوڈ کیا','کاپی کیا',
+      'ٹک ٹاک','انسٹاگرام','یوٹیوب'
+    ];
+    const _found = _badWords.find(w => _st.includes(w));
+    if(_found){
+      await db.collection('flaggedContent').add({
+        authorId: cUser.uid,
+        authorName: cUserData?.name || cUser.email,
+        title, desc,
+        reason: 'Suspicious keyword: "' + _found + '"',
+        type: uploadType,
+        time: Date.now(),
+        status: 'pending'
+      });
+      showToast('⚠️ Aapka content review ke liye flag ho gaya! Agar reused content hai to account terminate hoga.');
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-upload"></i> Upload';
+      return;
+    }
     // Initial rankScore based on recency
     const initialScore=calcScore({time:Date.now(),likes:0,views:0,comments:0,type:uploadType,category:tags.split(',')[0]?.trim()||uploadType});
     await db.collection('posts').add({
