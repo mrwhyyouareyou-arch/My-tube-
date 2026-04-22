@@ -2456,6 +2456,46 @@ auth.onAuthStateChanged(async user=>{
     cUser=user;
     hideSplash();
     document.getElementById('authScreen').style.display='none';
+    // ══ GATEWAY POLICY CHECK ══
+    const policyKey = `policyAccepted_${user.uid}`;
+    if(!localStorage.getItem(policyKey)){
+      document.getElementById('mainApp').style.display='none';
+      const gate = document.createElement('div');
+      gate.id = 'gatewayPolicy';
+      gate.style.cssText = 'position:fixed;inset:0;background:var(--bg);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;';
+      gate.innerHTML = `
+        <div style="max-width:380px;width:100%;">
+          <div style="text-align:center;margin-bottom:20px;">
+            <div style="font-size:40px;margin-bottom:8px;">📋</div>
+            <h2 style="font-size:20px;font-weight:800;color:var(--text);">Stream X میں خوش آمدید</h2>
+            <p style="font-size:13px;color:var(--text2);margin-top:6px;">Platform use karne se pehle humari policies padhein</p>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px;max-height:280px;overflow-y:auto;">
+            <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">📌 Community Guidelines</p>
+            <p style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:12px;">• صرف اپنا اوریجنل مواد اپلوڈ کریں<br>• Reused / copyrighted content سختی سے منع ہے<br>• Spam، fake accounts اور bot activity ممنوع ہے<br>• Adult، violent یا illegal content upload نہ کریں</p>
+            <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">⚠️ Violation Policy</p>
+            <p style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:12px;">• پہلی خلاف ورزی: Content remove + warning<br>• دوسری خلاف ورزی: 7 دن upload بند<br>• تیسری خلاف ورزی: Account permanently terminate<br>• Illegal content: فوری removal + authorities کو report</p>
+            <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">📢 AdSense & Monetization</p>
+            <p style="font-size:12px;color:var(--text2);line-height:1.7;">• Monetization صرف original creators کو ملے گی<br>• Copyright violations monetization ختم کر دیں گے<br>• Platform quality برقرار رکھنا ہر user کی ذمہ داری ہے</p>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;">
+            <input type="checkbox" id="policyCheckbox" style="width:18px;height:18px;margin-top:2px;accent-color:var(--red);cursor:pointer;flex-shrink:0;">
+            <label for="policyCheckbox" style="font-size:12px;color:var(--text2);line-height:1.6;cursor:pointer;">میں نے تمام policies پڑھ لی ہیں اور ان سے متفق ہوں۔ میں صرف original content upload کروں گا/گی۔</label>
+          </div>
+          <button id="gatewayAgreeBtn" onclick="
+            if(!document.getElementById('policyCheckbox').checked){
+              alert('Pehle checkbox tick karein!');return;
+            }
+            localStorage.setItem('${policyKey}','1');
+            document.getElementById('gatewayPolicy').remove();
+            document.getElementById('mainApp').style.display='block';
+          " style="width:100%;padding:14px;background:var(--red);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">
+            ✅ Agree & Continue
+          </button>
+        </div>`;
+      document.body.appendChild(gate);
+      return;
+    }
     document.getElementById('mainApp').style.display='block';
     try{
       loadUserData().then(()=>{
