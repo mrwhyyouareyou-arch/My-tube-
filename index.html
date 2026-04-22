@@ -3036,10 +3036,12 @@ function buildPostCard(p){
     <div class="post-hdr">
       <div class="post-av">${avHtml}</div>
       <div><div class="post-author">${p.authorName||'User'}</div><div class="post-time">${getTimeAgo(p.time)}</div></div>
-${(p.title||p.desc)?`<div class="post-body" style="${p.bgColor&&p.bgColor!=='none'?'background:'+p.bgColor+';color:#fff;padding:20px 14px;border-radius:12px;margin:8px 14px;font-size:16px;font-weight:700;text-align:center;min-height:100px;display:flex;align-items:center;justify-content:center;':''}">${p.title||''}${p.desc?'<br><span style="font-size:13px;font-weight:400;">'+p.desc+'</span>':''}</div>`:''}
-    <div class="post-acts">
+
+    <div</div>
+    ${(p.title||p.desc)?`<div class="post-body" style="${p.bgColor&&p.bgColor!=='none'?'background:'+p.bgColor+';color:#fff;padding:20px 14px;border-radius:12px;margin:8px 14px;font-size:16px;font-weight:700;text-align:center;min-height:100px;display:flex;align-items:center;justify-content:center;':''}">${p.title||''}${p.desc?'<br><span style="font-size:13px;font-weight:400;">'+p.desc+'</span>':''}</div>`:''}
+    ${imgs} class="post-acts">
       <button class="post-act" id="qlike_${p.id}" onclick="quickLike('${p.id}',this,event)"><i class="fas fa-thumbs-up"></i> ${p.likes||0}</button>
-      <button class="post-act" onclick="openPost('${p.id}');event.stopPropagation()"><i class="fas fa-comment"></i> ${p.comments||0}</button>
+      <buttondiv class="post-act" onclick="openPost('${p.id}');event.stopPropagation()"><i class="fas fa-comment"></i> ${p.comments||0}</button>
       <button class="post-act" onclick="sharePostProperly('${p.id}','${(p.title||'').replace(/'/g,'')}','${p.url||''}');event.stopPropagation()"><i class="fas fa-share"></i> Share</button>
       ${p.authorId!==cUser?.uid?`<button class="post-act" onclick="quickSubscribe('${p.authorId}','${p.authorName||''}',this,event)"><i class="fas fa-user-plus"></i></button>`:''}
     </div>
