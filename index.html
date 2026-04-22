@@ -2456,17 +2456,6 @@ function hideSplash(){
   setTimeout(()=>{s.style.display='none';},200);
 }
 
-// ══════════════════════════════════════════════════════
-// SPLASH + AUTH
-// ══════════════════════════════════════════════════════
-function hideSplash(){
-  const s=document.getElementById('splashScreen');
-  if(!s)return;
-  s.style.transition='opacity .2s ease';
-  s.style.opacity='0';
-  setTimeout(()=>{s.style.display='none';},200);
-}
-
 auth.onAuthStateChanged(async user=>{
   if(user){
     cUser=user;
