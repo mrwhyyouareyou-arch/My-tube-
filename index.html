@@ -657,6 +657,7 @@ button,input,textarea{font-family:var(--font);}
   <div class="side-item" onclick="showScreen('playlists');closeSideMenu()"><i class="fas fa-list-ul" style="color:#7c4dff;"></i><span>Playlists</span></div>
   <div class="side-divider"></div>
   <div class="side-section-title">Creator</div>
+  <div class="side-item" id="ownerSideItem" style="display:none;" onclick="showScreen('owner');closeSideMenu()"><i class="fas fa-shield-alt" style="color:#ff0000;"></i><span>Owner Dashboard</span></div>
   <div class="side-item" onclick="showScreen('dashboard');closeSideMenu()"><i class="fas fa-chart-line" style="color:var(--red);"></i><span>Studio</span></div>
   <div class="side-item" onclick="showScreen('themes');closeSideMenu()"><i class="fas fa-palette" style="color:#9b59b6;"></i><span>Themes</span></div>
   <div class="side-divider"></div>
@@ -2722,6 +2723,8 @@ function updateEmailChannelUI(){
 
 function setupOwnerNav(){
   if(cUser?.email!==OWNER_EMAIL)return;
+  const ownerSide = document.getElementById('ownerSideItem');
+if(ownerSide) ownerSide.style.display = 'flex';
   const nav=document.getElementById('bottomNav');
   nav.innerHTML=`
     <button class="nav-item" id="nav-home" onclick="showScreen('home')"><i class="fas fa-home"></i><span>Home</span></button>
