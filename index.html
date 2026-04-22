@@ -2492,8 +2492,9 @@ auth.onAuthStateChanged(async user=>{
               alert('Pehle checkbox tick karein!');return;
             }
             localStorage.setItem('policyAccepted_'+(firebase.auth().currentUser?.uid||'guest'),'1');
-            document.getElementById('gatewayPolicy').remove();
-            document.getElementById('mainApp').style.display='block';
+document.getElementById('gatewayPolicy').remove();
+document.getElementById('mainApp').style.display='block';
+try{loadUserData().then(()=>{try{ensureChannelExists();}catch(e){}try{updateHeaderAv();}catch(e){}try{setupOwnerNav();}catch(e){}try{loadUserPrefs();}catch(e){}try{listenNotifs();}catch(e){}}).catch(()=>{});loadHome();}catch(e){loadHome();}
           " style="width:100%;padding:14px;background:var(--red);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">
             ✅ Agree & Continue
           </button>
