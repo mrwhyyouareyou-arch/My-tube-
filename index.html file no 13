@@ -1801,6 +1801,19 @@ button,input,textarea{font-family:var(--font);}
     <div class="sf-progress"><div class="sf-prog-fill" id="sfProgFill"></div></div>
   </div>
 </div>
+<!-- SHORTS COMMENT OVERLAY -->
+<div id="sfCommOverlay" onclick="sfCommClose()" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);"></div>
+<div id="sfCommSheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:var(--bg2);border-radius:20px 20px 0 0;height:75vh;flex-direction:column;overflow:hidden;">
+  <div style="display:flex;align-items:center;padding:14px 16px 10px;border-bottom:1px solid var(--border);">
+    <div style="font-size:16px;font-weight:800;flex:1;" id="commTitle">Comments</div>
+    <button onclick="sfCommClose()" style="background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="sfCommList" style="flex:1;overflow-y:auto;padding:12px 16px;"></div>
+  <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+    <input id="sfCommInput" placeholder="Add a comment..." style="flex:1;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text);font-size:14px;outline:none;">
+    <button onclick="postComment()" style="background:var(--grad);border:none;color:white;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-paper-plane"></i></button>
+  </div>
+</div>
 
 <!-- ═══ GALLERY MODAL ═══ -->
 <div class="gallery-modal" id="galleryModal">
@@ -3333,14 +3346,70 @@ async function sfDislike(){
   }
 }
 
-function sfCommentOpen(){openPost(sfCurrentId);closeShortFS();}
+function sfCommentOpen(){
+  if(!sfCurrentId)return;
+  document.getElementById('sfCommSheet').style.display='flex';
+  document.getElementById('sfCommOverlay').style.display='block';
+  currentPostId=sfCurrentId;
+  sfloadComments(sfCurrentId);
+}
+function sfCommClose(){
+  document.getElementById('sfCommSheet').style.display='none';
+  document.getElementById('sfCommOverlay').style.display='none';
+}
 
 function sfShare(){
   const p=sfPosts[sfCurrentIdx];
   if(!p)return;
   sharePostProperly(p.id, p.title||'', p.url||'');
 }
+async function sfLoadComments(postId){
+  const list=document.getElementById('sfCommList');
+  list.innerHTML='<div style="text-align:center;padding:20px;"><div class="spinner"></div></div>';
+  try{
+    const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('time','desc').limit(200).get();
+    if(snap.empty){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet 💬</div>';return;}
+    list.innerHTML=snap.docs.map(d=>{
+      const c=d.data();
+      const av=c.authorPhoto?`<img src="${c.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(c.authorName||'U')[0].toUpperCase();
+      return `<div style="display:flex;gap:10px;margin-bottom:16px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;overflow:hidden;">${av}</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;">${c.authorName||'User'} <span style="font-size:11px;color:var(--text3);font-weight:400;">${getTimeAgo(c.time)}</span></div>
+          <div style="font-size:14px;margin-top:3px;line-height:1.5;">${c.text}</div>
+          <button onclick="sfReply('@${(c.authorName||'user').replace(/[^a-z0-9]/gi,'')}')" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;margin-top:4px;">Reply</button>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';}
+}
 
+function sfReply(mention){
+  const inp=document.getElementById('sfCommInput');
+  if(!inp)return;
+  inp.value=mention+' ';
+  inp.focus();
+}
+
+async function sfPostComment(){
+  if(!cUser||!sfCurrentId)return;
+  const input=document.getElementById('sfCommInput');
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  try{
+    await db.collection('posts').doc(sfCurrentId).collection('comments').add({
+      text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
+      authorPhoto:cUserData?.photoURL||'',time:Date.now()
+    });
+    await db.collection('posts').doc(sfCurrentId).update({
+      comments:firebase.firestore.FieldValue.increment(1)
+    });
+    sfLoadComments(sfCurrentId);
+    showToast('Comment posted ✅');
+    sendNotif(currentPostData?.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,sfCurrentId);
+  }catch(e){showToast('Error posting comment');}
+}
 // ══════════════════════════════════════════════════════
 // UPLOAD
 // ══════════════════════════════════════════════════════
@@ -4199,9 +4268,9 @@ async function postComment(){
     await db.collection('posts').doc(currentPostId).update({
       comments:firebase.firestore.FieldValue.increment(1),
       rankScore:firebase.firestore.FieldValue.increment(5)
-    });
-    loadComments(currentPostId);showToast('Comment posted ✅');
+    loadComments(currentPostId);showToast('Comment posted ✅');p.empty){const replyUid=replyTargetSnap.docs[0].id;sendNotif(replyUid,'reply',`${cUserData?.name||'Someone'} replied to your comment: "${text.substring(0,40)}"`,currentPostId);}}
     sendNotif(currentPostData?.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,currentPostId);
+if(mentionMatch){const replyTargetSnap=await db.collection('users').where('name','==',mentionMatch[1]).limit(1).get();if(!replyTargetSnap.empty){const replyUid=replyTargetSnap.docs[0].id;sendNotif(replyUid,'reply',`${cUserData?.name||'Someone'} replied to your comment: "${text.substring(0,40)}"`,currentPostId);}}
   }catch(e){showToast('Error posting comment');}
 }
 
