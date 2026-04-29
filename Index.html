@@ -1202,7 +1202,28 @@ button,input,textarea{font-family:var(--font);}
 
     <!-- PROFILE — YouTube Style -->
     <div id="profileScreen" class="screen">
-      <div style="overflow-y:auto;padding-bottom:80px;">
+      <!-- GUEST PROFILE VIEW -->
+      <div id="guestProfileView" style="display:none;min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;text-align:center;">
+        <div style="font-size:56px;margin-bottom:16px;">👤</div>
+        <div style="font-size:20px;font-weight:800;margin-bottom:8px;">Channel Banao Stream X pe!</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:24px;">Upload karo, paise kamao, aur Pakistan ka<br>sabse bada creator bano 🇵🇰</div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;width:100%;max-width:320px;margin-bottom:20px;text-align:left;">
+          <div style="font-size:12px;color:var(--text2);line-height:1.9;">
+            ✅ Videos & Shorts upload karo<br>
+            ✅ JazzCash/EasyPaisa se paise kamao<br>
+            ✅ Super Thanks receive karo<br>
+            ✅ Live streaming (coming soon)<br>
+            ✅ Creator Analytics
+          </div>
+        </div>
+        <button onclick="googleSignIn()" style="width:100%;max-width:320px;padding:14px;background:white;color:#333;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,.2);">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Google se Channel Banao
+        </button>
+        <div style="font-size:11px;color:var(--text3);">Free hai • 30 seconds mein ready</div>
+      </div>
+      <!-- LOGGED IN PROFILE VIEW -->
+      <div id="loggedProfileView" style="overflow-y:auto;padding-bottom:80px;display:none;">
         <div id="profCoverDiv" onclick="document.getElementById('coverInput').click()" style="height:110px;background:linear-gradient(135deg,#1a0000,#4a0000,#2a0000);position:relative;cursor:pointer;background-size:cover;background-position:center;">
           <div style="position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;pointer-events:none;">
             <div style="background:rgba(0,0,0,.55);color:white;font-size:11px;padding:4px 12px;border-radius:20px;display:flex;align-items:center;gap:5px;"><i class="fas fa-camera"></i> Cover lagayen</div>
@@ -1259,6 +1280,7 @@ button,input,textarea{font-family:var(--font);}
         <div id="emailChEmail" style="display:none;"></div>
         <div id="channelSetupCard" style="display:none;"></div>
       </div>
+      </div><!-- end loggedProfileView -->
     </div>
 
     <!-- NOTIFICATIONS -->
@@ -1755,35 +1777,35 @@ button,input,textarea{font-family:var(--font);}
     <button class="pl-act" onclick="openSuperThanks()" style="color:#ffd700;"><i class="fas fa-heart"></i><span>Thanks</span></button>
     <button class="pl-act" onclick="ctxPostId=currentPostId;ctxPostUrl=currentPostData?.url;document.getElementById('reportModal').classList.add('open')"><i class="fas fa-flag"></i><span>Report</span></button>
   </div>
-  <!-- Super Thanks Sheet -->
+  <!-- Super Thanks Sheet — Real P2P Payment -->
   <div id="superThanksOverlay" onclick="closeSuperThanks()" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.6);"></div>
-  <div id="superThanksSheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:601;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 32px;">
+  <div id="superThanksSheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:601;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 36px;">
     <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;"></div>
     <div style="text-align:center;margin-bottom:16px;">
       <div style="font-size:28px;margin-bottom:6px;">💛</div>
       <div style="font-size:16px;font-weight:800;">Super Thanks</div>
       <div style="font-size:12px;color:var(--text2);margin-top:4px;" id="superThanksCreator">Creator ko support karo</div>
     </div>
+    <!-- Amount Selection -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
       <button onclick="selectThanksAmt(50,this)" class="thanks-amt-btn" style="padding:12px;background:var(--bg3);border:2px solid var(--border);border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;color:var(--text);">₨50 🎉</button>
       <button onclick="selectThanksAmt(100,this)" class="thanks-amt-btn" style="padding:12px;background:var(--bg3);border:2px solid var(--red);border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;color:var(--text);">₨100 🔥</button>
       <button onclick="selectThanksAmt(200,this)" class="thanks-amt-btn" style="padding:12px;background:var(--bg3);border:2px solid var(--border);border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;color:var(--text);">₨200 ⭐</button>
       <button onclick="selectThanksAmt(500,this)" class="thanks-amt-btn" style="padding:12px;background:var(--bg3);border:2px solid var(--border);border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;color:var(--text);">₨500 👑</button>
     </div>
-    <!-- Payment Method Selection -->
-    <div style="margin-bottom:10px;">
-      <div style="font-size:11px;color:var(--text3);font-weight:700;margin-bottom:6px;">PAYMENT METHOD</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;" id="thanksPaymentBtns">
-        <button class="privacy-btn active" onclick="selectThanksPayment('jazzcash',this)" style="font-size:11px;padding:5px 10px;">💳 JazzCash</button>
-        <button class="privacy-btn" onclick="selectThanksPayment('easypaisa',this)" style="font-size:11px;padding:5px 10px;">📱 EasyPaisa</button>
-        <button class="privacy-btn" onclick="selectThanksPayment('paytm',this)" style="font-size:11px;padding:5px 10px;">🇮🇳 Paytm</button>
-        <button class="privacy-btn" onclick="selectThanksPayment('paypal',this)" style="font-size:11px;padding:5px 10px;">🌐 PayPal</button>
-        <button class="privacy-btn" onclick="selectThanksPayment('bank',this)" style="font-size:11px;padding:5px 10px;">🏦 Bank</button>
-      </div>
+    <!-- Creator Payment Info -->
+    <div id="creatorPaymentInfo" style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.3);border-radius:12px;padding:12px;margin-bottom:12px;display:none;">
+      <div style="font-size:11px;font-weight:700;color:#ffd700;margin-bottom:8px;">💳 Creator ka payment number:</div>
+      <div id="creatorPaymentMethods"></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.5;">Upar diye number par <b style="color:var(--text);" id="selectedAmtDisplay">₨100</b> transfer karo, phir neeche "Maine bhej diya" click karo.</div>
+    </div>
+    <!-- No payment info message -->
+    <div id="noPaymentInfo" style="background:var(--bg3);border-radius:12px;padding:12px;margin-bottom:12px;display:none;">
+      <div style="font-size:12px;color:var(--text2);text-align:center;">Creator ne abhi payment info nahi diya hai.<br>Aap unhe directly WhatsApp pe contact kar sakte hain.</div>
     </div>
     <input class="inp" id="superThanksMsg" placeholder="Message likho (optional)..." style="margin-bottom:10px;">
-    <button onclick="sendSuperThanks()" style="width:100%;padding:13px;background:linear-gradient(135deg,#ffd700,#ff9600);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;"><i class="fas fa-heart"></i> Send Super Thanks</button>
-    <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:8px;">Payment via JazzCash/EasyPaisa (coming soon)</div>
+    <button onclick="sendSuperThanks()" style="width:100%;padding:13px;background:linear-gradient(135deg,#ffd700,#ff9600);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;"><i class="fas fa-heart"></i> Maine Bhej Diya! ✅</button>
+    <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:8px;">⚠️ Pehle payment karo, phir confirm karo. Ye honor-based system hai.</div>
   </div>
   <div class="emoji-row">
     <button class="emoji-btn" onclick="reactEmoji('❤️',this)">❤️<span id="e1">0</span></button>
@@ -2480,7 +2502,7 @@ function showToast(msg){
 // UPLOAD CHOICE SHEET
 // ══════════════════════════════════════════════════════
 function showUploadChoice(){
-  if(!cUser){showToast('Pehle login karein');showScreen('profile');return;}
+  if(!cUser){showGuestLoginSheet('upload');return;}
   const ov=document.getElementById('uploadChoiceOverlay');
   const sh=document.getElementById('uploadChoiceSheet');
   if(ov)ov.style.display='block';
@@ -2527,6 +2549,53 @@ function hideSplash(){
 // ══════════════════════════════════════════════════════
 // SPLASH + AUTH
 // ══════════════════════════════════════════════════════
+
+// ══ GUEST MODE HELPERS ══
+function requireAuth(action){
+  if(cUser)return true;
+  showGuestLoginSheet(action);
+  return false;
+}
+
+function showGuestLoginSheet(action){
+  const ex=document.getElementById('guestLoginSheet');if(ex)ex.remove();
+  const exo=document.getElementById('guestLoginOv');if(exo)exo.remove();
+  const ov=document.createElement('div');
+  ov.id='guestLoginOv';
+  ov.style.cssText='position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.7);';
+  document.body.appendChild(ov);
+  const sheet=document.createElement('div');
+  sheet.id='guestLoginSheet';
+  sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9001;background:var(--bg2);border-radius:24px 24px 0 0;padding:24px 20px 40px;animation:slideUp .3s ease;';
+  const actionText={like:'Like karne ke liye',comment:'Comment karne ke liye',upload:'Upload karne ke liye',follow:'Subscribe karne ke liye',thanks:'Super Thanks bhejne ke liye',profile:'Profile dekhne ke liye'}[action]||'Yeh karne ke liye';
+  sheet.innerHTML=`
+    <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;"></div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:32px;margin-bottom:10px;">📺</div>
+      <div style="font-size:18px;font-weight:800;margin-bottom:6px;">Pehle Channel Banao!</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6;">${actionText} pehle apna<br><b style="color:var(--text);">Stream X channel</b> create karo</div>
+    </div>
+    <div style="background:var(--bg3);border-radius:14px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:700;">✨ Channel banane ke fayde:</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+        ✅ Videos upload karo<br>
+        ✅ Like & comment karo<br>
+        ✅ Creators ko follow karo<br>
+        ✅ Paise kamao (monetization)<br>
+        ✅ Super Thanks receive karo
+      </div>
+    </div>
+    <button onclick="closeGuestSheet();showScreen('profile');" style="width:100%;padding:14px;background:var(--red);color:white;border:none;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;"><i class="fas fa-user-plus"></i> Channel Banao — Free hai!</button>
+    <button onclick="closeGuestSheet();" style="width:100%;padding:11px;background:none;border:1px solid var(--border);color:var(--text2);border-radius:12px;font-size:13px;cursor:pointer;">Baad mein</button>
+  `;
+  ov.onclick=closeGuestSheet;
+  document.body.appendChild(sheet);
+}
+
+function closeGuestSheet(){
+  const sh=document.getElementById('guestLoginSheet');if(sh)sh.remove();
+  const ov=document.getElementById('guestLoginOv');if(ov)ov.remove();
+}
 
 auth.onAuthStateChanged(async user=>{
   if(user){
@@ -2587,11 +2656,16 @@ auth.onAuthStateChanged(async user=>{
       loadHome();
     }catch(e){loadHome();}
   }else{
+    // GUEST MODE — seedha feed dikhao, login baad mein
     cUser=null;cUserData=null;
     setTimeout(()=>{
       hideSplash();
-      document.getElementById('authScreen').style.display='flex';
-      document.getElementById('mainApp').style.display='none';
+      document.getElementById('authScreen').style.display='none';
+      document.getElementById('mainApp').style.display='block';
+      // Guest ke liye header avatar update
+      const av=document.getElementById('headerAvatar');
+      if(av){av.innerHTML='<i class="fas fa-user" style="font-size:14px;"></i>';av.style.background='var(--bg3)';av.style.border='1px solid var(--border)';}
+      loadHome();
     },600);
   }
 });
@@ -2642,7 +2716,16 @@ async function doSignup(){
 }
 
 async function doGoogle(){
-  showToast('Google login available nahi. Email se login karein.');
+  try{
+    const provider = new firebase.auth.GoogleAuthProvider();
+    await auth.signInWithPopup(provider);
+  }catch(err){
+    showToast('Google login mein masla: '+err.message);
+  }
+}
+
+function googleSignIn(){
+  doGoogle();
 }
 
 async function showForgotPassword(){
@@ -2727,6 +2810,16 @@ function updateHeaderAv(){
 }
 
 function updateProfileUI(){
+  // Toggle guest/logged views
+  const guestView=document.getElementById('guestProfileView');
+  const loggedView=document.getElementById('loggedProfileView');
+  if(!cUser||!cUserData){
+    if(guestView)guestView.style.display='flex';
+    if(loggedView)loggedView.style.display='none';
+    return;
+  }
+  if(guestView)guestView.style.display='none';
+  if(loggedView)loggedView.style.display='block';
   if(!cUserData)return;
   document.getElementById('profName').textContent=cUserData.name||'User';
   document.getElementById('profHandle').textContent=cUserData.handle||'@user';
@@ -2862,7 +2955,17 @@ function showScreen(name){
   if(name==='home')loadHome();
   if(name==='shorts')loadShorts();
   if(name==='dashboard')loadDashboard();
-  if(name==='profile'){loadUserData().then(()=>switchProfileTab('videos',document.getElementById('ptab-videos')));loadDashboard();}
+  if(name==='profile'){
+    if(!cUser){
+      // Guest profile view
+      const gv=document.getElementById('guestProfileView');
+      const lv=document.getElementById('loggedProfileView');
+      if(gv)gv.style.display='flex';
+      if(lv)lv.style.display='none';
+    }else{
+      loadUserData().then(()=>switchProfileTab('videos',document.getElementById('ptab-videos')));loadDashboard();
+    }
+  }
   if(name==='notif')loadNotifs();
   if(name==='subs')loadSubsFeed();
   if(name==='owner')loadOwnerDash();
@@ -3134,7 +3237,7 @@ function buildPostCard(p){
 const _liking={};
 async function quickLike(id,btn,e){
   e.stopPropagation();
-  if(!cUser)return showToast('Login karein!');
+  if(!cUser){showGuestLoginSheet('like');return;}
   if(_liking[id])return;
   _liking[id]=true;setTimeout(()=>delete _liking[id],1500);
   try{
@@ -3290,7 +3393,7 @@ function playShortAt(idx){
 }
 
 async function sfSubscribe(){
-  if(!cUser)return showToast('Login karein!');
+  if(!cUser){showGuestLoginSheet('follow');return;}
   const p=sfPosts[sfCurrentIdx];if(!p||!p.authorId||p.authorId===cUser.uid)return;
   const sid=`${cUser.uid}_${p.authorId}`;
   const ref=db.collection('subscriptions').doc(sid);
@@ -3384,7 +3487,7 @@ function nextShort(){if(sfCurrentIdx<sfPosts.length-1)playShortAt(sfCurrentIdx+1
 })();
 
 async function sfLike(){
-  if(!cUser||!sfCurrentId)return;
+  if(!cUser||!sfCurrentId){if(!cUser)showGuestLoginSheet('like');return;}
   try{
     const ref=db.collection('posts').doc(sfCurrentId);
     const doc=await ref.get();if(!doc.exists)return;const p=doc.data();
@@ -3791,10 +3894,8 @@ function resetUploadForm(){
   // Reset privacy
   _uploadPrivacy='public';
   document.querySelectorAll('.privacy-btn').forEach(b=>b.classList.remove('active'));
-  const pb=document.getElementById('privPublic');if(pb)pb.classList.add('active');
+const pb=document.getElementById('privPublic');if(pb)pb.classList.add('active');
 }
-<!-- PART 2 OF 2 — paste after Part 1, replacing from line 3796 onwards -->
-
 // ══════════════════════════════════════════════════════
 // VIDEO PLAYER
 // ══════════════════════════════════════════════════════
@@ -4012,7 +4113,7 @@ function closePlayer(){
 }
 
 async function toggleLike(){
-  if(!cUser||!currentPostId)return;
+  if(!cUser||!currentPostId){if(!cUser)showGuestLoginSheet('like');return;}
   if(_liking['pl'])return;_liking['pl']=true;setTimeout(()=>delete _liking['pl'],1500);
   try{
     const ref=db.collection('posts').doc(currentPostId);
@@ -4067,7 +4168,7 @@ async function reactEmoji(emoji,btn){
 }
 
 async function toggleSubscribe(){
-  if(!cUser){showToast('Login karein pehle!');return;}
+  if(!cUser){showGuestLoginSheet('follow');return;}
   if(!currentPostData){return;}
   const aId=currentPostData.authorId;
   if(!aId||aId===cUser.uid){showToast('Apne aap ko subscribe nahi kar sakte');return;}
@@ -4501,7 +4602,7 @@ function clearReply(){
 }
 
 async function postComment(){
-  if(!cUser||!currentPostId)return;
+  if(!cUser||!currentPostId){if(!cUser)showGuestLoginSheet('comment');return;}
   const input=document.getElementById('commInput');
   const text=input.value.trim();if(!text)return;
   input.value='';
@@ -4907,44 +5008,141 @@ async function saveEditProfile(){
 }
 
 // ══════════════════════════════════════════════════════
-// CHANNEL — YouTube style: email-based, instant create
+// CHANNEL CREATION — YouTube style with payment info
 // ══════════════════════════════════════════════════════
-async function saveChannel(){
+function showChannelCreateSheet(){
+  if(!cUser)return googleSignIn();
+  const ex=document.getElementById('channelCreateSheet');if(ex)ex.remove();
+  const exo=document.getElementById('channelCreateOv');if(exo)exo.remove();
+  const ov=document.createElement('div');
+  ov.id='channelCreateOv';
+  ov.style.cssText='position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.7);';
+  document.body.appendChild(ov);
+  const sheet=document.createElement('div');
+  sheet.id='channelCreateSheet';
+  sheet.style.cssText='position:fixed;inset:0;z-index:9501;background:var(--bg);overflow-y:auto;animation:slideUp .3s ease;padding-bottom:40px;';
+  sheet.innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10;">
+      <button onclick="document.getElementById('channelCreateSheet').remove();document.getElementById('channelCreateOv').remove();" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:20px;"><i class="fas fa-times"></i></button>
+      <div style="font-size:17px;font-weight:800;">🚀 Channel Banao</div>
+    </div>
+    <div style="padding:20px 16px;">
+      <!-- Google Account -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:17px;overflow:hidden;" id="ccAvatar">${cUserData?.photoURL?`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`:(cUserData?.name||cUser?.email||'U')[0].toUpperCase()}</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;">${cUserData?.name||cUser?.email}</div>
+          <div style="font-size:11px;color:var(--text2);">${cUser?.email}</div>
+        </div>
+        <div style="margin-left:auto;background:rgba(0,200,100,.15);color:#00c864;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;">✓ Verified</div>
+      </div>
+
+      <!-- Channel Name -->
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;">CHANNEL NAME *</div>
+      <input class="inp" id="cc_name" placeholder="Apna channel naam likho" style="margin-bottom:14px;" value="${cUserData?.channelName||cUserData?.name||''}">
+
+      <!-- Handle -->
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;">HANDLE (@username) *</div>
+      <input class="inp" id="cc_handle" placeholder="@yourname" style="margin-bottom:14px;" value="${cUserData?.channelHandle||''}">
+
+      <!-- Description -->
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;">BIO / DESCRIPTION</div>
+      <textarea class="inp" id="cc_about" placeholder="Apne baare mein likho..." style="height:80px;resize:none;margin-bottom:16px;">${cUserData?.channelAbout||''}</textarea>
+
+      <!-- Payment Methods (OPTIONAL) -->
+      <div style="background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(255,150,0,.05));border:1px solid rgba(255,215,0,.3);border-radius:14px;padding:16px;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <i class="fas fa-wallet" style="color:#ffd700;font-size:16px;"></i>
+          <div style="font-size:13px;font-weight:800;">💳 Payment Methods <span style="font-size:10px;color:var(--text3);font-weight:500;">(Optional)</span></div>
+        </div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.6;">Super Thanks receive karne ke liye apna payment number add karo. Viewers seedha tumhe paise bhejenge!</div>
+
+        <!-- JazzCash -->
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px;">🟢 JazzCash Number</div>
+          <input class="inp" id="cc_jazzcash" placeholder="03XX-XXXXXXX" style="margin-bottom:0;" value="${cUserData?.paymentJazzCash||''}">
+        </div>
+        <!-- EasyPaisa -->
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px;">🔵 EasyPaisa Number</div>
+          <input class="inp" id="cc_easypaisa" placeholder="03XX-XXXXXXX" style="margin-bottom:0;" value="${cUserData?.paymentEasyPaisa||''}">
+        </div>
+        <!-- UPI/Paytm (India) -->
+        <div style="margin-bottom:4px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px;">🇮🇳 UPI / Paytm (India)</div>
+          <input class="inp" id="cc_upi" placeholder="example@upi or Paytm number" style="margin-bottom:0;" value="${cUserData?.paymentUPI||''}">
+        </div>
+        <!-- Benefits -->
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px;margin-top:10px;font-size:11px;color:var(--text2);line-height:1.7;">
+          ✅ Viewers Super Thanks bhejte hain → aapko directly milta hai<br>
+          ✅ 100% aapka — platform ka koi cut nahi<br>
+          ✅ JazzCash/EasyPaisa instantly transfer hota hai
+        </div>
+      </div>
+
+      <button onclick="saveChannelFull()" style="width:100%;padding:15px;background:var(--red);color:white;border:none;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;"><i class="fas fa-rocket"></i> Channel Create Karo!</button>
+    </div>
+  `;
+  ov.onclick=()=>{sheet.remove();ov.remove();};
+  document.body.appendChild(sheet);
+}
+
+async function saveChannelFull(){
   if(!cUser)return showToast('Login karein!');
-  const n=document.getElementById('channelName').value.trim();
-  const h=document.getElementById('channelHandle').value.trim();
-  const a=document.getElementById('channelAbout').value.trim();
+  const n=document.getElementById('cc_name')?.value.trim();
+  const h=document.getElementById('cc_handle')?.value.trim();
+  const a=document.getElementById('cc_about')?.value.trim()||'';
+  const jc=document.getElementById('cc_jazzcash')?.value.trim()||'';
+  const ep=document.getElementById('cc_easypaisa')?.value.trim()||'';
+  const upi=document.getElementById('cc_upi')?.value.trim()||'';
   if(!n)return showToast('Channel name required!');
-  if(!h)return showToast('Handle required!');
+  if(!h)return showToast('Handle (@username) required!');
   try{
-    // Save to channels collection (YouTube style)
+    const updateData={
+      channelName:n, channelHandle:h, channelAbout:a, hasChannel:true,
+      name:n, handle:h.replace(/^@/,''), about:a
+    };
+    if(jc)updateData.paymentJazzCash=jc;
+    if(ep)updateData.paymentEasyPaisa=ep;
+    if(upi)updateData.paymentUPI=upi;
     await db.collection('channels').doc(cUser.uid).set({
-      name:n,handle:h,about:a,
-      ownerEmail:cUser.email,ownerUid:cUser.uid,
+      name:n, handle:h.replace(/^@/,''), about:a,
+      ownerEmail:cUser.email, ownerUid:cUser.uid,
       ownerPhoto:cUserData?.photoURL||'',
-      subscribers:0,videos:0,isLive:false,
+      subscribers:0, videos:0, isLive:false,
+      paymentJazzCash:jc, paymentEasyPaisa:ep, paymentUPI:upi,
       createdAt:firebase.firestore.FieldValue.serverTimestamp()
     });
-    // Update user profile
-    await db.collection('users').doc(cUser.uid).update({
-      channelName:n,channelHandle:h,channelAbout:a,hasChannel:true
-    });
-    cUserData={...cUserData,channelName:n,channelHandle:h,channelAbout:a,hasChannel:true};
-    showToast('Channel created! 🚀');
+    await db.collection('users').doc(cUser.uid).update(updateData);
+    cUserData={...cUserData,...updateData};
+    // Close sheet
+    document.getElementById('channelCreateSheet')?.remove();
+    document.getElementById('channelCreateOv')?.remove();
+    closeGuestSheet();
+    showToast('🎉 Channel ban gaya! Stream X pe khush aamdeed!');
+    updateProfileUI();
     loadDashboard();
   }catch(e){console.error(e);showToast('Error: '+e.message);}
 }
+
+async function saveChannel(){
+  // Legacy — redirect to new flow
+  showChannelCreateSheet();
+}
+
 
 // ══════════════════════════════════════════════════════
 // WATCH HISTORY
 // ══════════════════════════════════════════════════════
 function addToHistory(post){
   if(!post||!post.id)return;
-  let history=JSON.parse(localStorage.getItem('mt_history')||'[]');
-  history=history.filter(h=>h.id!==post.id);
-  history.unshift({id:post.id,title:post.title,thumbURL:post.thumbURL,url:post.url,type:post.type,authorName:post.authorName,time:Date.now()});
-  history=history.slice(0,50);
-  localStorage.setItem('mt_history',JSON.stringify(history));
+  try{
+    let history=JSON.parse(localStorage.getItem('mt_history')||'[]');
+    history=history.filter(h=>h.id!==post.id);
+    history.unshift({id:post.id,title:post.title,thumbURL:post.thumbURL,url:post.url,type:post.type,authorName:post.authorName,time:Date.now()});
+    history=history.slice(0,50);
+    localStorage.setItem('mt_history',JSON.stringify(history));
+  }catch(e){}
 }
 
 function loadHistory(container){
@@ -6039,12 +6237,39 @@ let _editorSpeedIdx=2;
 
 function openShortEditor(file){
   const modal=document.getElementById('shortEditorModal');
-  if(modal)modal.style.display='flex';
+  if(!modal)return;
+  modal.style.display='flex';
+  _editorTrimStart=0;_editorTrimDur=60;_editorSpeed=1;_editorSpeedIdx=0;_editorSong=null;
+  clearInterval(_editorTimerInterval);
+  const disp=document.getElementById('editorTimerDisplay');
+  if(disp){disp.style.display='none';disp.textContent='0';}
+  const lbl=document.getElementById('edSpeedLbl');if(lbl)lbl.textContent='1x';
+  const edSpeedBtn=document.getElementById('edSpeedBtn');if(edSpeedBtn)edSpeedBtn.style.borderColor='#333';
+  closeAllEditorPanels();
   if(file){
     const vid=document.getElementById('editorVid');
     const empty=document.getElementById('editorEmptyState');
+    if(vid&&vid._objURL){URL.revokeObjectURL(vid._objURL);}
     const url=URL.createObjectURL(file);
-    if(vid){vid.src=url;vid.style.display='block';}
+    if(vid){
+      vid._objURL=url;
+      vid.src=url;
+      vid.style.display='block';
+      vid.playbackRate=1;
+      vid.load();
+      vid.oncanplay=()=>{
+        vid.play().catch(()=>{});
+        const btn=document.getElementById('editorPlayBtn');
+        if(btn)btn.innerHTML='<i class="fas fa-pause"></i>';
+        const dur=Math.floor(vid.duration||60);
+        const startEl=document.getElementById('edTrimStart');
+        const durEl=document.getElementById('edTrimDur');
+        if(startEl){startEl.max=Math.max(dur-1,1);startEl.value=0;}
+        if(durEl){durEl.max=dur;durEl.value=Math.min(60,dur);_editorTrimDur=Math.min(60,dur);}
+        const el=document.getElementById('edTrimEndLbl');if(el)el.textContent=Math.min(60,dur)+'s';
+        const dl=document.getElementById('edTrimDurLbl');if(dl)dl.textContent=Math.min(60,dur)+'s';
+      };
+    }
     if(empty)empty.style.display='none';
   }
 }
@@ -6054,7 +6279,11 @@ function closeShortEditor(){
   if(modal)modal.style.display='none';
   stopEditorCamera();
   const vid=document.getElementById('editorVid');
-  if(vid){vid.pause();}
+  if(vid){
+    vid.pause();vid.src='';
+    if(vid._objURL){URL.revokeObjectURL(vid._objURL);vid._objURL=null;}
+  }
+  clearInterval(_editorTimerInterval);
   closeAllEditorPanels();
 }
 
@@ -6062,13 +6291,18 @@ function editorTogglePlay(){
   const vid=document.getElementById('editorVid');
   const btn=document.getElementById('editorPlayBtn');
   if(!vid||!vid.src)return;
-  if(vid.paused){vid.play();if(btn)btn.innerHTML='<i class="fas fa-pause"></i>';}
-  else{vid.pause();if(btn)btn.innerHTML='<i class="fas fa-play"></i>';}
+  if(vid.paused){
+    vid.play().catch(()=>{});
+    if(btn)btn.innerHTML='<i class="fas fa-pause"></i>';
+  }else{
+    vid.pause();
+    if(btn)btn.innerHTML='<i class="fas fa-play"></i>';
+  }
 }
 
 function editorVidSeek(secs){
   const vid=document.getElementById('editorVid');
-  if(vid)vid.currentTime=Math.max(0,(vid.currentTime||0)+secs);
+  if(vid&&vid.duration)vid.currentTime=Math.max(0,Math.min(vid.duration,(vid.currentTime||0)+secs));
 }
 
 function closeAllEditorPanels(){
@@ -6082,15 +6316,16 @@ async function toggleEditorCamera(){
   const camVid=document.getElementById('editorCamera');
   if(_editorCameraStream){
     stopEditorCamera();
-    if(btn)btn.style.borderColor='#333';
+    if(btn){btn.style.borderColor='#333';btn.style.background='#1a1a1a';}
+    showToast('Camera off');
     return;
   }
   try{
     _editorCameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
-    if(camVid){camVid.srcObject=_editorCameraStream;camVid.style.display='block';}
-    if(btn)btn.style.borderColor='var(--red)';
+    if(camVid){camVid.srcObject=_editorCameraStream;camVid.style.display='block';camVid.play().catch(()=>{});}
+    if(btn){btn.style.borderColor='var(--red)';btn.style.background='rgba(255,0,0,.15)';}
     showToast('Camera on 📷');
-  }catch(e){showToast('Camera access denied.');}
+  }catch(e){showToast('Camera access denied ❌');}
 }
 
 function stopEditorCamera(){
@@ -6105,20 +6340,22 @@ function openEditorSounds(){
   if(!panel)return;
   panel.style.display='block';
   const list=document.getElementById('editorSongsList');
-  if(list)list.innerHTML=TRENDING_SONGS.map(s=>`
-    <div onclick="selectEditorSong(${JSON.stringify(s).replace(/"/g,"'")})" style="flex-shrink:0;background:#222;border:1.5px solid ${_editorSong?.id===s.id?'var(--red)':'#444'};border-radius:10px;padding:8px 12px;cursor:pointer;min-width:110px;text-align:center;">
-      <div style="font-size:18px;margin-bottom:3px;">${s.emoji}</div>
-      <div style="font-size:10px;font-weight:600;color:#ccc;">${s.name}</div>
+  if(!list)return;
+  list.innerHTML=TRENDING_SONGS.map(s=>`
+    <div onclick="selectEditorSong(${JSON.stringify(s).replace(/"/g,"'")}"
+      style="flex-shrink:0;background:#222;border:1.5px solid ${_editorSong?.id===s.id?'var(--red)':'#444'};border-radius:10px;padding:8px 12px;cursor:pointer;min-width:110px;text-align:center;transition:border-color .2s;">
+      <div style="font-size:20px;margin-bottom:4px;">${s.emoji}</div>
+      <div style="font-size:10px;font-weight:600;color:#ccc;line-height:1.3;">${s.name}</div>
+      ${_editorSong?.id===s.id?'<div style="font-size:9px;color:var(--red);margin-top:2px;">✓ Selected</div>':''} 
     </div>`).join('');
+  const info=document.getElementById('editorSelectedSong');
+  if(info)info.style.display=_editorSong?'flex':'none';
+  if(_editorSong){const nm=document.getElementById('editorSongName');if(nm)nm.textContent=_editorSong.name;}
 }
 
 function selectEditorSong(song){
   _editorSong=song;
-  const info=document.getElementById('editorSelectedSong');
-  const name=document.getElementById('editorSongName');
-  if(info)info.style.display='flex';
-  if(name)name.textContent=song.name;
-  showToast('Sound selected: '+song.name);
+  showToast('Sound: '+song.name+' 🎵');
   openEditorSounds();
 }
 
@@ -6126,6 +6363,8 @@ function clearEditorSong(){
   _editorSong=null;
   const info=document.getElementById('editorSelectedSong');
   if(info)info.style.display='none';
+  openEditorSounds();
+  showToast('Sound removed');
 }
 
 function openEditorTrim(){
@@ -6136,7 +6375,9 @@ function openEditorTrim(){
   const vid=document.getElementById('editorVid');
   const maxDur=Math.floor(vid?.duration||60);
   const startEl=document.getElementById('edTrimStart');
-  if(startEl){startEl.max=Math.max(maxDur-5,1);startEl.value=_editorTrimStart;}
+  const durEl=document.getElementById('edTrimDur');
+  if(startEl){startEl.max=Math.max(maxDur-1,1);startEl.value=_editorTrimStart;}
+  if(durEl){durEl.max=maxDur;durEl.value=_editorTrimDur;}
   updateEdTrim();
 }
 
@@ -6148,13 +6389,13 @@ function updateEdTrim(){
   const el=document.getElementById('edTrimEndLbl');if(el)el.textContent=(s+d)+'s';
   const dl=document.getElementById('edTrimDurLbl');if(dl)dl.textContent=d+'s';
   const vid=document.getElementById('editorVid');
-  if(vid)vid.currentTime=s;
+  if(vid&&vid.duration)vid.currentTime=Math.min(s,vid.duration);
 }
 
 function applyEditorTrim(){
   const vid=document.getElementById('editorVid');
-  if(vid){vid.currentTime=_editorTrimStart;}
-  showToast(`Trim set: ${_editorTrimStart}s → ${_editorTrimStart+_editorTrimDur}s ✂️`);
+  if(vid&&vid.duration)vid.currentTime=Math.min(_editorTrimStart,vid.duration);
+  showToast(`✂️ Trim: ${_editorTrimStart}s → ${_editorTrimStart+_editorTrimDur}s`);
   closeAllEditorPanels();
 }
 
@@ -6165,13 +6406,16 @@ function cycleEditorSpeed(btn){
   if(vid)vid.playbackRate=_editorSpeed;
   const lbl=document.getElementById('edSpeedLbl');if(lbl)lbl.textContent=_editorSpeed+'x';
   if(btn)btn.style.borderColor=_editorSpeed!==1?'var(--red)':'#333';
-  showToast('Speed: '+_editorSpeed+'x');
+  showToast('Speed: '+_editorSpeed+'x ⚡');
 }
 
 function openEditorTimer(){
   closeAllEditorPanels();
   const panel=document.getElementById('editorTimerPanel');
   if(panel)panel.style.display='block';
+  clearInterval(_editorTimerInterval);
+  const disp=document.getElementById('editorTimerDisplay');
+  if(disp){disp.style.display='none';disp.textContent='0';}
 }
 
 function setEditorTimer(secs){
@@ -6179,17 +6423,20 @@ function setEditorTimer(secs){
   const disp=document.getElementById('editorTimerDisplay');
   if(!disp)return;
   disp.style.display='block';
+  disp.style.color='var(--red)';
   let count=secs;
   disp.textContent=count;
   _editorTimerInterval=setInterval(()=>{
     count--;
     if(disp)disp.textContent=count;
+    if(count<=3&&count>0)disp.style.color='#ff4444';
     if(count<=0){
       clearInterval(_editorTimerInterval);
-      disp.textContent='🎬';
+      if(disp){disp.textContent='🎬';disp.style.color='#00c864';}
       showToast('Timer done! Record now 🔴');
     }
   },1000);
+  showToast('Timer: '+secs+'s ⏱️');
 }
 
 function applyShortEdits(){
@@ -6211,6 +6458,7 @@ function applyShortEdits(){
   showToast('Edits applied! ✅');
   closeShortEditor();
 }
+
 // ══════════════════════════════════════════════════════
 // DELETE ACCOUNT
 // ══════════════════════════════════════════════════════
@@ -6690,22 +6938,23 @@ function spawnHearts(x,y,count){
 // UNIQUE VIEW COUNT — per user per video (Firestore-based)
 // ══════════════════════════════════════════════════════
 async function trackUniqueView(postId){
-  if(!cUser||!postId)return;
+  if(!postId)return;
   try{
+    // Guest ke liye session ID use karo
+    const viewerId = cUser ? cUser.uid : (localStorage.getItem('sx_guest_id')||('g_'+Math.random().toString(36).substr(2,9)));
+    if(!cUser)localStorage.setItem('sx_guest_id', viewerId);
     // Owner apni khud ki video ka view count nahi badhata
-    if(currentPostData&&currentPostData.authorId===cUser.uid)return;
-    // Unique view: har user ke liye sirf ek baar - 24 hour cooldown bhi
-    const viewKey=cUser.uid+'_'+postId;
+    if(cUser && currentPostData&&currentPostData.authorId===cUser.uid)return;
+    const viewKey=viewerId+'_'+postId;
     const viewRef=db.collection('views').doc(viewKey);
     const exists=await viewRef.get();
     if(!exists.exists){
-      await viewRef.set({uid:cUser.uid,postId,time:Date.now()});
+      await viewRef.set({uid:viewerId,postId,time:Date.now(),guest:!cUser});
       await db.collection('posts').doc(postId).update({
         views:firebase.firestore.FieldValue.increment(1),
         rankScore:firebase.firestore.FieldValue.increment(2)
       }).catch(()=>{});
     }
-    // Even if doc exists, don't increment again - true unique view per user
   }catch(e){}
 }
 
@@ -7115,18 +7364,33 @@ async function loadMonetizationTab(){
     const badge=document.getElementById('monetEligBadge');
     if(badge)badge.style.display=allDone?'flex':'none';
 
-    // Earnings calc
-    const monthViews=snap.docs.filter(d=>{
-      const t=d.data().time||0;
-      return Date.now()-t<30*24*3600*1000;
-    }).reduce((a,d)=>a+(d.data().views||0),0);
-    const monthEarn=Math.round(monthViews/1000*CPM_PKR);
-    const totalEarn=Math.round(totalViews/1000*CPM_PKR);
+    // Earnings calc — sirf approval ke baad ke views count honge
+    const monetApprovedAt = ud.exists ? (ud.data().monetizationApprovedAt||0) : 0;
+    const isMonetized = ud.exists && ud.data().monetizationApproved===true;
+    let approvedViews=0, monthApprovedViews=0;
+    const thirtyDaysAgo=Date.now()-30*24*3600*1000;
+    snap.docs.forEach(d=>{
+      const p=d.data();
+      if(!isMonetized)return;
+      // Only count views on posts uploaded after monetization approval
+      // OR count monetized_views field if we track it
+      const postTime=p.time||0;
+      const views=p.monetized_views||p.views||0; // prefer tracked field
+      approvedViews+=views;
+      if(postTime>thirtyDaysAgo)monthApprovedViews+=views;
+    });
+    const monthEarn=isMonetized?Math.round(monthApprovedViews/1000*CPM_PKR):0;
+    const totalEarn=isMonetized?Math.round(approvedViews/1000*CPM_PKR):0;
 
     const mEl=document.getElementById('monetMonthEarn');
     const tEl=document.getElementById('monetTotalEarn');
-    if(mEl)mEl.textContent='₨'+monthEarn.toLocaleString();
-    if(tEl)tEl.textContent='₨'+totalEarn.toLocaleString();
+    if(mEl)mEl.textContent=isMonetized?'₨'+monthEarn.toLocaleString():'₨0 (Pending)';
+    if(tEl)tEl.textContent=isMonetized?'₨'+totalEarn.toLocaleString():'₨0 (Pending)';
+
+    // Pending balance
+    const pendingEarn = isMonetized ? Math.round(approvedViews/1000*CPM_PKR) : 0;
+    const lastPaidOut = ud.exists ? (ud.data().totalPaidOut||0) : 0;
+    const pendingBalance = Math.max(0, pendingEarn - lastPaidOut);
 
     // Super Thanks from Firestore
     loadSuperThanksList();
@@ -7230,6 +7494,14 @@ async function saveMembershipTier(){
 
 async function applyForMonetization(){
   if(!cUser)return showToast('Login karein');
+  // Check payment info
+  const ud0=await db.collection('users').doc(cUser.uid).get().catch(()=>null);
+  const uData=ud0?.exists?ud0.data():{};
+  if(!uData.paymentJazzCash&&!uData.paymentEasyPaisa&&!uData.paymentUPI&&!uData.payoutNumber){
+    showToast('⚠️ Pehle payment info save karo (JazzCash/EasyPaisa)!');
+    switchStudioTab('monetization');
+    return;
+  }
   // GEO RESTRICTION — India & Pakistan only
   const allowedCountries=['PK','IN'];
   try{
@@ -7240,9 +7512,8 @@ async function applyForMonetization(){
         return showToast('⛔ Monetization sirf Pakistan aur India ke creators ke liye available hai');
       }
     }
-  }catch(e){/* geo check fail — allow anyway */}
+  }catch(e){}
   try{
-    // Check eligibility first
     const snap=await db.collection('posts').where('authorId','==',cUser.uid).get();
     let videos=0,totalWatchSecs=0;
     snap.forEach(d=>{const p=d.data();if(p.type==='video'||p.type==='gaming'||p.type==='music'){videos++;totalWatchSecs+=p.watchTime||0;}});
@@ -7254,13 +7525,19 @@ async function applyForMonetization(){
     if(videos<MONET_REQS.videos)return showToast(`${MONET_REQS.videos} videos upload karo pehle! Abhi ${videos} hain 🎬`);
     const existing=await db.collection('monetizationApps').where('uid','==',cUser.uid).where('status','==','pending').get();
     if(!existing.empty)return showToast('Application already pending hai ⏳');
+    // Check if already approved
+    const approvedCheck=await db.collection('monetizationApps').where('uid','==',cUser.uid).where('status','==','approved').get();
+    if(!approvedCheck.empty)return showToast('Aap already monetized hain! ✅');
     await db.collection('monetizationApps').add({
       uid:cUser.uid,
       email:cUser.email,
       name:cUserData?.name||'',
       subscribers:subs,
-      watchHours:watchHours,
-      videos:videos,
+      watchHours,
+      videos,
+      paymentMethod:uData.payoutMethod||'jazzcash',
+      paymentNumber:uData.paymentJazzCash||uData.paymentEasyPaisa||uData.paymentUPI||uData.payoutNumber||'',
+      paymentName:uData.payoutName||'',
       appliedAt:Date.now(),
       status:'pending'
     });
@@ -7284,11 +7561,52 @@ async function applyShortsMonetization(){
 }
 
 function openSuperThanks(){
-  if(!cUser)return showToast('Login karein to send Super Thanks');
+  if(!cUser){showGuestLoginSheet('thanks');return;}
   const sheet=document.getElementById('superThanksSheet');
   const ov=document.getElementById('superThanksOverlay');
   const cr=document.getElementById('superThanksCreator');
   if(cr)cr.textContent=(currentPostData?.authorName||'Creator')+' ko support karo';
+  // Load creator payment info
+  if(currentPostData?.authorId){
+    db.collection('users').doc(currentPostData.authorId).get().then(ud=>{
+      const u=ud.exists?ud.data():{};
+      const payInfo=document.getElementById('creatorPaymentInfo');
+      const noPayInfo=document.getElementById('noPaymentInfo');
+      const methodsEl=document.getElementById('creatorPaymentMethods');
+      const hasPayment=u.paymentJazzCash||u.paymentEasyPaisa||u.paymentUPI||u.payoutNumber;
+      if(hasPayment){
+        if(payInfo)payInfo.style.display='block';
+        if(noPayInfo)noPayInfo.style.display='none';
+        let html='';
+        if(u.paymentJazzCash||u.payoutNumber){
+          const num=u.paymentJazzCash||u.payoutNumber;
+          html+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;background:rgba(0,0,0,.2);border-radius:8px;padding:8px 10px;">
+            <span style="font-size:16px;">🟢</span>
+            <div style="flex:1;"><div style="font-size:11px;color:var(--text3);">JazzCash</div><div style="font-size:14px;font-weight:800;color:var(--text);">${num}</div></div>
+            <button onclick="navigator.clipboard.writeText('${num}').then(()=>showToast('Copied! 📋'))" style="background:var(--red);color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;">Copy</button>
+          </div>`;
+        }
+        if(u.paymentEasyPaisa){
+          html+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;background:rgba(0,0,0,.2);border-radius:8px;padding:8px 10px;">
+            <span style="font-size:16px;">🔵</span>
+            <div style="flex:1;"><div style="font-size:11px;color:var(--text3);">EasyPaisa</div><div style="font-size:14px;font-weight:800;color:var(--text);">${u.paymentEasyPaisa}</div></div>
+            <button onclick="navigator.clipboard.writeText('${u.paymentEasyPaisa}').then(()=>showToast('Copied! 📋'))" style="background:var(--red);color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;">Copy</button>
+          </div>`;
+        }
+        if(u.paymentUPI){
+          html+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;background:rgba(0,0,0,.2);border-radius:8px;padding:8px 10px;">
+            <span style="font-size:16px;">🇮🇳</span>
+            <div style="flex:1;"><div style="font-size:11px;color:var(--text3);">UPI/Paytm</div><div style="font-size:14px;font-weight:800;color:var(--text);">${u.paymentUPI}</div></div>
+            <button onclick="navigator.clipboard.writeText('${u.paymentUPI}').then(()=>showToast('Copied! 📋'))" style="background:var(--red);color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;">Copy</button>
+          </div>`;
+        }
+        if(methodsEl)methodsEl.innerHTML=html;
+      }else{
+        if(payInfo)payInfo.style.display='none';
+        if(noPayInfo)noPayInfo.style.display='block';
+      }
+    }).catch(()=>{});
+  }
   if(sheet)sheet.style.display='block';
   if(ov)ov.style.display='block';
 }
@@ -7304,6 +7622,8 @@ function selectThanksAmt(amt,btn){
   _selectedThanksAmt=amt;
   document.querySelectorAll('.thanks-amt-btn').forEach(b=>{b.style.borderColor='var(--border)';});
   if(btn)btn.style.borderColor='var(--red)';
+  const amtDisplay=document.getElementById('selectedAmtDisplay');
+  if(amtDisplay)amtDisplay.textContent='₨'+amt;
 }
 
 let _selectedThanksPayment='jazzcash';
@@ -7534,3 +7854,4 @@ function safe(fn){
 </script>
 </body>
 </html>
+
