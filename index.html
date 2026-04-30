@@ -397,17 +397,37 @@ button,input,textarea{font-family:var(--font);}
 /* ═══ COMMENTS ═══ */
 .comm-sec{padding:0 14px;}
 .comm-title{font-size:14px;font-weight:700;margin-bottom:12px;}
-.comm-input-row{display:flex;gap:8px;align-items:center;margin-bottom:14px;}
+.comm-input-row{display:flex;gap:8px;align-items:center;margin-bottom:6px;}
 .comm-av{width:30px;height:30px;border-radius:50%;background:var(--red);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;overflow:hidden;}
 .comm-av img{width:100%;height:100%;object-fit:cover;}
 .comm-input{flex:1;padding:9px 13px;background:var(--bg3);border:1.5px solid var(--border);border-radius:20px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s;}
 .comm-input:focus{border-color:var(--red);}
-.comm-send{width:34px;height:34px;background:var(--red);border:none;border-radius:50%;color:white;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
-.comm-item{display:flex;gap:8px;margin-bottom:12px;animation:fadeUp .3s ease;}
+.comm-send{width:34px;height:34px;background:var(--red);border:none;border-radius:50%;color:white;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.comm-emoji-btn{width:34px;height:34px;background:none;border:none;color:var(--text2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:50%;transition:background .2s;}
+.comm-emoji-btn:active{background:var(--bg3);}
+.comm-item{display:flex;gap:8px;margin-bottom:14px;animation:fadeUp .3s ease;}
 .comm-body{flex:1;}
-.comm-author{font-size:12px;font-weight:600;}
-.comm-text{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.5;}
+.comm-author{font-size:12px;font-weight:700;color:var(--text);}
+.comm-text{font-size:13px;color:var(--text2);margin-top:3px;line-height:1.55;}
 .comm-time{font-size:10px;color:var(--text3);margin-top:3px;}
+.comm-acts{display:flex;align-items:center;gap:14px;margin-top:6px;}
+.comm-like-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;padding:2px 0;transition:color .2s;}
+.comm-like-btn.liked{color:var(--red);}
+.comm-like-btn:active{transform:scale(.9);}
+.comm-reply-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;font-weight:600;padding:2px 0;}
+.comm-reply-btn:active{color:var(--text);}
+.comm-replies{margin-top:8px;padding-left:38px;}
+.comm-reply-item{display:flex;gap:7px;margin-bottom:10px;}
+.comm-reply-av{width:24px;height:24px;border-radius:50%;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:10px;font-weight:700;overflow:hidden;}
+.comm-reply-av img{width:100%;height:100%;object-fit:cover;}
+.reply-indicator{background:var(--bg3);border-left:3px solid var(--red);padding:6px 10px;border-radius:0 8px 8px 0;font-size:11px;color:var(--text2);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;}
+/* Emoji Picker */
+.emoji-picker-popup{position:absolute;bottom:60px;left:0;right:0;background:var(--bg2);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:10px 8px 6px;z-index:200;display:none;max-height:200px;overflow-y:auto;}
+.emoji-picker-popup.open{display:block;}
+.emoji-grid{display:flex;flex-wrap:wrap;gap:2px;}
+.emoji-grid span{font-size:22px;cursor:pointer;padding:4px;border-radius:6px;line-height:1.3;transition:background .15s;}
+.emoji-grid span:active{background:var(--bg3);}
+.comm-input-wrap{position:relative;flex:1;display:flex;flex-direction:column;}
 
 /* ═══ NOTIFICATIONS ═══ */
 .notif-screen{padding:16px 14px;}
@@ -642,6 +662,15 @@ button,input,textarea{font-family:var(--font);}
       <button onclick="showForgotPassword()" style="background:none;border:none;color:var(--text2);font-size:12px;cursor:pointer;text-decoration:underline;">Forgot Password?</button>
     </div>
     <div class="auth-err" id="authErr"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin:14px 0 10px;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <span style="font-size:11px;color:var(--text3);">ya</span>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+    <button onclick="doGoogle()" style="width:100%;padding:13px;background:white;color:#333;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 10px rgba(0,0,0,.25);">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Google se Login karo
+    </button>
   </div>
 </div>
 
@@ -1817,12 +1846,26 @@ button,input,textarea{font-family:var(--font);}
       <button class="chip" onclick="filterComments('newest',this)" style="border-radius:20px;white-space:nowrap;">Newest</button>
       <button class="chip" onclick="filterComments('timed',this)" style="border-radius:20px;white-space:nowrap;">Timed</button>
     </div>
-    <div class="comm-input-row">
+    <!-- Reply Indicator -->
+    <div id="replyIndicator" style="display:none;" class="reply-indicator">
+      <span id="replyIndicatorText">Replying to @user</span>
+      <button onclick="cancelReply()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 4px;">✕</button>
+    </div>
+    <div class="comm-input-row" style="position:relative;">
       <div class="comm-av" id="myCommAv">?</div>
-      <input class="comm-input" id="commInput" placeholder="Add a comment...">
+      <div class="comm-input-wrap">
+        <input class="comm-input" id="commInput" placeholder="Add a comment...">
+        <div class="emoji-picker-popup" id="commEmojiPicker">
+          <div class="emoji-grid" id="commEmojiGrid"></div>
+        </div>
+      </div>
+      <button class="comm-emoji-btn" onclick="toggleCommEmoji()" title="Emoji">😊</button>
       <button class="comm-send" onclick="postComment()"><i class="fas fa-paper-plane"></i></button>
     </div>
     <div id="commList"></div>
+    <div id="commLoadMore" style="display:none;text-align:center;padding:10px;">
+      <button onclick="loadMoreComments()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:8px 20px;border-radius:20px;font-size:12px;cursor:pointer;">Load more comments</button>
+    </div>
   </div>
 
   <!-- About Comments Popup -->
@@ -2519,86 +2562,45 @@ function openUploadDirect(type){
 // ══════════════════════════════════════════════════════
 // SPLASH + AUTH
 // ══════════════════════════════════════════════════════
-let _splashHidden=false;
 function hideSplash(){
-  if(_splashHidden)return;
-  _splashHidden=true;
   const s=document.getElementById('splashScreen');
   if(!s)return;
-  s.style.transition='opacity .25s ease';
+  s.style.transition='opacity .2s ease';
   s.style.opacity='0';
-  setTimeout(()=>{s.style.display='none';s.style.pointerEvents='none';s.style.zIndex='-1';},260);
+  setTimeout(()=>{s.style.display='none';},200);
 }
 
 // FAILSAFE — agar Firebase slow ho ya auth delay ho
-// 6 second baad splash forcefully hatao aur guest mode mein jaao
+// 5 second baad splash hatao aur login screen dikhao (NO guest mode)
 setTimeout(()=>{
-  if(_splashHidden)return;
   const s=document.getElementById('splashScreen');
-  if(s&&s.style.display!=='none'){
-    console.warn('Splash timeout — forcing guest mode');
+  if(s&&s.style.display!=='none'&&s.style.opacity!=='0'){
+    console.warn('Splash timeout — showing auth screen');
     hideSplash();
     const mainApp=document.getElementById('mainApp');
     const authScreen=document.getElementById('authScreen');
-    if(mainApp){mainApp.style.display='block';mainApp.style.visibility='visible';}
-    if(authScreen)authScreen.style.display='none';
-    const av=document.getElementById('headerAvatar');
-    if(av){av.innerHTML='<i class="fas fa-user" style="font-size:14px;"></i>';av.style.background='var(--bg3)';}
-    try{showScreen('home');}catch(e){try{loadHome();}catch(e2){}}
+    if(mainApp)mainApp.style.display='none';
+    if(authScreen)authScreen.style.display='flex';
   }
-},6000);
+},5000);
 
 // ══════════════════════════════════════════════════════
 // SPLASH + AUTH
 // ══════════════════════════════════════════════════════
 
-// ══ GUEST MODE ══
+// ══ NO GUEST MODE — Login required ══
 function showGuestLoginSheet(action){
-  const ex=document.getElementById('guestLoginSheet');if(ex)ex.remove();
-  const exo=document.getElementById('guestLoginOv');if(exo)exo.remove();
-  const ov=document.createElement('div');
-  ov.id='guestLoginOv';
-  ov.style.cssText='position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.7);';
-  document.body.appendChild(ov);
-  const sheet=document.createElement('div');
-  sheet.id='guestLoginSheet';
-  sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9001;background:var(--bg2);border-radius:24px 24px 0 0;padding:24px 20px 40px;';
-  const txt={like:'Like karne ke liye',comment:'Comment karne ke liye',upload:'Upload karne ke liye',follow:'Subscribe karne ke liye',thanks:'Super Thanks bhejne ke liye'}[action]||'Yeh karne ke liye';
-  sheet.innerHTML=`
-    <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px;"></div>
-    <div style="text-align:center;margin-bottom:18px;">
-      <div style="font-size:36px;margin-bottom:8px;">📺</div>
-      <div style="font-size:17px;font-weight:800;margin-bottom:6px;">Pehle Channel Banao!</div>
-      <div style="font-size:13px;color:var(--text2);line-height:1.6;">${txt} pehle apna<br><b style="color:var(--text);">Stream X channel</b> banao</div>
-    </div>
-    <div style="background:var(--bg3);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.9;">
-      ✅ Videos upload karo &nbsp; ✅ Like &amp; comment karo<br>
-      ✅ Paise kamao &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ✅ Super Thanks lo
-    </div>
-    <button onclick="closeGuestSheet();showScreen('profile');" style="width:100%;padding:14px;background:var(--red);color:white;border:none;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;"><i class="fas fa-user-plus"></i> Channel Banao — Free!</button>
-    <button onclick="closeGuestSheet();" style="width:100%;padding:11px;background:none;border:1px solid var(--border);color:var(--text2);border-radius:12px;font-size:13px;cursor:pointer;">Baad mein</button>`;
-  ov.onclick=closeGuestSheet;
-  document.body.appendChild(sheet);
+  // Direct auth screen dikhao
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+  showToast('Pehle login karein! 🔐');
 }
 function closeGuestSheet(){
-  document.getElementById('guestLoginSheet')?.remove();
-  document.getElementById('guestLoginOv')?.remove();
+  // no-op — kept for compatibility
 }
 
 auth.onAuthStateChanged(async user=>{
   if(user){
-    // Anonymous guest — sirf feed dikhao, no channel setup, no policy gate
-    if(user.isAnonymous){
-      cUser=null; // treat as guest in app logic
-      hideSplash();
-      document.getElementById('authScreen').style.display='none';
-      document.getElementById('mainApp').style.display='block';
-      const av=document.getElementById('headerAvatar');
-      if(av){av.innerHTML='<i class="fas fa-user" style="font-size:14px;"></i>';av.style.background='var(--bg3)';}
-      try{showScreen('home');}catch(e){}
-      try{loadHome();}catch(e){console.error('Guest loadHome failed:',e);}
-      return;
-    }
     cUser=user;
     hideSplash();
     document.getElementById('authScreen').style.display='none';
@@ -2632,7 +2634,7 @@ auth.onAuthStateChanged(async user=>{
             if(!document.getElementById('policyCheckbox').checked){
               alert('Pehle checkbox tick karein!');return;
             }
-            var uid = firebase.auth().currentUser ? firebase.auth().currentUser.uid : 'guest';
+            var uid = firebase.auth().currentUser.uid;
             localStorage.setItem('policyAccepted_'+uid,'1');
             document.getElementById('gatewayPolicy').remove();
             document.getElementById('mainApp').style.display='block';
@@ -2664,29 +2666,13 @@ auth.onAuthStateChanged(async user=>{
       loadHome();
     }catch(e){loadHome();}
   }else{
-    // Auto anonymous sign-in for guest — so Firestore rules allow read
     cUser=null;cUserData=null;
-    auth.signInAnonymously().catch(()=>{
-      // Anonymous auth disabled ya fail — still show guest UI
-      hideSplash();
-      document.getElementById('authScreen').style.display='none';
-      document.getElementById('mainApp').style.display='block';
-      const av=document.getElementById('headerAvatar');
-      if(av){av.innerHTML='<i class="fas fa-user" style="font-size:14px;"></i>';av.style.background='var(--bg3)';}
-      showScreen('home');
-    });
-    // onAuthStateChanged will fire again with anonymous user — handled above
     setTimeout(()=>{
-      // Fallback agar anonymous auth ne onAuthStateChanged fire nahi kiya
-      if(!document.getElementById('mainApp').style.display||document.getElementById('mainApp').style.display==='none'){
-        hideSplash();
-        document.getElementById('authScreen').style.display='none';
-        document.getElementById('mainApp').style.display='block';
-        const av=document.getElementById('headerAvatar');
-        if(av){av.innerHTML='<i class="fas fa-user" style="font-size:14px;"></i>';av.style.background='var(--bg3)';}
-        showScreen('home');
-      }
-    },2000);
+      hideSplash();
+      // No guest mode — login zaroori hai
+      document.getElementById('mainApp').style.display='none';
+      document.getElementById('authScreen').style.display='flex';
+    },600);
   }
 });
 
@@ -2950,37 +2936,10 @@ if(ownerSide) ownerSide.style.display = 'flex';
 // CHANNEL CREATE — Guest flow (Google login + setup)
 // ══════════════════════════════════════════════════════
 function showChannelCreateForGuest(){
-  const ex=document.getElementById('channelCreateOverlay');if(ex)ex.remove();
-  const ov=document.createElement('div');
-  ov.id='channelCreateOverlay';
-  ov.style.cssText='position:fixed;inset:0;z-index:8000;background:var(--bg);overflow-y:auto;';
-  ov.innerHTML=`
-    <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10;">
-      <button onclick="document.getElementById('channelCreateOverlay').remove();" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:20px;"><i class="fas fa-times"></i></button>
-      <div style="font-size:17px;font-weight:800;">🚀 Channel Banao</div>
-    </div>
-    <div style="padding:20px 16px 40px;">
-      <!-- Step 1: Google Login -->
-      <div id="ccStep1" style="">
-        <div style="text-align:center;margin-bottom:24px;">
-          <div style="font-size:48px;margin-bottom:12px;">📺</div>
-          <div style="font-size:20px;font-weight:800;margin-bottom:8px;">Stream X pe Channel Banao</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.7;">Pakistan ka apna video platform 🇵🇰<br>Free hai — 30 seconds mein ready!</div>
-        </div>
-        <div style="background:var(--bg2);border-radius:14px;padding:14px 16px;margin-bottom:20px;font-size:12px;color:var(--text2);line-height:1.9;">
-          ✅ Videos & Shorts upload karo<br>
-          ✅ JazzCash/EasyPaisa se paise kamao<br>
-          ✅ Super Thanks receive karo<br>
-          ✅ Apna fanbase banao
-        </div>
-        <button onclick="doGoogle()" style="width:100%;padding:14px;background:white;color:#333;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 12px rgba(0,0,0,.3);">
-          <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Google se Login karo
-        </button>
-        <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--text3);">Login hone ke baad channel setup karein</div>
-      </div>
-    </div>`;
-  document.body.appendChild(ov);
+  // No guest mode — redirect to auth screen
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+  showToast('Pehle login karein! 🔐');
 }
 
 // Called after Google login succeeds — show channel setup form
@@ -3319,20 +3278,14 @@ async function loadNextBatch(isFirst=false){
     feed.appendChild(loader);
   }
   try{
+    let query=db.collection('posts').orderBy('time','desc').limit(_feedBatchSize);
+    if(_feedLastDoc)query=query.startAfter(_feedLastDoc);
     let snap;
-    try{
-      let q=db.collection('posts').orderBy('rankScore','desc').limit(_feedBatchSize);
-      if(_feedLastDoc)q=q.startAfter(_feedLastDoc);
-      snap=await q.get();
-    }catch(e1){
-      try{
-        let q=db.collection('posts').orderBy('time','desc').limit(_feedBatchSize);
-        if(_feedLastDoc)q=q.startAfter(_feedLastDoc);
-        snap=await q.get();
-      }catch(e2){
-        let q=db.collection('posts').limit(_feedBatchSize);
-        snap=await q.get();
-      }
+    try{snap=await query.get();}
+    catch(e){
+      // Fallback without orderBy
+      let q2=db.collection('posts').limit(_feedBatchSize);
+      snap=await q2.get();
     }
     // Remove bottom loader
     const bl=document.getElementById('feedBottomLoader');if(bl)bl.remove();
@@ -3379,14 +3332,9 @@ async function loadNextBatch(isFirst=false){
     }
   }catch(e){
     const bl=document.getElementById('feedBottomLoader');if(bl)bl.remove();
-    console.error('Feed err:',e.code,e.message);
+    console.error('Feed err:',e);
     const feed2=document.getElementById('homeFeed');
-    if(feed2&&feed2.innerHTML.includes('spinner')){
-      const isPermErr=e.code==='permission-denied';
-      feed2.innerHTML=isPermErr
-        ? '<div class="empty-state"><i class="fas fa-lock"></i><p>Feed dekhne ke liye login karein</p><button onclick="showScreen('profile')" style="margin-top:12px;padding:10px 22px;background:var(--red);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Login / Sign Up</button></div>'
-        : '<div class="empty-state"><i class="fas fa-video-slash"></i><p>Content load nahi hua.</p><button onclick="loadHome()" style="margin-top:12px;padding:10px 22px;background:var(--red);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;"><i class="fas fa-redo"></i> Retry</button></div>';
-    }
+    if(feed2&&feed2.innerHTML.includes('spinner'))feed2.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>Content load nahi hua. Refresh karo.</p></div>';
   }finally{
     _feedLoading=false;
   }
@@ -3902,7 +3850,7 @@ async function sfLoadComments(postId){
           <button onclick="sfReply('@${(c.authorName||'user').replace(/[^a-z0-9]/gi,'')}')" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;margin-top:4px;">Reply</button>
         </div>
       </div>`;
-      }).join('');
+    }).join('');
   }catch(e){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';}
 }
 function sfReply(mention){
@@ -4222,7 +4170,47 @@ function resetUploadForm(){
   document.querySelectorAll('.privacy-btn').forEach(b=>b.classList.remove('active'));
 const pb=document.getElementById('privPublic');if(pb)pb.classList.add('active');
 }
-<!-- PART 2 OF 2 — paste after Part 1, replacing from line 3796 onwards -->
+
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-upload"></i> Upload';hideProg();
+  }
+}
+
+async function uploadCloud(file,ep){
+  const fd=new FormData();fd.append('file',file);fd.append('upload_preset',PRESET);
+  let prog=0;
+  const progEl=document.getElementById('progFill');
+  const iv=setInterval(()=>{prog=Math.min(prog+3,88);if(progEl)progEl.style.width=prog+'%';},250);
+  try{
+    const res=await fetch(ep,{method:'POST',body:fd});
+    clearInterval(iv);
+    if(progEl)progEl.style.width='100%';
+    if(!res.ok){const er=await res.json();throw new Error(er.error?.message||'Upload failed');}
+    const data=await res.json();return data.secure_url;
+  }catch(e){
+    clearInterval(iv);
+    if(progEl)progEl.style.width='0%';
+    throw e;
+  }
+}
+
+function showProg(){document.getElementById('progBar').style.display='block';document.getElementById('progFill').style.width='0%';}
+function hideProg(){setTimeout(()=>{document.getElementById('progBar').style.display='none';document.getElementById('progFill').style.width='0%';},600);}
+
+function resetUploadForm(){
+  ['uploadTitle','uploadDesc','uploadTags'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('uploadImgPrev').style.display='none';
+  document.getElementById('uploadVidPrev').style.display='none';
+  document.getElementById('thumbPrev').style.display='none';
+  document.getElementById('uploadForm').classList.remove('show');
+  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('postImgGrid').innerHTML=`<div class="add-img-btn" onclick="document.getElementById('postImgFile').click()"><i class="fas fa-plus"></i><input type="file" id="postImgFile" accept="image/*" multiple onchange="addPostImages(this)"></div>`;
+  selectedFile=null;thumbFile=null;postImgFiles=[];selectedSong=null;clearSong();
+  const catSel=document.getElementById('uploadCategory');if(catSel)catSel.value='';
+  // Reset privacy
+  _uploadPrivacy='public';
+  document.querySelectorAll('.privacy-btn').forEach(b=>b.classList.remove('active'));
+const pb=document.getElementById('privPublic');if(pb)pb.classList.add('active');
+}
 
 // ══════════════════════════════════════════════════════
 // VIDEO PLAYER
@@ -4802,38 +4790,208 @@ async function pdLoadComments(postId){
 }
 
 
+// ══ COMMENT SYSTEM — Full upgrade ══
+let _commLastDoc = null;
+let _commAllLoaded = false;
+let _commCurrentPostId = null;
+let _commFilter = 'top';
+let _replyTo = null; // {commentId, authorName}
+
+const COMM_EMOJIS = ['😀','😂','🤣','😍','😎','🥳','😢','😡','🔥','❤️','💯','👍','👎','🙌','🤔','😮','💀','🤯','😏','🥰','😘','🤗','😴','🤑','👏','🎉','✅','❌','🙏','💪','🫡','😤','🤝','💬','📺','🇵🇰'];
+
+function initCommEmoji(){
+  const grid=document.getElementById('commEmojiGrid');
+  if(!grid||grid.children.length)return;
+  grid.innerHTML=COMM_EMOJIS.map(e=>`<span onclick="insertCommEmoji('${e}')">${e}</span>`).join('');
+}
+
+function toggleCommEmoji(){
+  initCommEmoji();
+  const p=document.getElementById('commEmojiPicker');
+  p.classList.toggle('open');
+}
+
+function insertCommEmoji(emoji){
+  const inp=document.getElementById('commInput');
+  const pos=inp.selectionStart||inp.value.length;
+  inp.value=inp.value.slice(0,pos)+emoji+inp.value.slice(pos);
+  inp.focus();
+  const newPos=pos+emoji.length;
+  inp.setSelectionRange(newPos,newPos);
+  document.getElementById('commEmojiPicker').classList.remove('open');
+}
+
+// Close emoji picker on outside click
+document.addEventListener('click',e=>{
+  const picker=document.getElementById('commEmojiPicker');
+  if(picker&&!e.target.closest('.comm-emoji-btn')&&!e.target.closest('#commEmojiPicker')){
+    picker.classList.remove('open');
+  }
+});
+
+function setReply(commentId, authorName){
+  _replyTo={commentId,authorName};
+  const ind=document.getElementById('replyIndicator');
+  ind.style.display='flex';
+  document.getElementById('replyIndicatorText').textContent=`Replying to @${authorName}`;
+  const inp=document.getElementById('commInput');
+  inp.placeholder=`Reply to @${authorName}...`;
+  inp.focus();
+}
+
+function cancelReply(){
+  _replyTo=null;
+  document.getElementById('replyIndicator').style.display='none';
+  document.getElementById('commInput').placeholder='Add a comment...';
+}
+
 async function loadComments(postId){
+  _commCurrentPostId=postId;
+  _commLastDoc=null;
+  _commAllLoaded=false;
   const list=document.getElementById('commList');
   list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  document.getElementById('commLoadMore').style.display='none';
+  await _fetchComments(postId,true);
+}
+
+async function loadMoreComments(){
+  if(!_commCurrentPostId||_commAllLoaded)return;
+  await _fetchComments(_commCurrentPostId,false);
+}
+
+async function _fetchComments(postId, reset){
+  const list=document.getElementById('commList');
+  const pageSize=20;
   try{
-    const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('time','desc').limit(200).get();
-    document.getElementById('commTitle').textContent=`Comments (${snap.size})`;
-    if(snap.empty){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet. Be first! 💬</div>';return;}
-    list.innerHTML=snap.docs.map(d=>{
-      const c=d.data();
+    let q=db.collection('posts').doc(postId).collection('comments');
+    if(_commFilter==='newest'){
+      q=q.orderBy('time','desc');
+    }else{
+      // top = by likes desc then time desc
+      try{q=q.orderBy('likes','desc').orderBy('time','desc');}
+      catch(e){q=q.orderBy('time','desc');}
+    }
+    if(_commLastDoc) q=q.startAfter(_commLastDoc);
+    q=q.limit(pageSize);
+
+    const snap=await q.get();
+    if(reset) list.innerHTML='';
+    _commLastDoc=snap.docs[snap.docs.length-1]||null;
+    _commAllLoaded=snap.docs.length<pageSize;
+
+    if(reset&&snap.empty){
+      list.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">No comments yet. Be first! 💬</div>';
+      document.getElementById('commTitle').textContent='Comments (0)';
+      document.getElementById('commLoadMore').style.display='none';
+      return;
+    }
+
+    // Update count
+    try{
+      const postDoc=await db.collection('posts').doc(postId).get();
+      const cnt=postDoc.data()?.comments||snap.size;
+      document.getElementById('commTitle').textContent=`Comments (${cnt})`;
+    }catch(e){document.getElementById('commTitle').textContent=`Comments`;}
+
+    const htmlArr=await Promise.all(snap.docs.map(async d=>{
+      const c={id:d.id,...d.data()};
       const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
-      return `<div class="comm-item">
+      const myLiked=cUser&&(c.likedBy||[]).includes(cUser.uid);
+      const likes=c.likes||0;
+
+      // Load replies count
+      let repliesHtml='';
+      try{
+        const repSnap=await db.collection('posts').doc(postId).collection('comments').doc(d.id).collection('replies').orderBy('time','asc').limit(10).get();
+        if(!repSnap.empty){
+          repliesHtml=`<div class="comm-replies">
+            ${repSnap.docs.map(rd=>{
+              const r=rd.data();
+              const rav=r.authorPhoto?`<img src="${r.authorPhoto}">`:(r.authorName||'U')[0].toUpperCase();
+              const rLiked=cUser&&(r.likedBy||[]).includes(cUser.uid);
+              return `<div class="comm-reply-item">
+                <div class="comm-reply-av">${rav}</div>
+                <div class="comm-body">
+                  <div class="comm-author">${r.authorName||'User'} <span style="font-size:10px;color:var(--text3);font-weight:400;">${getTimeAgo(r.time)}</span></div>
+                  <div class="comm-text">${r.text}</div>
+                  <div class="comm-acts">
+                    <button class="comm-like-btn ${rLiked?'liked':''}" onclick="likeReply('${postId}','${d.id}','${rd.id}',this)">
+                      <i class="${rLiked?'fas':'far'} fa-heart"></i> <span>${r.likes||0}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>`;
+        }
+      }catch(e){}
+
+      return `<div class="comm-item" id="comm_${d.id}">
         <div class="comm-av">${av}</div>
         <div class="comm-body">
-          <div class="comm-author">${c.authorName||'User'}</div>
+          <div class="comm-author">${c.authorName||'User'} <span style="font-size:10px;color:var(--text3);font-weight:400;">${getTimeAgo(c.time)}</span></div>
           <div class="comm-text">${c.text}</div>
-          <div class="comm-time">${getTimeAgo(c.time)}</div>
-          <button onclick="setReply('@${(c.authorName||'user').replace(/[^a-z0-9]/gi,'')}')" style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;padding:2px 0;">Reply</button>
-        </div></div>`;
-    }).join('');
+          <div class="comm-acts">
+            <button class="comm-like-btn ${myLiked?'liked':''}" onclick="likeComment('${postId}','${d.id}',this)">
+              <i class="${myLiked?'fas':'far'} fa-heart"></i> <span>${likes}</span>
+            </button>
+            <button class="comm-reply-btn" onclick="setReply('${d.id}','${(c.authorName||'user').replace(/[^a-z0-9]/gi,'_')}')">Reply</button>
+            <span style="font-size:10px;color:var(--text3);">${c.replyTo?'↩ reply':''}</span>
+          </div>
+          ${repliesHtml}
+        </div>
+      </div>`;
+    }));
+
+    list.insertAdjacentHTML('beforeend',htmlArr.join(''));
+    document.getElementById('commLoadMore').style.display=_commAllLoaded?'none':'block';
   }catch(e){
-    // Fallback without orderBy
-    try{
-      const snap2=await db.collection('posts').doc(postId).collection('comments').limit(200).get();
-      const sorted=snap2.docs.sort((a,b)=>b.data().time-a.data().time);
-      document.getElementById('commTitle').textContent=`Comments (${sorted.length})`;
-      list.innerHTML=sorted.map(d=>{
-        const c=d.data();
-        const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
-        return `<div class="comm-item"><div class="comm-av">${av}</div><div class="comm-body"><div class="comm-author">${c.authorName||'User'}</div><div class="comm-text">${c.text}</div><div class="comm-time">${getTimeAgo(c.time)}</div></div></div>`;
-      }).join('')||'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet!</div>';
-    }catch(e2){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';}
+    console.warn('loadComments error:',e);
+    if(reset) list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';
   }
+}
+
+async function likeComment(postId, commentId, btn){
+  if(!cUser){showGuestLoginSheet('like');return;}
+  const ref=db.collection('posts').doc(postId).collection('comments').doc(commentId);
+  try{
+    const doc=await ref.get();if(!doc.exists)return;
+    const d=doc.data();
+    const liked=(d.likedBy||[]).includes(cUser.uid);
+    const span=btn.querySelector('span');
+    const icon=btn.querySelector('i');
+    if(liked){
+      await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
+      btn.classList.remove('liked');
+      icon.className='far fa-heart';
+      span.textContent=Math.max(0,(d.likes||1)-1);
+    }else{
+      await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid)});
+      btn.classList.add('liked');
+      icon.className='fas fa-heart';
+      span.textContent=(d.likes||0)+1;
+    }
+  }catch(e){}
+}
+
+async function likeReply(postId, commentId, replyId, btn){
+  if(!cUser){showGuestLoginSheet('like');return;}
+  const ref=db.collection('posts').doc(postId).collection('comments').doc(commentId).collection('replies').doc(replyId);
+  try{
+    const doc=await ref.get();if(!doc.exists)return;
+    const d=doc.data();
+    const liked=(d.likedBy||[]).includes(cUser.uid);
+    const span=btn.querySelector('span');
+    const icon=btn.querySelector('i');
+    if(liked){
+      await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
+      btn.classList.remove('liked');icon.className='far fa-heart';span.textContent=Math.max(0,(d.likes||1)-1);
+    }else{
+      await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid)});
+      btn.classList.add('liked');icon.className='fas fa-heart';span.textContent=(d.likes||0)+1;
+    }
+  }catch(e){}
 }
 
 async function loadRelated(postId, postType, category){
@@ -4907,6 +5065,8 @@ async function loadRelated(postId, postType, category){
     console.warn('loadRelated error:',err);
     list.innerHTML='';
   }
+}
+
 }
 
 // ══════════════════════════════════════════════════════
@@ -4993,51 +5153,50 @@ function cancelEndScreen(){
   document.getElementById('videoEndScreen')?.remove();
 }
 
-function setReply(mention){
-  const inp=document.getElementById('commInput');
-  if(!inp)return;
-  inp.value='@'+mention.replace(/^@/,'')+' ';
-  inp.focus();
-  inp.scrollIntoView({behavior:'smooth',block:'center'});
-  // Style to show replying state
-  const replyBar=document.getElementById('replyIndicator');
-  if(!replyBar){
-    const bar=document.createElement('div');
-    bar.id='replyIndicator';
-    bar.style.cssText='font-size:11px;color:var(--text3);padding:4px 0;display:flex;align-items:center;gap:6px;';
-    bar.innerHTML=`<i class="fas fa-reply" style="color:var(--red);"></i> Replying to @${mention.replace(/^@/,'')} <button onclick="clearReply()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;margin-left:auto;">×</button>`;
-    inp.parentElement.insertBefore(bar,inp);
-  }
-}
-
-function clearReply(){
-  const inp=document.getElementById('commInput');
-  if(inp)inp.value='';
-  const bar=document.getElementById('replyIndicator');
-  if(bar)bar.remove();
-}
+// setReply and cancelReply defined in comment system above
 
 async function postComment(){
   if(!cUser||!currentPostId){if(!cUser)showGuestLoginSheet('comment');return;}
   const input=document.getElementById('commInput');
   const text=input.value.trim();if(!text)return;
   input.value='';
-  const bar=document.getElementById('replyIndicator');if(bar)bar.remove();
+  // Close emoji picker
+  document.getElementById('commEmojiPicker')?.classList.remove('open');
+
   try{
-    // Extract @mention for reply notification
-    const mentionMatch=text.match(/^@(\w+)/);
-    await db.collection('posts').doc(currentPostId).collection('comments').add({
-      text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
-      authorPhoto:cUserData?.photoURL||'',time:Date.now(),
-      replyTo:mentionMatch?mentionMatch[1]:null
-    });
-    await db.collection('posts').doc(currentPostId).update({
-      comments:firebase.firestore.FieldValue.increment(1),
-      rankScore:firebase.firestore.FieldValue.increment(5)
-    });
-    loadComments(currentPostId);showToast('Comment posted ✅');
-    sendNotif(currentPostData?.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,currentPostId);
-    if(mentionMatch){const replyTargetSnap=await db.collection('users').where('name','==',mentionMatch[1]).limit(1).get();if(!replyTargetSnap.empty){const replyUid=replyTargetSnap.docs[0].id;sendNotif(replyUid,'reply',`${cUserData?.name||'Someone'} replied to your comment: "${text.substring(0,40)}"`,currentPostId);}}
+    if(_replyTo){
+      // Save as reply in subcollection
+      const replyRef=db.collection('posts').doc(currentPostId).collection('comments').doc(_replyTo.commentId).collection('replies');
+      await replyRef.add({
+        text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
+        authorPhoto:cUserData?.photoURL||'',time:Date.now(),likes:0
+      });
+      // Notify the person being replied to
+      const commDoc=await db.collection('posts').doc(currentPostId).collection('comments').doc(_replyTo.commentId).get();
+      if(commDoc.exists){
+        const commData=commDoc.data();
+        if(commData.authorId&&commData.authorId!==cUser.uid){
+          sendNotif(commData.authorId,'reply',`${cUserData?.name||'Someone'} ne aapke comment pe reply kiya: "${text.substring(0,40)}"`,currentPostId);
+        }
+      }
+      cancelReply();
+      showToast('Reply posted ✅');
+      // Reload comments to show reply
+      loadComments(currentPostId);
+    }else{
+      // Normal comment
+      await db.collection('posts').doc(currentPostId).collection('comments').add({
+        text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
+        authorPhoto:cUserData?.photoURL||'',time:Date.now(),likes:0,likedBy:[]
+      });
+      await db.collection('posts').doc(currentPostId).update({
+        comments:firebase.firestore.FieldValue.increment(1),
+        rankScore:firebase.firestore.FieldValue.increment(5)
+      });
+      showToast('Comment posted ✅');
+      sendNotif(currentPostData?.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,currentPostId);
+      loadComments(currentPostId);
+    }
   }catch(e){showToast('Error posting comment');}
 }
 
@@ -5665,11 +5824,11 @@ async function doSearch(q){
       return {...p,_searchScore:(p.rankScore||0)+relevance};
     }).sort((a,b)=>b._searchScore-a._searchScore);
     if(!posts.length){results.innerHTML=`<div class="empty-state"><i class="fas fa-search"></i><p>No results for "${query}"</p></div>`;return;}
-    results.innerHTML=posts.map(p=>buildCard(p)).join('');
+    ;
   }catch(e){results.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Search error</p></div>';}
 }
 
-// ══════════════════════════════════════════════════════
+// ═════════════════════════════I═════════════════════════
 // OWNER DASHBOARD
 // ══════════════════════════════════════════════════════
 function switchOwnerTab(tab){
@@ -6314,12 +6473,8 @@ let _allComments=[];
 function filterComments(type,btn){
   document.querySelectorAll('#commFilterRow .chip').forEach(c=>c.classList.remove('active'));
   if(btn)btn.classList.add('active');
-  const list=document.getElementById('commentsList');
-  if(!list||!_allComments.length)return;
-  let sorted=[..._allComments];
-  if(type==='newest')sorted.sort((a,b)=>(b.time||0)-(a.time||0));
-  else if(type==='top')sorted.sort((a,b)=>(b.likes||0)-(a.likes||0));
-  list.innerHTML=sorted.map(c=>renderCommentHTML(c)).join('');
+  _commFilter=type;
+  if(_commCurrentPostId) loadComments(_commCurrentPostId);
 }
 
 function renderCommentHTML(c){
@@ -8147,5 +8302,3 @@ function safe(fn){
 </script>
 </body>
 </html>
-
-
