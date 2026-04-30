@@ -2527,6 +2527,23 @@ function hideSplash(){
   setTimeout(()=>{s.style.display='none';},200);
 }
 
+// FAILSAFE — agar Firebase slow ho ya auth delay ho
+// 5 second baad splash forcefully hatao aur guest mode mein jaao
+setTimeout(()=>{
+  const s=document.getElementById('splashScreen');
+  if(s&&s.style.display!=='none'&&s.style.opacity!=='0'){
+    console.warn('Splash timeout — forcing guest mode');
+    hideSplash();
+    const mainApp=document.getElementById('mainApp');
+    const authScreen=document.getElementById('authScreen');
+    if(mainApp)mainApp.style.display='block';
+    if(authScreen)authScreen.style.display='none';
+    const av=document.getElementById('headerAvatar');
+    if(av){av.innerHTML='<i class="fas fa-user" style="font-size:14px;"></i>';av.style.background='var(--bg3)';}
+    try{showScreen('home');}catch(e){try{loadHome();}catch(e2){}}
+  }
+},5000);
+
 // ══════════════════════════════════════════════════════
 // SPLASH + AUTH
 // ══════════════════════════════════════════════════════
@@ -2638,7 +2655,9 @@ auth.onAuthStateChanged(async user=>{
       document.getElementById('mainApp').style.display='block';
       const av=document.getElementById('headerAvatar');
       if(av){av.innerHTML='<i class="fas fa-user" style="font-size:14px;"></i>';av.style.background='var(--bg3)';}
-      loadHome();
+      // CRITICAL FIX: showScreen activates homeScreen div (adds 'active' class)
+      // Without this, homeScreen stays display:none — feed never shows
+      showScreen('home');
     },600);
   }
 });
@@ -4046,7 +4065,7 @@ async function doUpload(){
     let images=[];
     if(uploadType==='post'&&postImgFiles.length){
       for(const f of postImgFiles){images.push(await uploadCloud(f,`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`));}
-            }
+    }
     hideProg();
     // ══ SAVE HASH TO FIRESTORE ══
     if(window._currentFileHash){
