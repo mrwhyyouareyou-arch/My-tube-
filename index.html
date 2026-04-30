@@ -2587,6 +2587,18 @@ function closeGuestSheet(){
 
 auth.onAuthStateChanged(async user=>{
   if(user){
+    // Anonymous guest — sirf feed dikhao, no channel setup, no policy gate
+    if(user.isAnonymous){
+      cUser=null; // treat as guest in app logic
+      hideSplash();
+      document.getElementById('authScreen').style.display='none';
+      document.getElementById('mainApp').style.display='block';
+      const av=document.getElementById('headerAvatar');
+      if(av){av.innerHTML='<i class="fas fa-user" style="font-size:14px;"></i>';av.style.background='var(--bg3)';}
+      try{showScreen('home');}catch(e){}
+      try{loadHome();}catch(e){console.error('Guest loadHome failed:',e);}
+      return;
+    }
     cUser=user;
     hideSplash();
     document.getElementById('authScreen').style.display='none';
@@ -2652,17 +2664,29 @@ auth.onAuthStateChanged(async user=>{
       loadHome();
     }catch(e){loadHome();}
   }else{
+    // Auto anonymous sign-in for guest — so Firestore rules allow read
     cUser=null;cUserData=null;
-    setTimeout(()=>{
+    auth.signInAnonymously().catch(()=>{
+      // Anonymous auth disabled ya fail — still show guest UI
       hideSplash();
       document.getElementById('authScreen').style.display='none';
       document.getElementById('mainApp').style.display='block';
       const av=document.getElementById('headerAvatar');
       if(av){av.innerHTML='<i class="fas fa-user" style="font-size:14px;"></i>';av.style.background='var(--bg3)';}
-      // CRITICAL FIX: showScreen activates homeScreen div (adds 'active' class)
-      // Without this, homeScreen stays display:none — feed never shows
       showScreen('home');
-    },600);
+    });
+    // onAuthStateChanged will fire again with anonymous user — handled above
+    setTimeout(()=>{
+      // Fallback agar anonymous auth ne onAuthStateChanged fire nahi kiya
+      if(!document.getElementById('mainApp').style.display||document.getElementById('mainApp').style.display==='none'){
+        hideSplash();
+        document.getElementById('authScreen').style.display='none';
+        document.getElementById('mainApp').style.display='block';
+        const av=document.getElementById('headerAvatar');
+        if(av){av.innerHTML='<i class="fas fa-user" style="font-size:14px;"></i>';av.style.background='var(--bg3)';}
+        showScreen('home');
+      }
+    },2000);
   }
 });
 
@@ -3295,14 +3319,20 @@ async function loadNextBatch(isFirst=false){
     feed.appendChild(loader);
   }
   try{
-    let query=db.collection('posts').orderBy('time','desc').limit(_feedBatchSize);
-    if(_feedLastDoc)query=query.startAfter(_feedLastDoc);
     let snap;
-    try{snap=await query.get();}
-    catch(e){
-      // Fallback without orderBy
-      let q2=db.collection('posts').limit(_feedBatchSize);
-      snap=await q2.get();
+    try{
+      let q=db.collection('posts').orderBy('rankScore','desc').limit(_feedBatchSize);
+      if(_feedLastDoc)q=q.startAfter(_feedLastDoc);
+      snap=await q.get();
+    }catch(e1){
+      try{
+        let q=db.collection('posts').orderBy('time','desc').limit(_feedBatchSize);
+        if(_feedLastDoc)q=q.startAfter(_feedLastDoc);
+        snap=await q.get();
+      }catch(e2){
+        let q=db.collection('posts').limit(_feedBatchSize);
+        snap=await q.get();
+      }
     }
     // Remove bottom loader
     const bl=document.getElementById('feedBottomLoader');if(bl)bl.remove();
@@ -3349,9 +3379,14 @@ async function loadNextBatch(isFirst=false){
     }
   }catch(e){
     const bl=document.getElementById('feedBottomLoader');if(bl)bl.remove();
-    console.error('Feed err:',e);
+    console.error('Feed err:',e.code,e.message);
     const feed2=document.getElementById('homeFeed');
-    if(feed2&&feed2.innerHTML.includes('spinner'))feed2.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>Content load nahi hua. Refresh karo.</p></div>';
+    if(feed2&&feed2.innerHTML.includes('spinner')){
+      const isPermErr=e.code==='permission-denied';
+      feed2.innerHTML=isPermErr
+        ? '<div class="empty-state"><i class="fas fa-lock"></i><p>Feed dekhne ke liye login karein</p><button onclick="showScreen('profile')" style="margin-top:12px;padding:10px 22px;background:var(--red);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Login / Sign Up</button></div>'
+        : '<div class="empty-state"><i class="fas fa-video-slash"></i><p>Content load nahi hua.</p><button onclick="loadHome()" style="margin-top:12px;padding:10px 22px;background:var(--red);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;"><i class="fas fa-redo"></i> Retry</button></div>';
+    }
   }finally{
     _feedLoading=false;
   }
@@ -3867,7 +3902,7 @@ async function sfLoadComments(postId){
           <button onclick="sfReply('@${(c.authorName||'user').replace(/[^a-z0-9]/gi,'')}')" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;margin-top:4px;">Reply</button>
         </div>
       </div>`;
-    }).join('');
+      }).join('');
   }catch(e){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';}
 }
 function sfReply(mention){
@@ -8112,4 +8147,5 @@ function safe(fn){
 </script>
 </body>
 </html>
+
 
