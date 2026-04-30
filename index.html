@@ -5824,11 +5824,11 @@ async function doSearch(q){
       return {...p,_searchScore:(p.rankScore||0)+relevance};
     }).sort((a,b)=>b._searchScore-a._searchScore);
     if(!posts.length){results.innerHTML=`<div class="empty-state"><i class="fas fa-search"></i><p>No results for "${query}"</p></div>`;return;}
-    ;
+    results.innerHTML=posts.map(p=>buildCard(p)).join('');
   }catch(e){results.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Search error</p></div>';}
 }
 
-// ═════════════════════════════I═════════════════════════
+// ══════════════════════════════════════════════════════
 // OWNER DASHBOARD
 // ══════════════════════════════════════════════════════
 function switchOwnerTab(tab){
