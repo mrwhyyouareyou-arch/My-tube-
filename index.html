@@ -2519,30 +2519,34 @@ function openUploadDirect(type){
 // ══════════════════════════════════════════════════════
 // SPLASH + AUTH
 // ══════════════════════════════════════════════════════
+let _splashHidden=false;
 function hideSplash(){
+  if(_splashHidden)return;
+  _splashHidden=true;
   const s=document.getElementById('splashScreen');
   if(!s)return;
-  s.style.transition='opacity .2s ease';
+  s.style.transition='opacity .25s ease';
   s.style.opacity='0';
-  setTimeout(()=>{s.style.display='none';},200);
+  setTimeout(()=>{s.style.display='none';s.style.pointerEvents='none';s.style.zIndex='-1';},260);
 }
 
 // FAILSAFE — agar Firebase slow ho ya auth delay ho
-// 5 second baad splash forcefully hatao aur guest mode mein jaao
+// 6 second baad splash forcefully hatao aur guest mode mein jaao
 setTimeout(()=>{
+  if(_splashHidden)return;
   const s=document.getElementById('splashScreen');
-  if(s&&s.style.display!=='none'&&s.style.opacity!=='0'){
+  if(s&&s.style.display!=='none'){
     console.warn('Splash timeout — forcing guest mode');
     hideSplash();
     const mainApp=document.getElementById('mainApp');
     const authScreen=document.getElementById('authScreen');
-    if(mainApp)mainApp.style.display='block';
+    if(mainApp){mainApp.style.display='block';mainApp.style.visibility='visible';}
     if(authScreen)authScreen.style.display='none';
     const av=document.getElementById('headerAvatar');
     if(av){av.innerHTML='<i class="fas fa-user" style="font-size:14px;"></i>';av.style.background='var(--bg3)';}
     try{showScreen('home');}catch(e){try{loadHome();}catch(e2){}}
   }
-},5000);
+},6000);
 
 // ══════════════════════════════════════════════════════
 // SPLASH + AUTH
@@ -4868,8 +4872,6 @@ async function loadRelated(postId, postType, category){
     console.warn('loadRelated error:',err);
     list.innerHTML='';
   }
-}
-
 }
 
 // ══════════════════════════════════════════════════════
@@ -8107,9 +8109,6 @@ function safe(fn){
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',setup);}
   else{setTimeout(setup,200);}
 })();
-</script>
-</body>
-</html>
 </script>
 </body>
 </html>
