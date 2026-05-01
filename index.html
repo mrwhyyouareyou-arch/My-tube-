@@ -370,14 +370,19 @@ button,input,textarea{font-family:var(--font);}
 /* ═══ VIDEO PLAYER ═══ */
 .player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow:hidden;}
 .player-screen.open{display:flex;}
+/* ── YT-style: video pinned top, content scrolls below ── */
+.player-screen .player-back{position:absolute;top:10px;left:10px;z-index:210;}
+.player-vid-wrap{flex-shrink:0;width:100%;background:#000;position:relative;z-index:5;}
 .player-back{position:fixed;top:10px;left:10px;z-index:210;width:34px;height:34px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;}
 .player-vid-wrap{background:#000;width:100%;flex-shrink:0;min-height:200px;max-height:56.25vw;position:relative;z-index:5;}
 .player-vid-wrap video{width:100%;height:auto;max-height:56.25vw;object-fit:contain;display:block;}
 .player-vid-wrap img{width:100%;height:100%;object-fit:contain;}
-/* Short aspect ratio: 9:16 */
-.player-vid-wrap.short-ratio{max-height:100vw;aspect-ratio:9/16;}
-.player-vid-wrap.short-ratio video{max-height:100vw;height:100%;object-fit:cover;}
-.player-scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+/* Short ratio */
+.player-vid-wrap.short-ratio{aspect-ratio:9/16;max-height:60vh;}
+.player-vid-wrap.short-ratio video{max-height:60vh;height:100%;object-fit:cover;}
+/* Scroll body — takes remaining height, scrolls independently */
+.player-scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+/* Sticky input bar at bottom of player */
 .player-info{padding:12px 14px 0;}
 .player-title{font-size:15px;font-weight:700;line-height:1.4;}
 .player-meta{font-size:11px;color:var(--text2);margin-top:4px;}
@@ -412,11 +417,27 @@ button,input,textarea{font-family:var(--font);}
 .comm-text{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.5;}
 .comm-time{font-size:10px;color:var(--text3);margin-top:3px;}
 /* Sticky comment input bar */
-.comm-sticky-bar{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);padding:10px 14px;z-index:20;display:flex;gap:8px;align-items:center;}
-/* Comment like button */
-.comm-like-btn{background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;display:flex;align-items:center;gap:3px;padding:2px 4px;border-radius:10px;transition:color .2s;}
-.comm-like-btn.liked{color:var(--red);}
+.comm-sticky-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:8px 14px 12px;z-index:210;display:none;gap:8px;align-items:center;}
+.comm-sticky-bar.visible{display:flex;}
+/* Comment like button - blue not red */
+.comm-like-btn{background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;display:flex;align-items:center;gap:3px;padding:2px 6px;border-radius:10px;transition:all .15s;}
+.comm-like-btn.liked{color:#1a73e8;background:rgba(26,115,232,.1);}
 .comm-like-btn i{font-size:12px;}
+/* Comment emoji reactions */
+.comm-emoji-row{display:flex;gap:6px;padding:6px 0;overflow-x:auto;scrollbar-width:none;margin-bottom:8px;}
+.comm-emoji-btn{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:13px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;transition:all .15s;}
+.comm-emoji-btn:active{transform:scale(.93);}
+.comm-emoji-btn.reacted{border-color:#1a73e8;background:rgba(26,115,232,.1);}
+/* Guidelines bar */
+.comm-guidelines{background:rgba(26,115,232,.06);border:1px solid rgba(26,115,232,.15);border-radius:10px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:var(--text2);line-height:1.5;}
+.comm-guidelines a{color:#1a73e8;text-decoration:none;}
+/* Comment 3-dot menu */
+.comm-3dot{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px 6px;border-radius:50%;font-size:14px;margin-left:auto;}
+.comm-ctx-sheet{position:fixed;bottom:0;left:0;right:0;z-index:700;background:var(--bg2);border-radius:20px 20px 0 0;padding:12px 0 28px;transform:translateY(100%);transition:transform .3s ease;}
+.comm-ctx-sheet.open{transform:translateY(0);}
+.comm-ctx-item{display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;font-size:14px;}
+.comm-ctx-item:active{background:var(--bg3);}
+.comm-ctx-item.danger{color:#ff4444;}
 /* Reply indicator */
 .reply-indicator-bar{background:var(--bg3);border-left:3px solid var(--red);padding:6px 10px;border-radius:0 8px 8px 0;margin-bottom:6px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);}
 /* Replies section */
@@ -1829,10 +1850,10 @@ button,input,textarea{font-family:var(--font);}
     <button class="emoji-btn" onclick="reactEmoji('😮',this)">😮<span id="e4">0</span></button>
     <button class="emoji-btn" onclick="reactEmoji('👏',this)">👏<span id="e5">0</span></button>
   </div>
-  <div class="ch-row">
+  <div class="ch-row" onclick="if(currentPostData?.authorId)openChannelPage(currentPostData.authorId,event)" style="cursor:pointer;">
     <div class="yt-av" id="playerChAv" style="width:40px;height:40px;font-size:16px;">?</div>
     <div class="ch-row-info"><div class="ch-row-name" id="playerChName"></div><div class="ch-row-subs" id="playerChSubs">0 subscribers</div></div>
-    <button class="sub-btn" id="playerSubBtn" onclick="toggleSubscribe()">Subscribe</button>
+    <button class="sub-btn" id="playerSubBtn" onclick="event.stopPropagation();toggleSubscribe()">Subscribe</button>
   </div>
   <!-- Related Videos -->
   <div id="relatedVideos" style="padding:0 14px;margin-bottom:16px;">
@@ -1844,6 +1865,20 @@ button,input,textarea{font-family:var(--font);}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
       <div class="comm-title" id="commTitle" style="margin-bottom:0;">Comments</div>
       <button onclick="showAboutComments()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:4px;"><i class="fas fa-info-circle"></i></button>
+    </div>
+    <!-- Community Guidelines -->
+    <div class="comm-guidelines">
+      🛡️ Comments ko respectful rakhein. <a href="#" onclick="showAboutComments();return false;">Community Guidelines</a> follow karein.
+    </div>
+    <!-- Emoji reaction row -->
+    <div class="comm-emoji-row" id="commEmojiRow">
+      <button class="comm-emoji-btn" onclick="postEmojiComment('❤️ Love')">❤️ Love</button>
+      <button class="comm-emoji-btn" onclick="postEmojiComment('😂 Haha')">😂 Haha</button>
+      <button class="comm-emoji-btn" onclick="postEmojiComment('🔥 Fire')">🔥 Fire</button>
+      <button class="comm-emoji-btn" onclick="postEmojiComment('😮 Wow')">😮 Wow</button>
+      <button class="comm-emoji-btn" onclick="postEmojiComment('👏 Clap')">👏 Clap</button>
+      <button class="comm-emoji-btn" onclick="postEmojiComment('💯 Facts')">💯 Facts</button>
+      <button class="comm-emoji-btn" onclick="postEmojiComment('🙏 MashaAllah')">🙏 MashaAllah</button>
     </div>
     <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;" id="commFilterRow">
       <button class="chip active" onclick="filterComments('top',this)" style="border-radius:20px;white-space:nowrap;">Top</button>
@@ -1867,22 +1902,35 @@ button,input,textarea{font-family:var(--font);}
     <button onclick="closeAboutComments()" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;">Got it</button>
   </div>
 
-  <div style="height:80px;"></div><!-- bottom spacer -->
+  <div style="height:70px;"></div><!-- spacer for sticky bar -->
   </div><!-- end player-scroll-body -->
 
-  <!-- ═══ STICKY COMMENT INPUT BAR (YT style) ═══ -->
+  <!-- ═══ STICKY COMMENT INPUT BAR (YT style - fixed bottom) ═══ -->
   <div class="comm-sticky-bar" id="stickyCommBar">
-    <div class="comm-av" id="myCommAv" style="width:32px;height:32px;font-size:12px;">?</div>
+    <div class="comm-av" id="myCommAv" style="width:32px;height:32px;font-size:12px;flex-shrink:0;">?</div>
     <div style="flex:1;position:relative;">
-      <div id="replyIndicatorSticky" style="display:none;background:var(--bg3);border-left:3px solid var(--red);padding:4px 8px;border-radius:0 6px 6px 0;font-size:10px;color:var(--text3);margin-bottom:4px;display:none;align-items:center;gap:6px;">
-        <i class="fas fa-reply" style="color:var(--red);"></i>
+      <div id="replyIndicatorSticky" style="display:none;background:var(--bg3);border-left:3px solid #1a73e8;padding:4px 8px;border-radius:0 6px 6px 0;font-size:10px;color:var(--text3);margin-bottom:4px;align-items:center;gap:6px;">
+        <i class="fas fa-reply" style="color:#1a73e8;"></i>
         <span id="replyTargetName">Replying to @user</span>
-        <button onclick="clearVideoReply()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;margin-left:auto;line-height:1;">×</button>
+        <button onclick="clearVideoReply()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;margin-left:auto;line-height:1;">×</button>
       </div>
-      <input class="comm-input" id="commInput" placeholder="Add a comment..." style="width:100%;" onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--border)'">
+      <input class="comm-input" id="commInput" placeholder="Add a comment..." style="width:100%;" onfocus="this.style.borderColor='#1a73e8'" onblur="this.style.borderColor='var(--border)'">
     </div>
-    <button class="comm-send" onclick="postComment()"><i class="fas fa-paper-plane"></i></button>
+    <button class="comm-send" onclick="postComment()" style="background:#1a73e8;flex-shrink:0;"><i class="fas fa-paper-plane"></i></button>
   </div>
+</div>
+
+<!-- Comment 3-dot context sheet -->
+<div id="commCtxOverlay" onclick="closeCommCtx()" style="display:none;position:fixed;inset:0;z-index:699;background:rgba(0,0,0,.5);"></div>
+<div class="comm-ctx-sheet" id="commCtxSheet">
+  <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 12px;"></div>
+  <div id="commCtxAuthor" style="padding:10px 20px 6px;font-size:13px;color:var(--text3);"></div>
+  <div class="comm-ctx-item" onclick="commCtxAction('reply')"><i class="fas fa-reply" style="color:#1a73e8;width:20px;"></i> Reply</div>
+  <div class="comm-ctx-item" onclick="commCtxAction('like')"><i class="fas fa-thumbs-up" style="color:#1a73e8;width:20px;"></i> Like comment</div>
+  <div class="comm-ctx-item" onclick="commCtxAction('profile')"><i class="fas fa-user" style="color:var(--text2);width:20px;"></i> View channel</div>
+  <div class="comm-ctx-item" onclick="commCtxAction('share')"><i class="fas fa-share" style="color:var(--text2);width:20px;"></i> Share comment</div>
+  <div class="comm-ctx-item danger" onclick="commCtxAction('report')"><i class="fas fa-flag" style="width:20px;"></i> Report</div>
+  <div class="comm-ctx-item danger" onclick="commCtxAction('block')"><i class="fas fa-ban" style="width:20px;"></i> Block user</div>
 </div>
 
 <!-- ═══ FULLSCREEN SHORT ═══ -->
@@ -3947,7 +3995,16 @@ async function openPost(id){
     }
   }catch(e){console.warn('openPost type check:',e);}
   // Otherwise open video player
-  const sc=document.getElementById('playerScreen');sc.classList.add('open');sc.scrollTop=0;
+  const sc=document.getElementById('playerScreen');sc.classList.add('open');
+  // Scroll content body to top (not the screen itself)
+  const scrollBody=document.querySelector('#playerScreen .player-scroll-body');
+  if(scrollBody) scrollBody.scrollTop=0;
+  // Show sticky comment bar
+  const stickyBar=document.getElementById('stickyCommBar');
+  if(stickyBar) stickyBar.classList.add('visible');
+  // Set my avatar
+  if(cUserData?.photoURL){ document.getElementById('myCommAv').innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }
+  else if(cUserData?.name){ document.getElementById('myCommAv').textContent=cUserData.name[0].toUpperCase(); }
   document.getElementById('playerTitle').textContent='Loading...';
   document.getElementById('commList').innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
@@ -4057,7 +4114,7 @@ function showVideoMenu(id,title,authorId,url,e){
   function closeCtxMenu(){
   document.getElementById('ctxOverlay').classList.remove('open');
   document.getElementById('ctxMenu').classList.remove('open');
-}
+  }
 function ctxSave(){closeCtxMenu();showToast('Saved to Watch Later ✅');}
 function ctxShare(){closeCtxMenu();if(ctxPostUrl){navigator.clipboard.writeText(ctxPostUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Share link copied!'));}}
 function ctxDownload(){
@@ -4147,12 +4204,18 @@ function stopWatchTimer(){
 
 function closePlayer(){
   stopWatchTimer();
+  cancelEndScreen();
   document.getElementById('playerScreen').classList.remove('open');
   const v=document.getElementById('playerVid');v.pause();v.src='';
   const po=document.getElementById('playOverlay');if(po)po.remove();
   const wrap=document.getElementById('playerVidWrap');
   wrap.style.backgroundImage='';wrap.style.display='block';
+  wrap.classList.remove('short-ratio');
   currentPostId=null;currentPostData=null;
+  // Hide sticky bar
+  const stickyBar=document.getElementById('stickyCommBar');
+  if(stickyBar) stickyBar.classList.remove('visible');
+  clearVideoReply();
 }
 
 async function toggleLike(){
@@ -4548,6 +4611,37 @@ function pdSetReply(postId, name, commentId){
 }
 
 
+// Comment context menu state
+let _commCtxData = {};
+function openCommCtx(postId, commentId, authorId, authorName, likeCount, liked){
+  _commCtxData = {postId, commentId, authorId, authorName, likeCount, liked};
+  document.getElementById('commCtxAuthor').textContent = '@'+authorName;
+  document.getElementById('commCtxOverlay').style.display='block';
+  document.getElementById('commCtxSheet').classList.add('open');
+}
+function closeCommCtx(){
+  document.getElementById('commCtxOverlay').style.display='none';
+  document.getElementById('commCtxSheet').classList.remove('open');
+}
+async function commCtxAction(action){
+  closeCommCtx();
+  const {postId,commentId,authorId,authorName} = _commCtxData;
+  if(action==='reply'){ setVideoReply(authorName, commentId); }
+  else if(action==='like'){ const btn=document.getElementById('clbtn_'+commentId); if(btn) likeComment(postId,commentId,btn); }
+  else if(action==='profile'){ if(authorId) openChannelPage(authorId,null); }
+  else if(action==='share'){ navigator.clipboard?.writeText('Comment by @'+authorName).then(()=>showToast('Copied!')).catch(()=>showToast('Shared!')); }
+  else if(action==='report'){ showToast('Report submitted ✅'); }
+  else if(action==='block'){
+    if(!cUser) return showToast('Login karein!');
+    try{
+      await db.collection('users').doc(cUser.uid).update({blocked:firebase.firestore.FieldValue.arrayUnion(authorId)});
+      showToast('User blocked 🚫');
+      // Hide their comments
+      document.querySelectorAll(`[data-author="${authorId}"]`).forEach(el=>el.remove());
+    }catch(e){ showToast('Block failed'); }
+  }
+}
+
 async function loadComments(postId){
   const list=document.getElementById('commList');
   list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
@@ -4560,23 +4654,25 @@ async function loadComments(postId){
       const av=c.authorPhoto?`<img src="${c.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(c.authorName||'U')[0].toUpperCase();
       const liked=cUser&&(c.likedBy||[]).includes(cUser.uid);
       const likeCount=c.likes||0;
-      const replyToText=c.replyTo?`<span style="color:var(--red);font-size:11px;margin-right:4px;">@${c.replyTo}</span>`:'';
-      return `<div class="comm-item" id="commitem_${cid}">
-        <div class="comm-av" onclick="openChannelPage('${c.authorId||''}',event)" style="cursor:pointer;">${av}</div>
+      const replyToText=c.replyTo?`<span style="color:#1a73e8;font-size:11px;margin-right:4px;">@${c.replyTo}</span>`:'';
+      const timeStr = getTimeAgo(c.time);
+      return `<div class="comm-item" id="commitem_${cid}" data-author="${c.authorId||''}">
+        <div class="comm-av" onclick="if('${c.authorId||''}')openChannelPage('${c.authorId||''}',event)" style="cursor:pointer;">${av}</div>
         <div class="comm-body">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-            <span class="comm-author">${c.authorName||'User'}</span>
-            <span class="comm-time">${getTimeAgo(c.time)}</span>
+            <span class="comm-author" onclick="if('${c.authorId||''}')openChannelPage('${c.authorId||''}',event)" style="cursor:pointer;">${c.authorName||'User'}</span>
+            <span class="comm-time">${timeStr}</span>
+            <button class="comm-3dot" onclick="openCommCtx('${postId}','${cid}','${c.authorId||''}','${(c.authorName||'user').replace(/'/g,"\\'")}',${likeCount},${liked})"><i class="fas fa-ellipsis-v"></i></button>
           </div>
           <div class="comm-text">${replyToText}${c.text}</div>
-          <div style="display:flex;align-items:center;gap:10px;margin-top:5px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;">
             <button class="comm-like-btn ${liked?'liked':''}" id="clbtn_${cid}" onclick="likeComment('${postId}','${cid}',this)">
-              <i class="fas fa-thumbs-up"></i> <span id="clcount_${cid}">${likeCount}</span>
+              <i class="fas fa-thumbs-up"></i> <span id="clcount_${cid}">${likeCount||''}</span>
             </button>
             <button class="comm-like-btn" onclick="likeCommentDislike('${postId}','${cid}',this)">
               <i class="fas fa-thumbs-down"></i>
             </button>
-            <button style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-weight:600;padding:2px 4px;" onclick="setVideoReply('${c.authorName||'user'}','${cid}')">Reply</button>
+            <button style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-weight:600;padding:2px 6px;border-radius:10px;" onclick="setVideoReply('${(c.authorName||'user').replace(/'/g,"\\'")}','${cid}')">Reply</button>
             ${c.replyCount>0?`<button class="load-replies-btn" onclick="toggleReplies('${postId}','${cid}',this)"><i class="fas fa-chevron-down" style="font-size:9px;"></i> ${c.replyCount} ${c.replyCount===1?'reply':'replies'}</button>`:''}
           </div>
           <div class="replies-wrap" id="replies_${cid}" style="display:none;"></div>
@@ -4584,7 +4680,6 @@ async function loadComments(postId){
       </div>`;
     }).join('');
   }catch(e){
-    // Fallback without orderBy
     try{
       const snap2=await db.collection('posts').doc(postId).collection('comments').limit(200).get();
       const sorted=snap2.docs.sort((a,b)=>b.data().time-a.data().time);
@@ -4593,7 +4688,19 @@ async function loadComments(postId){
         const c=d.data();const cid=d.id;
         const av=c.authorPhoto?`<img src="${c.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(c.authorName||'U')[0].toUpperCase();
         const liked=cUser&&(c.likedBy||[]).includes(cUser.uid);
-        return `<div class="comm-item"><div class="comm-av">${av}</div><div class="comm-body"><div class="comm-author">${c.authorName||'User'} <span class="comm-time">${getTimeAgo(c.time)}</span></div><div class="comm-text">${c.text}</div><div style="display:flex;gap:10px;margin-top:5px;"><button class="comm-like-btn ${liked?'liked':''}" onclick="likeComment('${postId}','${cid}',this)"><i class="fas fa-thumbs-up"></i> <span>${c.likes||0}</span></button><button style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-weight:600;" onclick="setVideoReply('${c.authorName||'user'}','${cid}')">Reply</button></div></div></div>`;
+        return `<div class="comm-item" data-author="${c.authorId||''}">
+          <div class="comm-av" onclick="if('${c.authorId||''}')openChannelPage('${c.authorId||''}',event)" style="cursor:pointer;">${av}</div>
+          <div class="comm-body">
+            <span class="comm-author" onclick="if('${c.authorId||''}')openChannelPage('${c.authorId||''}',event)" style="cursor:pointer;">${c.authorName||'User'}</span>
+            <span class="comm-time">${getTimeAgo(c.time)}</span>
+            <button class="comm-3dot" onclick="openCommCtx('${postId}','${cid}','${c.authorId||''}','${(c.authorName||'user').replace(/'/g,"\\'")}',${c.likes||0},${liked})"><i class="fas fa-ellipsis-v"></i></button>
+            <div class="comm-text">${c.text}</div>
+            <div style="display:flex;gap:10px;margin-top:5px;">
+              <button class="comm-like-btn ${liked?'liked':''}" onclick="likeComment('${postId}','${cid}',this)"><i class="fas fa-thumbs-up"></i> <span>${c.likes||0}</span></button>
+              <button style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-weight:600;" onclick="setVideoReply('${(c.authorName||'user').replace(/'/g,"\\'")}','${cid}')">Reply</button>
+            </div>
+          </div>
+        </div>`;
       }).join('')||'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet!</div>';
     }catch(e2){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';}
   }
@@ -4697,6 +4804,21 @@ function setReply(mention){
   setVideoReply(mention.replace(/^@/,''), null);
 }
 function clearReply(){ clearVideoReply(); }
+
+// Quick emoji comment
+async function postEmojiComment(emoji){
+  if(!cUser||!currentPostId) return showToast('Login karein!');
+  try{
+    await db.collection('posts').doc(currentPostId).collection('comments').add({
+      text: emoji, authorId:cUser.uid, authorName:cUserData?.name||cUser.email,
+      authorPhoto:cUserData?.photoURL||'', time:Date.now(),
+      likes:0, likedBy:[], replyTo:null, parentId:null
+    });
+    await db.collection('posts').doc(currentPostId).update({comments:firebase.firestore.FieldValue.increment(1)});
+    loadComments(currentPostId);
+    showToast(emoji+' posted!');
+  }catch(e){ showToast('Error'); }
+}
 
 async function postComment(){
   if(!cUser||!currentPostId)return;
@@ -7920,43 +8042,40 @@ async function likeReply(postId, commentId, replyId, btn){
 let _endScreenTimer = null;
 let _endScreenCancelled = false;
 
-function showEndScreen(){
+async function showEndScreen(){
   const overlay = document.getElementById('endScreenOverlay');
   if(!overlay) return;
   overlay.classList.add('show');
   _endScreenCancelled = false;
-  // Fetch 4 related videos
   const grid = document.getElementById('endScreenGrid');
   if(!grid) return;
-  // Get videos from relatedList
-  const related = document.querySelectorAll('#relatedList [onclick^="openPost"]');
-  const ids = [];
-  related.forEach(el => {
-    const match = (el.getAttribute('onclick')||'').match(/openPost\('([^']+)'\)/);
-    if(match && ids.length < 4) ids.push(match[1]);
-  });
-  if(!ids.length){
-    // fallback: fetch from firebase
-    db.collection('posts').orderBy('rankScore','desc').limit(6).get().then(snap=>{
-      const posts = snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.id!==currentPostId).slice(0,4);
-      renderEndScreenCards(posts, grid);
-      startEndScreenCountdown(posts[0]);
-    }).catch(()=>{});
-    return;
+  grid.innerHTML = '<div style="grid-column:1/-1;display:flex;justify-content:center;padding:20px;"><div class="spinner"></div></div>';
+
+  try{
+    // Algorithm: prefer same category/type as current video, high rankScore
+    const p = currentPostData || {};
+    let snap;
+    try{ snap = await db.collection('posts').orderBy('rankScore','desc').limit(30).get(); }
+    catch(e){ snap = await db.collection('posts').orderBy('time','desc').limit(30).get(); }
+
+    let all = snap.docs.map(d=>({id:d.id,...d.data()}))
+      .filter(v => v.id !== currentPostId && v.url && v.type !== 'post');
+
+    // Score by relevance
+    all = all.map(v=>{
+      let score = v.rankScore||0;
+      if(v.category && v.category === p.category) score += 50;
+      if(v.type === p.type) score += 20;
+      if(v.authorId === p.authorId) score += 30;
+      return {...v, _score: score};
+    }).sort((a,b)=>b._score - a._score).slice(0,4);
+
+    renderEndScreenCards(all, grid);
+    startEndScreenCountdown(all[0]);
+  }catch(e){
+    grid.innerHTML = '<div style="grid-column:1/-1;color:rgba(255,255,255,.5);text-align:center;font-size:12px;">No suggestions available</div>';
+    startEndScreenCountdown(null);
   }
-  // Build simple card from related elements
-  const posts = [];
-  related.forEach(el => {
-    if(posts.length>=4) return;
-    const match = (el.getAttribute('onclick')||'').match(/openPost\('([^']+)'\)/);
-    if(!match) return;
-    const pid = match[1];
-    const img = el.querySelector('img');
-    const titleEl = el.querySelector('[style*="line-clamp"]') || el.querySelector('[style*="font-size:12px"]');
-    posts.push({ id:pid, thumbURL:img?.src||'', title:titleEl?.textContent||'Video' });
-  });
-  renderEndScreenCards(posts, grid);
-  startEndScreenCountdown(posts[0]);
 }
 
 function renderEndScreenCards(posts, grid){
@@ -8109,5 +8228,3 @@ function safe(fn){
 </script>
 </body>
 </html>
-  
-  
