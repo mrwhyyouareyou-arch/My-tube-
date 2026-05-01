@@ -15,9 +15,7 @@
 <meta http-equiv="Cache-Control" content="max-age=3600">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" as="style">
 <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style">
-<link rel="preload" href="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" as="script">
-<link rel="prefetch" href="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
-<link rel="prefetch" href="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://www.gstatic.com">
 <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
@@ -2285,6 +2283,21 @@ button,input,textarea{font-family:var(--font);}
 // ══════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════
+// Guard: agar firebase load na hua ho to wait karo
+function _waitFirebase(cb, tries){
+  tries = tries||0;
+  if(typeof firebase !== 'undefined' && firebase.auth){
+    cb();
+  } else if(tries < 30){
+    setTimeout(()=>_waitFirebase(cb, tries+1), 200);
+  } else {
+    // Firebase load nahi hua — auth screen dikhao
+    document.getElementById('splashScreen').style.display='none';
+    document.getElementById('authScreen').style.display='flex';
+    console.error('Firebase failed to load');
+  }
+}
+_waitFirebase(function(){
 const FB = {
   apiKey:"AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
   authDomain:"my-tube-e526b.firebaseapp.com",
@@ -2483,7 +2496,7 @@ function showToast(msg){
 // UPLOAD CHOICE SHEET
 // ══════════════════════════════════════════════════════
 function showUploadChoice(){
-  if(!cUser){showGuestLoginSheet('upload');return;}
+  if(!cUser){showToast('Login karein pehle!');showScreen('profile');return;}
   const ov=document.getElementById('uploadChoiceOverlay');
   const sh=document.getElementById('uploadChoiceSheet');
   if(ov)ov.style.display='block';
@@ -3532,7 +3545,7 @@ function buildPostCard(p){
 const _liking={};
 async function quickLike(id,btn,e){
   e.stopPropagation();
-  if(!cUser){showGuestLoginSheet('like');return;}
+  if(!cUser){showToast('Login karein pehle!');showScreen('profile');return;}
   if(_liking[id])return;
   _liking[id]=true;setTimeout(()=>delete _liking[id],1500);
   try{
@@ -3688,7 +3701,7 @@ function playShortAt(idx){
 }
 
 async function sfSubscribe(){
-  if(!cUser){showGuestLoginSheet('follow');return;}
+  if(!cUser){showToast('Login karein pehle!');showScreen('profile');return;}
   const p=sfPosts[sfCurrentIdx];if(!p||!p.authorId||p.authorId===cUser.uid)return;
   const sid=`${cUser.uid}_${p.authorId}`;
   const ref=db.collection('subscriptions').doc(sid);
@@ -3782,7 +3795,7 @@ function nextShort(){if(sfCurrentIdx<sfPosts.length-1)playShortAt(sfCurrentIdx+1
 })();
 
 async function sfLike(){
-  if(!cUser||!sfCurrentId){if(!cUser)showGuestLoginSheet('like');return;}
+  if(!cUser||!sfCurrentId){if(!cUser)showToast('Login karein pehle!');showScreen('profile');return;}
   try{
     const ref=db.collection('posts').doc(sfCurrentId);
     const doc=await ref.get();if(!doc.exists)return;const p=doc.data();
@@ -4408,7 +4421,7 @@ function closePlayer(){
 }
 
 async function toggleLike(){
-  if(!cUser||!currentPostId){if(!cUser)showGuestLoginSheet('like');return;}
+  if(!cUser||!currentPostId){if(!cUser)showToast('Login karein pehle!');showScreen('profile');return;}
   if(_liking['pl'])return;_liking['pl']=true;setTimeout(()=>delete _liking['pl'],1500);
   try{
     const ref=db.collection('posts').doc(currentPostId);
@@ -4463,7 +4476,7 @@ async function reactEmoji(emoji,btn){
 }
 
 async function toggleSubscribe(){
-  if(!cUser){showGuestLoginSheet('follow');return;}
+  if(!cUser){showToast('Login karein pehle!');showScreen('profile');return;}
   if(!currentPostData){return;}
   const aId=currentPostData.authorId;
   if(!aId||aId===cUser.uid){showToast('Apne aap ko subscribe nahi kar sakte');return;}
@@ -5090,7 +5103,7 @@ function clearReply(){
 }
 
 async function postComment(){
-  if(!cUser||!currentPostId){if(!cUser)showGuestLoginSheet('comment');return;}
+  if(!cUser||!currentPostId){if(!cUser)showToast('Login karein pehle!');showScreen('profile');return;}
   const input=document.getElementById('commInput');
   const text=input.value.trim();if(!text)return;
   input.value='';
@@ -7928,7 +7941,7 @@ async function applyShortsMonetization(){
 }
 
 function openSuperThanks(){
-  if(!cUser){showGuestLoginSheet('thanks');return;}
+  if(!cUser){showToast('Login karein pehle!');showScreen('profile');return;}
   const sheet=document.getElementById('superThanksSheet');
   const ov=document.getElementById('superThanksOverlay');
   const cr=document.getElementById('superThanksCreator');
@@ -8162,6 +8175,7 @@ function safe(fn){
   try{fn();}catch(e){console.warn('Safe call error:',e.message);}
 }
 
+}); // end _waitFirebase
 </script>
 <footer style="background:#0a0a0f;border-top:1px solid #2a2a3d;padding:20px;text-align:center;font-family:sans-serif;">
   <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
