@@ -2671,7 +2671,7 @@ auth.onAuthStateChanged(async user=>{
   // Safety: splash hamesha max 4 seconds mein band ho jaaye
   setTimeout(()=>hideSplash(), 4000);
   if(user){
-    hideSplash();
+    cUser=user;
     document.getElementById('authScreen').style.display='none';
     // ══ GATEWAY POLICY CHECK ══
     const policyKey = `policyAccepted_${user.uid}`;
@@ -3485,6 +3485,8 @@ function sfOpenChannel(){
   closeShortFS();
   setTimeout(()=>openChannelPage(p.authorId,null),100);
 }
+
+async function sfSubscribe(){
   if(!cUser)return showToast('Login karein!');
   const p=sfPosts[sfCurrentIdx];if(!p||!p.authorId||p.authorId===cUser.uid)return;
   const sid=`${cUser.uid}_${p.authorId}`;
@@ -4259,7 +4261,7 @@ function showVideoMenu(id,title,authorId,url,e){
   }
 function ctxSave(){closeCtxMenu();showToast('Saved to Watch Later ✅');}
 function ctxShare(){closeCtxMenu();if(ctxPostUrl){navigator.clipboard.writeText(ctxPostUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Share link copied!'));}}
-  function ctxDownload(){
+function ctxDownload(){
   closeCtxMenu();
   if(!ctxPostUrl)return showToast('No downloadable content');
   const a=document.createElement('a');a.href=ctxPostUrl;a.download='video';a.target='_blank';
@@ -8519,5 +8521,4 @@ function safe(fn){
 </script>
 </body>
 </html>
-
 
