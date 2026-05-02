@@ -23,11 +23,20 @@
 <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<!-- SEO -->
-<meta name="description" content="Stream x — Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.">
-<meta property="og:title" content="Stream x — Pakistan ka apna platform">
-<meta property="og:description" content="Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!">
-<meta property="og:type" content="website">
+<!-- SEO + OG Meta Tags (Dynamic) -->
+<meta name="description" content="Stream X — Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.">
+<meta property="og:site_name" content="Stream X">
+<meta property="og:title" id="ogTitle" content="Stream X — Pakistan ka apna platform 🇵🇰">
+<meta property="og:description" id="ogDesc" content="Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!">
+<meta property="og:type" id="ogType" content="website">
+<meta property="og:url" id="ogUrl" content="https://streamx.pk/">
+<meta property="og:image" id="ogImage" content="https://streamx.pk/icon-512.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" id="twTitle" content="Stream X — Pakistan ka apna platform 🇵🇰">
+<meta name="twitter:description" id="twDesc" content="Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!">
+<meta name="twitter:image" id="twImage" content="https://streamx.pk/icon-512.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -695,8 +704,8 @@ button,input,textarea{font-family:var(--font);}
 <div class="side-menu-overlay" id="sideOverlay" onclick="closeSideMenu()"></div>
 <div class="side-menu" id="sideMenu">
   <div class="side-menu-header">
-<svg width="28" height="28" viewBox="0 0 80 80"><defs><linearGradient id="lg4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#FF0000;stop-opacity:1"/><stop offset="100%" style="stop-color:#cc0000;stop-opacity:1"/></linearGradient></defs> <text x="44" y="54" text-anchor="middle" font-size="36" font-weight="900" font-family="Outfit,sans-serif" fill="white">X</text></svg>
-    <span>My<b>Tube</b></span>
+<svg width="28" height="28" viewBox="0 0 80 80"><circle cx="40" cy="40" r="38" fill="none" stroke="#ff0000" stroke-width="5"/><line x1="20" y1="20" x2="60" y2="60" stroke="#cc0000" stroke-width="11" stroke-linecap="round"/><line x1="60" y1="20" x2="20" y2="60" stroke="#ff0000" stroke-width="11" stroke-linecap="round"/></svg>
+    <span><b style="color:var(--red);">Stream</b>X</span>
   </div>
   <div class="side-item" onclick="showScreen('home');closeSideMenu()"><i class="fas fa-home"></i><span>Home</span></div>
   <div class="side-item" onclick="showScreen('shorts');closeSideMenu()"><i class="fas fa-film"></i><span>Shorts</span></div>
@@ -731,8 +740,8 @@ button,input,textarea{font-family:var(--font);}
   <!-- Header -->
   <div class="header">
     <div class="logo-wrap" onclick="openSideMenu()">
-      <svg class="logo-icon" width="32" height="32" viewBox="0 0 80 80"><defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#FF0000;stop-opacity:1"/><stop offset="100%" style="stop-color:#cc0000;stop-opacity:1"/></linearGradient></defs> <text x="44" y="54" text-anchor="middle" font-size="36" font-weight="900" font-family="Outfit,sans-serif" fill="white">X</text></svg>
-      <div class="logo-text"><span class="streams">Stream</span> <span class="max">x</span></div>
+      <svg class="logo-icon" width="32" height="32" viewBox="0 0 80 80"><circle cx="40" cy="40" r="38" fill="none" stroke="#ff0000" stroke-width="5"/><line x1="20" y1="20" x2="60" y2="60" stroke="#cc0000" stroke-width="11" stroke-linecap="round"/><line x1="60" y1="20" x2="20" y2="60" stroke="#ff0000" stroke-width="11" stroke-linecap="round"/></svg>
+      <div class="logo-text"><span class="streams">Stream</span><span class="max" style="font-size:16px;font-weight:900;">X</span></div>
     </div>
     <div class="search-bar" id="searchBarEl">
       <input type="text" id="searchInput" placeholder="Search..." oninput="onSearchInput(this.value)" onfocus="searchFocus()" onblur="searchBlur()">
@@ -1941,7 +1950,15 @@ button,input,textarea{font-family:var(--font);}
 <!-- ═══ FULLSCREEN SHORT ═══ -->
 <div class="sf" id="shortFS">
   <div class="sf-wrap" id="sfWrap" id="sfWrap">
-    <button class="sf-close" onclick="closeShortFS()"><i class="fas fa-times"></i></button>
+    <!-- TikTok style top bar with avatar + username -->
+    <div style="position:absolute;top:0;left:0;right:0;z-index:15;padding:10px 12px;display:flex;align-items:center;gap:10px;background:linear-gradient(rgba(0,0,0,.5),transparent);">
+      <div id="sfTopAvatar" onclick="sfOpenChannel()" style="width:38px;height:38px;border-radius:50%;background:var(--red);border:2px solid white;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;cursor:pointer;overflow:hidden;flex-shrink:0;"></div>
+      <div style="flex:1;">
+        <div id="sfTopName" onclick="sfOpenChannel()" style="font-size:14px;font-weight:700;color:white;text-shadow:0 1px 4px rgba(0,0,0,.8);cursor:pointer;"></div>
+      </div>
+      <button id="sfSubBtn" onclick="sfSubscribe()" style="background:white;color:#000;border:none;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;">Subscribe</button>
+      <button class="sf-close" onclick="closeShortFS()" style="position:static;background:rgba(0,0,0,.4);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-times" style="font-size:14px;"></i></button>
+    </div>
     <video id="sfVid" playsinline onclick="handleSfTap(event)"></video>
     <div id="sfPauseOverlay" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none;z-index:8;">
       <div style="width:66px;height:66px;background:rgba(0,0,0,.65);border-radius:50%;display:flex;align-items:center;justify-content:center;">
@@ -1959,10 +1976,11 @@ button,input,textarea{font-family:var(--font);}
       <button class="sf-act" onclick="sfShare()"><i class="fas fa-share"></i><span>Share</span></button>
       <button class="sf-act" onclick="sfDownload()"><i class="fas fa-download"></i><span>Save</span></button>
     </div>
+    <!-- YouTube-style bottom info (clickable → channel) -->
     <div class="sf-info">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-        <div class="sf-ch" id="sfCh" style="flex:1;"></div>
-        <button id="sfSubBtn" onclick="sfSubscribe()" style="background:white;color:#000;border:none;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;">Subscribe</button>
+        <div id="sfBotAvatar" onclick="sfOpenChannel()" style="width:32px;height:32px;border-radius:50%;background:var(--red);border:1.5px solid white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;cursor:pointer;overflow:hidden;flex-shrink:0;"></div>
+        <div class="sf-ch" id="sfCh" onclick="sfOpenChannel()" style="flex:1;cursor:pointer;"></div>
       </div>
       <div class="sf-ttl2" id="sfTtl"></div>
       <div id="sfMusic" style="font-size:11px;color:rgba(255,255,255,.7);margin-top:3px;display:none;"><i class="fas fa-music" style="margin-right:4px;"></i><span id="sfMusicName"></span></div>
@@ -1986,8 +2004,8 @@ button,input,textarea{font-family:var(--font);}
     <button onclick="clearSfReply()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;margin-left:auto;line-height:1;">×</button>
   </div>
   <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;">
-    <input id="sfCommInput" placeholder="Add a comment..." style="flex:1;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text);font-size:14px;outline:none;">
-    <button onclick="sfPostComment()" style="background:var(--red);border:none;color:white;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-paper-plane"></i></button>
+    <input id="sfCommInput" type="text" placeholder="Add a comment..." autocomplete="off" style="flex:1;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text);font-size:14px;outline:none;" onkeypress="if(event.key==='Enter'||event.keyCode===13){sfPostComment();event.preventDefault();}">
+    <button onclick="sfPostComment()" style="background:var(--red);border:none;color:white;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-paper-plane"></i></button>
   </div>
 </div>
 
@@ -2659,9 +2677,10 @@ function hideSplash(){
 // ══════════════════════════════════════════════════════
 
 auth.onAuthStateChanged(async user=>{
+  // Safety: splash hamesha max 4 seconds mein band ho jaaye
+  setTimeout(()=>hideSplash(), 4000);
   if(user){
     cUser=user;
-    hideSplash();
     document.getElementById('authScreen').style.display='none';
     // ══ GATEWAY POLICY CHECK ══
     const policyKey = `policyAccepted_${user.uid}`;
@@ -2697,7 +2716,7 @@ auth.onAuthStateChanged(async user=>{
             localStorage.setItem('policyAccepted_'+uid,'1');
             document.getElementById('gatewayPolicy').remove();
             document.getElementById('mainApp').style.display='block';
-            try{loadUserData().then(()=>{try{ensureChannelExists();}catch(e){}try{updateHeaderAv();}catch(e){}try{setupOwnerNav();}catch(e){}try{loadUserPrefs();}catch(e){}try{listenNotifs();}catch(e){}}).catch(()=>{});showScreen('home');}catch(e){showScreen('home');}
+            try{loadUserData().then(()=>{try{ensureChannelExists();}catch(e){}try{updateHeaderAv();}catch(e){}try{setupOwnerNav();}catch(e){}try{loadUserPrefs();}catch(e){}try{listenNotifs();}catch(e){}}).catch(()=>{});loadHome();showScreen('home');}catch(e){loadHome();showScreen('home');}
           " style="width:100%;padding:14px;background:var(--red);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">
             ✅ Agree & Continue
           </button>
@@ -3034,12 +3053,17 @@ async function loadNextBatch(isFirst=false){
     feed.appendChild(loader);
   }
   try{
-    let query=db.collection('posts').orderBy('time','desc').limit(_feedBatchSize);
-    if(_feedLastDoc)query=query.startAfter(_feedLastDoc);
+    let query;
+    if(_feedCurrentFilter==='trending'){
+      try{ query=db.collection('posts').orderBy('rankScore','desc').limit(_feedBatchSize*2); }
+      catch(e){ query=db.collection('posts').orderBy('time','desc').limit(_feedBatchSize*2); }
+    } else {
+      query=db.collection('posts').orderBy('time','desc').limit(_feedBatchSize);
+    }
+    if(_feedLastDoc&&_feedCurrentFilter!=='trending')query=query.startAfter(_feedLastDoc);
     let snap;
     try{snap=await query.get();}
     catch(e){
-      // Fallback without orderBy
       let q2=db.collection('posts').limit(_feedBatchSize);
       snap=await q2.get();
     }
@@ -3064,7 +3088,7 @@ async function loadNextBatch(isFirst=false){
       if(priv==='private')return p.authorId===cUser?.uid; // only owner sees private
       return true;
     });
-    const filtered=_feedCurrentFilter==='all'?visiblePosts:visiblePosts.filter(p=>p.type===_feedCurrentFilter||p.category===_feedCurrentFilter);
+    const filtered=(_feedCurrentFilter==='all'||_feedCurrentFilter==='trending')?visiblePosts:visiblePosts.filter(p=>p.type===_feedCurrentFilter||p.category===_feedCurrentFilter);
     const scored=sortFeedByAlgorithm(filtered,userPrefs);
     allPosts=[...allPosts,...scored];
 
@@ -3138,21 +3162,32 @@ function renderFeed(posts){
   const feed=document.getElementById('homeFeed');
   if(!posts||!posts.length){feed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet!</p></div>';return;}
   const shorts=posts.filter(p=>p.type==='short');
-  const others=posts.filter(p=>p.type!=='short');
+  const postCards=posts.filter(p=>p.type==='post');
+  const videos=posts.filter(p=>p.type!=='short'&&p.type!=='post');
   let html='';
   let shortsInserted=0;
-  others.forEach((p,i)=>{
+  let postIdx=0;
+  videos.forEach((p,i)=>{
     html+=buildCard(p);
-    // Inject shorts row every 10 items
+    // Every 10 videos inject a shorts strip
     if((i+1)%10===0 && shorts.length>shortsInserted){
       const batch=shorts.slice(shortsInserted,shortsInserted+6);
       html+=buildInlineShortsRow(batch);
       shortsInserted+=batch.length;
     }
+    // Every 5 videos inject a community post
+    if((i+1)%5===0 && postIdx<postCards.length){
+      html+=buildPostCard(postCards[postIdx]);
+      postIdx++;
+    }
   });
-  // Remaining shorts at end if any
+  // Remaining shorts
   if(shortsInserted<shorts.length){
     html+=buildInlineShortsRow(shorts.slice(shortsInserted,shortsInserted+8));
+  }
+  // Remaining posts at end
+  while(postIdx<postCards.length){
+    html+=buildPostCard(postCards[postIdx]);postIdx++;
   }
   if(!html)html=posts.map(p=>buildCard(p)).join('');
   feed.innerHTML=html;
@@ -3260,8 +3295,11 @@ function buildPostCard(p){
   </div>`:imgs;
   return `<div class="post-card" onclick="openPost('${p.id}')">
     <div class="post-hdr">
-      <div class="post-av">${avHtml}</div>
-      <div><div class="post-author">${p.authorName||'User'}</div><div class="post-time">${getTimeAgo(p.time)}</div></div>
+      <div class="post-av" onclick="openChannelPage('${p.authorId||''}',event);event.stopPropagation();" style="cursor:pointer;">${avHtml}</div>
+      <div onclick="openChannelPage('${p.authorId||''}',event);event.stopPropagation();" style="cursor:pointer;">
+        <div class="post-author">${p.authorName||'User'}</div>
+        <div class="post-time">${getTimeAgo(p.time)}</div>
+      </div>
     </div>
     ${(p.title||p.desc)?`<div class="post-body">${p.title||''}${p.desc?'<br>'+p.desc:''}</div>`:''}
     ${mediaHtml}
@@ -3409,6 +3447,15 @@ function playShortAt(idx){
   });
   document.getElementById('sfTtl').textContent=p.title||'';
   document.getElementById('sfCh').textContent=p.authorName||'';
+  document.getElementById('sfLikeCount').textContent=fmtCount(p.likes||0);
+  // TikTok top avatar + name
+  const topAv=document.getElementById('sfTopAvatar');
+  const topName=document.getElementById('sfTopName');
+  const botAv=document.getElementById('sfBotAvatar');
+  const avHtml=p.authorPhoto?`<img src="${p.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(p.authorName||'U')[0].toUpperCase();
+  if(topAv)topAv.innerHTML=avHtml;
+  if(topName)topName.textContent='@'+(p.authorName||'');
+  if(botAv)botAv.innerHTML=avHtml;
   document.getElementById('sfLikeCount').textContent=p.likes||0;
   const liked=cUser&&(p.likedBy||[]).includes(cUser.uid);
   const slb=document.getElementById('sfLikeBtn');
@@ -3439,6 +3486,13 @@ function playShortAt(idx){
   const sfMusicName=document.getElementById('sfMusicName');
   if(p.bgMusic&&sfMusicEl&&sfMusicName){sfMusicEl.style.display='block';sfMusicName.textContent=p.bgMusic;}
   else if(sfMusicEl){sfMusicEl.style.display='none';}
+}
+
+function sfOpenChannel(){
+  const p=sfPosts[sfCurrentIdx];
+  if(!p||!p.authorId)return;
+  closeShortFS();
+  setTimeout(()=>openChannelPage(p.authorId,null),100);
 }
 
 async function sfSubscribe(){
@@ -3722,16 +3776,20 @@ async function sfToggleReplies(postId, commentId, btn){
   div.style.display='block'; btn.innerHTML=`<i class="fas fa-chevron-up" style="font-size:9px;"></i> Hide replies`;
   div.innerHTML='<div class="spinner" style="width:16px;height:16px;border-width:2px;margin:4px 0;"></div>';
   try{
-    const snap=await db.collection('posts').doc(postId).collection('comments').doc(commentId).collection('replies').orderBy('time','asc').limit(30).get();
+    const snap=await db.collection('posts').doc(postId).collection('comments').doc(commentId).collection('replies').orderBy('time','asc').limit(50).get();
     div.innerHTML=snap.docs.map(d=>{
-      const r=d.data();
+      const r=d.data(); const rid=d.id;
       const av=r.authorPhoto?`<img src="${r.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(r.authorName||'U')[0];
-      return `<div style="display:flex;gap:6px;margin-bottom:8px;">
-        <div onclick="openChannelById('${r.authorId}')" style="width:24px;height:24px;border-radius:50%;background:var(--bg3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;cursor:pointer;">${av}</div>
-        <div>
-          <span onclick="openChannelById('${r.authorId}')" style="font-size:11px;font-weight:700;cursor:pointer;">${r.authorName||'User'}</span>
-          ${r.replyTo?`<span style="color:var(--red);font-size:10px;"> @${r.replyTo}</span>`:''}
-          <div style="font-size:11px;color:var(--text2);">${r.text}</div>
+      return `<div style="display:flex;gap:6px;margin-bottom:10px;">
+        <div onclick="openChannelById('${r.authorId}')" style="width:26px;height:26px;border-radius:50%;background:var(--bg3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;cursor:pointer;">${av}</div>
+        <div style="flex:1;">
+          <div><span onclick="openChannelById('${r.authorId}')" style="font-size:12px;font-weight:700;cursor:pointer;">${r.authorName||'User'}</span>
+          <span style="font-size:10px;color:var(--text3);margin-left:5px;">${getTimeAgo(r.time)}</span></div>
+          ${r.replyTo?`<span style="color:var(--red);font-size:11px;font-weight:600;">@${r.replyTo} </span>`:''}
+          <span style="font-size:12px;">${r.text}</span>
+          <div style="margin-top:4px;display:flex;gap:10px;">
+            <button style="background:none;border:none;color:var(--text3);font-size:10px;cursor:pointer;font-weight:600;" onclick="setSfReply('${(r.authorName||'user').replace(/'/g,"\\'")}','${commentId}');document.getElementById('sfCommInput')?.focus();">↩ Reply</button>
+          </div>
         </div>
       </div>`;
     }).join('')||'<div style="color:var(--text3);font-size:11px;padding:4px;">No replies yet</div>';
@@ -3745,9 +3803,11 @@ function sfReply(mention){
 async function sfPostComment(){
   if(!cUser||!sfCurrentId)return;
   const input=document.getElementById('sfCommInput');
-  const text=input.value.trim();
-  if(!text)return;
+  if(!input)return;
+  const text=(input.value||'').trim();
+  if(!text){input.focus();return;}
   input.value='';
+  input.blur();
   const replyData = _sfReplyTo;
   clearSfReply();
   try{
@@ -4107,6 +4167,8 @@ async function openPost(id){
     const p=doc.data();currentPostData={id,...p};
     updateUserPrefs(p);
     addToHistory(p);
+    // Update OG/SEO meta tags for sharing
+    updateOgTags(id, p);
     const vid=document.getElementById('playerVid');
     const wrap=document.getElementById('playerVidWrap');
     wrap.style.backgroundImage='';wrap.style.display='block';vid.style.display='block';
@@ -4879,14 +4941,15 @@ async function loadRelated(postId, postType, category){
 
     const all = snap.docs.map(d => ({id:d.id,...d.data()})).filter(p => p.id !== postId);
     const shorts = all.filter(p => p.type === 'short' && p.url).slice(0, 8);
-    const videos = all.filter(p => p.type !== 'short')
+    const videos = all.filter(p => p.type !== 'short' && p.type !== 'post')
       .sort((a,b) => {
         const sa = (a.category===category?30:0)+(a.type===postType?10:0)+(a.rankScore||0);
         const sb = (b.category===category?30:0)+(b.type===postType?10:0)+(b.rankScore||0);
         return sb-sa;
       }).slice(0,15);
+    const communityPosts = all.filter(p => p.type === 'post').slice(0, 3);
 
-    if(!videos.length && !shorts.length){
+    if(!videos.length && !shorts.length && !communityPosts.length){
       list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px;">Koi related content nahi mila</div>';
       return;
     }
@@ -4933,6 +4996,16 @@ async function loadRelated(postId, postType, category){
         </div>
       </div>`;
     }).join('');
+
+    // COMMUNITY POSTS
+    if(communityPosts.length){
+      html += `<div style="margin-top:8px;margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:6px;padding:0 2px;">
+          <i class="fas fa-users" style="color:var(--red);"></i> Community Posts
+        </div>
+        ${communityPosts.map(p=>buildPostCard(p)).join('')}
+      </div>`;
+    }
 
     list.innerHTML = html;
   } catch(err){
@@ -5102,6 +5175,66 @@ function setNotifBadge(count){
   dot.style.display='flex';
   dot.textContent=count>99?'99+':count+'';
 }
+
+// ══════════════════════════════════════════════════════
+// OG META TAGS — Dynamic update for social sharing
+// ══════════════════════════════════════════════════════
+function updateOgTags(postId, p){
+  try{
+    const title = (p.title||'Stream X Video') + ' — Stream X 🇵🇰';
+    const desc = p.description || `${p.authorName||''} ne share kiya Stream X pe. Pakistan ka apna platform!`;
+    // Thumbnail: Cloudinary video → replace extension with .jpg for thumb
+    let img = p.thumbURL || '';
+    if(!img && p.url){
+      img = p.url.replace('/upload/', '/upload/so_0,w_600/').replace(/\.(mp4|mov|webm|avi)$/i, '.jpg');
+    }
+    if(!img) img = 'https://streamx.pk/icon-512.png';
+    const url = `${location.origin}${location.pathname}?post=${postId}`;
+
+    // Update document title
+    document.title = title;
+    // Update meta tags
+    const set = (id, attr, val) => { const el=document.getElementById(id); if(el) el.setAttribute(attr, val); };
+    set('ogTitle','content', title);
+    set('ogDesc','content', desc);
+    set('ogImage','content', img);
+    set('ogUrl','content', url);
+    set('ogType','content', p.type==='short'?'video.other':'video.movie');
+    set('twTitle','content', title);
+    set('twDesc','content', desc);
+    set('twImage','content', img);
+    // Update browser URL without reload
+    try{ history.replaceState(null,'', url); }catch(e){}
+  }catch(e){}
+}
+
+function resetOgTags(){
+  document.title = 'Stream X — Pakistan ka apna platform 🇵🇰';
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.setAttribute('content', val); };
+  set('ogTitle','Stream X — Pakistan ka apna platform 🇵🇰');
+  set('ogDesc','Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!');
+  set('ogImage','https://streamx.pk/icon-512.png');
+  set('ogUrl', location.origin+location.pathname);
+  set('twTitle','Stream X — Pakistan ka apna platform 🇵🇰');
+  set('twDesc','Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!');
+  set('twImage','https://streamx.pk/icon-512.png');
+  try{ history.replaceState(null,'', location.origin+location.pathname); }catch(e){}
+}
+
+// On page load — check URL params for deep link
+(function handleUrlParams(){
+  try{
+    const params = new URLSearchParams(location.search);
+    const postId = params.get('post');
+    if(postId){
+      // Wait for auth then open post
+      const unsub = auth.onAuthStateChanged(()=>{
+        unsub();
+        setTimeout(()=>openPost(postId), 800);
+      });
+    }
+  }catch(e){}
+})();
 
 function listenNotifs(){
   if(!cUser)return;
@@ -8369,7 +8502,14 @@ function setSfReply(name, commentId){
   if(bar) bar.style.display = 'flex';
   if(nameEl) nameEl.textContent = 'Replying to @'+name;
   const inp = document.getElementById('sfCommInput');
-  if(inp){ inp.focus(); inp.placeholder = 'Reply to @'+name+'...'; }
+  if(inp){
+    inp.placeholder = 'Reply to @'+name+'...';
+    // Scroll comment list to bottom so input visible
+    const list = document.getElementById('sfCommList');
+    if(list) list.scrollTop = list.scrollHeight;
+    // Small delay for mobile keyboard
+    setTimeout(()=>{ inp.focus(); }, 200);
+  }
 }
 
 function clearSfReply(){
@@ -8461,4 +8601,5 @@ function safe(fn){
 </script>
 </body>
 </html>
+
 
