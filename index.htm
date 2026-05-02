@@ -370,11 +370,19 @@ button,input,textarea{font-family:var(--font);}
 /* ═══ VIDEO PLAYER ═══ */
 .player-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;flex-direction:column;overflow:hidden;}
 .player-screen.open{display:flex;}
+/* ── YT-style: video pinned top, content scrolls below ── */
+.player-screen .player-back{position:absolute;top:10px;left:10px;z-index:210;}
+.player-vid-wrap{flex-shrink:0;width:100%;background:#000;position:relative;z-index:5;}
 .player-back{position:fixed;top:10px;left:10px;z-index:210;width:34px;height:34px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;}
-.player-vid-wrap{background:#000;width:100%;flex-shrink:0;min-height:220px;max-height:56vw;position:relative;z-index:5;}
-.player-vid-wrap video{width:100%;height:auto;max-height:56vw;object-fit:contain;display:block;}
+.player-vid-wrap{background:#000;width:100%;flex-shrink:0;min-height:200px;max-height:56.25vw;position:relative;z-index:5;}
+.player-vid-wrap video{width:100%;height:auto;max-height:56.25vw;object-fit:contain;display:block;}
 .player-vid-wrap img{width:100%;height:100%;object-fit:contain;}
-.player-scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+/* Short ratio */
+.player-vid-wrap.short-ratio{aspect-ratio:9/16;max-height:60vh;}
+.player-vid-wrap.short-ratio video{max-height:60vh;height:100%;object-fit:cover;}
+/* Scroll body — takes remaining height, scrolls independently */
+.player-scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+/* Sticky input bar at bottom of player */
 .player-info{padding:12px 14px 0;}
 .player-title{font-size:15px;font-weight:700;line-height:1.4;}
 .player-meta{font-size:11px;color:var(--text2);margin-top:4px;}
@@ -408,6 +416,42 @@ button,input,textarea{font-family:var(--font);}
 .comm-author{font-size:12px;font-weight:600;}
 .comm-text{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.5;}
 .comm-time{font-size:10px;color:var(--text3);margin-top:3px;}
+/* Sticky comment input bar */
+.comm-sticky-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:8px 14px 12px;z-index:210;display:none;gap:8px;align-items:center;}
+.comm-sticky-bar.visible{display:flex;}
+/* Comment like button - blue not red */
+.comm-like-btn{background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;display:flex;align-items:center;gap:3px;padding:2px 6px;border-radius:10px;transition:all .15s;}
+.comm-like-btn.liked{color:#1a73e8;background:rgba(26,115,232,.1);}
+.comm-like-btn i{font-size:12px;}
+/* Comment emoji reactions */
+.comm-emoji-row{display:flex;gap:6px;padding:6px 0;overflow-x:auto;scrollbar-width:none;margin-bottom:8px;}
+.comm-emoji-btn{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:13px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;transition:all .15s;}
+.comm-emoji-btn:active{transform:scale(.93);}
+.comm-emoji-btn.reacted{border-color:#1a73e8;background:rgba(26,115,232,.1);}
+/* Guidelines bar */
+.comm-guidelines{background:rgba(26,115,232,.06);border:1px solid rgba(26,115,232,.15);border-radius:10px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:var(--text2);line-height:1.5;}
+.comm-guidelines a{color:#1a73e8;text-decoration:none;}
+/* Comment 3-dot menu */
+.comm-3dot{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px 6px;border-radius:50%;font-size:14px;margin-left:auto;}
+.comm-ctx-sheet{position:fixed;bottom:0;left:0;right:0;z-index:700;background:var(--bg2);border-radius:20px 20px 0 0;padding:12px 0 28px;transform:translateY(100%);transition:transform .3s ease;}
+.comm-ctx-sheet.open{transform:translateY(0);}
+.comm-ctx-item{display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;font-size:14px;}
+.comm-ctx-item:active{background:var(--bg3);}
+.comm-ctx-item.danger{color:#ff4444;}
+/* Reply indicator */
+.reply-indicator-bar{background:var(--bg3);border-left:3px solid var(--red);padding:6px 10px;border-radius:0 8px 8px 0;margin-bottom:6px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);}
+/* Replies section */
+.replies-wrap{margin-left:38px;margin-top:6px;border-left:2px solid var(--border);padding-left:10px;}
+.load-replies-btn{background:none;border:none;color:var(--red);font-size:11px;font-weight:600;cursor:pointer;padding:4px 0;display:flex;align-items:center;gap:4px;margin-left:38px;}
+/* End screen overlay */
+.end-screen-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.88);z-index:20;display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;}
+.end-screen-overlay.show{display:flex;}
+.end-screen-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:400px;}
+.end-vid-card{background:var(--bg2);border-radius:10px;overflow:hidden;cursor:pointer;position:relative;}
+.end-vid-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:var(--bg3);}
+.end-vid-title{font-size:10px;font-weight:600;color:white;padding:6px 8px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.end-countdown-ring{width:48px;height:48px;position:relative;margin-bottom:10px;}
+.end-replay-btn{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);color:white;border-radius:20px;padding:7px 18px;font-size:13px;cursor:pointer;margin-top:10px;}
 
 /* ═══ NOTIFICATIONS ═══ */
 .notif-screen{padding:16px 14px;}
@@ -1738,6 +1782,20 @@ button,input,textarea{font-family:var(--font);}
     <button onclick="toggleFullscreen()" style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:6px;padding:5px 8px;font-size:13px;cursor:pointer;z-index:5;">
       <i class="fas fa-expand" id="fsIcon"></i>
     </button>
+    <!-- ═══ END SCREEN ═══ -->
+    <div class="end-screen-overlay" id="endScreenOverlay">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <svg id="endCountdownSvg" width="44" height="44" style="flex-shrink:0;">
+          <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="3"/>
+          <circle id="endCountdownCircle" cx="22" cy="22" r="18" fill="none" stroke="#ff0000" stroke-width="3" stroke-dasharray="113" stroke-dashoffset="113" stroke-linecap="round" transform="rotate(-90 22 22)"/>
+          <text id="endCountdownNum" x="22" y="27" text-anchor="middle" fill="white" font-size="13" font-weight="700">10</text>
+        </svg>
+        <div style="color:white;font-size:14px;font-weight:700;">Up Next</div>
+        <button onclick="cancelEndScreen()" style="margin-left:auto;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;">Cancel</button>
+      </div>
+      <div class="end-screen-grid" id="endScreenGrid"></div>
+      <button onclick="replayVideo()" class="end-replay-btn"><i class="fas fa-redo" style="margin-right:6px;"></i>Replay</button>
+    </div>
   </div>
   <div class="player-scroll-body">
   <div class="player-info">
@@ -1792,10 +1850,10 @@ button,input,textarea{font-family:var(--font);}
     <button class="emoji-btn" onclick="reactEmoji('😮',this)">😮<span id="e4">0</span></button>
     <button class="emoji-btn" onclick="reactEmoji('👏',this)">👏<span id="e5">0</span></button>
   </div>
-  <div class="ch-row">
+  <div class="ch-row" onclick="if(currentPostData?.authorId)openChannelPage(currentPostData.authorId,event)" style="cursor:pointer;">
     <div class="yt-av" id="playerChAv" style="width:40px;height:40px;font-size:16px;">?</div>
     <div class="ch-row-info"><div class="ch-row-name" id="playerChName"></div><div class="ch-row-subs" id="playerChSubs">0 subscribers</div></div>
-    <button class="sub-btn" id="playerSubBtn" onclick="toggleSubscribe()">Subscribe</button>
+    <button class="sub-btn" id="playerSubBtn" onclick="event.stopPropagation();toggleSubscribe()">Subscribe</button>
   </div>
   <!-- Related Videos -->
   <div id="relatedVideos" style="padding:0 14px;margin-bottom:16px;">
@@ -1803,23 +1861,13 @@ button,input,textarea{font-family:var(--font);}
     <div id="relatedList"></div>
   </div>
 
-  <div class="comm-sec">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-      <div class="comm-title" id="commTitle" style="margin-bottom:0;">Comments</div>
-      <button onclick="showAboutComments()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:4px;"><i class="fas fa-info-circle"></i></button>
+  <!-- YT-style collapsed comment preview box -->
+  <div id="commPreviewBox" onclick="openCommentsSheet()" style="background:var(--bg2);border-radius:12px;margin:0 14px 16px;padding:12px 14px;cursor:pointer;border:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+    <div style="flex:1;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Comments <span id="commPreviewCount" style="color:var(--text3);font-weight:400;">0</span></div>
+      <div id="commPreviewText" style="font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Be first to comment...</div>
     </div>
-    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;" id="commFilterRow">
-      <button class="chip active" onclick="filterComments('top',this)" style="border-radius:20px;white-space:nowrap;">Top</button>
-      <button class="chip" onclick="filterComments('topics',this)" style="border-radius:20px;white-space:nowrap;">✦ Topics</button>
-      <button class="chip" onclick="filterComments('newest',this)" style="border-radius:20px;white-space:nowrap;">Newest</button>
-      <button class="chip" onclick="filterComments('timed',this)" style="border-radius:20px;white-space:nowrap;">Timed</button>
-    </div>
-    <div class="comm-input-row">
-      <div class="comm-av" id="myCommAv">?</div>
-      <input class="comm-input" id="commInput" placeholder="Add a comment...">
-      <button class="comm-send" onclick="postComment()"><i class="fas fa-paper-plane"></i></button>
-    </div>
-    <div id="commList"></div>
+    <i class="fas fa-chevron-right" style="color:var(--text3);font-size:12px;"></i>
   </div>
 
   <!-- About Comments Popup -->
@@ -1834,14 +1882,66 @@ button,input,textarea{font-family:var(--font);}
     </div>
     <button onclick="closeAboutComments()" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;">Got it</button>
   </div>
+
+  <div style="height:70px;"></div><!-- spacer for sticky bar -->
   </div><!-- end player-scroll-body -->
+
+  <!-- ═══ STICKY COMMENT INPUT BAR (YT style - fixed bottom) ═══ -->
+  <div class="comm-sticky-bar" id="stickyCommBar">
+    <div class="comm-av" id="myCommAv" style="width:32px;height:32px;font-size:12px;flex-shrink:0;">?</div>
+    <div style="flex:1;position:relative;">
+      <div id="replyIndicatorSticky" style="display:none;background:var(--bg3);border-left:3px solid #1a73e8;padding:4px 8px;border-radius:0 6px 6px 0;font-size:10px;color:var(--text3);margin-bottom:4px;align-items:center;gap:6px;">
+        <i class="fas fa-reply" style="color:#1a73e8;"></i>
+        <span id="replyTargetName">Replying to @user</span>
+        <button onclick="clearVideoReply()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;margin-left:auto;line-height:1;">×</button>
+      </div>
+      <input class="comm-input" id="commInput" placeholder="Add a comment..." style="width:100%;" onfocus="openCommentsSheet()" onblur="this.style.borderColor='var(--border)'">
+    </div>
+    <button class="comm-send" onclick="openCommentsSheet()" style="background:#1a73e8;flex-shrink:0;"><i class="fas fa-paper-plane"></i></button>
+  </div>
+</div>
+
+<!-- ═══ COMMENTS BOTTOM SHEET ═══ -->
+<div id="commSheetOverlay" onclick="closeCommentsSheet()" style="display:none;position:fixed;inset:0;z-index:690;background:rgba(0,0,0,.5);"></div>
+<div id="commSheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:691;background:var(--bg2);border-radius:20px 20px 0 0;height:70vh;flex-direction:column;transform:translateY(100%);transition:transform .3s ease;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--border);">
+    <div class="comm-title" id="commSheetTitle" style="margin-bottom:0;font-size:15px;">Comments</div>
+    <button onclick="closeCommentsSheet()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px;"><i class="fas fa-times"></i></button>
+  </div>
+  <div style="overflow-y:auto;flex:1;padding:12px 14px;" id="commList"></div>
+  <!-- Input area inside sheet -->
+  <div style="padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;background:var(--bg2);">
+    <div style="width:32px;height:32px;border-radius:50%;background:var(--red);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;overflow:hidden;" id="myCommAvSheet">?</div>
+    <div style="flex:1;position:relative;">
+      <div id="replyIndicatorSheet" style="display:none;background:var(--bg3);border-left:3px solid #1a73e8;padding:4px 8px;border-radius:0 6px 6px 0;font-size:10px;color:var(--text3);margin-bottom:4px;align-items:center;gap:6px;">
+        <i class="fas fa-reply" style="color:#1a73e8;"></i>
+        <span id="replyTargetNameSheet"></span>
+        <button onclick="clearVideoReply()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;margin-left:auto;line-height:1;">×</button>
+      </div>
+      <input class="comm-input" id="commInputSheet" placeholder="Add a comment..." style="width:100%;" onfocus="this.style.borderColor='#1a73e8'" onblur="this.style.borderColor='var(--border)'">
+    </div>
+    <button class="comm-send" onclick="postCommentFromSheet()" style="background:#1a73e8;flex-shrink:0;"><i class="fas fa-paper-plane"></i></button>
+  </div>
+</div>
+
+<!-- Comment 3-dot context sheet -->
+<div id="commCtxOverlay" onclick="closeCommCtx()" style="display:none;position:fixed;inset:0;z-index:699;background:rgba(0,0,0,.5);"></div>
+<div class="comm-ctx-sheet" id="commCtxSheet">
+  <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 12px;"></div>
+  <div id="commCtxAuthor" style="padding:10px 20px 6px;font-size:13px;color:var(--text3);"></div>
+  <div class="comm-ctx-item" onclick="commCtxAction('reply')"><i class="fas fa-reply" style="color:#1a73e8;width:20px;"></i> Reply</div>
+  <div class="comm-ctx-item" onclick="commCtxAction('like')"><i class="fas fa-thumbs-up" style="color:#1a73e8;width:20px;"></i> Like comment</div>
+  <div class="comm-ctx-item" onclick="commCtxAction('profile')"><i class="fas fa-user" style="color:var(--text2);width:20px;"></i> View channel</div>
+  <div class="comm-ctx-item" onclick="commCtxAction('share')"><i class="fas fa-share" style="color:var(--text2);width:20px;"></i> Share comment</div>
+  <div class="comm-ctx-item danger" onclick="commCtxAction('report')"><i class="fas fa-flag" style="width:20px;"></i> Report</div>
+  <div class="comm-ctx-item danger" onclick="commCtxAction('block')"><i class="fas fa-ban" style="width:20px;"></i> Block user</div>
 </div>
 
 <!-- ═══ FULLSCREEN SHORT ═══ -->
 <div class="sf" id="shortFS">
   <div class="sf-wrap" id="sfWrap" id="sfWrap">
     <button class="sf-close" onclick="closeShortFS()"><i class="fas fa-times"></i></button>
-    <video id="sfVid" loop playsinline onclick="handleSfTap(event)"></video>
+    <video id="sfVid" playsinline onclick="handleSfTap(event)"></video>
     <div id="sfPauseOverlay" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none;z-index:8;">
       <div style="width:66px;height:66px;background:rgba(0,0,0,.65);border-radius:50%;display:flex;align-items:center;justify-content:center;">
         <i id="sfPauseIcon" class="fas fa-pause" style="color:white;font-size:26px;"></i>
@@ -1878,9 +1978,15 @@ button,input,textarea{font-family:var(--font);}
     <button onclick="sfCommClose()" style="background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;"><i class="fas fa-times"></i></button>
   </div>
   <div id="sfCommList" style="flex:1;overflow-y:auto;padding:12px 16px;"></div>
+  <!-- Sticky reply indicator for shorts -->
+  <div id="sfReplyIndicator" style="display:none;background:var(--bg3);border-left:3px solid var(--red);padding:6px 14px;font-size:11px;color:var(--text3);align-items:center;gap:6px;">
+    <i class="fas fa-reply" style="color:var(--red);"></i>
+    <span id="sfReplyName">Replying to @user</span>
+    <button onclick="clearSfReply()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;margin-left:auto;line-height:1;">×</button>
+  </div>
   <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;">
     <input id="sfCommInput" placeholder="Add a comment..." style="flex:1;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text);font-size:14px;outline:none;">
-    <button onclick="sfPostComment()" style="background:var(--grad);border:none;color:white;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-paper-plane"></i></button>
+    <button onclick="sfPostComment()" style="background:var(--red);border:none;color:white;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-paper-plane"></i></button>
   </div>
 </div>
 
@@ -1924,27 +2030,50 @@ button,input,textarea{font-family:var(--font);}
 
 <!-- CHANNEL PAGE -->
 <div class="channel-page" id="channelPage">
-  <div class="channel-cover">
+  <!-- Cover photo -->
+  <div id="cpCoverDiv" style="height:120px;background:linear-gradient(135deg,#1a0000,#4a0000,#2a0000);position:relative;flex-shrink:0;background-size:cover;background-position:center;">
     <button class="channel-back" onclick="closeChannelPage()"><i class="fas fa-arrow-left"></i></button>
+    <!-- More options -->
+    <button onclick="shareChannelPage()" style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,.5);border:none;color:white;border-radius:50%;width:36px;height:36px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-share-alt"></i></button>
   </div>
-  <div class="channel-info">
-    <div class="channel-pic" id="cpPic">?</div>
-    <div class="channel-name" id="cpName">Channel</div>
-    <div class="channel-handle-el" id="cpHandle">@handle</div>
-    <div class="channel-sub-count" id="cpSubs">0 subscribers</div>
-    <div style="font-size:13px;color:var(--text2);margin-top:6px;padding:0 20px;" id="cpAbout"></div>
-    <div class="channel-sub-wrap">
-      <button class="channel-sub-btn" id="cpSubBtn" onclick="toggleChannelSub()">Subscribe</button>
-      <button style="padding:9px 16px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:20px;font-size:14px;cursor:pointer;" onclick="showToast('Bell on! 🔔')">🔔</button>
+  <!-- Channel info row -->
+  <div style="padding:0 14px;background:var(--bg);">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:-32px;margin-bottom:10px;">
+      <div class="channel-pic" id="cpPic" style="flex-shrink:0;">?</div>
+      <div style="display:flex;gap:8px;padding-bottom:4px;">
+        <button class="channel-sub-btn" id="cpSubBtn" onclick="toggleChannelSub()">Subscribe</button>
+        <button onclick="showToast('Bell on! 🔔')" style="padding:9px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:20px;font-size:14px;cursor:pointer;">🔔</button>
+      </div>
     </div>
+    <div style="margin-bottom:4px;">
+      <div class="channel-name" id="cpName" style="text-align:left;">Channel</div>
+      <div class="channel-handle-el" id="cpHandle" style="text-align:left;">@handle</div>
+    </div>
+    <!-- Stats row -->
+    <div style="display:flex;gap:16px;margin:8px 0;font-size:12px;color:var(--text2);">
+      <span><b id="cpSubsNum" style="color:var(--text);font-size:14px;font-weight:700;">0</b> subscribers</span>
+      <span><b id="cpVidsNum" style="color:var(--text);font-size:14px;font-weight:700;">0</b> videos</span>
+      <span><b id="cpViewsNum" style="color:var(--text);font-size:14px;font-weight:700;">0</b> views</span>
+    </div>
+    <!-- About snippet -->
+    <div id="cpAboutSnippet" style="font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"></div>
+    <div id="cpAbout" style="display:none;"></div>
   </div>
-  <div class="channel-tabs">
+  <!-- Tabs -->
+  <div class="channel-tabs" style="overflow-x:auto;scrollbar-width:none;">
     <button class="channel-tab active" onclick="switchChannelTab('videos',this)">Videos</button>
     <button class="channel-tab" onclick="switchChannelTab('shorts',this)">Shorts</button>
     <button class="channel-tab" onclick="switchChannelTab('posts',this)">Posts</button>
+    <button class="channel-tab" onclick="switchChannelTab('popular',this)">Popular</button>
     <button class="channel-tab" onclick="switchChannelTab('about',this)">About</button>
   </div>
-  <div class="channel-content" id="cpContent"><div class="loader"><div class="spinner"></div></div></div>
+  <!-- Sort bar (shows on videos/shorts) -->
+  <div id="cpSortBar" style="display:flex;gap:6px;padding:10px 14px 4px;overflow-x:auto;scrollbar-width:none;">
+    <button class="chip active" onclick="sortChannelContent('latest',this)" style="border-radius:20px;white-space:nowrap;font-size:11px;">Latest</button>
+    <button class="chip" onclick="sortChannelContent('oldest',this)" style="border-radius:20px;white-space:nowrap;font-size:11px;">Oldest</button>
+    <button class="chip" onclick="sortChannelContent('popular',this)" style="border-radius:20px;white-space:nowrap;font-size:11px;">Most Viewed</button>
+  </div>
+  <div class="channel-content" id="cpContent" style="padding-bottom:80px;"><div class="loader"><div class="spinner"></div></div></div>
 </div>
 
 <!-- VIDEO CONTEXT MENU -->
@@ -3247,6 +3376,14 @@ function playShortAt(idx){
   const p=sfPosts[idx];
   const vid=document.getElementById('sfVid');
   if(!p.url){showToast('Video URL missing');return;}
+  vid.onended=null;
+  vid.onended=function(){
+    if(sfCurrentIdx<sfPosts.length-1){
+      playShortAt(sfCurrentIdx+1);
+    } else {
+      vid.currentTime=0;vid.play().catch(()=>{});
+    }
+  };
   vid.src='';
   vid.src=p.url;
   vid.load();
@@ -3383,8 +3520,12 @@ function nextShort(){if(sfCurrentIdx<sfPosts.length-1)playShortAt(sfCurrentIdx+1
   },{passive:true});
 })();
 
+const _sfLiking = {};
 async function sfLike(){
   if(!cUser||!sfCurrentId)return;
+  if(_sfLiking[sfCurrentId])return;
+  _sfLiking[sfCurrentId]=true;
+  setTimeout(()=>delete _sfLiking[sfCurrentId],1500);
   try{
     const ref=db.collection('posts').doc(sfCurrentId);
     const doc=await ref.get();if(!doc.exists)return;const p=doc.data();
@@ -3397,6 +3538,7 @@ async function sfLike(){
       await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid),rankScore:firebase.firestore.FieldValue.increment(10)});
       document.getElementById('sfLikeCount').textContent=(p.likes||0)+1;
       document.getElementById('sfLikeBtn').style.color='#ff4d4d';
+      sendNotif(p.authorId,'like',`${cUserData?.name||'Someone'} ne aapki short like ki! ❤️`,sfCurrentId,'short');
     }
     sfPosts[sfCurrentIdx]={...sfPosts[sfCurrentIdx]};
   }catch(e){}
@@ -3461,44 +3603,164 @@ async function sfLoadComments(postId){
   list.innerHTML='<div style="text-align:center;padding:20px;"><div class="spinner"></div></div>';
   try{
     const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('time','desc').limit(200).get();
+    document.getElementById('sfCommTitle').textContent=`Comments (${snap.size})`;
     if(snap.empty){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet 💬</div>';return;}
-    list.innerHTML=snap.docs.map(d=>{
-      const c=d.data();
+    const docs=[...snap.docs].sort((a,b)=>(b.data().likes||0)-(a.data().likes||0));
+    list.innerHTML=docs.map(d=>{
+      const c=d.data();const cid=d.id;
       const av=c.authorPhoto?`<img src="${c.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(c.authorName||'U')[0].toUpperCase();
+      const liked=cUser&&(c.likedBy||[]).includes(cUser.uid);
       return `<div style="display:flex;gap:10px;margin-bottom:16px;">
-        <div style="width:36px;height:36px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;overflow:hidden;">${av}</div>
+        <div onclick="openChannelById('${c.authorId}')" style="width:36px;height:36px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;overflow:hidden;cursor:pointer;">${av}</div>
         <div style="flex:1;">
-          <div style="font-size:13px;font-weight:700;">${c.authorName||'User'} <span style="font-size:11px;color:var(--text3);font-weight:400;">${getTimeAgo(c.time)}</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <span onclick="openChannelById('${c.authorId}')" style="font-size:13px;font-weight:700;cursor:pointer;">${c.authorName||'User'}</span>
+              <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:6px;">${getTimeAgo(c.time)}</span>
+            </div>
+            <button onclick="showCommCtxSf('${postId}','${cid}','${c.authorId||''}',event)" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:0 4px;font-size:16px;line-height:1;">⋮</button>
+          </div>
+          ${c.replyTo?`<span style="color:var(--red);font-size:11px;">@${c.replyTo}</span> `:''}
           <div style="font-size:14px;margin-top:3px;line-height:1.5;">${c.text}</div>
-          <button onclick="sfReply('@${(c.authorName||'user').replace(/[^a-z0-9]/gi,'')}')" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;margin-top:4px;">Reply</button>
+          <div style="display:flex;gap:10px;margin-top:5px;align-items:center;">
+            <button class="comm-like-btn ${liked?'liked':''}" id="sflbtn_${cid}" onclick="likeSfComment('${postId}','${cid}',this)">
+              <i class="fas fa-thumbs-up" style="font-size:11px;"></i> <span id="sflcount_${cid}">${c.likes||0}</span>
+            </button>
+            <button style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-weight:600;" onclick="setSfReply('${c.authorName||'user'}','${cid}')">↩ Reply</button>
+            ${c.replyCount>0?`<button style="background:none;border:none;color:var(--red);font-size:11px;cursor:pointer;font-weight:600;" onclick="sfToggleReplies('${postId}','${cid}',this)"><i class="fas fa-chevron-down" style="font-size:9px;"></i> ${c.replyCount} replies</button>`:''}
+          </div>
+          <div id="sfreplies_${cid}" style="display:none;margin-top:8px;border-left:2px solid var(--border);padding-left:8px;"></div>
         </div>
       </div>`;
     }).join('');
   }catch(e){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';}
 }
-function sfReply(mention){
-  const inp=document.getElementById('sfCommInput');
-  if(!inp)return;
-  inp.value=mention+' ';
-  inp.focus();
+
+function showCommCtxSf(postId, commentId, authorId, e){
+  e.stopPropagation();
+  const existing=document.getElementById('commCtxMenuSf');
+  if(existing)existing.remove();
+  const isOwn=cUser&&cUser.uid===authorId;
+  const menu=document.createElement('div');
+  menu.id='commCtxMenuSf';
+  menu.style.cssText='position:fixed;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:6px 0;z-index:9999;min-width:160px;box-shadow:0 4px 20px rgba(0,0,0,0.4);';
+  const items=[];
+  if(isOwn) items.push(`<div onclick="deleteSfComment('${postId}','${commentId}')" style="padding:10px 16px;cursor:pointer;font-size:13px;color:#ff4d4d;"><i class="fas fa-trash" style="margin-right:8px;"></i>Delete</div>`);
+  items.push(`<div onclick="reportSfComment('${postId}','${commentId}')" style="padding:10px 16px;cursor:pointer;font-size:13px;color:var(--text);"><i class="fas fa-flag" style="margin-right:8px;color:orange;"></i>Report</div>`);
+  if(!isOwn) items.push(`<div onclick="openChannelById('${authorId}')" style="padding:10px 16px;cursor:pointer;font-size:13px;color:var(--text);"><i class="fas fa-user" style="margin-right:8px;color:var(--red);"></i>View Channel</div>`);
+  menu.innerHTML=items.join('');
+  const rect=e.target.getBoundingClientRect();
+  menu.style.top=(rect.bottom+4)+'px';
+  menu.style.right=(window.innerWidth-rect.right+4)+'px';
+  document.body.appendChild(menu);
+  setTimeout(()=>document.addEventListener('click',function h(){menu.remove();document.removeEventListener('click',h);},{once:true}),10);
 }
+
+async function deleteSfComment(postId, commentId){
+  if(!cUser)return;
+  if(!confirm('Delete this comment?'))return;
+  try{
+    await db.collection('posts').doc(postId).collection('comments').doc(commentId).delete();
+    await db.collection('posts').doc(postId).update({comments:firebase.firestore.FieldValue.increment(-1)});
+    sfLoadComments(postId);showToast('Comment deleted');
+  }catch(e){showToast('Error deleting comment');}
+}
+
+async function reportSfComment(postId, commentId){
+  if(!cUser){showToast('Login karein pehle');return;}
+  try{
+    await db.collection('reports').add({type:'comment',postId,commentId,reportedBy:cUser.uid,time:Date.now()});
+    showToast('Reported ✅');
+  }catch(e){}
+}
+
+function openChannelById(uid){
+  if(!uid)return;
+  openChannelPage(uid,null);
+}
+
+async function likeSfComment(postId, commentId, btn){
+  if(!cUser) return;
+  try{
+    const ref = db.collection('posts').doc(postId).collection('comments').doc(commentId);
+    const doc = await ref.get(); if(!doc.exists) return;
+    const c = doc.data();
+    const liked = (c.likedBy||[]).includes(cUser.uid);
+    const countEl = document.getElementById('sflcount_'+commentId);
+    if(liked){
+      await ref.update({likes:firebase.firestore.FieldValue.increment(-1),likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
+      btn.classList.remove('liked');
+      if(countEl) countEl.textContent=Math.max(0,(c.likes||1)-1);
+    } else {
+      await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid)});
+      btn.classList.add('liked');
+      if(countEl) countEl.textContent=(c.likes||0)+1;
+      sendNotif(c.authorId,'like',`${cUserData?.name||'Someone'} ne aapka comment like kiya! ❤️`,postId,'short');
+    }
+  }catch(e){}
+}
+
+async function sfToggleReplies(postId, commentId, btn){
+  const div = document.getElementById('sfreplies_'+commentId);
+  if(!div) return;
+  if(div.style.display!=='none'){ div.style.display='none'; btn.innerHTML=`<i class="fas fa-chevron-down" style="font-size:9px;"></i> Show replies`; return; }
+  div.style.display='block'; btn.innerHTML=`<i class="fas fa-chevron-up" style="font-size:9px;"></i> Hide replies`;
+  div.innerHTML='<div class="spinner" style="width:16px;height:16px;border-width:2px;margin:4px 0;"></div>';
+  try{
+    const snap=await db.collection('posts').doc(postId).collection('comments').doc(commentId).collection('replies').orderBy('time','asc').limit(30).get();
+    div.innerHTML=snap.docs.map(d=>{
+      const r=d.data();
+      const av=r.authorPhoto?`<img src="${r.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(r.authorName||'U')[0];
+      return `<div style="display:flex;gap:6px;margin-bottom:8px;">
+        <div onclick="openChannelById('${r.authorId}')" style="width:24px;height:24px;border-radius:50%;background:var(--bg3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;cursor:pointer;">${av}</div>
+        <div>
+          <span onclick="openChannelById('${r.authorId}')" style="font-size:11px;font-weight:700;cursor:pointer;">${r.authorName||'User'}</span>
+          ${r.replyTo?`<span style="color:var(--red);font-size:10px;"> @${r.replyTo}</span>`:''}
+          <div style="font-size:11px;color:var(--text2);">${r.text}</div>
+        </div>
+      </div>`;
+    }).join('')||'<div style="color:var(--text3);font-size:11px;padding:4px;">No replies yet</div>';
+  }catch(e2){ div.innerHTML=''; }
+}
+
+function sfReply(mention){
+  setSfReply(mention.replace(/^@/,''), null);
+}
+
 async function sfPostComment(){
   if(!cUser||!sfCurrentId)return;
   const input=document.getElementById('sfCommInput');
   const text=input.value.trim();
   if(!text)return;
   input.value='';
+  const replyData = _sfReplyTo;
+  clearSfReply();
   try{
-    await db.collection('posts').doc(sfCurrentId).collection('comments').add({
+    const commentData={
       text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
-      authorPhoto:cUserData?.photoURL||'',time:Date.now()
-    });
-    await db.collection('posts').doc(sfCurrentId).update({
-      comments:firebase.firestore.FieldValue.increment(1)
-    });
+      authorPhoto:cUserData?.photoURL||'',time:Date.now(),
+      likes:0,likedBy:[],
+      replyTo:replyData?replyData.name:null,
+      parentId:replyData?replyData.commentId:null
+    };
+    if(replyData && replyData.commentId){
+      await db.collection('posts').doc(sfCurrentId).collection('comments').doc(replyData.commentId).collection('replies').add(commentData);
+      await db.collection('posts').doc(sfCurrentId).collection('comments').doc(replyData.commentId).update({replyCount:firebase.firestore.FieldValue.increment(1)});
+      // Notify parent comment author
+      const parentSnap=await db.collection('posts').doc(sfCurrentId).collection('comments').doc(replyData.commentId).get();
+      if(parentSnap.exists){
+        const parentAuthorId=parentSnap.data().authorId;
+        if(parentAuthorId&&parentAuthorId!==cUser.uid) sendNotif(parentAuthorId,'reply',`${cUserData?.name||'Someone'} replied: "${text.substring(0,40)}"`,sfCurrentId,'short');
+      }
+    } else {
+      await db.collection('posts').doc(sfCurrentId).collection('comments').add(commentData);
+      await db.collection('posts').doc(sfCurrentId).update({comments:firebase.firestore.FieldValue.increment(1)});
+      // Notify short author
+      const sfPost=sfPosts[sfCurrentIdx];
+      if(sfPost) sendNotif(sfPost.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,sfCurrentId,'short');
+    }
     sfLoadComments(sfCurrentId);
     showToast('Comment posted ✅');
-    sendNotif(currentPostData?.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,sfCurrentId);
   }catch(e){showToast('Error posting comment');}
 }
 
@@ -3812,7 +4074,16 @@ async function openPost(id){
     }
   }catch(e){console.warn('openPost type check:',e);}
   // Otherwise open video player
-  const sc=document.getElementById('playerScreen');sc.classList.add('open');sc.scrollTop=0;
+  const sc=document.getElementById('playerScreen');sc.classList.add('open');
+  // Scroll content body to top (not the screen itself)
+  const scrollBody=document.querySelector('#playerScreen .player-scroll-body');
+  if(scrollBody) scrollBody.scrollTop=0;
+  // Show sticky comment bar
+  const stickyBar=document.getElementById('stickyCommBar');
+  if(stickyBar) stickyBar.classList.add('visible');
+  // Set my avatar
+  if(cUserData?.photoURL){ document.getElementById('myCommAv').innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }
+  else if(cUserData?.name){ document.getElementById('myCommAv').textContent=cUserData.name[0].toUpperCase(); }
   document.getElementById('playerTitle').textContent='Loading...';
   document.getElementById('commList').innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
@@ -3824,6 +4095,15 @@ async function openPost(id){
     const vid=document.getElementById('playerVid');
     const wrap=document.getElementById('playerVidWrap');
     wrap.style.backgroundImage='';wrap.style.display='block';vid.style.display='block';
+    // Aspect ratio: short = 9:16, others = 16:9
+    if(p.type==='short'){
+      wrap.classList.add('short-ratio');
+    } else {
+      wrap.classList.remove('short-ratio');
+    }
+    cancelEndScreen();
+    // Hook end event for end screen
+    vid.onended = ()=>{ showEndScreen(); };
     if(p.type==='image'){
       vid.style.display='none';
       wrap.style.backgroundImage=`url(${p.url})`;
@@ -3884,6 +4164,7 @@ async function openPost(id){
     // View tracking — unique per user per video via Firestore
     trackUniqueView(id);
     loadComments(id);
+    updateCommPreview(id);
     loadRelated(id, p.type, p.category||p.type);
     startWatchTimer(id);
   }catch(e){console.error(e);showToast('Error loading');}
@@ -3910,10 +4191,10 @@ function showVideoMenu(id,title,authorId,url,e){
   document.getElementById('ctxOverlay').classList.add('open');
   document.getElementById('ctxMenu').classList.add('open');
 }
-function closeCtxMenu(){
+  function closeCtxMenu(){
   document.getElementById('ctxOverlay').classList.remove('open');
   document.getElementById('ctxMenu').classList.remove('open');
-}
+  }
 function ctxSave(){closeCtxMenu();showToast('Saved to Watch Later ✅');}
 function ctxShare(){closeCtxMenu();if(ctxPostUrl){navigator.clipboard.writeText(ctxPostUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Share link copied!'));}}
 function ctxDownload(){
@@ -3932,7 +4213,7 @@ async function ctxDelete(){
 }
 function closeReportModal(){const m=document.getElementById('reportModal');if(m)m.classList.remove('open');}
 function closeReportIfOut(e){if(e.target===document.getElementById('reportModal'))closeReportModal();}
-function updateTrimStart(v){document.getElementById('trimStartVal').textContent=Math.round(v)+'s';}
+  function updateTrimStart(v){document.getElementById('trimStartVal').textContent=Math.round(v)+'s';}
 function updateTrimDur(v){document.getElementById('trimDurVal').textContent=Math.round(v)+'s';}
 
 async function createShortFromTrim(){
@@ -4003,12 +4284,18 @@ function stopWatchTimer(){
 
 function closePlayer(){
   stopWatchTimer();
+  cancelEndScreen();
   document.getElementById('playerScreen').classList.remove('open');
   const v=document.getElementById('playerVid');v.pause();v.src='';
   const po=document.getElementById('playOverlay');if(po)po.remove();
   const wrap=document.getElementById('playerVidWrap');
   wrap.style.backgroundImage='';wrap.style.display='block';
+  wrap.classList.remove('short-ratio');
   currentPostId=null;currentPostData=null;
+  // Hide sticky bar
+  const stickyBar=document.getElementById('stickyCommBar');
+  if(stickyBar) stickyBar.classList.remove('visible');
+  clearVideoReply();
 }
 
 async function toggleLike(){
@@ -4322,7 +4609,7 @@ async function pdLike(postId,btn){
       await ref.update({likes:firebase.firestore.FieldValue.increment(1),likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid),rankScore:firebase.firestore.FieldValue.increment(10)});
       if(btn){btn.style.color='var(--red)';}
       showToast('Liked! ❤️');
-      sendNotif(p.authorId,'like',`${cUserData?.name||'Someone'} liked your post "${p.title||''}"`,postId);
+      sendNotif(p.authorId,'like',`${cUserData?.name||'Someone'} liked your post "${p.title||''}"`,postId,'post');
     }
   }catch(e){showToast('Error');}
 }
@@ -4331,13 +4618,32 @@ async function pdPostComment(postId){
   if(!cUser)return showToast('Login karein!');
   const input=document.getElementById('pdCommInput');
   const text=input?.value?.trim();if(!text)return;
+  const replyData = input._replyTo || null;
   input.value='';
+  input._replyTo=null;
+  input.placeholder='Write a comment...';
+  input.style.borderColor='var(--border)';
   try{
-    await db.collection('posts').doc(postId).collection('comments').add({
+    const commentData={
       text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
-      authorPhoto:cUserData?.photoURL||'',time:Date.now()
-    });
-    await db.collection('posts').doc(postId).update({comments:firebase.firestore.FieldValue.increment(1)});
+      authorPhoto:cUserData?.photoURL||'',time:Date.now(),
+      likes:0,likedBy:[],
+      replyTo:replyData?replyData.name:null,
+      parentId:replyData?replyData.commentId:null
+    };
+    if(replyData && replyData.commentId){
+      await db.collection('posts').doc(postId).collection('comments').doc(replyData.commentId).collection('replies').add(commentData);
+      await db.collection('posts').doc(postId).collection('comments').doc(replyData.commentId).update({replyCount:firebase.firestore.FieldValue.increment(1)});
+      const parentSnap=await db.collection('posts').doc(postId).collection('comments').doc(replyData.commentId).get();
+      if(parentSnap.exists){
+        const parentAuthorId=parentSnap.data().authorId;
+        if(parentAuthorId&&parentAuthorId!==cUser.uid) sendNotif(parentAuthorId,'reply',`${cUserData?.name||'Someone'} replied: "${text.substring(0,40)}"`,postId,'video');
+      }
+    } else {
+      await db.collection('posts').doc(postId).collection('comments').add(commentData);
+      await db.collection('posts').doc(postId).update({comments:firebase.firestore.FieldValue.increment(1)});
+      sendNotif(currentPostData?.authorId||'','comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,postId,'video');
+    }
     showToast('Comment posted ✅');
     pdLoadComments(postId);
   }catch(e){showToast('Error posting');}
@@ -4348,56 +4654,200 @@ async function pdLoadComments(postId){
   try{
     const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('time','desc').limit(100).get();
     if(snap.empty){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet 💬</div>';return;}
-    list.innerHTML=snap.docs.map(d=>{
-      const c=d.data();
+    const docs=[...snap.docs].sort((a,b)=>(b.data().likes||0)-(a.data().likes||0));
+    list.innerHTML=docs.map(d=>{
+      const c=d.data();const cid=d.id;
       const av=c.authorPhoto?`<img src="${c.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(c.authorName||'U')[0].toUpperCase();
+      const liked=cUser&&(c.likedBy||[]).includes(cUser.uid);
       return `<div style="display:flex;gap:10px;margin-bottom:14px;">
-        <div style="width:36px;height:36px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;overflow:hidden;">${av}</div>
+        <div onclick="openChannelById('${c.authorId}')" style="width:36px;height:36px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;overflow:hidden;cursor:pointer;">${av}</div>
         <div style="flex:1;background:var(--bg3);border-radius:12px;padding:10px 12px;">
-          <div style="font-size:12px;font-weight:700;margin-bottom:3px;">${c.authorName||'User'} <span style="font-size:10px;color:var(--text3);font-weight:400;">${getTimeAgo(c.time)}</span></div>
-          <div style="font-size:13px;line-height:1.5;">${c.text}</div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <span onclick="openChannelById('${c.authorId}')" style="font-size:12px;font-weight:700;cursor:pointer;">${c.authorName||'User'}</span>
+              <span style="font-size:10px;color:var(--text3);font-weight:400;margin-left:6px;">${getTimeAgo(c.time)}</span>
+            </div>
+            <button onclick="showCommCtxPd('${postId}','${cid}','${c.authorId||''}',event)" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:0 4px;font-size:16px;line-height:1;">⋮</button>
+          </div>
+          ${c.replyTo?`<span style="color:var(--red);font-size:11px;">@${c.replyTo}</span> `:''}
+          <div style="font-size:13px;line-height:1.5;margin-top:2px;">${c.text}</div>
+          <div style="display:flex;gap:10px;margin-top:6px;align-items:center;">
+            <button class="comm-like-btn ${liked?'liked':''}" id="pdlbtn_${cid}" onclick="likeComment('${postId}','${cid}',this)"><i class="fas fa-thumbs-up" style="font-size:11px;"></i> <span id="pdlcount_${cid}">${c.likes||0}</span></button>
+            <button style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-weight:600;" onclick="pdSetReply('${postId}','${c.authorName||'user'}','${cid}')">↩ Reply</button>
+            ${c.replyCount>0?`<button style="background:none;border:none;color:var(--red);font-size:11px;cursor:pointer;font-weight:600;" onclick="pdToggleReplies('${postId}','${cid}',this)"><i class="fas fa-chevron-down" style="font-size:9px;"></i> ${c.replyCount} replies</button>`:''}
+          </div>
+          <div id="pdreplies_${cid}" style="display:none;margin-top:8px;border-left:2px solid var(--border);padding-left:8px;"></div>
         </div>
       </div>`;
     }).join('');
   }catch(e){
-    try{
-      const snap2=await db.collection('posts').doc(postId).collection('comments').limit(100).get();
-      const sorted=snap2.docs.sort((a,b)=>b.data().time-a.data().time);
-      list.innerHTML=sorted.map(d=>{const c=d.data();return `<div style="display:flex;gap:10px;margin-bottom:14px;"><div style="width:36px;height:36px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${(c.authorName||'U')[0]}</div><div style="flex:1;background:var(--bg3);border-radius:12px;padding:10px 12px;"><div style="font-size:12px;font-weight:700;">${c.authorName||'User'}</div><div style="font-size:13px;">${c.text}</div></div></div>`;}).join('')||'<div style="color:var(--text3);text-align:center;padding:20px;">No comments yet</div>';
-    }catch(e2){list.innerHTML='';}
+    list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';
   }
 }
 
+async function pdToggleReplies(postId, commentId, btn){
+  const div=document.getElementById('pdreplies_'+commentId);
+  if(!div)return;
+  if(div.style.display!=='none'){div.style.display='none';btn.innerHTML=`<i class="fas fa-chevron-down" style="font-size:9px;"></i> Show replies`;return;}
+  div.style.display='block';btn.innerHTML=`<i class="fas fa-chevron-up" style="font-size:9px;"></i> Hide replies`;
+  div.innerHTML='<div class="spinner" style="width:16px;height:16px;border-width:2px;margin:4px 0;"></div>';
+  try{
+    const snap=await db.collection('posts').doc(postId).collection('comments').doc(commentId).collection('replies').orderBy('time','asc').limit(30).get();
+    div.innerHTML=snap.docs.map(d=>{
+      const r=d.data();
+      const av=r.authorPhoto?`<img src="${r.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(r.authorName||'U')[0];
+      return `<div style="display:flex;gap:6px;margin-bottom:8px;">
+        <div onclick="openChannelById('${r.authorId}')" style="width:24px;height:24px;border-radius:50%;background:var(--bg3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;cursor:pointer;">${av}</div>
+        <div>
+          <span onclick="openChannelById('${r.authorId}')" style="font-size:11px;font-weight:700;cursor:pointer;">${r.authorName||'User'}</span>
+          ${r.replyTo?`<span style="color:var(--red);font-size:10px;"> @${r.replyTo}</span>`:''}
+          <div style="font-size:11px;color:var(--text2);">${r.text}</div>
+        </div>
+      </div>`;
+    }).join('')||'<div style="color:var(--text3);font-size:11px;padding:4px;">No replies yet</div>';
+  }catch(e2){div.innerHTML='';}
+}
+
+function showCommCtxPd(postId, commentId, authorId, e){
+  e.stopPropagation();
+  const existing=document.getElementById('commCtxMenuPd');
+  if(existing)existing.remove();
+  const isOwn=cUser&&cUser.uid===authorId;
+  const menu=document.createElement('div');
+  menu.id='commCtxMenuPd';
+  menu.style.cssText='position:fixed;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:6px 0;z-index:9999;min-width:160px;box-shadow:0 4px 20px rgba(0,0,0,0.4);';
+  const items=[];
+  if(isOwn) items.push(`<div onclick="deletePdComment('${postId}','${commentId}')" style="padding:10px 16px;cursor:pointer;font-size:13px;color:#ff4d4d;"><i class="fas fa-trash" style="margin-right:8px;"></i>Delete</div>`);
+  items.push(`<div onclick="reportPdComment('${postId}','${commentId}')" style="padding:10px 16px;cursor:pointer;font-size:13px;color:var(--text);"><i class="fas fa-flag" style="margin-right:8px;color:orange;"></i>Report</div>`);
+  if(!isOwn) items.push(`<div onclick="openChannelById('${authorId}')" style="padding:10px 16px;cursor:pointer;font-size:13px;color:var(--text);"><i class="fas fa-user" style="margin-right:8px;color:var(--red);"></i>View Channel</div>`);
+  menu.innerHTML=items.join('');
+  const rect=e.target.getBoundingClientRect();
+  menu.style.top=(rect.bottom+4)+'px';
+  menu.style.right=(window.innerWidth-rect.right+4)+'px';
+  document.body.appendChild(menu);
+  setTimeout(()=>document.addEventListener('click',function h(){menu.remove();document.removeEventListener('click',h);},{once:true}),10);
+}
+
+async function deletePdComment(postId,commentId){
+  if(!cUser)return;
+  if(!confirm('Delete this comment?'))return;
+  try{
+    await db.collection('posts').doc(postId).collection('comments').doc(commentId).delete();
+    await db.collection('posts').doc(postId).update({comments:firebase.firestore.FieldValue.increment(-1)});
+    pdLoadComments(postId);showToast('Comment deleted');
+  }catch(e){showToast('Error deleting comment');}
+}
+
+async function reportPdComment(postId,commentId){
+  if(!cUser){showToast('Login karein pehle');return;}
+  try{
+    await db.collection('reports').add({type:'comment',postId,commentId,reportedBy:cUser.uid,time:Date.now()});
+    showToast('Reported ✅');
+  }catch(e){}
+}
+
+function pdSetReply(postId, name, commentId){
+  const inp = document.getElementById('pdCommInput');
+  if(!inp) return;
+  inp._replyTo = {name, commentId};
+  inp.placeholder = 'Reply to @'+name+'...';
+  inp.focus();
+  inp.style.borderColor='var(--red)';
+}
+
+
+// Comment context menu state
+let _commCtxData = {};
+function openCommCtx(postId, commentId, authorId, authorName, likeCount, liked){
+  _commCtxData = {postId, commentId, authorId, authorName, likeCount, liked};
+  document.getElementById('commCtxAuthor').textContent = '@'+authorName;
+  document.getElementById('commCtxOverlay').style.display='block';
+  document.getElementById('commCtxSheet').classList.add('open');
+}
+function closeCommCtx(){
+  document.getElementById('commCtxOverlay').style.display='none';
+  document.getElementById('commCtxSheet').classList.remove('open');
+}
+async function commCtxAction(action){
+  closeCommCtx();
+  const {postId,commentId,authorId,authorName} = _commCtxData;
+  if(action==='reply'){ setVideoReply(authorName, commentId); }
+  else if(action==='like'){ const btn=document.getElementById('clbtn_'+commentId); if(btn) likeComment(postId,commentId,btn); }
+  else if(action==='profile'){ if(authorId) openChannelPage(authorId,null); }
+  else if(action==='share'){ navigator.clipboard?.writeText('Comment by @'+authorName).then(()=>showToast('Copied!')).catch(()=>showToast('Shared!')); }
+  else if(action==='report'){ showToast('Report submitted ✅'); }
+  else if(action==='block'){
+    if(!cUser) return showToast('Login karein!');
+    try{
+      await db.collection('users').doc(cUser.uid).update({blocked:firebase.firestore.FieldValue.arrayUnion(authorId)});
+      showToast('User blocked 🚫');
+      // Hide their comments
+      document.querySelectorAll(`[data-author="${authorId}"]`).forEach(el=>el.remove());
+    }catch(e){ showToast('Block failed'); }
+  }
+}
 
 async function loadComments(postId){
   const list=document.getElementById('commList');
   list.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   try{
     const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('time','desc').limit(200).get();
-    document.getElementById('commTitle').textContent=`Comments (${snap.size})`;
+    const titleEl=document.getElementById('commSheetTitle')||document.getElementById('commTitle');
+    if(titleEl)titleEl.textContent=`Comments (${snap.size})`;
     if(snap.empty){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet. Be first! 💬</div>';return;}
-    list.innerHTML=snap.docs.map(d=>{
-      const c=d.data();
-      const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
-      return `<div class="comm-item">
-        <div class="comm-av">${av}</div>
+    const sortedDocs=[...snap.docs].sort((a,b)=>(b.data().likes||0)-(a.data().likes||0));
+    list.innerHTML=sortedDocs.map(d=>{
+      const c=d.data();const cid=d.id;
+      const av=c.authorPhoto?`<img src="${c.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(c.authorName||'U')[0].toUpperCase();
+      const liked=cUser&&(c.likedBy||[]).includes(cUser.uid);
+      const likeCount=c.likes||0;
+      const replyToText=c.replyTo?`<span style="color:#1a73e8;font-size:11px;margin-right:4px;">@${c.replyTo}</span>`:'';
+      const timeStr = getTimeAgo(c.time);
+      return `<div class="comm-item" id="commitem_${cid}" data-author="${c.authorId||''}">
+        <div class="comm-av" onclick="if('${c.authorId||''}')openChannelPage('${c.authorId||''}',event)" style="cursor:pointer;">${av}</div>
         <div class="comm-body">
-          <div class="comm-author">${c.authorName||'User'}</div>
-          <div class="comm-text">${c.text}</div>
-          <div class="comm-time">${getTimeAgo(c.time)}</div>
-          <button onclick="setReply('@${(c.authorName||'user').replace(/[^a-z0-9]/gi,'')}')" style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;padding:2px 0;">Reply</button>
-        </div></div>`;
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <span class="comm-author" onclick="if('${c.authorId||''}')openChannelPage('${c.authorId||''}',event)" style="cursor:pointer;">${c.authorName||'User'}</span>
+            <span class="comm-time">${timeStr}</span>
+            <button class="comm-3dot" onclick="openCommCtx('${postId}','${cid}','${c.authorId||''}','${(c.authorName||'user').replace(/'/g,"\\'")}',${likeCount},${liked})"><i class="fas fa-ellipsis-v"></i></button>
+          </div>
+          <div class="comm-text">${replyToText}${c.text}</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;">
+            <button class="comm-like-btn ${liked?'liked':''}" id="clbtn_${cid}" onclick="likeComment('${postId}','${cid}',this)">
+              <i class="fas fa-thumbs-up"></i> <span id="clcount_${cid}">${likeCount||''}</span>
+            </button>
+            <button class="comm-like-btn" onclick="likeCommentDislike('${postId}','${cid}',this)">
+              <i class="fas fa-thumbs-down"></i>
+            </button>
+            <button style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-weight:600;padding:2px 6px;border-radius:10px;" onclick="setVideoReply('${(c.authorName||'user').replace(/'/g,"\\'")}','${cid}')">Reply</button>
+            ${c.replyCount>0?`<button class="load-replies-btn" onclick="toggleReplies('${postId}','${cid}',this)"><i class="fas fa-chevron-down" style="font-size:9px;"></i> ${c.replyCount} ${c.replyCount===1?'reply':'replies'}</button>`:''}
+          </div>
+          <div class="replies-wrap" id="replies_${cid}" style="display:none;"></div>
+        </div>
+      </div>`;
     }).join('');
   }catch(e){
-    // Fallback without orderBy
     try{
       const snap2=await db.collection('posts').doc(postId).collection('comments').limit(200).get();
       const sorted=snap2.docs.sort((a,b)=>b.data().time-a.data().time);
       document.getElementById('commTitle').textContent=`Comments (${sorted.length})`;
       list.innerHTML=sorted.map(d=>{
-        const c=d.data();
-        const av=c.authorPhoto?`<img src="${c.authorPhoto}">`:(c.authorName||'U')[0].toUpperCase();
-        return `<div class="comm-item"><div class="comm-av">${av}</div><div class="comm-body"><div class="comm-author">${c.authorName||'User'}</div><div class="comm-text">${c.text}</div><div class="comm-time">${getTimeAgo(c.time)}</div></div></div>`;
+        const c=d.data();const cid=d.id;
+        const av=c.authorPhoto?`<img src="${c.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(c.authorName||'U')[0].toUpperCase();
+        const liked=cUser&&(c.likedBy||[]).includes(cUser.uid);
+        return `<div class="comm-item" data-author="${c.authorId||''}">
+          <div class="comm-av" onclick="if('${c.authorId||''}')openChannelPage('${c.authorId||''}',event)" style="cursor:pointer;">${av}</div>
+          <div class="comm-body">
+            <span class="comm-author" onclick="if('${c.authorId||''}')openChannelPage('${c.authorId||''}',event)" style="cursor:pointer;">${c.authorName||'User'}</span>
+            <span class="comm-time">${getTimeAgo(c.time)}</span>
+            <button class="comm-3dot" onclick="openCommCtx('${postId}','${cid}','${c.authorId||''}','${(c.authorName||'user').replace(/'/g,"\\'")}',${c.likes||0},${liked})"><i class="fas fa-ellipsis-v"></i></button>
+            <div class="comm-text">${c.text}</div>
+            <div style="display:flex;gap:10px;margin-top:5px;">
+              <button class="comm-like-btn ${liked?'liked':''}" onclick="likeComment('${postId}','${cid}',this)"><i class="fas fa-thumbs-up"></i> <span>${c.likes||0}</span></button>
+              <button style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-weight:600;" onclick="setVideoReply('${(c.authorName||'user').replace(/'/g,"\\'")}','${cid}')">Reply</button>
+            </div>
+          </div>
+        </div>`;
       }).join('')||'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No comments yet!</div>';
     }catch(e2){list.innerHTML='<p style="color:var(--text3);padding:10px;font-size:12px;">Could not load comments</p>';}
   }
@@ -4476,63 +4926,148 @@ async function loadRelated(postId, postType, category){
   }
 }
 
-function setReply(mention){
-  const inp=document.getElementById('commInput');
-  if(!inp)return;
-  inp.value='@'+mention.replace(/^@/,'')+' ';
-  inp.focus();
-  inp.scrollIntoView({behavior:'smooth',block:'center'});
-  // Style to show replying state
-  const replyBar=document.getElementById('replyIndicator');
-  if(!replyBar){
-    const bar=document.createElement('div');
-    bar.id='replyIndicator';
-    bar.style.cssText='font-size:11px;color:var(--text3);padding:4px 0;display:flex;align-items:center;gap:6px;';
-    bar.innerHTML=`<i class="fas fa-reply" style="color:var(--red);"></i> Replying to @${mention.replace(/^@/,'')} <button onclick="clearReply()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;margin-left:auto;">×</button>`;
-    inp.parentElement.insertBefore(bar,inp);
-  }
+let _videoReplyTo = null; // {name, commentId}
+
+function setVideoReply(name, commentId){
+  _videoReplyTo = {name, commentId};
+  const bar = document.getElementById('replyIndicatorSticky');
+  const nameEl = document.getElementById('replyTargetName');
+  if(bar){ bar.style.display='flex'; }
+  if(nameEl){ nameEl.textContent = 'Replying to @'+name; }
+  const inp = document.getElementById('commInput');
+  if(inp){ inp.focus(); inp.placeholder = 'Reply to @'+name+'...'; }
 }
 
-function clearReply(){
-  const inp=document.getElementById('commInput');
-  if(inp)inp.value='';
-  const bar=document.getElementById('replyIndicator');
-  if(bar)bar.remove();
+function clearVideoReply(){
+  _videoReplyTo = null;
+  const bar = document.getElementById('replyIndicatorSticky');
+  if(bar) bar.style.display='none';
+  const inp = document.getElementById('commInput');
+  if(inp){ inp.value=''; inp.placeholder='Add a comment...'; }
+}
+
+// Keep old setReply for backward compat
+function setReply(mention){
+  setVideoReply(mention.replace(/^@/,''), null);
+}
+function clearReply(){ clearVideoReply(); }
+
+// Quick emoji comment
+async function postEmojiComment(emoji){
+  if(!cUser||!currentPostId) return showToast('Login karein!');
+  try{
+    await db.collection('posts').doc(currentPostId).collection('comments').add({
+      text: emoji, authorId:cUser.uid, authorName:cUserData?.name||cUser.email,
+      authorPhoto:cUserData?.photoURL||'', time:Date.now(),
+      likes:0, likedBy:[], replyTo:null, parentId:null
+    });
+    await db.collection('posts').doc(currentPostId).update({comments:firebase.firestore.FieldValue.increment(1)});
+    loadComments(currentPostId);
+    showToast(emoji+' posted!');
+  }catch(e){ showToast('Error'); }
 }
 
 async function postComment(){
+  // Redirect to sheet input
+  postCommentFromSheet();
+}
+
+async function postCommentFromSheet(){
   if(!cUser||!currentPostId)return;
-  const input=document.getElementById('commInput');
+  const input=document.getElementById('commInputSheet')||document.getElementById('commInput');
   const text=input.value.trim();if(!text)return;
   input.value='';
-  const bar=document.getElementById('replyIndicator');if(bar)bar.remove();
+  const replyData = _videoReplyTo;
+  clearVideoReply();
   try{
-    // Extract @mention for reply notification
-    const mentionMatch=text.match(/^@(\w+)/);
-    await db.collection('posts').doc(currentPostId).collection('comments').add({
-      text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
-      authorPhoto:cUserData?.photoURL||'',time:Date.now(),
-      replyTo:mentionMatch?mentionMatch[1]:null
-    });
-    await db.collection('posts').doc(currentPostId).update({
-      comments:firebase.firestore.FieldValue.increment(1),
-      rankScore:firebase.firestore.FieldValue.increment(5)
-    });
-    loadComments(currentPostId);showToast('Comment posted ✅');
-    sendNotif(currentPostData?.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,currentPostId);
-    if(mentionMatch){const replyTargetSnap=await db.collection('users').where('name','==',mentionMatch[1]).limit(1).get();if(!replyTargetSnap.empty){const replyUid=replyTargetSnap.docs[0].id;sendNotif(replyUid,'reply',`${cUserData?.name||'Someone'} replied to your comment: "${text.substring(0,40)}"`,currentPostId);}}
+    const commentData = {
+      text, authorId:cUser.uid, authorName:cUserData?.name||cUser.email,
+      authorPhoto:cUserData?.photoURL||'', time:Date.now(),
+      likes:0, likedBy:[],
+      replyTo: replyData ? replyData.name : null,
+      parentId: replyData ? replyData.commentId : null
+    };
+    if(replyData && replyData.commentId){
+      await db.collection('posts').doc(currentPostId).collection('comments').doc(replyData.commentId).collection('replies').add(commentData);
+      await db.collection('posts').doc(currentPostId).collection('comments').doc(replyData.commentId).update({
+        replyCount: firebase.firestore.FieldValue.increment(1)
+      });
+      const parentSnap = await db.collection('posts').doc(currentPostId).collection('comments').doc(replyData.commentId).get();
+      if(parentSnap.exists){
+        const parentAuthorId = parentSnap.data().authorId;
+        if(parentAuthorId && parentAuthorId !== cUser.uid){
+          sendNotif(parentAuthorId,'reply',`${cUserData?.name||'Someone'} replied: "${text.substring(0,40)}"`,currentPostId,'video');
+        }
+      }
+      const repliesDiv = document.getElementById('replies_'+replyData.commentId);
+      if(repliesDiv && repliesDiv.style.display !== 'none'){
+        loadReplies(currentPostId, replyData.commentId, repliesDiv);
+      }
+    } else {
+      await db.collection('posts').doc(currentPostId).collection('comments').add(commentData);
+      await db.collection('posts').doc(currentPostId).update({
+        comments:firebase.firestore.FieldValue.increment(1),
+        rankScore:firebase.firestore.FieldValue.increment(5)
+      });
+      sendNotif(currentPostData?.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,currentPostId,'video');
+    }
+    loadComments(currentPostId);
+    updateCommPreview(currentPostId);
+    showToast('Comment posted ✅');
   }catch(e){showToast('Error posting comment');}
+}
+
+function openCommentsSheet(){
+  const sheet=document.getElementById('commSheet');
+  const ov=document.getElementById('commSheetOverlay');
+  if(!sheet)return;
+  if(ov)ov.style.display='block';
+  sheet.style.display='flex';
+  sheet.style.transform='translateY(100%)';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{sheet.style.transform='translateY(0)';}));
+  // Set avatar in sheet
+  const avEl=document.getElementById('myCommAvSheet');
+  if(avEl&&cUserData?.photoURL) avEl.innerHTML=`<img src="${cUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  else if(avEl&&cUserData?.name) avEl.textContent=cUserData.name[0].toUpperCase();
+  if(currentPostId) loadComments(currentPostId);
+}
+
+function closeCommentsSheet(){
+  const sheet=document.getElementById('commSheet');
+  const ov=document.getElementById('commSheetOverlay');
+  if(sheet){
+    sheet.style.transform='translateY(100%)';
+    setTimeout(()=>{sheet.style.display='none';},300);
+  }
+  if(ov)ov.style.display='none';
+}
+
+async function updateCommPreview(postId){
+  if(!postId)return;
+  try{
+    const snap=await db.collection('posts').doc(postId).collection('comments').orderBy('likes','desc').limit(1).get();
+    const postSnap=await db.collection('posts').doc(postId).get();
+    const totalComments=postSnap.exists?(postSnap.data().comments||0):0;
+    document.getElementById('commPreviewCount').textContent=totalComments;
+    if(!snap.empty){
+      const c=snap.docs[0].data();
+      document.getElementById('commPreviewText').textContent=`${c.authorName||'User'}: ${c.text||''}`;
+    }else{
+      document.getElementById('commPreviewText').textContent='Be first to comment...';
+    }
+  }catch(e){}
 }
 
 // ══════════════════════════════════════════════════════
 // NOTIFICATIONS
 // ══════════════════════════════════════════════════════
-async function sendNotif(toUid,type,text,postId){
+async function sendNotif(toUid,type,text,postId,postType){
   if(!toUid||toUid===cUser?.uid)return;
   try{
     await db.collection('notifications').add({
       to:toUid,from:cUser?.uid,fromName:cUserData?.name||'',
       fromPhoto:cUserData?.photoURL||'',type,text,postId:postId||null,
+      postType:postType||null,
       read:false,time:Date.now()
     });
   }catch(e){}
@@ -4558,18 +5093,29 @@ async function loadNotifs(){
     document.getElementById('notifDot').style.display=unread>0?'block':'none';
     list.innerHTML=docs.map(d=>{
       const n=d.data();
-      const emoMap={like:'❤️',comment:'💬',sub:'🔔',system:'📢'};
-      const icClass={like:'like',comment:'comment',sub:'sub',system:'system'}[n.type]||'system';
-      return `<div class="notif-item ${n.read?'':'unread'}">
-        <div class="notif-ic ${icClass}">${emoMap[n.type]||'📢'}</div>
+      const emoMap={like:'❤️',comment:'💬',sub:'🔔',system:'📢',reply:'↩️'};
+      const icClass={like:'like',comment:'comment',sub:'sub',system:'system',reply:'comment'}[n.type]||'system';
+      const avHtml=n.fromPhoto?`<img src="${n.fromPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:(emoMap[n.type]||'📢');
+      const clickable=n.postId?`onclick="handleNotifClick('${n.postId}','${n.postType||''}')"  style="cursor:pointer;"`:'' ;
+      return `<div class="notif-item ${n.read?'':'unread'}" ${clickable}>
+        <div class="notif-ic ${icClass}" style="overflow:hidden;">${avHtml}</div>
         <div class="notif-body">
           <div class="notif-text">${n.text}</div>
           <div class="notif-time">${getTimeAgo(n.time)}</div>
+          ${n.postId?`<div style="font-size:10px;color:var(--red);margin-top:2px;"><i class="fas fa-external-link-alt"></i> Tap to open</div>`:''}
         </div></div>`;
     }).join('');
     docs.forEach(d=>{if(!d.data().read)db.collection('notifications').doc(d.id).update({read:true}).catch(()=>{});});
     document.getElementById('notifDot').style.display='none';
   }catch(e){list.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Could not load notifications</p></div>';}
+}
+
+function handleNotifClick(postId, postType){
+  if(!postId)return;
+  showScreen('home');
+  setTimeout(()=>{
+    openPost(postId);
+  },100);
 }
 
 // ══════════════════════════════════════════════════════
@@ -5544,29 +6090,55 @@ async function openChannelPage(authorId,e){
   if(e)e.stopPropagation();
   if(!authorId)return;
   cpCurrentAuthorId=authorId;
+  _cpCurrentSort='latest';
+  _cpCurrentTab='videos';
   document.getElementById('channelPage').classList.add('open');
+  document.getElementById('channelPage').scrollTop=0;
   document.getElementById('cpContent').innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  // Reset sort bar chips
+  document.querySelectorAll('#cpSortBar .chip').forEach((b,i)=>{b.classList.toggle('active',i===0);});
   try{
-    const uDoc=await db.collection('users').doc(authorId).get();
+    const [uDoc, postsSnap] = await Promise.all([
+      db.collection('users').doc(authorId).get(),
+      db.collection('posts').where('authorId','==',authorId).get()
+    ]);
     if(!uDoc.exists){showToast('Channel not found');closeChannelPage();return;}
     const u=uDoc.data();
+    // Cover
+    const coverDiv = document.getElementById('cpCoverDiv');
+    if(coverDiv && u.coverURL){ coverDiv.style.backgroundImage=`url(${u.coverURL})`; coverDiv.style.backgroundSize='cover'; }
+    // Avatar
     const pic=document.getElementById('cpPic');
-    if(u.photoURL){pic.innerHTML=`<img src="${u.photoURL}">`;}else{pic.textContent=(u.name||'U')[0].toUpperCase();}
+    if(u.photoURL){pic.innerHTML=`<img src="${u.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;}else{pic.textContent=(u.name||'U')[0].toUpperCase();}
     document.getElementById('cpName').textContent=u.channelName||u.name||'Channel';
     document.getElementById('cpHandle').textContent=u.channelHandle||u.handle||'@user';
-    document.getElementById('cpSubs').textContent=(u.subscribers||0)+' subscribers';
     document.getElementById('cpAbout').textContent=u.channelAbout||u.about||'';
+    // About snippet
+    const snip = document.getElementById('cpAboutSnippet');
+    if(snip) snip.textContent=u.channelAbout||u.about||'';
+    // Stats
+    let totalViews = 0;
+    postsSnap.forEach(d=>{ totalViews += d.data().views||0; });
+    const subsNum = u.subscribers||0;
+    const vidsNum = postsSnap.size;
+    document.getElementById('cpSubsNum').textContent = subsNum>=1000?(subsNum/1000).toFixed(1)+'K':subsNum;
+    document.getElementById('cpVidsNum').textContent = vidsNum;
+    document.getElementById('cpViewsNum').textContent = totalViews>=1000000?(totalViews/1000000).toFixed(1)+'M':totalViews>=1000?(totalViews/1000).toFixed(1)+'K':totalViews;
     // Sub button
     const subBtn=document.getElementById('cpSubBtn');
     if(authorId===cUser?.uid){subBtn.style.display='none';}
     else{
       subBtn.style.display='block';
-      const subDoc=await db.collection('subscriptions').doc(`${cUser.uid}_${authorId}`).get();
-      if(subDoc.exists){subBtn.textContent='Subscribed';subBtn.classList.add('subscribed');}
-      else{subBtn.textContent='Subscribe';subBtn.classList.remove('subscribed');}
+      if(cUser){
+        try{
+          const subDoc=await db.collection('subscriptions').doc(`${cUser.uid}_${authorId}`).get();
+          if(subDoc.exists){subBtn.textContent='Subscribed ✓';subBtn.classList.add('subscribed');}
+          else{subBtn.textContent='Subscribe';subBtn.classList.remove('subscribed');}
+        }catch(se){ subBtn.textContent='Subscribe'; }
+      }
     }
-    loadChannelVideos(authorId);
-  }catch(e){showToast('Error loading channel');}
+    loadChannelVideos(authorId,'videos');
+  }catch(err){showToast('Error loading channel');}
 }
 
 function closeChannelPage(){document.getElementById('channelPage').classList.remove('open');}
@@ -5597,47 +6169,94 @@ function switchChannelTab(tab,btn){
   document.querySelectorAll('.channel-tab').forEach(t=>t.classList.remove('active'));
   if(btn)btn.classList.add('active');
   if(!cpCurrentAuthorId)return;
-  if(tab==='videos'||tab==='shorts'||tab==='posts')loadChannelVideos(cpCurrentAuthorId,tab);
+  _cpCurrentSort='latest';
+  document.querySelectorAll('#cpSortBar .chip').forEach((b,i)=>{b.classList.toggle('active',i===0);});
+  if(tab==='videos'||tab==='shorts'||tab==='posts'||tab==='popular')loadChannelVideos(cpCurrentAuthorId,tab);
   else if(tab==='about')loadChannelAbout();
 }
+
+let _cpCurrentTab = 'videos';
 
 async function loadChannelVideos(authorId,typeFilter='videos'){
   const el=document.getElementById('cpContent');
   el.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  _cpCurrentTab = typeFilter;
+  // show/hide sort bar
+  const sortBar = document.getElementById('cpSortBar');
+  if(sortBar) sortBar.style.display = (typeFilter==='about'||typeFilter==='posts') ? 'none' : 'flex';
   try{
-    const snap=await db.collection('posts').where('authorId','==',authorId).orderBy('time','desc').limit(30).get();
+    let snap;
+    try{ snap=await db.collection('posts').where('authorId','==',authorId).orderBy('time','desc').limit(50).get(); }
+    catch(e){ snap=await db.collection('posts').where('authorId','==',authorId).limit(50).get(); }
     let posts=snap.docs.map(d=>({id:d.id,...d.data()}));
-    if(typeFilter==='shorts')posts=posts.filter(p=>p.type==='short');
-    else if(typeFilter==='posts')posts=posts.filter(p=>p.type==='post');
-    else posts=posts.filter(p=>p.type!=='post'&&p.type!=='short'||p.type==='video'||p.type==='gaming'||p.type==='music');
+    if(typeFilter==='shorts') posts=posts.filter(p=>p.type==='short');
+    else if(typeFilter==='posts') posts=posts.filter(p=>p.type==='post');
+    else if(typeFilter==='popular') posts=posts.sort((a,b)=>(b.views||0)-(a.views||0));
+    else posts=posts.filter(p=>p.type!=='post'&&p.type!=='short');
+    // Sort
+    if(typeFilter!=='popular'){
+      if(_cpCurrentSort==='oldest') posts=posts.sort((a,b)=>(a.time||0)-(b.time||0));
+      else if(_cpCurrentSort==='popular') posts=posts.sort((a,b)=>(b.views||0)-(a.views||0));
+      else posts=posts.sort((a,b)=>(b.time||0)-(a.time||0));
+    }
     if(!posts.length){el.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content yet</p></div>';return;}
-    el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+posts.map(p=>{
-      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_300/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-      return `<div onclick="openPost('${p.id}')" style="cursor:pointer;">
-        <div style="aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:var(--bg3);margin-bottom:6px;">
-          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-video" style="color:var(--text3);font-size:20px;"></i></div>'}
-        </div>
-        <div style="font-size:12px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||'Untitled'}</div>
-        <div style="font-size:10px;color:var(--text2);margin-top:2px;">👁️${p.views||0} • ${getTimeAgo(p.time)}</div>
-      </div>`;
-    }).join('')+'</div>';
+    const isShorts = typeFilter==='shorts';
+    if(isShorts){
+      el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">'+posts.map(p=>{
+        const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_200/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+        return `<div onclick="openPost('${p.id}')" style="cursor:pointer;aspect-ratio:9/16;border-radius:6px;overflow:hidden;background:var(--bg3);position:relative;">
+          ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-film" style="color:var(--text3);font-size:16px;"></i></div>'}
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:4px;background:linear-gradient(transparent,rgba(0,0,0,.8));"><div style="font-size:9px;color:white;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title||''}</div></div>
+        </div>`;
+      }).join('')+'</div>';
+    } else {
+      el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+posts.map(p=>{
+        const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_300/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
+        const views=p.views>=1000?(p.views/1000).toFixed(1)+'K':(p.views||0);
+        return `<div onclick="openPost('${p.id}')" style="cursor:pointer;">
+          <div style="aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:var(--bg3);margin-bottom:5px;position:relative;">
+            ${th?`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play-circle" style="color:var(--text3);font-size:22px;"></i></div>'}
+            ${p.duration?`<div style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.85);color:white;font-size:9px;font-weight:600;padding:1px 4px;border-radius:3px;">${p.duration}</div>`:''}
+          </div>
+          <div style="font-size:11px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4;">${p.title||'Untitled'}</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:2px;">👁️${views} • ${getTimeAgo(p.time)}</div>
+        </div>`;
+      }).join('')+'</div>';
+    }
   }catch(e2){
     try{
       const s2=await db.collection('posts').where('authorId','==',authorId).limit(20).get();
       const posts2=s2.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.time-a.time);
-      el.innerHTML=posts2.length?'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+posts2.map(p=>`<div onclick="openPost('${p.id}')" style="cursor:pointer;"><div style="aspect-ratio:16/9;border-radius:8px;background:var(--bg3);margin-bottom:6px;overflow:hidden;"></div><div style="font-size:12px;font-weight:600;">${p.title||'Untitled'}</div></div>`).join('')+'</div>':'<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content</p></div>';
+      el.innerHTML=posts2.length?'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+posts2.map(p=>`<div onclick="openPost('${p.id}')" style="cursor:pointer;"><div style="aspect-ratio:16/9;border-radius:8px;background:var(--bg3);margin-bottom:5px;overflow:hidden;"></div><div style="font-size:11px;font-weight:600;">${p.title||'Untitled'}</div></div>`).join('')+'</div>':'<div class="empty-state"><i class="fas fa-video-slash"></i><p>No content</p></div>';
     }catch(e3){el.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading</p></div>';}
   }
 }
 
 function loadChannelAbout(){
   const el=document.getElementById('cpContent');
+  const sortBar = document.getElementById('cpSortBar');
+  if(sortBar) sortBar.style.display = 'none';
   const about=document.getElementById('cpAbout')?.textContent||'';
-  el.innerHTML=`<div style="padding:16px 0;">
-    <div style="font-size:14px;line-height:1.7;color:var(--text2);">${about||'No description'}</div>
-    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
-      <div style="font-size:12px;color:var(--text3);">Joined Stream x</div>
-      <div style="font-size:13px;font-weight:600;">Pakistan 🇵🇰</div>
+  const subs=document.getElementById('cpSubsNum')?.textContent||'0';
+  const vids=document.getElementById('cpVidsNum')?.textContent||'0';
+  const views=document.getElementById('cpViewsNum')?.textContent||'0';
+  el.innerHTML=`<div style="padding:4px 0 20px;">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;"><i class="fas fa-info-circle" style="color:var(--red);margin-right:6px;"></i>About</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;">${about||'No description added yet.'}</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;"><i class="fas fa-chart-bar" style="color:var(--red);margin-right:6px;"></i>Stats</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
+        <div style="background:var(--bg3);border-radius:10px;padding:10px;"><div style="font-size:18px;font-weight:800;">${subs}</div><div style="font-size:10px;color:var(--text2);">Subscribers</div></div>
+        <div style="background:var(--bg3);border-radius:10px;padding:10px;"><div style="font-size:18px;font-weight:800;">${vids}</div><div style="font-size:10px;color:var(--text2);">Videos</div></div>
+        <div style="background:var(--bg3);border-radius:10px;padding:10px;"><div style="font-size:18px;font-weight:800;">${views}</div><div style="font-size:10px;color:var(--text2);">Views</div></div>
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;"><i class="fas fa-map-marker-alt" style="color:var(--red);margin-right:6px;"></i>Details</div>
+      <div style="font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px;margin-bottom:8px;"><i class="fas fa-flag" style="color:#00c864;width:16px;"></i>Pakistan 🇵🇰</div>
+      <div style="font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px;"><i class="fas fa-calendar-alt" style="color:var(--red);width:16px;"></i>Stream x Creator</div>
     </div>
   </div>`;
 }
@@ -7520,6 +8139,232 @@ function loadProfileAbout(container){
     </div>`;
 }
 
+// ══════════════════════════════════════════════════════
+// COMMENT LIKES
+// ══════════════════════════════════════════════════════
+async function likeComment(postId, commentId, btn){
+  if(!cUser) return showToast('Login karein!');
+  try{
+    const ref = db.collection('posts').doc(postId).collection('comments').doc(commentId);
+    const doc = await ref.get(); if(!doc.exists) return;
+    const c = doc.data();
+    const liked = (c.likedBy||[]).includes(cUser.uid);
+    const countEl = document.getElementById('clcount_'+commentId);
+    if(liked){
+      await ref.update({likes:firebase.firestore.FieldValue.increment(-1), likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
+      btn.classList.remove('liked');
+      if(countEl) countEl.textContent = Math.max(0,(c.likes||1)-1);
+    } else {
+      await ref.update({likes:firebase.firestore.FieldValue.increment(1), likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid)});
+      btn.classList.add('liked');
+      if(countEl) countEl.textContent = (c.likes||0)+1;
+      // Notify comment author
+      if(c.authorId && c.authorId !== cUser.uid){
+        sendNotif(c.authorId,'like',`${cUserData?.name||'Someone'} liked your comment: "${(c.text||'').substring(0,40)}"`, postId, 'video');
+      }
+    }
+  }catch(e){ showToast('Error'); }
+}
+
+async function likeCommentDislike(postId, commentId, btn){
+  showToast('Disliked');
+}
+
+// ══════════════════════════════════════════════════════
+// REPLIES — LOAD & TOGGLE
+// ══════════════════════════════════════════════════════
+async function toggleReplies(postId, commentId, btn){
+  const repliesDiv = document.getElementById('replies_'+commentId);
+  if(!repliesDiv) return;
+  if(repliesDiv.style.display !== 'none'){
+    repliesDiv.style.display = 'none';
+    btn.innerHTML = `<i class="fas fa-chevron-down" style="font-size:9px;"></i> Show replies`;
+    return;
+  }
+  repliesDiv.style.display = 'block';
+  btn.innerHTML = `<i class="fas fa-chevron-up" style="font-size:9px;"></i> Hide replies`;
+  loadReplies(postId, commentId, repliesDiv);
+}
+
+async function loadReplies(postId, commentId, container){
+  container.innerHTML = '<div style="padding:8px 0;"><div class="spinner" style="width:18px;height:18px;border-width:2px;margin:0;"></div></div>';
+  try{
+    const snap = await db.collection('posts').doc(postId).collection('comments').doc(commentId).collection('replies').orderBy('time','asc').limit(50).get();
+    if(snap.empty){ container.innerHTML=''; return; }
+    container.innerHTML = snap.docs.map(d=>{
+      const r = d.data(); const rid = d.id;
+      const av = r.authorPhoto ? `<img src="${r.authorPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : (r.authorName||'U')[0].toUpperCase();
+      const liked = cUser && (r.likedBy||[]).includes(cUser.uid);
+      return `<div style="display:flex;gap:8px;margin-bottom:10px;">
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;overflow:hidden;flex-shrink:0;">${av}</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-weight:700;">${r.authorName||'User'} <span style="font-size:10px;color:var(--text3);font-weight:400;">${getTimeAgo(r.time)}</span></div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.5;">${r.replyTo?`<span style="color:var(--red);">@${r.replyTo}</span> `:''} ${r.text}</div>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <button class="comm-like-btn ${liked?'liked':''}" onclick="likeReply('${postId}','${commentId}','${rid}',this)" style="font-size:10px;">
+              <i class="fas fa-thumbs-up" style="font-size:10px;"></i> <span id="rlcount_${rid}">${r.likes||0}</span>
+            </button>
+            <button style="background:none;border:none;color:var(--text3);font-size:10px;cursor:pointer;font-weight:600;" onclick="setSfReply('${r.authorName||'user'}','${commentId}')">Reply</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e2){
+    try{
+      const snap2 = await db.collection('posts').doc(postId).collection('comments').doc(commentId).collection('replies').limit(30).get();
+      container.innerHTML = snap2.docs.map(d=>{const r=d.data();return `<div style="display:flex;gap:8px;margin-bottom:8px;"><div style="width:24px;height:24px;border-radius:50%;background:var(--bg3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${(r.authorName||'U')[0]}</div><div><div style="font-size:11px;font-weight:700;">${r.authorName||'User'}</div><div style="font-size:11px;color:var(--text2);">${r.text}</div></div></div>`;}).join('');
+    }catch(e3){ container.innerHTML=''; }
+  }
+}
+
+async function likeReply(postId, commentId, replyId, btn){
+  if(!cUser) return;
+  try{
+    const ref = db.collection('posts').doc(postId).collection('comments').doc(commentId).collection('replies').doc(replyId);
+    const doc = await ref.get(); if(!doc.exists) return;
+    const r = doc.data();
+    const liked = (r.likedBy||[]).includes(cUser.uid);
+    const countEl = document.getElementById('rlcount_'+replyId);
+    if(liked){
+      await ref.update({likes:firebase.firestore.FieldValue.increment(-1), likedBy:firebase.firestore.FieldValue.arrayRemove(cUser.uid)});
+      btn.classList.remove('liked');
+      if(countEl) countEl.textContent = Math.max(0,(r.likes||1)-1);
+    } else {
+      await ref.update({likes:firebase.firestore.FieldValue.increment(1), likedBy:firebase.firestore.FieldValue.arrayUnion(cUser.uid)});
+      btn.classList.add('liked');
+      if(countEl) countEl.textContent = (r.likes||0)+1;
+    }
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════════════
+// END SCREEN — 4 video cards + 10s autoplay
+// ══════════════════════════════════════════════════════
+let _endScreenTimer = null;
+let _endScreenCancelled = false;
+
+async function showEndScreen(){
+  const overlay = document.getElementById('endScreenOverlay');
+  if(!overlay) return;
+  overlay.classList.add('show');
+  _endScreenCancelled = false;
+  const grid = document.getElementById('endScreenGrid');
+  if(!grid) return;
+  grid.innerHTML = '<div style="grid-column:1/-1;display:flex;justify-content:center;padding:20px;"><div class="spinner"></div></div>';
+
+  try{
+    // Algorithm: prefer same category/type as current video, high rankScore
+    const p = currentPostData || {};
+    let snap;
+    try{ snap = await db.collection('posts').orderBy('rankScore','desc').limit(30).get(); }
+    catch(e){ snap = await db.collection('posts').orderBy('time','desc').limit(30).get(); }
+
+    let all = snap.docs.map(d=>({id:d.id,...d.data()}))
+      .filter(v => v.id !== currentPostId && v.url && v.type !== 'post');
+
+    // Score by relevance
+    all = all.map(v=>{
+      let score = v.rankScore||0;
+      if(v.category && v.category === p.category) score += 50;
+      if(v.type === p.type) score += 20;
+      if(v.authorId === p.authorId) score += 30;
+      return {...v, _score: score};
+    }).sort((a,b)=>b._score - a._score).slice(0,4);
+
+    renderEndScreenCards(all, grid);
+    startEndScreenCountdown(all[0]);
+  }catch(e){
+    grid.innerHTML = '<div style="grid-column:1/-1;color:rgba(255,255,255,.5);text-align:center;font-size:12px;">No suggestions available</div>';
+    startEndScreenCountdown(null);
+  }
+}
+
+function renderEndScreenCards(posts, grid){
+  grid.innerHTML = posts.map(p => {
+    const th = p.thumbURL || '';
+    const title = (p.title||'Video').replace(/</g,'&lt;').substring(0,40);
+    return `<div class="end-vid-card" onclick="cancelEndScreen();openPost('${p.id}')">
+      ${th ? `<img class="end-vid-thumb" src="${th}" loading="lazy">` : `<div class="end-vid-thumb" style="display:flex;align-items:center;justify-content:center;"><i class="fas fa-play-circle" style="font-size:28px;color:var(--text3);"></i></div>`}
+      <div class="end-vid-title">${title}</div>
+    </div>`;
+  }).join('');
+}
+
+function startEndScreenCountdown(nextPost){
+  let secs = 10;
+  const numEl = document.getElementById('endCountdownNum');
+  const circleEl = document.getElementById('endCountdownCircle');
+  const circumference = 113; // 2*pi*18
+  if(_endScreenTimer) clearInterval(_endScreenTimer);
+  if(numEl) numEl.textContent = secs;
+  _endScreenTimer = setInterval(()=>{
+    if(_endScreenCancelled){ clearInterval(_endScreenTimer); return; }
+    secs--;
+    if(numEl) numEl.textContent = secs;
+    if(circleEl){ const offset = circumference - (circumference * (10-secs) / 10); circleEl.style.strokeDashoffset = offset; }
+    if(secs <= 0){
+      clearInterval(_endScreenTimer);
+      if(!_endScreenCancelled && nextPost){
+        cancelEndScreen();
+        openPost(nextPost.id);
+      }
+    }
+  }, 1000);
+}
+
+function cancelEndScreen(){
+  _endScreenCancelled = true;
+  if(_endScreenTimer) clearInterval(_endScreenTimer);
+  const overlay = document.getElementById('endScreenOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
+function replayVideo(){
+  cancelEndScreen();
+  const vid = document.getElementById('playerVid');
+  if(vid){ vid.currentTime = 0; vid.play().catch(()=>{}); }
+}
+
+// ══════════════════════════════════════════════════════
+// SHORTS REPLY SYSTEM
+// ══════════════════════════════════════════════════════
+let _sfReplyTo = null; // {name, commentId}
+
+function setSfReply(name, commentId){
+  _sfReplyTo = {name, commentId};
+  const bar = document.getElementById('sfReplyIndicator');
+  const nameEl = document.getElementById('sfReplyName');
+  if(bar) bar.style.display = 'flex';
+  if(nameEl) nameEl.textContent = 'Replying to @'+name;
+  const inp = document.getElementById('sfCommInput');
+  if(inp){ inp.focus(); inp.placeholder = 'Reply to @'+name+'...'; }
+}
+
+function clearSfReply(){
+  _sfReplyTo = null;
+  const bar = document.getElementById('sfReplyIndicator');
+  if(bar) bar.style.display = 'none';
+  const inp = document.getElementById('sfCommInput');
+  if(inp){ inp.value=''; inp.placeholder='Add a comment...'; }
+}
+
+// ══════════════════════════════════════════════════════
+// CHANNEL PAGE — Sort function
+// ══════════════════════════════════════════════════════
+let _cpCurrentSort = 'latest';
+
+function sortChannelContent(sortBy, btn){
+  _cpCurrentSort = sortBy;
+  document.querySelectorAll('#cpSortBar .chip').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(cpCurrentAuthorId) loadChannelVideos(cpCurrentAuthorId, _cpCurrentTab||'videos');
+}
+
+function shareChannelPage(){
+  const name = document.getElementById('cpName')?.textContent || 'Channel';
+  navigator.clipboard.writeText(window.location.href+'?channel='+cpCurrentAuthorId).then(()=>showToast('Channel link copied! 📋')).catch(()=>showToast('Shared!'));
+}
+
 function safe(fn){
   try{fn();}catch(e){console.warn('Safe call error:',e.message);}
 }
@@ -7584,3 +8429,4 @@ function safe(fn){
 </script>
 </body>
 </html>
+
