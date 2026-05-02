@@ -3804,15 +3804,19 @@ async function sfPostComment(){
   if(!cUser||!sfCurrentId)return;
   const input=document.getElementById('sfCommInput');
   if(!input)return;
-  const text=(input.value||'').trim();
+  let text=(input.value||'').trim();
   if(!text){input.focus();return;}
   input.value='';
   input.blur();
   const replyData = _sfReplyTo;
   clearSfReply();
+  // If text starts with @name (auto-filled), keep it as-is for display
+  // but store clean message separately
+  const cleanText = text;
   try{
     const commentData={
-      text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
+      text:cleanText,
+      authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
       authorPhoto:cUserData?.photoURL||'',time:Date.now(),
       likes:0,likedBy:[],
       replyTo:replyData?replyData.name:null,
@@ -3821,18 +3825,16 @@ async function sfPostComment(){
     if(replyData && replyData.commentId){
       await db.collection('posts').doc(sfCurrentId).collection('comments').doc(replyData.commentId).collection('replies').add(commentData);
       await db.collection('posts').doc(sfCurrentId).collection('comments').doc(replyData.commentId).update({replyCount:firebase.firestore.FieldValue.increment(1)});
-      // Notify parent comment author
       const parentSnap=await db.collection('posts').doc(sfCurrentId).collection('comments').doc(replyData.commentId).get();
       if(parentSnap.exists){
         const parentAuthorId=parentSnap.data().authorId;
-        if(parentAuthorId&&parentAuthorId!==cUser.uid) sendNotif(parentAuthorId,'reply',`${cUserData?.name||'Someone'} replied: "${text.substring(0,40)}"`,sfCurrentId,'short');
+        if(parentAuthorId&&parentAuthorId!==cUser.uid) sendNotif(parentAuthorId,'reply',`${cUserData?.name||'Someone'} replied: "${cleanText.substring(0,40)}"`,sfCurrentId,'short');
       }
     } else {
       await db.collection('posts').doc(sfCurrentId).collection('comments').add(commentData);
       await db.collection('posts').doc(sfCurrentId).update({comments:firebase.firestore.FieldValue.increment(1)});
-      // Notify short author
       const sfPost=sfPosts[sfCurrentIdx];
-      if(sfPost) sendNotif(sfPost.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,sfCurrentId,'short');
+      if(sfPost) sendNotif(sfPost.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${cleanText.substring(0,40)}"`,sfCurrentId,'short');
     }
     sfLoadComments(sfCurrentId);
     showToast('Comment posted ✅');
@@ -4302,7 +4304,7 @@ async function createShortFromTrim(){
   showToast('Creating short... ✂️');
   try{
     await db.collection('posts').add({
-      title,
+        title,
       url:currentPostData.url,
       thumbURL:currentPostData.thumbURL||'',
       type:'short',
@@ -8503,12 +8505,17 @@ function setSfReply(name, commentId){
   if(nameEl) nameEl.textContent = 'Replying to @'+name;
   const inp = document.getElementById('sfCommInput');
   if(inp){
+    // @username input mein daalo cursor end pe
+    inp.value = '@'+name+' ';
     inp.placeholder = 'Reply to @'+name+'...';
-    // Scroll comment list to bottom so input visible
     const list = document.getElementById('sfCommList');
-    if(list) list.scrollTop = list.scrollHeight;
-    // Small delay for mobile keyboard
-    setTimeout(()=>{ inp.focus(); }, 200);
+    if(list) setTimeout(()=>{ list.scrollTop = list.scrollHeight; }, 50);
+    setTimeout(()=>{
+      inp.focus();
+      // Cursor end pe le jao
+      const len = inp.value.length;
+      inp.setSelectionRange(len, len);
+    }, 150);
   }
 }
 
@@ -8601,5 +8608,3 @@ function safe(fn){
 </script>
 </body>
 </html>
-
-
