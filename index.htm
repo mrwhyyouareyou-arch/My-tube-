@@ -2668,8 +2668,9 @@ function hideSplash(){
 // ══════════════════════════════════════════════════════
 
 auth.onAuthStateChanged(async user=>{
+  // Safety: splash hamesha max 4 seconds mein band ho jaaye
+  setTimeout(()=>hideSplash(), 4000);
   if(user){
-    cUser=user;
     hideSplash();
     document.getElementById('authScreen').style.display='none';
     // ══ GATEWAY POLICY CHECK ══
@@ -2706,7 +2707,7 @@ auth.onAuthStateChanged(async user=>{
             localStorage.setItem('policyAccepted_'+uid,'1');
             document.getElementById('gatewayPolicy').remove();
             document.getElementById('mainApp').style.display='block';
-            try{loadUserData().then(()=>{try{ensureChannelExists();}catch(e){}try{updateHeaderAv();}catch(e){}try{setupOwnerNav();}catch(e){}try{loadUserPrefs();}catch(e){}try{listenNotifs();}catch(e){}}).catch(()=>{});showScreen('home');}catch(e){showScreen('home');}
+            try{loadUserData().then(()=>{try{ensureChannelExists();}catch(e){}try{updateHeaderAv();}catch(e){}try{setupOwnerNav();}catch(e){}try{loadUserPrefs();}catch(e){}try{listenNotifs();}catch(e){}}).catch(()=>{});loadHome();showScreen('home');}catch(e){loadHome();showScreen('home');}
           " style="width:100%;padding:14px;background:var(--red);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">
             ✅ Agree & Continue
           </button>
@@ -4258,7 +4259,7 @@ function showVideoMenu(id,title,authorId,url,e){
   }
 function ctxSave(){closeCtxMenu();showToast('Saved to Watch Later ✅');}
 function ctxShare(){closeCtxMenu();if(ctxPostUrl){navigator.clipboard.writeText(ctxPostUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Share link copied!'));}}
-function ctxDownload(){
+  function ctxDownload(){
   closeCtxMenu();
   if(!ctxPostUrl)return showToast('No downloadable content');
   const a=document.createElement('a');a.href=ctxPostUrl;a.download='video';a.target='_blank';
