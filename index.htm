@@ -23,11 +23,20 @@
 <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<!-- SEO -->
-<meta name="description" content="Stream x — Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.">
-<meta property="og:title" content="Stream x — Pakistan ka apna platform">
-<meta property="og:description" content="Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!">
-<meta property="og:type" content="website">
+<!-- SEO + OG Meta Tags (Dynamic) -->
+<meta name="description" content="Stream X — Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.">
+<meta property="og:site_name" content="Stream X">
+<meta property="og:title" id="ogTitle" content="Stream X — Pakistan ka apna platform 🇵🇰">
+<meta property="og:description" id="ogDesc" content="Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!">
+<meta property="og:type" id="ogType" content="website">
+<meta property="og:url" id="ogUrl" content="https://streamx.pk/">
+<meta property="og:image" id="ogImage" content="https://streamx.pk/icon-512.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" id="twTitle" content="Stream X — Pakistan ka apna platform 🇵🇰">
+<meta name="twitter:description" id="twDesc" content="Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!">
+<meta name="twitter:image" id="twImage" content="https://streamx.pk/icon-512.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -1995,8 +2004,8 @@ button,input,textarea{font-family:var(--font);}
     <button onclick="clearSfReply()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;margin-left:auto;line-height:1;">×</button>
   </div>
   <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;">
-    <input id="sfCommInput" placeholder="Add a comment..." style="flex:1;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text);font-size:14px;outline:none;">
-    <button onclick="sfPostComment()" style="background:var(--red);border:none;color:white;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-paper-plane"></i></button>
+    <input id="sfCommInput" type="text" placeholder="Add a comment..." autocomplete="off" style="flex:1;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text);font-size:14px;outline:none;" onkeypress="if(event.key==='Enter'||event.keyCode===13){sfPostComment();event.preventDefault();}">
+    <button onclick="sfPostComment()" style="background:var(--red);border:none;color:white;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-paper-plane"></i></button>
   </div>
 </div>
 
@@ -3794,14 +3803,20 @@ function sfReply(mention){
 async function sfPostComment(){
   if(!cUser||!sfCurrentId)return;
   const input=document.getElementById('sfCommInput');
-  const text=input.value.trim();
-  if(!text)return;
+  if(!input)return;
+  let text=(input.value||'').trim();
+  if(!text){input.focus();return;}
   input.value='';
+  input.blur();
   const replyData = _sfReplyTo;
   clearSfReply();
+  // If text starts with @name (auto-filled), keep it as-is for display
+  // but store clean message separately
+  const cleanText = text;
   try{
     const commentData={
-      text,authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
+      text:cleanText,
+      authorId:cUser.uid,authorName:cUserData?.name||cUser.email,
       authorPhoto:cUserData?.photoURL||'',time:Date.now(),
       likes:0,likedBy:[],
       replyTo:replyData?replyData.name:null,
@@ -3810,18 +3825,16 @@ async function sfPostComment(){
     if(replyData && replyData.commentId){
       await db.collection('posts').doc(sfCurrentId).collection('comments').doc(replyData.commentId).collection('replies').add(commentData);
       await db.collection('posts').doc(sfCurrentId).collection('comments').doc(replyData.commentId).update({replyCount:firebase.firestore.FieldValue.increment(1)});
-      // Notify parent comment author
       const parentSnap=await db.collection('posts').doc(sfCurrentId).collection('comments').doc(replyData.commentId).get();
       if(parentSnap.exists){
         const parentAuthorId=parentSnap.data().authorId;
-        if(parentAuthorId&&parentAuthorId!==cUser.uid) sendNotif(parentAuthorId,'reply',`${cUserData?.name||'Someone'} replied: "${text.substring(0,40)}"`,sfCurrentId,'short');
+        if(parentAuthorId&&parentAuthorId!==cUser.uid) sendNotif(parentAuthorId,'reply',`${cUserData?.name||'Someone'} replied: "${cleanText.substring(0,40)}"`,sfCurrentId,'short');
       }
     } else {
       await db.collection('posts').doc(sfCurrentId).collection('comments').add(commentData);
       await db.collection('posts').doc(sfCurrentId).update({comments:firebase.firestore.FieldValue.increment(1)});
-      // Notify short author
       const sfPost=sfPosts[sfCurrentIdx];
-      if(sfPost) sendNotif(sfPost.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${text.substring(0,40)}"`,sfCurrentId,'short');
+      if(sfPost) sendNotif(sfPost.authorId,'comment',`${cUserData?.name||'Someone'} commented: "${cleanText.substring(0,40)}"`,sfCurrentId,'short');
     }
     sfLoadComments(sfCurrentId);
     showToast('Comment posted ✅');
@@ -4156,6 +4169,8 @@ async function openPost(id){
     const p=doc.data();currentPostData={id,...p};
     updateUserPrefs(p);
     addToHistory(p);
+    // Update OG/SEO meta tags for sharing
+    updateOgTags(id, p);
     const vid=document.getElementById('playerVid');
     const wrap=document.getElementById('playerVidWrap');
     wrap.style.backgroundImage='';wrap.style.display='block';vid.style.display='block';
@@ -4289,7 +4304,7 @@ async function createShortFromTrim(){
   showToast('Creating short... ✂️');
   try{
     await db.collection('posts').add({
-      title,
+        title,
       url:currentPostData.url,
       thumbURL:currentPostData.thumbURL||'',
       type:'short',
@@ -4297,6 +4312,7 @@ async function createShortFromTrim(){
       authorId:cUser.uid,
       authorName:cUserData?.name||cUser.email,
       authorPhoto:cUserData?.photoURL||'',
+  
       likes:0,likedBy:[],views:0,comments:0,reactions:{},
       rankScore:20,
       trimStart:start,trimDur:dur,
@@ -4457,34 +4473,37 @@ async function toggleSubscribe(){
 
 function shareVideo(){
   if(!currentPostData)return;
-  const url=currentPostData.url||location.href;
-  const title=currentPostData.title||'Watch on Stream x';
-  const text=`${title} - Stream x Pakistan 🇵🇰`;
-  if(navigator.share){
-    navigator.share({title,text,url}).catch(()=>showShareSheet(url,title));
-  }else{
-    showShareSheet(url,title);
-  }
+  const postId = currentPostData.id || currentPostId;
+  const title = currentPostData.title||'Watch on Stream X';
+  const shareUrl = getShareUrl(postId);
+  const text = `${title} - Stream X Pakistan 🇵🇰`;
+  showShareSheet(shareUrl, title, text);
 }
 
-function showShareSheet(url,title){
-  // Remove existing
-  const ex=document.getElementById('shareSheet');
-  if(ex)ex.remove();
-  const ex2=document.getElementById('shareSheetOv');
-  if(ex2)ex2.remove();
-  
+function showShareSheet(url, title, text){
+  text = text || `${title} - Stream X Pakistan 🇵🇰`;
+  // Try native share first
+  if(navigator.share){
+    navigator.share({title: title||'Stream X', text, url})
+      .catch(()=>_showShareSheetUI(url, title, text));
+    return;
+  }
+  _showShareSheetUI(url, title, text);
+}
+
+function _showShareSheetUI(url, title, text){
+  const ex=document.getElementById('shareSheet');if(ex)ex.remove();
+  const ex2=document.getElementById('shareSheetOv');if(ex2)ex2.remove();
   const ov=document.createElement('div');
   ov.id='shareSheetOv';
   ov.style.cssText='position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);';
-  ov.onclick=()=>{ov.remove();sheet.remove();};
   document.body.appendChild(ov);
-  
   const sheet=document.createElement('div');
   sheet.id='shareSheet';
   sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:501;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 28px;';
+  ov.onclick=()=>{ov.remove();sheet.remove();};
   const enc=encodeURIComponent(url);
-  const etxt=encodeURIComponent(text||title);
+  const etxt=encodeURIComponent(text);
   sheet.innerHTML=`
     <div style="font-size:16px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
       <span>Share</span>
@@ -4503,15 +4522,30 @@ function showShareSheet(url,title){
         <div style="width:52px;height:52px;border-radius:14px;background:rgba(29,161,242,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fab fa-twitter" style="font-size:26px;color:#1da1f2;"></i></div>
         <div style="font-size:11px;color:var(--text2);">Twitter</div>
       </a>
-      <div onclick="navigator.clipboard.writeText('${url}').then(()=>{showToast('Link copied! 📋');document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();}).catch(()=>showToast('Copied!'));" style="text-align:center;cursor:pointer;">
-        <div style="width:52px;height:52px;border-radius:14px;background:var(--bg3);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fas fa-link" style="font-size:22px;color:var(--text2);"></i></div>
+      <div onclick="navigator.clipboard.writeText('${url}').then(()=>showToast('Link copied! 📋'));document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();" style="text-decoration:none;text-align:center;cursor:pointer;">
+        <div style="width:52px;height:52px;border-radius:14px;background:var(--bg3);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fas fa-copy" style="font-size:24px;color:var(--text);"></i></div>
         <div style="font-size:11px;color:var(--text2);">Copy Link</div>
       </div>
     </div>
-    <div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);word-break:break-all;">${url}</div>
-  `;
+    <div style="background:var(--bg3);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+      <div style="font-size:11px;color:var(--text3);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${url}</div>
+      <button onclick="navigator.clipboard.writeText('${url}').then(()=>showToast('Copied! 📋'));document.getElementById('shareSheet')?.remove();document.getElementById('shareSheetOv')?.remove();" style="background:var(--red);border:none;color:white;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;">Copy</button>
+    </div>`;
   document.body.appendChild(sheet);
 }
+  sheet.innerHTML=`
+    <div style="font-size:16px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+      <span>Share</span>
+      <i class="fas fa-times" style="cursor:pointer;color:var(--text2);font-size:18px;" onclick="document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();"></i>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
+      <a href="https://wa.me/?text=${etxt}%20${enc}" target="_blank" rel="noopener" onclick="document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();" style="text-decoration:none;text-align:center;">
+        <div style="width:52px;height:52px;border-radius:14px;background:rgba(37,211,102,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fab fa-whatsapp" style="font-size:26px;color:#25d366;"></i></div>
+        <div style="font-size:11px;color:var(--text2);">WhatsApp</div>
+      </a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${enc}" target="_blank" rel="noopener" onclick="document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();" style="text-decoration:none;text-align:center;">
+        <div style="width:52px;height:52px;border-radius:14px;background:rgba(24,119,242,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fab fa-facebook" style="font-size:26px;color:#1877f2;"></i></div>
+        <div style="font-size:11px;color:var(--text2);">Facebook</div>
 function saveVideo(){showToast('Saved to Watch Later ✅');}
 
 function showDescSheet(){
@@ -5162,6 +5196,66 @@ function setNotifBadge(count){
   dot.style.display='flex';
   dot.textContent=count>99?'99+':count+'';
 }
+
+// ══════════════════════════════════════════════════════
+// OG META TAGS — Dynamic update for social sharing
+// ══════════════════════════════════════════════════════
+function updateOgTags(postId, p){
+  try{
+    const title = (p.title||'Stream X Video') + ' — Stream X 🇵🇰';
+    const desc = p.description || `${p.authorName||''} ne share kiya Stream X pe. Pakistan ka apna platform!`;
+    // Thumbnail: Cloudinary video → replace extension with .jpg for thumb
+    let img = p.thumbURL || '';
+    if(!img && p.url){
+      img = p.url.replace('/upload/', '/upload/so_0,w_600/').replace(/\.(mp4|mov|webm|avi)$/i, '.jpg');
+    }
+    if(!img) img = 'https://streamx.pk/icon-512.png';
+    const url = `${location.origin}${location.pathname}?post=${postId}`;
+
+    // Update document title
+    document.title = title;
+    // Update meta tags
+    const set = (id, attr, val) => { const el=document.getElementById(id); if(el) el.setAttribute(attr, val); };
+    set('ogTitle','content', title);
+    set('ogDesc','content', desc);
+    set('ogImage','content', img);
+    set('ogUrl','content', url);
+    set('ogType','content', p.type==='short'?'video.other':'video.movie');
+    set('twTitle','content', title);
+    set('twDesc','content', desc);
+    set('twImage','content', img);
+    // Update browser URL without reload
+    try{ history.replaceState(null,'', url); }catch(e){}
+  }catch(e){}
+}
+
+function resetOgTags(){
+  document.title = 'Stream X — Pakistan ka apna platform 🇵🇰';
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.setAttribute('content', val); };
+  set('ogTitle','Stream X — Pakistan ka apna platform 🇵🇰');
+  set('ogDesc','Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!');
+  set('ogImage','https://streamx.pk/icon-512.png');
+  set('ogUrl', location.origin+location.pathname);
+  set('twTitle','Stream X — Pakistan ka apna platform 🇵🇰');
+  set('twDesc','Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!');
+  set('twImage','https://streamx.pk/icon-512.png');
+  try{ history.replaceState(null,'', location.origin+location.pathname); }catch(e){}
+}
+
+// On page load — check URL params for deep link
+(function handleUrlParams(){
+  try{
+    const params = new URLSearchParams(location.search);
+    const postId = params.get('post');
+    if(postId){
+      // Wait for auth then open post
+      const unsub = auth.onAuthStateChanged(()=>{
+        unsub();
+        setTimeout(()=>openPost(postId), 800);
+      });
+    }
+  }catch(e){}
+})();
 
 function listenNotifs(){
   if(!cUser)return;
@@ -7647,16 +7741,17 @@ function showInviteSheet(){
 // ══════════════════════════════════════════════════════
 // POST SHARE FIX — share post text/link properly
 // ══════════════════════════════════════════════════════
+// ══ Worker URL — OG tags ke liye ══
+const WORKER_URL = 'https://dark-firefly-0j48.mrwhyyouareyou.workers.dev';
+
+function getShareUrl(postId){
+  return `${WORKER_URL}/?post=${postId}`;
+}
+
 function sharePostProperly(postId,title,url){
-  const shareUrl=url||`${location.origin}${location.pathname}?post=${postId}`;
-  const text=`${title||'Check this out'} - Stream x Pakistan 🇵🇰`;
-  if(navigator.share){
-    navigator.share({title:title||'Stream x',text,url:shareUrl}).catch(()=>{
-      navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));
-    });
-  }else{
-    navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Could not copy'));
-  }
+  const shareUrl = getShareUrl(postId);
+  const text=`${title||'Check this out'} - Stream X Pakistan 🇵🇰`;
+  showShareSheet(shareUrl, title||'Stream X', text);
 }
 
 // ══════════════════════════════════════════════════════
@@ -8429,7 +8524,19 @@ function setSfReply(name, commentId){
   if(bar) bar.style.display = 'flex';
   if(nameEl) nameEl.textContent = 'Replying to @'+name;
   const inp = document.getElementById('sfCommInput');
-  if(inp){ inp.focus(); inp.placeholder = 'Reply to @'+name+'...'; }
+  if(inp){
+    // @username input mein daalo cursor end pe
+    inp.value = '@'+name+' ';
+    inp.placeholder = 'Reply to @'+name+'...';
+    const list = document.getElementById('sfCommList');
+    if(list) setTimeout(()=>{ list.scrollTop = list.scrollHeight; }, 50);
+    setTimeout(()=>{
+      inp.focus();
+      // Cursor end pe le jao
+      const len = inp.value.length;
+      inp.setSelectionRange(len, len);
+    }, 150);
+  }
 }
 
 function clearSfReply(){
@@ -8521,4 +8628,3 @@ function safe(fn){
 </script>
 </body>
 </html>
-
