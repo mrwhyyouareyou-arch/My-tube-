@@ -1,0 +1,115 @@
+</div>
+
+<div class="content">
+  <div class="contact-grid">
+    <a href="mailto:lunastarxyzxyza@gmail.com" class="contact-card">
+      <div class="contact-icon">📧</div>
+      <h3>General Support</h3>
+      <p>lunastarxyzxyza@gmail.com</p>
+    </a>
+    <a href="mailto:lunastarxyzxyza@gmail.com" class="contact-card">
+      <div class="contact-icon">🛟</div>
+      <h3>Technical Help</h3>
+      <p>lunastarxyzxyza@gmail.com</p>
+    </a>
+    <a href="mailto:lunastarxyzxyza@gmail.com" class="contact-card">
+      <div class="contact-icon">🎥</div>
+      <h3>Creator Support</h3>
+      <p>lunastarxyzxyza@gmail.com</p>
+    </a>
+    <a href="mailto:lunastarxyzxyza@gmail.com" class="contact-card">
+      <div class="contact-icon">💼</div>
+      <h3>Business & Legal</h3>
+      <p>lunastarxyzxyza@gmail.com</p>
+    </a>
+  </div>
+
+  <div class="form-card">
+    <h2>Send us a message</h2>
+    <form action="https://formsubmit.co/lunastarxyzxyza@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="New StreamX Contact Form Submission">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://streamx.pk/contact.html?success=true">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" name="name" required placeholder="Ahmed Khan">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" name="email" required placeholder="you@example.com">
+        </div>
+      <div class="form-group">
+        <label>Topic</label>
+        <select name="topic" required>
+          <option value="">Select a topic...</option>
+          <option>General Question</option>
+          <option>Creator Support</option>
+          <option>Bug Report</option>
+          <option>Business / Advertising</option>
+          <option>Content Removal Request</option>
+          <option>Privacy Request</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea name="message" required placeholder="Tell us what's on your mind..."></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Send Message →</button>
+    </form>
+    <div class="info-box">
+      <p>⏱️ <strong>Response Time:</strong> We typically respond within 24-48 hours on business days.</p>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">How do I become a creator on StreamX? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Anyone can become a creator on StreamX! Simply sign up with your phone number, complete your profile, and start uploading. Creator monetization features unlock once you meet our community milestones.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">How does StreamX's Trust Score work? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Trust Score is StreamX's community health system. It tracks account behaviour, content quality, and community engagement. Higher Trust Scores unlock more platform features and visibility.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Can I use StreamX offline? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Yes! StreamX is a Progressive Web App (PWA) with offline support. Save videos while connected and watch them later without internet. The app also works smoothly on slow connections.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">How do I report content or a user? <span class="faq-icon">+</span></div>
+      <div class="faq-a">You can report any video or user directly from the platform using the "..." menu. Our moderation team reviews all reports and takes action within 24-48 hours.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Is StreamX available on Android? <span class="faq-icon">+</span></div>
+      <div class="faq-a">StreamX is available as a PWA that works on all Android browsers. A dedicated Android app (TWA) is coming to the Google Play Store soon!</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="index.html">About Us</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  <p>© 2026 StreamX. All rights reserved. Made with ❤️ in Pakistan.</p>
+</footer>
+
+<script>
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    item.classList.toggle('open');
+  }
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('success') === 'true') {
+    alert('✅ Message received! We\'ll get back to you within 2-3 business days.');
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+</script>
+</body>
+</html>
