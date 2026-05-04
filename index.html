@@ -23,34 +23,70 @@
 <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<!-- SEO + OG Meta Tags (Dynamic) -->
-<meta name="description" content="Stream X — Pakistan ka apna video sharing platform. Upload, watch and share videos and shorts.">
-<meta property="og:site_name" content="Stream X">
-<meta property="og:title" id="ogTitle" content="Stream X — Pakistan ka apna platform 🇵🇰">
-<meta property="og:description" id="ogDesc" content="Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!">
-<meta property="og:type" id="ogType" content="website">
-<meta property="og:url" id="ogUrl" content="https://streamx.pk/">
-<meta property="og:image" id="ogImage" content="https://streamx.pk/icon-512.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" id="twTitle" content="Stream X — Pakistan ka apna platform 🇵🇰">
-<meta name="twitter:description" id="twDesc" content="Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!">
-<meta name="twitter:image" id="twImage" content="https://streamx.pk/icon-512.png">
-<!-- Additional SEO Meta Tags -->
-<meta name="robots" content="index, follow">
+<!-- ═══ SEO + OG Meta Tags — Stream X Pakistan ═══ -->
+<meta name="description" content="Stream X — Pakistan ka #1 video sharing platform. Videos upload karo, Shorts dekhein, Live streaming, aur apne creators ko support karo. 100% Pakistani platform!">
+<meta name="keywords" content="Stream X, StreamX, Pakistan video platform, Pakistani YouTube, video sharing Pakistan, shorts Pakistan, live streaming Pakistan, Pakistani creators, upload videos Pakistan, stream x pk">
 <meta name="author" content="Stream X Pakistan">
-<meta name="keywords" content="Stream X, Pakistan video platform, Pakistani videos, shorts, upload videos, Pakistan YouTube alternative, video sharing Pakistan">
-<meta name="language" content="Urdu, English">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="language" content="en-PK">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
-<meta property="og:locale" content="ur_PK">
-<meta property="og:locale:alternate" content="en_US">
-<meta name="application-name" content="Stream X">
-<meta name="msapplication-TileColor" content="#FF0000">
-<meta name="msapplication-TileImage" content="icon-192.png">
-<meta name="format-detection" content="telephone=no">
+<meta name="rating" content="general">
+<meta name="revisit-after" content="3 days">
 <link rel="canonical" href="https://streamx.pk/">
+<!-- Open Graph — Facebook, WhatsApp, LinkedIn -->
+<meta property="og:site_name" content="Stream X">
+<meta property="og:locale" content="en_PK">
+<meta property="og:title" id="ogTitle" content="Stream X — Pakistan ka Apna Video Platform 🇵🇰">
+<meta property="og:description" id="ogDesc" content="Pakistan ka #1 video sharing platform. Videos, Shorts, Live streaming aur bahut kuch — bilkul free! Abhi join karo.">
+<meta property="og:type" id="ogType" content="website">
+<meta property="og:url" id="ogUrl" content="https://streamx.pk/">
+<meta property="og:image" id="ogImage" content="https://streamx.pk/og-banner.png">
+<meta property="og:image:secure_url" id="ogImageSecure" content="https://streamx.pk/og-banner.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Stream X — Pakistan ka apna video platform">
+<meta property="og:image:type" content="image/png">
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@StreamXPK">
+<meta name="twitter:creator" content="@StreamXPK">
+<meta name="twitter:title" id="twTitle" content="Stream X — Pakistan ka Apna Video Platform 🇵🇰">
+<meta name="twitter:description" id="twDesc" content="Pakistan ka #1 video sharing platform. Videos, Shorts, Live streaming aur bahut kuch — bilkul free!">
+<meta name="twitter:image" id="twImage" content="https://streamx.pk/og-banner.png">
+<meta name="twitter:image:alt" content="Stream X Pakistan">
+<!-- WhatsApp specific (uses og: tags, but extra hints) -->
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<!-- Schema.org structured data for Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Stream X",
+  "alternateName": "StreamX Pakistan",
+  "url": "https://streamx.pk/",
+  "description": "Pakistan ka #1 video sharing platform. Videos, Shorts, Live streaming aur bahut kuch.",
+  "inLanguage": ["en-PK", "ur"],
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://streamx.pk/?search={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Stream X Pakistan",
+    "url": "https://streamx.pk/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://streamx.pk/icon-512.png"
+    }
+  }
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -734,6 +770,7 @@ button,input,textarea{font-family:var(--font);}
   <div class="side-item" onclick="doSearch('news');closeSideMenu()"><i class="fas fa-newspaper" style="color:#0096ff;"></i><span>News</span></div>
   <div class="side-item" onclick="doSearch('cricket');closeSideMenu()"><i class="fas fa-circle" style="color:#00c864;"></i><span>Sports</span></div>
   <div class="side-item" onclick="showScreen('live');closeSideMenu()"><i class="fas fa-circle" style="color:#ff0000;font-size:12px;"></i><span>Live</span></div>
+  <div class="side-item" onclick="showScreen('latestVideos');closeSideMenu()"><i class="fas fa-clock" style="color:#00c8ff;"></i><span>Latest Videos</span></div>
   <div class="side-divider"></div>
   <div class="side-item" onclick="showScreen('playlists');closeSideMenu()"><i class="fas fa-list-ul" style="color:#7c4dff;"></i><span>Playlists</span></div>
   <div class="side-divider"></div>
@@ -774,27 +811,10 @@ button,input,textarea{font-family:var(--font);}
   <div class="main">
     <!-- HOME -->
     <div id="homeScreen" class="screen active">
-      <!-- ══ LATEST VIDEO BANNER ══ -->
-      <div id="latestVideoBanner" style="display:none;margin:8px 12px 4px;background:linear-gradient(135deg,rgba(255,0,0,.12),rgba(255,68,68,.06));border:1px solid rgba(255,0,0,.25);border-radius:14px;padding:10px 12px;cursor:pointer;animation:fadeUp .35s ease;" onclick="openPost(window._latestVideoId)">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="position:relative;width:80px;height:50px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;" id="latestVideoBannerThumb"></div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">🆕 Latest Upload</div>
-            <div style="font-size:13px;font-weight:700;color:var(--text);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;" id="latestVideoBannerTitle">Loading...</div>
-            <div style="font-size:11px;color:var(--text2);margin-top:2px;" id="latestVideoBannerMeta"></div>
-          </div>
-          <div style="background:var(--red);color:white;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;flex-shrink:0;display:flex;align-items:center;gap:5px;"><i class="fas fa-play" style="font-size:10px;"></i> Watch</div>
-        </div>
-      </div>
-
-      <!-- ══ CATEGORY CHIPS ══ -->
       <div class="chips-wrap">
         <div class="chips" id="chipsRow">
           <button class="chip active" onclick="filterFeed(this,'all')">All</button>
-          <button class="chip" onclick="filterFeedSort(this,'latest')">🆕 Latest</button>
-          <button class="chip" onclick="filterFeed(this,'trending')">🔥 Trending</button>
-          <button class="chip" onclick="filterFeedSort(this,'viral')">⚡ Viral</button>
-          <button class="chip" onclick="filterFeedSort(this,'old')">📅 Old</button>
+          <button class="chip" onclick="showScreen('latestVideos')" style="background:rgba(255,0,0,.1);border-color:var(--red);color:var(--red);font-weight:700;">🆕 Latest</button>
           <button class="chip" onclick="filterFeed(this,'video')">Videos</button>
           <button class="chip" onclick="filterFeed(this,'post')">Posts</button>
           <button class="chip" onclick="filterFeed(this,'short')">Shorts</button>
@@ -2472,6 +2492,9 @@ const FB = {
 };
 const CLOUD="dyrjyet9o", PRESET="mytube_upload";
 const OWNER_EMAIL="mrwhyyouareyou@gmail.com";
+
+// ══ CLOUDFLARE WORKER — OG Image Generator ══
+const WORKER_URL = 'https://dark-firefly-63d0.mrwhyyouareyou.workers.dev';
 const LIVE_REQS={videos:40,shorts:50,likesOnOneVideo:100,subscribers:100};
 // Live streaming — coming soon (Agora removed)
 let _liveActive=false,_liveDurInt=null,_liveDurSecs=0;
@@ -2532,7 +2555,6 @@ function sortFeedByAlgorithm(posts, userPrefs={}) {
 let cUser=null, cUserData=null;
 let currentPostId=null, currentPostData=null;
 let allPosts=[], uploadType='', selectedFile=null, thumbFile=null, postImgFiles=[];
-let _feedSortMode='default';
 let sfPosts=[], sfCurrentIdx=0, sfCurrentId=null;
 let galleryPosts=[], galleryFilter='all', currentGalleryPost=null;
 let selectedSong=null;
@@ -2710,15 +2732,14 @@ function hideSplash(){
 // ══════════════════════════════════════════════════════
 
 auth.onAuthStateChanged(async user=>{
-  // Safety: splash hamesha max 3 seconds mein band ho jaaye
-  setTimeout(()=>hideSplash(), 3000);
+  // Safety: splash hamesha max 4 seconds mein band ho jaaye
+  setTimeout(()=>hideSplash(), 4000);
   if(user){
     cUser=user;
     document.getElementById('authScreen').style.display='none';
     // ══ GATEWAY POLICY CHECK ══
     const policyKey = `policyAccepted_${user.uid}`;
     if(!localStorage.getItem(policyKey)){
-      hideSplash();
       document.getElementById('mainApp').style.display='none';
       const gate = document.createElement('div');
       gate.id = 'gatewayPolicy';
@@ -2758,8 +2779,6 @@ auth.onAuthStateChanged(async user=>{
       document.body.appendChild(gate);
       return;
     }
-    // ══ Splash hide karo ══
-    hideSplash();
     document.getElementById('mainApp').style.display='block';
     try{
       loadUserData().then(()=>{
@@ -3030,6 +3049,7 @@ const screenMap={
   search:'searchScreen',subs:'subsScreen',owner:'ownerScreen',
   live:'liveScreen',themes:'themesScreen',gallery:'galleryScreen',
   history:'historyScreen',
+  latestVideos:'latestVideosScreen',
   privacy:'privacyScreen',
   terms:'termsScreen',
   contentPolicy:'contentPolicyScreen',
@@ -3055,6 +3075,7 @@ function showScreen(name){
   if(name==='themes')renderThemeGrid();
   if(name==='gallery')loadGallery();
   if(name==='history')loadHistory();
+  if(name==='latestVideos')loadLatestVideos();
   if(name==='playlists')loadMyPlaylists();
 }
 
@@ -3072,9 +3093,6 @@ async function loadHome(){
   feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   // Reset pagination
   _feedPage=0; _feedLastDoc=null; _feedAllLoaded=false; allPosts=[];
-  _feedSortMode='default';
-  // Load latest video banner
-  setTimeout(()=>loadLatestVideoBanner(),500);
   await loadNextBatch(true);
   setupInfiniteScroll();
 }
@@ -3093,16 +3111,13 @@ async function loadNextBatch(isFirst=false){
   }
   try{
     let query;
-    if(_feedCurrentFilter==='trending'||_feedSortMode==='viral'){
+    if(_feedCurrentFilter==='trending'){
       try{ query=db.collection('posts').orderBy('rankScore','desc').limit(_feedBatchSize*2); }
       catch(e){ query=db.collection('posts').orderBy('time','desc').limit(_feedBatchSize*2); }
-    } else if(_feedSortMode==='old'){
-      query=db.collection('posts').orderBy('time','asc').limit(_feedBatchSize);
     } else {
-      // default = latest
       query=db.collection('posts').orderBy('time','desc').limit(_feedBatchSize);
     }
-    if(_feedLastDoc&&_feedCurrentFilter!=='trending'&&_feedSortMode!=='viral')query=query.startAfter(_feedLastDoc);
+    if(_feedLastDoc&&_feedCurrentFilter!=='trending')query=query.startAfter(_feedLastDoc);
     let snap;
     try{snap=await query.get();}
     catch(e){
@@ -3193,72 +3208,11 @@ function filterFeed(btn,filter){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
   btn.classList.add('active');
   _feedCurrentFilter=filter;
-  _feedSortMode='default';
   // Reset and reload with filter
   _feedPage=0;_feedLastDoc=null;_feedAllLoaded=false;allPosts=[];
   const feed=document.getElementById('homeFeed');
   feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
   loadNextBatch(true);
-}
-
-// ══ Filter by sort mode (latest, viral, old) ══
-let _feedSortMode='default';
-function filterFeedSort(btn,sortMode){
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  btn.classList.add('active');
-  _feedSortMode=sortMode;
-  if(sortMode==='latest'){ _feedCurrentFilter='all'; }
-  else if(sortMode==='viral'){ _feedCurrentFilter='all'; }
-  else if(sortMode==='old'){ _feedCurrentFilter='all'; }
-  _feedPage=0;_feedLastDoc=null;_feedAllLoaded=false;allPosts=[];
-  const feed=document.getElementById('homeFeed');
-  feed.innerHTML='<div class="loader"><div class="spinner"></div></div>';
-  loadNextBatch(true);
-}
-
-// ══ Load Latest Video Banner ══
-async function loadLatestVideoBanner(){
-  try{
-    const snap=await db.collection('posts')
-      .where('type','in',['video','gaming','music','short'])
-      .orderBy('time','desc').limit(1).get();
-    if(snap.empty)return;
-    const p={id:snap.docs[0].id,...snap.docs[0].data()};
-    window._latestVideoId=p.id;
-    const banner=document.getElementById('latestVideoBanner');
-    const thumbEl=document.getElementById('latestVideoBannerThumb');
-    const titleEl=document.getElementById('latestVideoBannerTitle');
-    const metaEl=document.getElementById('latestVideoBannerMeta');
-    if(!banner)return;
-    // Thumbnail
-    const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_300/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-    if(thumbEl){
-      if(th)thumbEl.innerHTML=`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`;
-      else thumbEl.innerHTML=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-video" style="color:var(--text3);font-size:20px;"></i></div>`;
-    }
-    if(titleEl)titleEl.textContent=p.title||'Latest Video';
-    if(metaEl)metaEl.textContent=`${p.authorName||''} • ${getTimeAgo(p.time)} • 👁️${fmtCount(p.views||0)}`;
-    banner.style.display='block';
-  }catch(e){
-    // Try without 'in' filter (older Firebase)
-    try{
-      const snap=await db.collection('posts').orderBy('time','desc').limit(5).get();
-      const posts=snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.type!=='post');
-      if(!posts.length)return;
-      const p=posts[0];
-      window._latestVideoId=p.id;
-      const banner=document.getElementById('latestVideoBanner');
-      const thumbEl=document.getElementById('latestVideoBannerThumb');
-      const titleEl=document.getElementById('latestVideoBannerTitle');
-      const metaEl=document.getElementById('latestVideoBannerMeta');
-      if(!banner)return;
-      const th=p.thumbURL||(p.url?p.url.replace('/upload/','/upload/so_1,w_300/').replace(/\.(mp4|mov|webm)$/,'.jpg'):'');
-      if(thumbEl){if(th)thumbEl.innerHTML=`<img src="${th}" style="width:100%;height:100%;object-fit:cover;">`;else thumbEl.innerHTML='';}
-      if(titleEl)titleEl.textContent=p.title||'Latest Video';
-      if(metaEl)metaEl.textContent=`${p.authorName||''} • ${getTimeAgo(p.time)}`;
-      banner.style.display='block';
-    }catch(e2){}
-  }
 }
 
 function renderFeed(posts){
@@ -4235,7 +4189,7 @@ function resetUploadForm(){
   document.querySelectorAll('.privacy-btn').forEach(b=>b.classList.remove('active'));
 const pb=document.getElementById('privPublic');if(pb)pb.classList.add('active');
 }
-<!-- PART 2 OF 2 — paste after Part 1, replacing from line 3796 onwards -->
+  <!-- PART 2 OF 2 — paste after Part 1, replacing from line 3796 onwards -->
 
 // ══════════════════════════════════════════════════════
 // VIDEO PLAYER
@@ -4360,6 +4314,7 @@ function showTrimPanel(){
   document.getElementById('trimPanel').classList.add('open');
 }
 function closeTrimPanel(){document.getElementById('trimPanel').classList.remove('open');}
+
 // ══ VIDEO CONTEXT MENU ══
 let ctxPostId=null,ctxPostUrl=null,ctxPostAuthor=null;
 
@@ -4414,7 +4369,6 @@ async function createShortFromTrim(){
       authorId:cUser.uid,
       authorName:cUserData?.name||cUser.email,
       authorPhoto:cUserData?.photoURL||'',
-  
       likes:0,likedBy:[],views:0,comments:0,reactions:{},
       rankScore:20,
       trimStart:start,trimDur:dur,
@@ -4575,37 +4529,34 @@ async function toggleSubscribe(){
 
 function shareVideo(){
   if(!currentPostData)return;
-  const postId = currentPostData.id || currentPostId;
-  const title = currentPostData.title||'Watch on Stream X';
-  const shareUrl = getShareUrl(postId);
-  const text = `${title} - Stream X Pakistan 🇵🇰`;
-  showShareSheet(shareUrl, title, text);
-}
-
-function showShareSheet(url, title, text){
-  text = text || `${title} - Stream X Pakistan 🇵🇰`;
-  // Try native share first
+  const url=`${WORKER_URL}/?post=${currentPostId}`;
+  const title=currentPostData.title||'Watch on Stream x';
+  const text=`${title} - Stream x Pakistan 🇵🇰`;
   if(navigator.share){
-    navigator.share({title: title||'Stream X', text, url})
-      .catch(()=>_showShareSheetUI(url, title, text));
-    return;
+    navigator.share({title,text,url}).catch(()=>showShareSheet(url,title));
+  }else{
+    showShareSheet(url,title);
   }
-  _showShareSheetUI(url, title, text);
 }
 
-function _showShareSheetUI(url, title, text){
-  const ex=document.getElementById('shareSheet');if(ex)ex.remove();
-  const ex2=document.getElementById('shareSheetOv');if(ex2)ex2.remove();
+function showShareSheet(url,title){
+  // Remove existing
+  const ex=document.getElementById('shareSheet');
+  if(ex)ex.remove();
+  const ex2=document.getElementById('shareSheetOv');
+  if(ex2)ex2.remove();
+  
   const ov=document.createElement('div');
   ov.id='shareSheetOv';
   ov.style.cssText='position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);';
+  ov.onclick=()=>{ov.remove();sheet.remove();};
   document.body.appendChild(ov);
+  
   const sheet=document.createElement('div');
   sheet.id='shareSheet';
   sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:501;background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 16px 28px;';
-  ov.onclick=()=>{ov.remove();sheet.remove();};
   const enc=encodeURIComponent(url);
-  const etxt=encodeURIComponent(text);
+  const etxt=encodeURIComponent(text||title);
   sheet.innerHTML=`
     <div style="font-size:16px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
       <span>Share</span>
@@ -4624,30 +4575,15 @@ function _showShareSheetUI(url, title, text){
         <div style="width:52px;height:52px;border-radius:14px;background:rgba(29,161,242,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fab fa-twitter" style="font-size:26px;color:#1da1f2;"></i></div>
         <div style="font-size:11px;color:var(--text2);">Twitter</div>
       </a>
-      <div onclick="navigator.clipboard.writeText('${url}').then(()=>showToast('Link copied! 📋'));document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();" style="text-decoration:none;text-align:center;cursor:pointer;">
-        <div style="width:52px;height:52px;border-radius:14px;background:var(--bg3);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fas fa-copy" style="font-size:24px;color:var(--text);"></i></div>
+      <div onclick="navigator.clipboard.writeText('${url}').then(()=>{showToast('Link copied! 📋');document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();}).catch(()=>showToast('Copied!'));" style="text-align:center;cursor:pointer;">
+        <div style="width:52px;height:52px;border-radius:14px;background:var(--bg3);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fas fa-link" style="font-size:22px;color:var(--text2);"></i></div>
         <div style="font-size:11px;color:var(--text2);">Copy Link</div>
       </div>
     </div>
-    <div style="background:var(--bg3);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
-      <div style="font-size:11px;color:var(--text3);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${url}</div>
-      <button onclick="navigator.clipboard.writeText('${url}').then(()=>showToast('Copied! 📋'));document.getElementById('shareSheet')?.remove();document.getElementById('shareSheetOv')?.remove();" style="background:var(--red);border:none;color:white;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;">Copy</button>
-    </div>`;
+    <div style="background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);word-break:break-all;">${url}</div>
+  `;
   document.body.appendChild(sheet);
 }
-  sheet.innerHTML=`
-    <div style="font-size:16px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
-      <span>Share</span>
-      <i class="fas fa-times" style="cursor:pointer;color:var(--text2);font-size:18px;" onclick="document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();"></i>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
-      <a href="https://wa.me/?text=${etxt}%20${enc}" target="_blank" rel="noopener" onclick="document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();" style="text-decoration:none;text-align:center;">
-        <div style="width:52px;height:52px;border-radius:14px;background:rgba(37,211,102,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fab fa-whatsapp" style="font-size:26px;color:#25d366;"></i></div>
-        <div style="font-size:11px;color:var(--text2);">WhatsApp</div>
-      </a>
-      <a href="https://www.facebook.com/sharer/sharer.php?u=${enc}" target="_blank" rel="noopener" onclick="document.getElementById('shareSheet').remove();document.getElementById('shareSheetOv').remove();" style="text-decoration:none;text-align:center;">
-        <div style="width:52px;height:52px;border-radius:14px;background:rgba(24,119,242,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="fab fa-facebook" style="font-size:26px;color:#1877f2;"></i></div>
-        <div style="font-size:11px;color:var(--text2);">Facebook</div>
 function saveVideo(){showToast('Saved to Watch Later ✅');}
 
 function showDescSheet(){
@@ -5305,29 +5241,37 @@ function setNotifBadge(count){
 function updateOgTags(postId, p){
   try{
     const title = (p.title||'Stream X Video') + ' — Stream X 🇵🇰';
-    const desc = p.description || `${p.authorName||''} ne share kiya Stream X pe. Pakistan ka apna platform!`;
-    // Thumbnail: Cloudinary video → replace extension with .jpg for thumb
+    const desc = p.desc
+      ? p.desc.substring(0,160)
+      : `${p.authorName||'Creator'} ka video — ${p.title||''}. Stream X pe dekho, Pakistan ka apna platform!`;
+
+    // thumbURL preferred (proper image for OG preview)
     let img = p.thumbURL || '';
     if(!img && p.url){
-      img = p.url.replace('/upload/', '/upload/so_0,w_600/').replace(/\.(mp4|mov|webm|avi)$/i, '.jpg');
+      // Cloudinary video → generate thumbnail image URL
+      img = p.url
+        .replace('/upload/', '/upload/so_1,w_1200,h_630,c_fill/')
+        .replace(/\.(mp4|mov|webm|avi|mkv)$/i, '.jpg');
     }
-    if(!img) img = 'https://streamx.pk/icon-512.png';
-    const url = `${location.origin}${location.pathname}?post=${postId}`;
+    if(!img) img = 'https://streamx.pk/og-banner.png';
 
-    // Update document title
+    // Always share app URL (NOT Cloudinary) so WhatsApp/Facebook scrape OUR page
+    // Worker URL — WhatsApp/Facebook scrape karte hain isko, OG image milti hai
+    const appUrl = `${WORKER_URL}/?post=${postId}`;
+    const browserUrl = `${location.origin}${location.pathname}?post=${postId}`;
+
     document.title = title;
-    // Update meta tags
     const set = (id, attr, val) => { const el=document.getElementById(id); if(el) el.setAttribute(attr, val); };
     set('ogTitle','content', title);
     set('ogDesc','content', desc);
     set('ogImage','content', img);
-    set('ogUrl','content', url);
+    set('ogImageSecure','content', img);
+    set('ogUrl','content', appUrl);
     set('ogType','content', p.type==='short'?'video.other':'video.movie');
     set('twTitle','content', title);
     set('twDesc','content', desc);
     set('twImage','content', img);
-    // Update browser URL without reload
-    try{ history.replaceState(null,'', url); }catch(e){}
+    try{ history.replaceState(null,'', browserUrl); }catch(e){}
   }catch(e){}
 }
 
@@ -5336,11 +5280,12 @@ function resetOgTags(){
   const set = (id, val) => { const el=document.getElementById(id); if(el) el.setAttribute('content', val); };
   set('ogTitle','Stream X — Pakistan ka apna platform 🇵🇰');
   set('ogDesc','Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!');
-  set('ogImage','https://streamx.pk/icon-512.png');
+  set('ogImage','https://streamx.pk/og-banner.png');
+  set('ogImageSecure','https://streamx.pk/og-banner.png');
   set('ogUrl', location.origin+location.pathname);
-  set('twTitle','Stream X — Pakistan ka apna platform 🇵🇰');
-  set('twDesc','Pakistan ka apna video platform. Videos, Shorts, Live aur bahut kuch!');
-  set('twImage','https://streamx.pk/icon-512.png');
+  set('twTitle','Stream X — Pakistan ka Apna Video Platform 🇵🇰');
+  set('twDesc','Pakistan ka #1 video sharing platform. Videos, Shorts, Live streaming aur bahut kuch — bilkul free!');
+  set('twImage','https://streamx.pk/og-banner.png');
   try{ history.replaceState(null,'', location.origin+location.pathname); }catch(e){}
 }
 
@@ -7843,17 +7788,17 @@ function showInviteSheet(){
 // ══════════════════════════════════════════════════════
 // POST SHARE FIX — share post text/link properly
 // ══════════════════════════════════════════════════════
-// ══ Worker URL — OG tags ke liye ══
-const WORKER_URL = 'https://dark-firefly-0j48.mrwhyyouareyou.workers.dev';
-
-function getShareUrl(postId){
-  return `${WORKER_URL}/?post=${postId}`;
-}
-
 function sharePostProperly(postId,title,url){
-  const shareUrl = getShareUrl(postId);
-  const text=`${title||'Check this out'} - Stream X Pakistan 🇵🇰`;
-  showShareSheet(shareUrl, title||'Stream X', text);
+  // Always use Worker URL so WhatsApp/Facebook get proper OG image preview
+  const shareUrl = `${WORKER_URL}/?post=${postId}`;
+  const text=`${title||'Check this out'} — Stream X Pakistan 🇵🇰`;
+  if(navigator.share){
+    navigator.share({title:title||'Stream X',text,url:shareUrl}).catch(()=>{
+      navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Copied!'));
+    });
+  }else{
+    navigator.clipboard.writeText(shareUrl).then(()=>showToast('Link copied! 📋')).catch(()=>showToast('Copied!'));
+  }
 }
 
 // ══════════════════════════════════════════════════════
@@ -8666,10 +8611,143 @@ function shareChannelPage(){
   navigator.clipboard.writeText(window.location.href+'?channel='+cpCurrentAuthorId).then(()=>showToast('Channel link copied! 📋')).catch(()=>showToast('Shared!'));
 }
 
+
+// ══════════════════════════════════════════════════════
+// LATEST VIDEOS PAGE
+// ══════════════════════════════════════════════════════
+let _lvFilter = 'all';
+let _lvSort = 'latest';
+
+function setLvFilter(filter, btn){
+  _lvFilter = filter;
+  document.querySelectorAll('#lvFilterChips .chip').forEach(c=>c.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  loadLatestVideos();
+}
+
+function setLvSort(sort, btn){
+  _lvSort = sort;
+  document.querySelectorAll('#lvSortLatest,#lvSortViews,#lvSortLikes').forEach(b=>{if(b)b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  loadLatestVideos();
+}
+
+async function loadLatestVideos(){
+  const feed = document.getElementById('latestVideosFeed');
+  const countEl = document.getElementById('lvResultCount');
+  if(!feed) return;
+  feed.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+  if(countEl) countEl.innerHTML = '<span style="font-size:11px;color:var(--text3);">Loading...</span>';
+
+  try{
+    // Get date range
+    const now = Date.now();
+    let fromTime = 0;
+    const DAY = 86400000;
+    if(_lvFilter === 'today')       fromTime = now - DAY;
+    else if(_lvFilter === 'week')   fromTime = now - 7*DAY;
+    else if(_lvFilter === 'last4weeks') fromTime = now - 28*DAY;
+    else if(_lvFilter === 'last4months') fromTime = now - 120*DAY;
+    else if(_lvFilter === 'last4years')  fromTime = now - 4*365*DAY;
+
+    // Fetch from Firestore
+    let query = db.collection('posts').orderBy('time','desc').limit(200);
+    let snap;
+    try{ snap = await query.get(); }
+    catch(e){ snap = await db.collection('posts').limit(200).get(); }
+
+    let posts = snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>{
+      // Privacy filter
+      const priv = p.privacy||'public';
+      if(priv==='private' && p.authorId !== cUser?.uid) return false;
+      // Time filter
+      if(fromTime > 0 && (p.time||0) < fromTime) return false;
+      // Only videos/shorts (not text posts)
+      if(p.type === 'post') return false;
+      return true;
+    });
+
+    // Sort
+    if(_lvSort === 'views')  posts.sort((a,b)=>(b.views||0)-(a.views||0));
+    else if(_lvSort === 'likes') posts.sort((a,b)=>(b.likes||0)-(a.likes||0));
+    else posts.sort((a,b)=>(b.time||0)-(a.time||0)); // latest
+
+    if(countEl) countEl.innerHTML = `<span style="font-size:11px;color:var(--text3);">${posts.length} video${posts.length!==1?'s':''} found</span>`;
+
+    if(!posts.length){
+      feed.innerHTML = '<div class="empty-state"><i class="fas fa-video-slash"></i><p>Is period mein koi video nahi mili</p></div>';
+      return;
+    }
+
+    feed.innerHTML = '';
+    posts.forEach(p => {
+      const div = document.createElement('div');
+      div.innerHTML = buildCard(p);
+      if(div.firstChild) feed.appendChild(div.firstChild);
+    });
+
+    // "All caught up" footer
+    feed.insertAdjacentHTML('beforeend','<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px;">✅ Yahi hain latest videos is period mein!</div>');
+
+  }catch(err){
+    console.error('loadLatestVideos error:',err);
+    feed.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading. Dobara try karein.</p></div>';
+  }
+}
+
 function safe(fn){
   try{fn();}catch(e){console.warn('Safe call error:',e.message);}
 }
-  </script>
+
+</script>
+    <!-- LATEST VIDEOS SCREEN -->
+    <div id="latestVideosScreen" class="screen">
+      <div style="padding:0 0 16px;">
+        <!-- Header -->
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px 8px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10;">
+          <button onclick="showScreen('home')" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:18px;padding:4px;"><i class="fas fa-arrow-left"></i></button>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:800;display:flex;align-items:center;gap:7px;">
+              <span style="color:var(--red);font-size:13px;">🔴 LIVE</span>
+              <span style="color:var(--text2);font-size:13px;font-weight:400;">·</span>
+              <span style="color:var(--red);">Trending</span>
+              <span style="color:var(--text2);font-size:13px;font-weight:400;">·</span>
+              <span>Latest Videos</span>
+            </div>
+          </div>
+          <button onclick="loadLatestVideos()" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:14px;padding:4px;" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+        </div>
+
+        <!-- Filter chips — time period -->
+        <div style="overflow-x:auto;padding:10px 12px 4px;border-bottom:1px solid var(--border);">
+          <div style="display:flex;gap:6px;width:max-content;" id="lvFilterChips">
+            <button class="chip active" onclick="setLvFilter('all',this)">🌐 All Time</button>
+            <button class="chip" onclick="setLvFilter('today',this)">📅 Today</button>
+            <button class="chip" onclick="setLvFilter('week',this)">🗓 This Week</button>
+            <button class="chip" onclick="setLvFilter('last4weeks',this)">📆 Last 4 Weeks</button>
+            <button class="chip" onclick="setLvFilter('last4months',this)">🗓 Last 4 Months</button>
+            <button class="chip" onclick="setLvFilter('last4years',this)">📅 Last 4 Years</button>
+          </div>
+        </div>
+
+        <!-- Sort row -->
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 14px 4px;">
+          <span style="font-size:11px;color:var(--text3);">Sort by:</span>
+          <button class="chip active" id="lvSortLatest" onclick="setLvSort('latest',this)" style="font-size:11px;padding:4px 10px;">🕒 Latest</button>
+          <button class="chip" id="lvSortViews" onclick="setLvSort('views',this)" style="font-size:11px;padding:4px 10px;">👁 Most Viewed</button>
+          <button class="chip" id="lvSortLikes" onclick="setLvSort('likes',this)" style="font-size:11px;padding:4px 10px;">❤️ Most Liked</button>
+        </div>
+
+        <!-- Results count -->
+        <div style="padding:6px 14px 2px;" id="lvResultCount">
+          <span style="font-size:11px;color:var(--text3);">Loading...</span>
+        </div>
+
+        <!-- Feed -->
+        <div id="latestVideosFeed"><div class="loader"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+
 <footer style="background:#0a0a0f;border-top:1px solid #2a2a3d;padding:20px;text-align:center;font-family:sans-serif;">
   <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
     <a href="https://mrwhyyouareyou-arch.github.io/Streamx-website/" style="color:#6c63ff;text-decoration:none;font-size:0.85rem;">About Us</a>
@@ -8679,6 +8757,7 @@ function safe(fn){
   </div>
   <p style="color:#7a7a9a;font-size:0.8rem;margin-top:10px;">© 2026 StreamX. All rights reserved.</p>
 </footer>
+
 <script>
 (function initFishCanvas(){
   function setup(){
@@ -8725,3 +8804,4 @@ function safe(fn){
 </script>
 </body>
 </html>
+
