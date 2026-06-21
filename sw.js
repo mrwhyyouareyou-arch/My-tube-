@@ -1,58 +1,67 @@
-// StreamX Service Worker v6 - Bug Killer + Smart Cache
-const CACHE = 'streamx-v6';
-const STATIC_ASSETS = [
-  'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'
+// ══════════════════════════════════════════════════════════════
+// StreamX — sw.js (general PWA shell service worker)
+// Place at the SITE ROOT, same folder as index.html.
+// Registered via: navigator.serviceWorker.register('./sw.js',{scope:'./'})
+//
+// Kept deliberately minimal: it only caches the app shell (index.html
+// + manifest + icons) so the PWA is installable and shows something
+// on a flaky connection. It does NOT cache Firestore reads, R2/Bunny
+// media, or any cross-origin requests — those must always stay live.
+// ══════════════════════════════════════════════════════════════
+
+const CACHE_NAME = 'streamx-shell-v1';
+const SHELL_FILES = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.png'
 ];
 
-// Install: Sirf fonts/icons cache karo, app ko haath mat lagao
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(STATIC_ASSETS)).catch(()=>{})
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(SHELL_FILES))
+      .catch((e) => console.warn('[sw.js] shell cache failed (non-fatal):', e))
   );
   self.skipWaiting();
 });
 
-// Activate: Purane saare cache uda do - mytube-v3, streamx-v2, sab
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys => 
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((names) =>
+      Promise.all(
+        names
+          .filter((name) => name !== CACHE_NAME)
+          .map((name) => caches.delete(name))
+      )
+    )
   );
+  self.clients.claim();
 });
 
-// Fetch: 3 Rule ka Game
-self.addEventListener('fetch', e => {
-  const url = e.request.url;
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
 
-  // RULE 1: Firebase/API ko kabhi cache mat karo - Hamesha fresh
-  if (e.request.method !== 'GET' || 
-      url.includes('firestore.googleapis.com') || 
-      url.includes('firebase') || 
-      url.includes('googleapis.com') ||
-      url.includes('cloudinary.com') ||
-      url.includes('identitytoolkit')) {
-    return; // Browser ko handle karne do
+  // Only handle same-origin GET requests for the shell document itself.
+  // Everything else (Firestore, R2 images, Bunny HLS, Cloudflare Workers,
+  // gstatic/Firebase SDK scripts, etc.) passes straight through to the
+  // network untouched — we never want to serve stale dynamic content.
+  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) {
+    return;
   }
 
-  // RULE 2: Fonts/Icons = Cache-First - Ye hi fast banayega app ko
-  if (url.includes('fonts.googleapis.com') || 
-      url.includes('cdnjs.cloudflare.com') || 
-      url.includes('gstatic.com')) {
-    e.respondWith(
-      caches.match(e.request).then(cached => {
-        return cached || fetch(e.request).then(res => {
-          const resClone = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, resClone));
-          return res;
-        });
-      })
+  if (req.mode === 'navigate') {
+    // Network-first for navigations, falling back to cached shell when offline.
+    event.respondWith(
+      fetch(req).catch(() => caches.match('./index.html'))
     );
     return;
   }
 
-  // RULE 3: App ka HTML/JS = Network-Only - Kabhi purana nahi chalega
-  // Isse splash screen wala bug 100% khatam
-  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+  // Cache-first for the small static shell assets only.
+  if (SHELL_FILES.some((f) => req.url.endsWith(f.replace('./', '')))) {
+    event.respondWith(
+      caches.match(req).then((cached) => cached || fetch(req))
+    );
+  }
 });
