@@ -1,91 +1,81 @@
 // ══════════════════════════════════════════════════════════════
-// StreamX — firebase-messaging-sw.js
-// Place this file at the SITE ROOT, same folder as index.html
-// (i.e. mrwhyyouareyou-arch.github.io/My-tube-/firebase-messaging-sw.js)
-// Registered by index.html via:
-//   navigator.serviceWorker.register('./firebase-messaging-sw.js', { scope: './' })
+// StreamX — firebase-messaging-sw.js  v2
+// GitHub Pages: place at repo ROOT same level as index.html
+// URL: mrwhyyouareyou-arch.github.io/My-tube-/firebase-messaging-sw.js
 // ══════════════════════════════════════════════════════════════
 
 importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
-  authDomain: "my-tube-e526b.firebaseapp.com",
-  projectId: "my-tube-e526b",
-  storageBucket: "my-tube-e526b.firebasestorage.app",
+  apiKey:            "AIzaSyDx-r77MAJ_7jK7foeBE0P3RiTSPNIQgSE",
+  authDomain:        "my-tube-e526b.firebaseapp.com",
+  projectId:         "my-tube-e526b",
+  storageBucket:     "my-tube-e526b.firebasestorage.app",
   messagingSenderId: "948348267378",
-  appId: "1:948348267378:web:2dd25f59a9f510a8694beb"
+  appId:             "1:948348267378:web:2dd25f59a9f510a8694beb"
 });
 
 const messaging = firebase.messaging();
 
-// Site root — used to build absolute icon paths and to detect "is a
-// StreamX tab already open" when a notification is tapped.
-const SITE_ROOT = self.registration.scope; // e.g. https://mrwhyyouareyou-arch.github.io/My-tube-/
+// Dynamic site root — works on GitHub Pages subpath AND any custom domain
+const SITE_ROOT = self.registration.scope;
+// e.g. https://mrwhyyouareyou-arch.github.io/My-tube-/
 
 // ──────────────────────────────────────────────────────────────
-// 1) BACKGROUND MESSAGE — fires when a push arrives while the app
-//    is closed or the tab isn't focused. (When the tab IS open and
-//    focused, index.html's own messaging.onMessage() handles it
-//    with an in-app toast instead — this only covers background.)
+// BACKGROUND MESSAGE — app closed or not focused
 // ──────────────────────────────────────────────────────────────
-messaging.onBackgroundMessage((payload) => {
-  console.log('[firebase-messaging-sw.js] background message:', payload);
+messaging.onBackgroundMessage(payload => {
+  console.log('[SW] Background message:', payload);
 
   const data  = payload.data || {};
-  const title = (payload.notification && payload.notification.title) || data.title || 'StreamX';
-  const body  = (payload.notification && payload.notification.body)  || data.body  || '';
+  const title = payload.notification?.title || data.title || 'StreamX';
+  const body  = payload.notification?.body  || data.body  || '';
 
-  const options = {
+  // Deep link URL
+  let url = SITE_ROOT;
+  if      (data.type === 'short'   && data.postId)  url = SITE_ROOT + '?short='   + data.postId;
+  else if (data.type === 'post'    && data.postId)  url = SITE_ROOT + '?post='    + data.postId;
+  else if (data.type === 'dm'      && data.convId)  url = SITE_ROOT + '?dm='      + data.convId;
+  else if (data.type === 'sub'     && data.fromUid) url = SITE_ROOT + '?profile=' + data.fromUid;
+  else if (data.click_action)                        url = data.click_action;
+
+  return self.registration.showNotification(title, {
     body,
-    icon: SITE_ROOT + 'icon-192.png',
-    badge: SITE_ROOT + 'icon-192.png',
-    data,                              // keep click_action/postId/type for the click handler below
-    tag: data.postId || data.type || 'streamx-notif',
-    renotify: false
-  };
-
-  self.registration.showNotification(title, options);
+    icon:      SITE_ROOT + 'icons/icon-192.png',
+    badge:     SITE_ROOT + 'icons/icon-96.png',
+    tag:       data.postId || data.convId || data.type || 'streamx',
+    renotify:  true,
+    data:      { url, ...data }
+  });
 });
 
 // ──────────────────────────────────────────────────────────────
-// 2) NOTIFICATION CLICK — this was missing, which is why tapping
-//    a push notification did nothing. Works for notifications shown
-//    above AND for ones Firebase auto-displays when the FCM payload
-//    includes a top-level "notification" field (Firebase copies the
-//    original data into event.notification.data in that case too).
+// NOTIFICATION CLICK — open correct screen
 // ──────────────────────────────────────────────────────────────
-self.addEventListener('notificationclick', (event) => {
+self.addEventListener('notificationclick', event => {
   event.notification.close();
-
-  const data = event.notification.data || {};
-  // _sendFCMPush() builds this as:
-  //   https://.../My-tube-/?notif=1&postId=<id>&type=<type>
-  const targetUrl = data.click_action || (SITE_ROOT + '?notif=1');
+  const url = event.notification.data?.url || SITE_ROOT;
 
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // If a StreamX tab/window is already open, focus + navigate it
-      for (const client of clientList) {
-        if (client.url.indexOf(SITE_ROOT) === 0 && 'focus' in client) {
-          if ('navigate' in client) {
-            return client.navigate(targetUrl).then((c) => c && c.focus());
-          }
-          return client.focus();
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      // If StreamX tab already open — focus and navigate
+      for (const client of list) {
+        if (client.url.startsWith(SITE_ROOT) && 'focus' in client) {
+          client.focus();
+          client.postMessage({ type: 'NOTIF_NAVIGATE', url });
+          return;
         }
       }
-      // Otherwise open a fresh window/tab
-      if (clients.openWindow) {
-        return clients.openWindow(targetUrl);
-      }
+      // No open tab — open new window
+      if (clients.openWindow) return clients.openWindow(url);
     })
   );
 });
 
 // ──────────────────────────────────────────────────────────────
-// 3) Optional: dismiss tracking (handy for debugging, harmless otherwise)
+// NOTIFICATION DISMISS tracking
 // ──────────────────────────────────────────────────────────────
-self.addEventListener('notificationclose', (event) => {
-  console.log('[firebase-messaging-sw.js] notification dismissed:', event.notification.tag);
+self.addEventListener('notificationclose', event => {
+  console.log('[SW] Notification dismissed:', event.notification.tag);
 });
